@@ -14,7 +14,7 @@
 		http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
     <tx:annotation-driven/>
-    <context:property-placeholder location="classpath*:platform.properties"/>
+    <context:property-placeholder location="classpath*:dev/platform.properties"/>
 
     <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
           init-method="init" destroy-method="close">
@@ -40,7 +40,7 @@
                 <ref bean="wall-filter"/>
             </list>
         </property>
-        <property name="connectionInitSqls" value="set names utf8mb4;"/>
+        <property name="connectionInitSqls" value="set names utf8;"/>
     </bean>
 
     <bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter">
