@@ -41,6 +41,9 @@
             <properties>
                 <env>prod</env>
             </properties>
+             <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
         </profile>
     </profiles>
 
