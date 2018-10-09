@@ -180,7 +180,7 @@ Page({
       goodsId: goodsId,
       number: number,
       id: id
-    }).then(function (res) {
+    },'post','application/json').then(function (res) {
       if (res.errno === 0) {
         console.log(res.data);
         that.setData({
