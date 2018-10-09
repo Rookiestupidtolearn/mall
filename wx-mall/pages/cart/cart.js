@@ -180,7 +180,7 @@ Page({
       goodsId: goodsId,
       number: number,
       id: id
-    }).then(function (res) {
+    },'post','application/json').then(function (res) {
       if (res.errno === 0) {
         console.log(res.data);
         that.setData({
@@ -263,7 +263,7 @@ Page({
 
     util.request(api.CartDelete, {
       productIds: productIds.join(',')
-    }).then(function (res) {
+    }, 'post', 'application/json').then(function (res) {
       if (res.errno === 0) {
         console.log(res.data);
         let cartList = res.data.cartList.map(v => {
