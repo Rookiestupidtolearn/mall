@@ -68,7 +68,7 @@ Page({
     let that = this;
 
     if (!this.data.isEditCart) {
-      util.request(api.CartChecked, { productIds: that.data.cartGoods[itemIndex].product_id, isChecked: that.data.cartGoods[itemIndex].checked ? 0 : 1 }).then(function (res) {
+      util.request(api.CartChecked, { productIds: that.data.cartGoods[itemIndex].product_id, isChecked: that.data.cartGoods[itemIndex].checked ? 0 : 1 },'post','application/json').then(function (res) {
         if (res.errno === 0) {
           console.log(res.data);
           that.setData({
