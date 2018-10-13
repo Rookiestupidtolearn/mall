@@ -1,0 +1,9 @@
+<!--pages/ucenter/amountMoney/amountMoney.wxml-->
+<scroll-view scroll-y="true" class="container">
+  <view class='list' wx:for="{{boxMount}}">
+    <text>{{ item.ExchangeName }}</text>
+    <text>{{ item.ExchangeDate }}</text>
+    <text class='boxMoney red' wx:if="{{ item.PayPoints>0 }}">{{ item.PayPoints }}</text>
+    <text class='boxMoney green' wx:if="{{ item.PayPoints<0 }}">{{ item.PayPoints }}</text>
+  </view>
+</scroll-view>

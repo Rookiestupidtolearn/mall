@@ -25,7 +25,8 @@
       </navigator>
     </view>
     <view class="b">
-      <view class="item item-1" wx:for="{{brand}}" wx:key="item.id">
+    <scroll-view scroll-x="true" class="list">
+      <view class="item" wx:for="{{brand}}" wx:key="item.id">
         <navigator url="/pages/brandDetail/brandDetail?id={{item.id}}">
           <view class="wrap">
             <image class="img" src="{{item.new_pic_url}}" mode="aspectFill"></image>
@@ -37,6 +38,7 @@
           </view>
         </navigator>
       </view>
+    </scroll-view>
     </view>
   </view>
   </view>

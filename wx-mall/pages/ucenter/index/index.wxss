@@ -9,10 +9,18 @@ page{
     overflow: hidden;
     width: 100%;
 }
+.viewTop{
+  display: flex;
+	flex-direction: column;
+	padding: 80rpx 0 60rpx 0;
+	align-items: center;
+	background: #333;
+  width: 750rpx;
+  border-radius:5px;
+}
 .userinfo {
 	display: flex;
 	flex-direction: column;
-	padding: 50rpx 0;
 	align-items: center;
 	background: #333;
   width: 750rpx;
@@ -28,6 +36,10 @@ page{
 .userinfo-nickname {
   margin-top: 20rpx;
   color: #FFF;
+}
+.userinfo-availMoney{
+  font-size:29rpx;
+  color:#fff;
 }
 .profile-info{
     width: 100%;
