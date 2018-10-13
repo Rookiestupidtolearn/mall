@@ -12,6 +12,7 @@
     "pages/ucenter/feedback/feedback",
     "pages/ucenter/coupon/coupon",
     "pages/ucenter/collect/collect",
+    "pages/ucenter/amountMoney/amountMoney",
     "pages/auth/login/login",
     "pages/auth/register/register",
     "pages/auth/reset/reset",
@@ -38,7 +39,7 @@
   "window": {
     "backgroundTextStyle": "dark",
     "navigationBarBackgroundColor": "#fff",
-    "navigationBarTitleText": "仿网易严选",
+    "navigationBarTitleText": "奇子商城",
     "navigationBarTextStyle": "black",
     "enablePullDownRefresh": true
   },

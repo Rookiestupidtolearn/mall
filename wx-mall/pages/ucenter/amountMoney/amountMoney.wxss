@@ -1,0 +1,19 @@
+/* pages/ucenter/amountMoney/amountMoney.wxss */
+.list { 
+  display:flex;
+  justify-content: space-between;
+  padding: 20rpx 50rpx;
+  border-bottom:1px solid #e9e9e9;
+}
+.list:first-child {
+  border-top:1px solid #e9e9e9;
+}
+.container {
+  height:100%;
+}
+.red{
+  color:red
+}
+.green{
+  color:green
+}

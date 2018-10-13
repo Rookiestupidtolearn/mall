@@ -64,10 +64,9 @@ Page({
         if (!this.bindCheckMobile(this.data.mobile)) {
             return
         }
-        //发送短信 /platform/api/user/smscode
         util.request(api.SmsCode, {phone: this.data.mobile},'post','application/json')
             .then(function (res) {
-                if (res.data.code == 200) {
+                if (res.errno == 0) {
                     wx.showToast({
                         title: '发送成功',
                         icon: 'success',
@@ -86,12 +85,18 @@ Page({
                             clearInterval(intervalId)
                         } else {
                             pages[pages.length - 1].setData({
-                                getCodeButtonText: i,
+                                getCodeButtonText: i+'s',
                                 disableGetMobileCode: true,
                                 disableSubmitMobileCode: false
                             })
                         }
                     }, 1000);
+                }else{
+                  wx.showModal({
+                    title: '提示',
+                    content: res.msg,
+                    showCancel: false
+                  })
                 }
             });
 
@@ -105,14 +110,9 @@ Page({
         if (!(e.detail.value.code && e.detail.value.code.length === 4)) {
             return
         }
-        wx.showToast({
-            title: '操作中...',
-            icon: 'loading',
-            duration: 5000
-        })
-        util.request(api.BindMobile, {mobile_code: e.detail.value.code,mobile:mobile})
+      util.request(api.BindMobile, { mobile_code: e.detail.value.code, mobile: mobile }, 'post', 'application/json')
             .then(function (res) {
-                if (res.data.code == 200) {
+                if (res.errno == 0) {
                     wx.showModal({
                         title: '提示',
                         content: '操作成功',
