@@ -37,15 +37,18 @@ let vm = new Vue({
             domain: [
                 {required: true, message: '发送域名不能为空', trigger: 'blur'}
             ],
-            name: [
+            username: [
                 {required: true, message: '用户名不能为空', trigger: 'blur'}
             ],
-            pwd: [
+            password: [
                 {required: true, message: '接口密钥不能为空', trigger: 'blur'}
             ],
             sign: [
                 {required: true, message: '签名不能为空', trigger: 'blur'}
-            ]
+            ],
+	        epid: [
+	               {required: true, message: 'epid不能为空', trigger: 'blur'}
+	           ]
         },
         q: {
             sendId: ''

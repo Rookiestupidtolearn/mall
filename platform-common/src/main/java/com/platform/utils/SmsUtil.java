@@ -31,29 +31,27 @@ public class SmsUtil {
      * @param stime         追加发送时间，可为空，为空为及时发送
      * @param extno         扩展码，必须为数字 可为空
      * @return
+     * 
+     * 返回码：00成功
+     * 
      * @throws Exception
      */
-    public static String crSendSms(String name, String pwd, String mobileString, String contextString, String sign, String stime, String extno) throws Exception {
+    public static String crSendSms(String name, String pwd, String mobileString, String contextString, String epid, String stime, String extno) throws Exception {
         StringBuffer param = new StringBuffer();
-        param.append("name=" + name);
-        param.append("&pwd=" + pwd);
-        param.append("&mobile=").append(mobileString);
-        param.append("&content=").append(URLEncoder.encode(contextString, "UTF-8"));
-        if (StringUtils.isNotEmpty(stime)) {
-            param.append("&stime=" + stime);
-        }
-        param.append("&sign=").append(URLEncoder.encode(sign, "UTF-8"));
-        param.append("&type=pt");
-        if (StringUtils.isNotEmpty(extno)) {
-            param.append("&extno=").append(extno);
-        }
-
-        URL localURL = new URL("http://web.cr6868.com/asmx/smsservice.aspx?");
+        param.append("username=" + name);
+        param.append("&password=" + pwd);
+        param.append("&phone=").append(mobileString);
+        param.append("&message=").append(java.net.URLEncoder.encode(contextString, "gb2312"));
+        param.append("&epid=").append(epid);
+        param.append("&linkid=").append("");
+        param.append("&subcode=").append("");
+       
+        URL localURL = new URL("http://q.hl95.com:8061?");
         URLConnection connection = localURL.openConnection();
         HttpURLConnection httpURLConnection = (HttpURLConnection) connection;
 
         httpURLConnection.setDoOutput(true);
-        httpURLConnection.setRequestMethod("POST");
+        httpURLConnection.setRequestMethod("GET");
         httpURLConnection.setRequestProperty("Accept-Charset", "utf-8");
         httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         httpURLConnection.setRequestProperty("Content-Length", String.valueOf(param.length()));

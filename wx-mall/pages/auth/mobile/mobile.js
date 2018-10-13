@@ -64,7 +64,8 @@ Page({
         if (!this.bindCheckMobile(this.data.mobile)) {
             return
         }
-        util.request(api.SmsCode, {phone: this.data.mobile})
+        //发送短信 /platform/api/user/smscode
+        util.request(api.SmsCode, {phone: this.data.mobile},'post','application/json')
             .then(function (res) {
                 if (res.data.code == 200) {
                     wx.showToast({

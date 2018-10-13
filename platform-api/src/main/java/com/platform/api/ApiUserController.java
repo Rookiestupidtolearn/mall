@@ -55,11 +55,14 @@ public class ApiUserController extends ApiBaseAction {
         if (StringUtils.isNullOrEmpty(config)) {
             throw new RRException("请先配置短信平台信息");
         }
-        if (StringUtils.isNullOrEmpty(config.getName())) {
+        if (StringUtils.isNullOrEmpty(config.getUsername())) {
             throw new RRException("请先配置短信平台用户名");
         }
-        if (StringUtils.isNullOrEmpty(config.getPwd())) {
+        if (StringUtils.isNullOrEmpty(config.getPassword())) {
             throw new RRException("请先配置短信平台密钥");
+        }
+        if (StringUtils.isNullOrEmpty(config.getEpid())) {
+            throw new RRException("请先配置短信平台epid");
         }
         if (StringUtils.isNullOrEmpty(config.getSign())) {
             throw new RRException("请先配置短信平台签名");
@@ -68,20 +71,21 @@ public class ApiUserController extends ApiBaseAction {
             /**
              * 状态,发送编号,无效号码数,成功提交数,黑名单数和消息，无论发送的号码是多少，一个发送请求只返回一个sendid，如果响应的状态不是“0”，则只有状态和消息
              */
-            result = SmsUtil.crSendSms(config.getName(), config.getPwd(), phone, msgContent, config.getSign(),
+            result = SmsUtil.crSendSms(config.getUsername(), config.getPassword(), phone, config.getSign()+msgContent, config.getEpid(),
                     DateUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"), "");
         } catch (Exception e) {
 
         }
         String arr[] = result.split(",");
 
-        if ("0".equals(arr[0])) {
+        if ("00".equals(arr[0])) {
             smsLogVo = new SmsLogVo();
             smsLogVo.setLog_date(System.currentTimeMillis() / 1000);
             smsLogVo.setUser_id(loginUser.getUserId());
             smsLogVo.setPhone(phone);
             smsLogVo.setSms_code(sms_code);
             smsLogVo.setSms_text(msgContent);
+            smsLogVo.setSend_status(1); //1成功   0失败
             userService.saveSmsCodeLog(smsLogVo);
             return toResponsSuccess("短信发送成功");
         } else {

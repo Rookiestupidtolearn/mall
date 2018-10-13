@@ -29,15 +29,20 @@ public class SmsConfig implements Serializable {
     /**
      * 用户名
      */
-    private String name;
+    private String username;
 
     /**
      * 密码(md5加密)
      */
-    private String pwd;
+    private String password;
 
     /**
-     * 签名
+     *epid
+     */
+    private String epid;
+    
+    /**
+     *sign 【公司简称】
      */
     private String sign;
 
@@ -57,27 +62,36 @@ public class SmsConfig implements Serializable {
         this.domain = domain;
     }
 
-    public String getName() {
-        return name;
-    }
+	public String getUsername() {
+		return username;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
-    public String getPwd() {
-        return pwd;
-    }
+	public String getPassword() {
+		return password;
+	}
 
-    public void setPwd(String pwd) {
-        this.pwd = pwd;
-    }
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
-    public String getSign() {
-        return sign;
-    }
+	public String getEpid() {
+		return epid;
+	}
 
-    public void setSign(String sign) {
-        this.sign = sign;
-    }
+	public void setEpid(String epid) {
+		this.epid = epid;
+	}
+
+	public String getSign() {
+		return sign;
+	}
+
+	public void setSign(String sign) {
+		this.sign = sign;
+	}
+	
 }
