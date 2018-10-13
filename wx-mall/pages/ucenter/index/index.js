@@ -8,7 +8,7 @@ Page({
         userInfo: {},
         hasMobile: '',
         availUrl:'/pages/ucenter/amountMoney/amountMoney',
-        availMoney:'5000',
+        availMoney:'5000.00',
         availResult:true
     },
     onLoad: function (options) {

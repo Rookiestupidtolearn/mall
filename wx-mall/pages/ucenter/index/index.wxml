@@ -4,7 +4,10 @@
       <image wx:if="{{userInfo && userInfo.avatarUrl}}" class="userinfo-avatar" src="{{ userInfo.avatarUrl }}" background-size="cover"></image>
       <text class="userinfo-nickname">{{ userInfo.nickName }}</text>
     </button>
-    <navigator class="userinfo-availMoney" url="{{availUrl}}" hidden='{{availResult}}'>平台币可用余额\n{{ availMoney }}</navigator>
+    <navigator class="userinfo-availMoney" url="{{availUrl}}" hidden='{{availResult}}'>
+      <text class="userinfo-title">平台币可用余额</text>
+      <text class="money">{{ availMoney }}</text>
+    </navigator>
   </view>
 
   <view style="height:20rpx;background: #eee;width:100%;"></view>
@@ -24,12 +27,6 @@
       </navigator>
     </view>
     <view class="item no-border">
-      <navigator url="url" class="a">
-        <text class="icon gift"></text>
-        <text class="txt">礼品卡</text>
-      </navigator>
-    </view>
-    <view class="item">
       <navigator url="/pages/ucenter/collect/collect" class="a">
         <text class="icon address"></text>
         <text class="txt">我的收藏</text>
@@ -41,13 +38,13 @@
         <text class="txt">我的足迹</text>
       </navigator>
     </view>
-    <view class="item no-border">
+    <view class="item">
       <navigator url="url" class="a">
         <text class="icon kefu"></text>
         <text class="txt">会员福利</text>
       </navigator>
     </view>
-    <view class="item">
+    <view class="item no-border">
       <navigator url="../address/address" class="a">
         <text class="icon address"></text>
         <text class="txt">地址管理</text>
@@ -60,14 +57,14 @@
       </navigator>
     </view>
     <button class='service' open-type="contact">
-      <view class="item no-border">
+      <view class="item">
         <navigator url="url" class="a">
           <text class="icon kefu"></text>
           <text class="txt">联系客服</text>
         </navigator>
       </view>
     </button>
-    <view class="item item-bottom">
+    <view class="item no-border">
       <navigator url="url" class="a">
         <text class="icon help"></text>
         <text class="txt">帮助中心</text>

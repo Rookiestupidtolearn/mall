@@ -86,7 +86,7 @@ Page({
           }
         });
       } else {
-        util.showErrorToast(res.data);
+        util.showErrorToast(res.errmsg);
       }
       
     });
