@@ -9,7 +9,7 @@ $(function () {
             {
                 label: '上架', name: 'isOnSale', index: 'is_on_sale', width: 50,
                 formatter: function (value) {
-                    return transIsNot(value);
+                    return goodsTransIsNot(value);
                 }
             },
             {
@@ -47,6 +47,24 @@ $(function () {
         imagesLoadURL: '../sys/oss/queryAll'
     })
 });
+
+//0 下架  1上架 2 申请上架  3申请下架  -1编辑状态
+function goodsTransIsNot(value) {
+
+    if (value == 0) {
+        return '<span class="label label-success">下架 </span>';
+    }
+    if (value == 1) {
+        return '<span class="label label-success">下架 </span>';
+    }
+    if (value == 2) {
+        return '<span class="label label-success">申请上架</span>';
+    }
+    if (value == 3) {
+        return '<span class="label label-success">申请下架</span>';
+    }
+    return '<span class="label label-danger">编辑状态</span>';
+};
 
 var ztree;
 
