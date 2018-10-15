@@ -110,4 +110,14 @@
             #{id}
         </foreach>
     </delete>
+    
+     <update id="updateUserCoupon" parameterType="com.platform.entity.UserCouponVo">
+        update nideshop_user_coupon
+        <set>
+            <if test="coupon_status != null">`coupon_status` = #{coupon_status}</if>
+        </set>
+        where user_id = #{user_id} 
+        and coupon_id = #{coupon_id}
+    </update>
+    
 </mapper>
