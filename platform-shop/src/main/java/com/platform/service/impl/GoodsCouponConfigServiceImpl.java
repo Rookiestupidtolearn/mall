@@ -49,13 +49,19 @@ public class GoodsCouponConfigServiceImpl implements GoodsCouponConfigService {
     public int save(GoodsCouponConfigEntity goodsCouponConfig) {
     	
     	SysUserEntity user = ShiroUtils.getUserEntity();
+    	
+    	
 		Map<String, Object> map = new HashMap<>();
 		map.put("goodsId",goodsCouponConfig.getGoodsId());
 		List<GoodsCouponConfigEntity> list = queryList(map);
 		if (null != list && list.size() != 0) {
 			throw new RRException("商品配比已存在！");
 		}
-    	
+		
+		if(goodsCouponConfig.getGoodValue()<0||goodsCouponConfig.getGoodValue()>1){
+			throw new RRException("商品配比值为大于0且小于等于1");
+		}
+		
     	goodsCouponConfig.setDelFlag("0");
     	goodsCouponConfig.setCreateUserDeptId(user.getDeptId());
     	goodsCouponConfig.setCreateUserId(user.getUserId());

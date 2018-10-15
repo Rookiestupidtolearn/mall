@@ -43,6 +43,10 @@
 		<if test="name != null and name.trim() != ''">
 			AND name LIKE concat('%',#{name},'%')
 		</if>
+		<if test="goodsId != null">
+			AND goods_id = ${goodsId}
+		</if>
+		
         <choose>
             <when test="sidx != null and sidx.trim() != ''">
                 order by ${sidx} ${order}
