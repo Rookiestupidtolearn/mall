@@ -114,7 +114,7 @@ var vm = new Vue({
         add: function () {
             vm.showList = false;
             vm.title = "新增";
-            vm.user = {gender: '1'};
+            vm.user = {gender: '1'};	
             vm.userLevels = [];
 
             this.getUserLevels();
