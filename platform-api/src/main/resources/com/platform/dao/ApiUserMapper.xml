@@ -190,11 +190,8 @@
 		where shop_user_id = #{userId}
 	</select>
 	
-    
-    
-    </select>
     <!-- 查询用户资金流水 -->
-    <select id="queryuserAccountDetail" resultType="qzMoneyRecordMap">
+    <select id="queryuserAccountDetail" resultType="com.platform.entity.QzMoneyRecordEntity">
 	    select
 				`id`,
 				`shop_user_id`,

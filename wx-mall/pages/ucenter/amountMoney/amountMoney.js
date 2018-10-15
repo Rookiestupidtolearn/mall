@@ -1,36 +1,35 @@
 // pages/ucenter/amountMoney/amountMoney.js
+var util = require('../../../utils/util.js');
+var api = require('../../../config/api.js');
+var app = getApp();
+
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-      boxMount:[
-        {
-          ExchangeName: "平台发放",
-          ExchangeDate: "2017-12-08 10:05:36",
-          PayPoints: "-100.00",
-        },
-        {
-          ExchangeName: "兑换优惠券",
-          ExchangeDate: "2017-12-08 10:05:36",
-          PayPoints: "+600.00",
-        },
-        {
-          ExchangeName: "兑换10¥代金券",
-          ExchangeDate: "2017-12-08 10:05:36",
-          PayPoints: "-190.00",
-        },
-        {
-          ExchangeName: "兑换5¥代金券",
-          ExchangeDate: "2017-12-08 10:05:36",
-          PayPoints: "-100.00",
-        }
-      ]
+      boxMount:[]
   },
 
   getUserInfoMoney: function () {
-      
+    var that = this;
+    util.request(api.UserAccountDetail).then(function(res){
+      for(var i=0; i<res.data.length; i++){
+        if (res.data[i].tranFlag == 1){
+          res.data[i].tarnAmount = '+' + res.data[i].tarnAmount
+        }else{
+          res.data[i].tarnAmount = '-' + res.data[i].tarnAmount
+        }
+      }
+      if(res.code == 1){
+        that.setData({
+          boxMount:res.data
+        })
+      }else{
+        util.showSuccessToast(res.data);
+      }
+    })
   },
 
   /**
