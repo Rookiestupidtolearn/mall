@@ -1,10 +1,22 @@
 $(function () {
     $("#jqGrid").Grid({
-        url: '../qzrechargerecord/list?state=0',
+        url: '../qzrechargerecord/auditList',
         colModel: [
 			{label: 'id', name: 'id', index: 'id', key: true, hidden: true},
 			{label: '会员id', name: 'shopUserId', index: 'shop_user_id', width: 80},
-			{label: '状态：0-初始，1-通过，2-拒绝', name: 'state', index: 'state', width: 80},
+			{label: '状态', name: 'state', index: 'state', width: 80,formatter: function(value){
+				 if(value ==0){
+					 return '初始';
+				 }
+				 if(value ==1){
+					 return '通过';
+				 }
+				 if(value == 2){
+					 return '拒绝';
+				 }
+			}
+			
+			},
 			{label: '审核人id', name: 'operateId', index: 'operate_id', width: 80},
 			{label: '审核时间', name: 'operateTime', index: 'operate_time', width: 80},
 			{label: '金额', name: 'amount', index: 'amount', width: 80},

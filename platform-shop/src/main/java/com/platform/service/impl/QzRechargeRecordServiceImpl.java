@@ -55,6 +55,16 @@ public class QzRechargeRecordServiceImpl implements QzRechargeRecordService {
 	public int queryTotal(Map<String, Object> map) {
 		return qzRechargeRecordDao.queryTotal(map);
 	}
+	
+	@Override
+	public List<QzRechargeRecordEntity> queryAuditList(Map<String, Object> map) {
+		return qzRechargeRecordDao.queryAuditList(map);
+	}
+
+	@Override
+	public int queryAuditTotal(Map<String, Object> map) {
+		return qzRechargeRecordDao.queryAuditTotal(map);
+	}
 
 	@Override
 	public int save(QzRechargeRecordEntity qzRechargeRecord) {
@@ -143,9 +153,9 @@ public class QzRechargeRecordServiceImpl implements QzRechargeRecordService {
 			moneyRecordEntity.setTranFlag(1);
 			moneyRecordEntity.setTarnAmount(qzRechargeRecordEntity.getAmount());
 			if (account == null) {
-				moneyRecordEntity.setCurrentAmount(new BigDecimal(0));
+				moneyRecordEntity.setCurrentAmount(qzRechargeRecordEntity.getAmount());
 			} else {
-				moneyRecordEntity.setCurrentAmount(account.getAmount());
+				moneyRecordEntity.setCurrentAmount(account.getAmount().add(qzRechargeRecordEntity.getAmount()));
 			}
 
 			moneyRecordEntity.setTradeNo(qzRechargeRecordEntity.getTradeNo());
@@ -165,11 +175,13 @@ public class QzRechargeRecordServiceImpl implements QzRechargeRecordService {
 				qzUserAccountService.update(account);
 			}
 
-		} else {// 拒绝
+			
+		}
+		  //审核状态
 			qzRechargeRecordEntity.setState(state);
 			qzRechargeRecordEntity.setAuditId(user.getUserId());
 			qzRechargeRecordDao.update(qzRechargeRecordEntity);
-		}
+		
 
 		return R.ok();
 	}

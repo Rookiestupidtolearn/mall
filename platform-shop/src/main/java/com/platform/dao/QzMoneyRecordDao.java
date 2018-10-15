@@ -7,7 +7,7 @@ import com.platform.entity.QzMoneyRecordEntity;
  *
  * @author lipengjun
  * @email 939961241@qq.com
- * @date 2018-10-13 11:28:14
+ * @date 2018-10-13 18:37:01
  */
 public interface QzMoneyRecordDao extends BaseDao<QzMoneyRecordEntity> {
 

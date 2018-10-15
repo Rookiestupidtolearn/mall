@@ -47,6 +47,24 @@ public class QzRechargeRecordController {
         return R.ok().put("page", pageUtil);
     }
 
+    
+    /**
+     * 查看审核列表
+     */
+    @RequestMapping("/auditList")
+    @RequiresPermissions("qzrechargerecord:list")
+    public R auditList(@RequestParam Map<String, Object> params) {
+        //查询列表数据
+        Query query = new Query(params);
+
+        List<QzRechargeRecordEntity> qzRechargeRecordList = qzRechargeRecordService.queryAuditList(query);
+        int total = qzRechargeRecordService.queryAuditTotal(query);
+
+        PageUtils pageUtil = new PageUtils(qzRechargeRecordList, total, query.getLimit(), query.getPage());
+
+        return R.ok().put("page", pageUtil);
+    }
+    
     /**
      * 查看信息
      */

@@ -75,4 +75,8 @@ public interface QzRechargeRecordService {
 
 	R rechargeAudit(Integer id, String state);
 
+	List<QzRechargeRecordEntity> queryAuditList(Map<String, Object> map);
+
+	int queryAuditTotal(Map<String, Object> map);
+
 }
