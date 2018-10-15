@@ -1,5 +1,7 @@
 package com.platform.dao;
 
+import com.platform.entity.CouponVo;
+import com.platform.entity.SmsLogVo;
 import com.platform.entity.UserCouponVo;
 import org.apache.ibatis.annotations.Param;
 
@@ -10,4 +12,12 @@ import org.apache.ibatis.annotations.Param;
  */
 public interface ApiUserCouponMapper extends BaseDao<UserCouponVo> {
     UserCouponVo queryByCouponNumber(@Param("coupon_number") String coupon_number);
+    /**
+     * 生成优惠券
+     * @param userCouponVo
+     * @return
+     */
+    int save(UserCouponVo userCouponVo);
+    
+    int updateUserCoupon(UserCouponVo userCouponVo);
 }

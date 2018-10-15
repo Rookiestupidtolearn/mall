@@ -30,6 +30,8 @@ public class UserCouponVo implements Serializable {
     private String source_key;
     //分享人
     private Long referrer;
+    
+    private int coupon_status;
 
     public Integer getId() {
         return id;
@@ -103,4 +105,14 @@ public class UserCouponVo implements Serializable {
     public void setReferrer(Long referrer) {
         this.referrer = referrer;
     }
+
+	public int getCoupon_status() {
+		return coupon_status;
+	}
+
+	public void setCoupon_status(int coupon_status) {
+		this.coupon_status = coupon_status;
+	}
+    
+    
 }
