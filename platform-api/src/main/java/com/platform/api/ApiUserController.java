@@ -161,6 +161,8 @@ public class ApiUserController extends ApiBaseAction {
        }catch(Exception e){
     	   e.printStackTrace();
        }
+       obj.put("code", 0);
+       obj.put("data","查询出错");
        return null;
     }
     

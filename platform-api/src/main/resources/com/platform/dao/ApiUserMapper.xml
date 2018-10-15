@@ -191,14 +191,12 @@
 	</select>
 	
     
-    
-    </select>
     <!-- 查询用户资金流水 -->
-    <select id="queryuserAccountDetail" resultType="qzMoneyRecordMap">
+    <select id="queryuserAccountDetail" resultType="com.platform.entity.QzMoneyRecordEntity">
 	    select
 				`id`,
 				`shop_user_id`,
-				`tran_type`,
+				case when `tran_type` = 1 then '充值' else '未知' end 'tran_type',
 				`tran_flag`,
 				`tarn_amount`,
 				`current_amount`,
