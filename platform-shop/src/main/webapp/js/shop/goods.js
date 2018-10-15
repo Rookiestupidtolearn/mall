@@ -26,7 +26,10 @@ $(function () {
                 label: '热销', name: 'isHot', index: 'is_hot', width: 80, formatter: function (value) {
                     return transIsNot(value);
                 }
-            }]
+            },
+            {label: '配比值', name: 'value', index: 'good_value', width: 80},
+            {label: '排序', name: 'sortOrder', index: 'sort_order', width: 80}
+            ]
     });
     $('#goodsDesc').editable({
         inlineMode: false,
@@ -214,6 +217,51 @@ var vm = new Vue({
                 });
             });
         },
+        //申请上架
+        applyEnSale:function() {
+            var id = getSelectedRow("#jqGrid");
+            if (id == null) {
+                return;
+            }
+            confirm('确定要申请上架选中的商品？', function () {
+                Ajax.request({
+                    type: "POST",
+                    url: "../goods/applyEnSale",
+                    params: JSON.stringify(id),
+                    contentType: "application/json",
+                    type: 'POST',
+                    successCallback: function () {
+                        alert('提交成功', function (index) {
+                            vm.reload();
+                        });
+                    }
+                });
+            });
+        },
+        
+        //申请上架
+        applyUnSale:function() {
+            var id = getSelectedRow("#jqGrid");
+            if (id == null) {
+                return;
+            }
+            confirm('确定要申请下架选中的商品？', function () {
+                Ajax.request({
+                    type: "POST",
+                    url: "../goods/applyUnSale",
+                    params: JSON.stringify(id),
+                    contentType: "application/json",
+                    type: 'POST',
+                    successCallback: function () {
+                        alert('提交成功', function (index) {
+                            vm.reload();
+                        });
+                    }
+                });
+            });
+        },
+        
+        
         openSpe: function () {
             var id = getSelectedRow("#jqGrid");
             if (id == null) {

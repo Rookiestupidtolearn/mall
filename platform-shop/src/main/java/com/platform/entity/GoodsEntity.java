@@ -34,7 +34,7 @@ public class GoodsEntity implements Serializable {
     //商品描述
     private String goodsDesc;
     //上架
-    private Integer isOnSale;
+    private Integer isOnSale; //0 下架  1上架 2 申请上架  3申请下架
     //添加时间
     private Date addTime;
     //修改时间
@@ -92,6 +92,9 @@ public class GoodsEntity implements Serializable {
      */
     private Long updateUserId;
 
+    
+    private BigDecimal value; //配比值
+    
     List<GoodsAttributeEntity> attributeEntityList = new ArrayList<>();
 
     List<GoodsGalleryEntity> goodsImgList = new ArrayList<>();
@@ -124,8 +127,17 @@ public class GoodsEntity implements Serializable {
     public String getBrandName() {
         return brandName;
     }
+ 
 
-    public void setBrandName(String brandName) {
+	public BigDecimal getValue() {
+		return value;
+	}
+
+	public void setValue(BigDecimal value) {
+		this.value = value;
+	}
+
+	public void setBrandName(String brandName) {
         this.brandName = brandName;
     }
 
