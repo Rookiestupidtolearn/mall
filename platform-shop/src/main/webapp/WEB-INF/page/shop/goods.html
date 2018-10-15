@@ -66,8 +66,12 @@
                 #if($shiro.hasPermission("goods:delete"))
                 <i-button type="error" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</i-button>
                 #end
+                #if($shiro.hasPermission("goods:putaway"))
                 <i-button type="primary" @click="enSale"><i class="fa fa-hand-o-up"></i>&nbsp;上架</i-button>
+                #end
+                #if($shiro.hasPermission("goods:soldout"))
                 <i-button type="dashed" @click="unSale"><i class="fa fa-hand-o-down"></i>&nbsp;下架</i-button>
+                #end
                 <i-button type="warning" @click="openPro"><i class="fa fa-pencil-square-o"></i>&nbsp;产品</i-button>
                 <i-button type="warning" @click="openSpe"><i class="fa fa-pencil-square-o"></i>&nbsp;规格</i-button>
             </div>

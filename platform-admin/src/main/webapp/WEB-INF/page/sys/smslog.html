@@ -31,21 +31,24 @@
             <Form-item label="短信类型" prop="type">
                 <Radio-group v-model="config.type">
                     <Radio label="1">
-                        <span>创瑞云SMS</span>
+                        <span>鸿联短信SMS</span>
                     </Radio>
                 </Radio-group>
             </Form-item>
             <Form-item label="发送域名" prop="domain">
                 <i-input v-model="config.domain" placeholder="必填参数。用户签名"/>
             </Form-item>
-            <Form-item label="用户名" prop="name">
-                <i-input v-model="config.name" placeholder="用户名"/>
+            <Form-item label="用户名" prop="username">
+                <i-input v-model="config.username" placeholder="用户名"/>
             </Form-item>
-            <Form-item label="接口密钥" prop="pwd">
-                <i-input v-model="config.pwd" placeholder="接口密钥"/>
+            <Form-item label="接口密钥" prop="password">
+                <i-input v-model="config.password" placeholder="接口密钥"/>
             </Form-item>
             <Form-item label="签名" prop="sign">
                 <i-input v-model="config.sign" placeholder="【公司简称】"/>
+            </Form-item>
+            <Form-item label="epid" prop="epid">
+                <i-input v-model="config.epid" placeholder="epid"/>
             </Form-item>
             <Form-item>
                 <i-button type="primary" @click="handleSubmit('formValidate')">提交</i-button>
