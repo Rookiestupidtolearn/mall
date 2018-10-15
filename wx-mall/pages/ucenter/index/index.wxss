@@ -9,10 +9,18 @@ page{
     overflow: hidden;
     width: 100%;
 }
+.viewTop{
+  display: flex;
+	flex-direction: column;
+	padding: 30rpx 0 40rpx 0;
+	align-items: center;
+	background: #333;
+  width: 750rpx;
+  border-radius:5px;
+}
 .userinfo {
 	display: flex;
 	flex-direction: column;
-	padding: 50rpx 0;
 	align-items: center;
 	background: #333;
   width: 750rpx;
@@ -21,13 +29,27 @@ page{
 .userinfo-avatar {
 	width: 160rpx;
 	height: 160rpx;
-	margin: 20rpx;
+	margin: 20rpx 20rpx 0 20rpx;
 	border-radius: 50%;
 }
 
 .userinfo-nickname {
-  margin-top: 20rpx;
   color: #FFF;
+}
+.userinfo-availMoney{
+  font-size:29rpx;
+  text-align: center;
+}
+.userinfo-availMoney .userinfo-title{
+  display:block;
+  color:#fff;
+  margin-top:10rpx;
+}
+.userinfo-availMoney .money{
+  display:block;
+  margin-top:20rpx;
+  color:#fff;
+  font-size:36rpx;
 }
 .profile-info{
     width: 100%;

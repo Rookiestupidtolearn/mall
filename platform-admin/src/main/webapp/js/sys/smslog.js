@@ -14,7 +14,7 @@ $(function () {
             {label: '用户签名', name: 'sign', index: 'sign', width: 80},
             {
                 label: '发送状态', name: 'sendStatus', index: 'send_status', width: 80, formatter: function (value) {
-                    if (value === 0) {
+                    if (value === 1) {
                         return '<span class="label label-success">成功</span>';
                     }
                     return '<span class="label label-danger">失败</span>';
@@ -37,15 +37,18 @@ let vm = new Vue({
             domain: [
                 {required: true, message: '发送域名不能为空', trigger: 'blur'}
             ],
-            name: [
+            username: [
                 {required: true, message: '用户名不能为空', trigger: 'blur'}
             ],
-            pwd: [
+            password: [
                 {required: true, message: '接口密钥不能为空', trigger: 'blur'}
             ],
             sign: [
                 {required: true, message: '签名不能为空', trigger: 'blur'}
-            ]
+            ],
+	        epid: [
+	               {required: true, message: 'epid不能为空', trigger: 'blur'}
+	           ]
         },
         q: {
             sendId: ''

@@ -6,7 +6,10 @@ var app = getApp();
 Page({
     data: {
         userInfo: {},
-        hasMobile: ''
+        hasMobile: '',
+        availUrl:'/pages/ucenter/amountMoney/amountMoney',
+        availMoney:'5000.00',
+        availResult:true
     },
     onLoad: function (options) {
         // 页面初始化 options为页面跳转所带来的参数
@@ -16,7 +19,6 @@ Page({
 
     },
     onShow: function () {
-
         let userInfo = wx.getStorageSync('userInfo');
         let token = wx.getStorageSync('token');
 
@@ -24,6 +26,9 @@ Page({
         if (userInfo && token) {
             app.globalData.userInfo = userInfo;
             app.globalData.token = token;
+            this.setData({
+              availResult: false
+            });
         }
 
         this.setData({
@@ -48,7 +53,8 @@ Page({
             //用户按了允许授权按钮
             user.loginByWeixin(e.detail).then(res => {
                 this.setData({
-                    userInfo: res.data.userInfo
+                    userInfo: res.data.userInfo,
+                    availResult: false
                 });
                 app.globalData.userInfo = res.data.userInfo;
                 app.globalData.token = res.data.token;

@@ -1,0 +1,29 @@
+/* pages/ucenter/amountMoney/amountMoney.wxss */
+page{
+  background:#f4f4f4;
+}
+.list { 
+  padding: 20rpx 50rpx;
+  background-color: #fff;
+  margin-bottom:5rpx;
+}
+.list text {
+  display: block;
+}
+.list .ExchangeName{
+  font-size:30rpx;
+}
+.list text.boxMoney{
+  text-align:right;
+  font-size:30rpx;
+}
+.container {
+  height:100%;
+  padding-top:30rpx;
+}
+.red{
+  color:#cc6666
+}
+.green{
+  color:#33cc99
+}

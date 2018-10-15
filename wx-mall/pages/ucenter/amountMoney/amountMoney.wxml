@@ -1,0 +1,9 @@
+<!--pages/ucenter/amountMoney/amountMoney.wxml-->
+<view  class="container">
+  <view class='list' wx:for="{{boxMount}}">
+    <text class='ExchangeName'>{{ item.ExchangeName }}</text>
+    <text class='boxMoney red' wx:if="{{ item.PayPoints>0 }}">{{ item.PayPoints }}</text>
+    <text class='boxMoney green' wx:if="{{ item.PayPoints<0 }}">{{ item.PayPoints }}</text>
+    <text>{{ item.ExchangeDate }}</text>
+  </view>
+</view>
