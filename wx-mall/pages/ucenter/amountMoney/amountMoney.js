@@ -7,53 +7,37 @@ Page({
   data: {
       boxMount:[
         {
-          ExchangeName: "兑换5¥代金券",
+          ExchangeName: "平台发放",
           ExchangeDate: "2017-12-08 10:05:36",
-          PayPoints: "-100",
+          PayPoints: "-100.00",
         },
         {
-          ExchangeName: "进店消费",
+          ExchangeName: "兑换优惠券",
           ExchangeDate: "2017-12-08 10:05:36",
-          PayPoints: "+600",
-        },
-        {
-          ExchangeName: "兑换10¥代金券",
-          ExchangeDate: "2017-12-08 10:05:36",
-          PayPoints: "-190",
-        },
-        {
-          ExchangeName: "兑换5¥代金券",
-          ExchangeDate: "2017-12-08 10:05:36",
-          PayPoints: "-100",
-        },
-        {
-          ExchangeName: "进店消费",
-          ExchangeDate: "2017-12-08 10:05:36",
-          PayPoints: "+600",
+          PayPoints: "+600.00",
         },
         {
           ExchangeName: "兑换10¥代金券",
           ExchangeDate: "2017-12-08 10:05:36",
-          PayPoints: "-190",
+          PayPoints: "-190.00",
         },
         {
           ExchangeName: "兑换5¥代金券",
           ExchangeDate: "2017-12-08 10:05:36",
-          PayPoints: "-100",
-        },
-        {
-          ExchangeName: "兑换5¥代金券",
-          ExchangeDate: "2017-12-08 10:05:36",
-          PayPoints: "-100",
+          PayPoints: "-100.00",
         }
       ]
+  },
+
+  getUserInfoMoney: function () {
+      
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+      this.getUserInfoMoney();
   },
 
   /**
@@ -67,7 +51,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
+   
   },
 
   /**

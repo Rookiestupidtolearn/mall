@@ -1,19 +1,29 @@
 /* pages/ucenter/amountMoney/amountMoney.wxss */
-.list { 
-  display:flex;
-  justify-content: space-between;
-  padding: 20rpx 50rpx;
-  border-bottom:1px solid #e9e9e9;
+page{
+  background:#f4f4f4;
 }
-.list:first-child {
-  border-top:1px solid #e9e9e9;
+.list { 
+  padding: 20rpx 50rpx;
+  background-color: #fff;
+  margin-bottom:5rpx;
+}
+.list text {
+  display: block;
+}
+.list .ExchangeName{
+  font-size:30rpx;
+}
+.list text.boxMoney{
+  text-align:right;
+  font-size:30rpx;
 }
 .container {
   height:100%;
+  padding-top:30rpx;
 }
 .red{
-  color:red
+  color:#cc6666
 }
 .green{
-  color:green
+  color:#33cc99
 }

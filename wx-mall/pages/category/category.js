@@ -101,8 +101,11 @@ Page({
       return;
     }
 
-    util.request(api.GoodsList, {categoryId: that.data.id, page: that.data.page, size: that.data.size})
+    util.request(api.GoodsList, {categoryId: that.data.id, page: that.data.page, size: that.data.size},'post','application/json')
       .then(function (res) {
+        if(res.code == 500 ){
+          util.showErrorToast('数据返回错误');
+        }
         that.setData({
           goodsList: that.data.goodsList.concat(res.data.goodsList),        
           page: res.data.currentPage+1,
