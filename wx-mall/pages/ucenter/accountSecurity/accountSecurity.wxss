@@ -1,0 +1,53 @@
+/* pages/ucenter/accountSecurity/accountSecurity.wxss */
+page{
+  background-color:#f4f4f4 
+}
+p{
+  font-size:29rpx;
+  color:#333;
+  display:block;
+  padding-top:11rpx;
+}
+image{
+  width:56rpx;
+  height:56rpx;
+  border-radius:50%;
+  
+}
+.titleTop{
+  padding:0 30rpx;
+  background-color:#fff;
+  margin-top:30rpx;
+  margin-bottom:5rpx;
+}
+.titleBottom{
+  background-color:#fff;
+  display: flex;
+  justify-content:space-between;
+  padding:30rpx;
+}
+.titleTop view text{
+  font-size:26rpx;
+  padding-top:20rpx;
+  padding-bottom: 30rpx;
+}
+.titleTop view{
+  display: flex;
+  justify-content:space-between;
+}
+.logout{
+  width:560rpx;
+  height:80rpx;
+  line-height:80rpx;
+  background: #c9c9c9;
+  color:#333;
+  border-radius:10rpx;
+  text-align: center;
+  margin:0 auto;
+  font-weight: bold;
+  font-size:30rpx;
+  margin-top:210rpx;
+}
+.col5e5e5e{
+  color:#5e5e5e;
+}

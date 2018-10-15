@@ -8,7 +8,7 @@
 		"newFeature": true
 	},
 	"compileType": "miniprogram",
-	"libVersion": "1.9.0",
+	"libVersion": "2.3.0",
 	"appid": "wx11ed3e37387289b8",
 	"projectname": "wxshop",
 	"condition": {
@@ -28,7 +28,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 5,
+			"current": 7,
 			"list": [
 				{
 					"id": 0,
@@ -63,7 +63,19 @@
 				{
 					"id": -1,
 					"name": "明细",
-					"pathName": "pages/ucenter/amountMoney/amountMoney"
+					"pathName": "pages/ucenter/amountMoney/amountMoney",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "账号安全",
+					"pathName": "pages/ucenter/accountSecurity/accountSecurity",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "帮助中心",
+					"pathName": "pages/ucenter/helpCenter/helpCenter"
 				}
 			]
 		}
