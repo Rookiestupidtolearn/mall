@@ -39,7 +39,7 @@ Page({
     let that = this;
     var url = api.CartCheckout
     let buyType = this.data.isBuy ? 'buy' : 'cart'
-    util.request(url, { addressId: that.data.addressId, couponId: that.data.couponId, type: buyType }).then(function (res) {
+    util.request(url, { addressId: that.data.addressId, couponId: that.data.couponId, type: buyType },'post','application/json').then(function (res) {
       if (res.errno === 0) {
         console.log(res.data);
         that.setData({
