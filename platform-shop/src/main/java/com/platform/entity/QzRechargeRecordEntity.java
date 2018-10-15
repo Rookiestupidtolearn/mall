@@ -19,6 +19,8 @@ public class QzRechargeRecordEntity implements Serializable {
     private Integer id;
     //会员id
     private Integer shopUserId;
+    private String shopUserName;
+    private String UserPhone;
     //状态：0-初始，1-通过，2-拒绝
     private String state;
     //操作人id
@@ -37,6 +39,7 @@ public class QzRechargeRecordEntity implements Serializable {
     private String tradeNo;
     //审核人id
     private Long auditId;
+    private String operate;
 
     /**
      * 设置：主键
@@ -181,4 +184,30 @@ public class QzRechargeRecordEntity implements Serializable {
     public Long getAuditId() {
         return auditId;
     }
+
+	public String getShopUserName() {
+		return shopUserName;
+	}
+
+	public void setShopUserName(String shopUserName) {
+		this.shopUserName = shopUserName;
+	}
+
+	public String getUserPhone() {
+		return UserPhone;
+	}
+
+	public void setUserPhone(String userPhone) {
+		UserPhone = userPhone;
+	}
+
+	public String getOperate() {
+		return operate;
+	}
+
+	public void setOperate(String operate) {
+		this.operate = operate;
+	}
+    
+    
 }
