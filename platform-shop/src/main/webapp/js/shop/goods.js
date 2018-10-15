@@ -106,7 +106,7 @@ var vm = new Vue({
                 primaryPicUrl: '',
                 listPicUrl: '',
                 categoryId: '',
-                isOnSale: 1,
+                isOnSale: 2,
                 isNew: 1,
                 isAppExclusive: 0,
                 isLimited: 0,

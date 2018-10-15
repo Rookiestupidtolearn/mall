@@ -44,15 +44,16 @@ public class GoodsServiceImpl implements GoodsService {
 	public GoodsEntity queryObject(Integer id) {
 		return goodsDao.queryObject(id);
 	}
-
+	/*userAlias = "nideshop_goods.create_user_id",*/
 	@Override
-	@DataFilter(userAlias = "nideshop_goods.create_user_id", deptAlias = "nideshop_goods.create_user_dept_id")
+	
+	@DataFilter( deptAlias = "nideshop_goods.create_user_dept_id")
 	public List<GoodsEntity> queryList(Map<String, Object> map) {
 		return goodsDao.queryList(map);
 	}
 
 	@Override
-	@DataFilter(userAlias = "nideshop_goods.create_user_id", deptAlias = "nideshop_goods.create_user_dept_id")
+	@DataFilter(deptAlias = "nideshop_goods.create_user_dept_id")
 	public int queryTotal(Map<String, Object> map) {
 		return goodsDao.queryTotal(map);
 	}
@@ -101,6 +102,11 @@ public class GoodsServiceImpl implements GoodsService {
 			}
 		}
 
+//		isOnSale
+		if(goods.getIsOnSale()==null){
+			goods.setIsOnSale(-1);
+		}
+		
 		goods.setIsDelete(0);
 		goods.setCreateUserDeptId(user.getDeptId());
 		goods.setCreateUserId(user.getUserId());
@@ -208,12 +214,17 @@ public class GoodsServiceImpl implements GoodsService {
 		
 		SysUserEntity user = ShiroUtils.getUserEntity();
 		GoodsEntity goodsEntity = queryObject(id);
+		if (-1 == goodsEntity.getIsOnSale()) {
+			throw new RRException("此商品未申请上架！");
+		}
+		
 		if (2 == goodsEntity.getIsOnSale()) {
-			throw new RRException("此商品已处于申请上架状态！");
+			throw new RRException("此商品已处于申请上架！");
 		}
 		if (1 == goodsEntity.getIsOnSale()) {
 			throw new RRException("此商品已处于上架状态！");
 		}
+		
 		goodsEntity.setIsOnSale(2);
 		goodsEntity.setUpdateUserId(user.getUserId());
 		goodsEntity.setUpdateTime(new Date());
@@ -231,6 +242,9 @@ public class GoodsServiceImpl implements GoodsService {
 		}
 		if (3 == goodsEntity.getIsOnSale()) {
 			throw new RRException("此商品已处于申请下架状态！");
+		}
+		if (-1 == goodsEntity.getIsOnSale()) {
+			throw new RRException("此商品处于编辑状态！");
 		}
 		goodsEntity.setIsOnSale(2);
 		goodsEntity.setUpdateUserId(user.getUserId());
