@@ -1,19 +1,22 @@
 package com.platform.service;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.platform.dao.ApiUserLevelMapper;
 import com.platform.dao.ApiUserMapper;
+import com.platform.entity.QzMoneyRecordEntity;
+import com.platform.entity.QzUserAccountEntity;
 import com.platform.entity.SmsLogVo;
 import com.platform.entity.UserLevelVo;
 import com.platform.entity.UserVo;
 import com.platform.utils.RRException;
 import com.platform.validator.Assert;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 
 @Service
@@ -97,4 +100,20 @@ public class ApiUserService {
         }
         return result;
     }
+    
+    /**
+     * 根据userId查询用户账户实体
+     *
+     * @param userid 主键
+     * @return 实体
+     */
+    public QzUserAccountEntity queryUserAccount(Integer userId) {
+		return userDao.queryUserAccount(userId);
+	}
+
+	public List<QzMoneyRecordEntity> queryuserAccountDetail(Integer userId) {
+		return userDao.queryuserAccountDetail(userId);
+	}
+
+    
 }

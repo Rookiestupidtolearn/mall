@@ -1,22 +1,35 @@
 package com.platform.api;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.alibaba.fastjson.JSONObject;
 import com.platform.annotation.LoginUser;
+import com.platform.entity.QzMoneyRecordEntity;
+import com.platform.entity.QzUserAccountEntity;
 import com.platform.entity.SmsConfig;
 import com.platform.entity.SmsLogVo;
 import com.platform.entity.UserVo;
 import com.platform.service.ApiUserService;
 import com.platform.service.SysConfigService;
 import com.platform.util.ApiBaseAction;
-import com.platform.utils.*;
+import com.platform.utils.CharUtil;
+import com.platform.utils.Constant;
+import com.platform.utils.DateUtils;
+import com.platform.utils.RRException;
+import com.platform.utils.SmsUtil;
+import com.platform.utils.StringUtils;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Date;
 
 /**
  * 作者: @author Harmon <br>
@@ -125,5 +138,52 @@ public class ApiUserController extends ApiBaseAction {
         userVo.setMobile(mobile);
         userService.update(userVo);
         return toResponsSuccess("手机绑定成功");
+    }
+
+    
+    /**
+     * 查询用户账户
+     */
+    @ApiOperation(value = "查询用户账户")
+    @PostMapping("userAccount")
+    public Object userAccount(@LoginUser UserVo loginUser) {
+    	Map<String, Object> obj = new HashMap<String, Object>();
+       try{
+    	   QzUserAccountEntity qzUserAccount = userService.queryUserAccount(loginUser.getUserId().intValue());
+           if(qzUserAccount == null){
+           	obj.put("code", 1); //未查询到用户账户
+               obj.put("data", "0.00");
+               return obj;
+           }
+           obj.put("code", 1);
+           obj.put("data", qzUserAccount.getAmount().toString());
+           return obj;
+       }catch(Exception e){
+    	   e.printStackTrace();
+       }
+       return null;
+    }
+    
+    /**
+     * 查询用户资金流水
+     */
+    @ApiOperation(value = "查询用户资金流水")
+    @PostMapping("userAccountDetail")
+    public Object userAccountDetail(@LoginUser UserVo loginUser) {
+    	Map<String, Object> obj = new HashMap<String, Object>();
+        try{
+            List<QzMoneyRecordEntity> qzMoneyRecordEntity = userService.queryuserAccountDetail(loginUser.getUserId().intValue());
+            if(CollectionUtils.isNotEmpty(qzMoneyRecordEntity)){
+            	obj.put("code", 1);
+                obj.put("data", qzMoneyRecordEntity);
+                return obj;
+            }
+            obj.put("code", 1);
+            obj.put("data", "");
+            return obj;
+        }catch(Exception e){
+        	e.printStackTrace();
+        }
+        return null;
     }
 }

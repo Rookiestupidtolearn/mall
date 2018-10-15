@@ -1,8 +1,13 @@
 package com.platform.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.platform.entity.QzMoneyRecordEntity;
+import com.platform.entity.QzUserAccountEntity;
 import com.platform.entity.SmsLogVo;
 import com.platform.entity.UserVo;
-import org.apache.ibatis.annotations.Param;
 
 /**
  * 用户
@@ -32,4 +37,15 @@ public interface ApiUserMapper extends BaseDao<UserVo> {
      * @return
      */
     int saveSmsCodeLog(SmsLogVo smsLogVo);
+    
+    /**
+    	根据用户id查询用户账户
+    */
+    QzUserAccountEntity queryUserAccount(Integer userId);
+    
+    /**
+     * 查询用户资金流水
+     * @return
+     */
+    List<QzMoneyRecordEntity> queryuserAccountDetail(Integer userId);
 }
