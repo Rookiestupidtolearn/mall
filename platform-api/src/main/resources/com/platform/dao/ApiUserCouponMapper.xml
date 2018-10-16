@@ -119,5 +119,26 @@
         where user_id = #{user_id} 
         and coupon_id = #{coupon_id}
     </update>
-    
+	<select id="queryUserCoupons" resultMap="userCouponMap">
+		select uc.*
+		from nideshop_user_coupon uc
+		where 1=1 
+		and uc.user_id = #{user_id} 
+		and uc.good_id = #{good_id} 
+		and uc.coupon_status = 1
+	</select>
+	<delete id="delete">
+		delete from nideshop_user_coupon where 
+		<if test="good_id != null">
+           good_id = #{good_id}
+        </if>
+        <if test="user_id != null">
+           and user_id = #{user_id}
+        </if>
+		   and coupon_status = 1
+	</delete>
+	<select id="queryUserCouponTotalPrice">
+		select uc.*
+		from nideshop_user_coupon uc where uc.user_id = #{userId} and coupon_status = 1
+	</select>
 </mapper>

@@ -134,7 +134,7 @@ public class ApiOrderService {
             goodsTotalPrice = productInfo.getRetail_price().multiply(new BigDecimal(goodsVo.getNumber()));
             
             GoodsCouponConfigVo goodsCoupon = goodsCouponConfigMapper.getUserCoupon(goodsVo.getGoodsId());
-        	couponTotalPrice = couponTotalPrice.add(productInfo.getRetail_price().multiply(new BigDecimal(goodsCoupon.getGood_value())));
+//        	couponTotalPrice = couponTotalPrice.add(productInfo.getRetail_price().multiply(new BigDecimal(goodsCoupon.getGood_value())));
             
             CartVo cartVo = new CartVo();
             BeanUtils.copyProperties(productInfo, cartVo);
@@ -145,18 +145,18 @@ public class ApiOrderService {
 
 
         //获取订单使用的优惠券
-        UserCouponVo userCoupon = new UserCouponVo();
-        userCoupon.setCoupon_id(11);
-        userCoupon.setCoupon_number("1");
-        userCoupon.setUser_id(userId);
-        userCoupon.setCoupon_status(1);
-        apiUserCouponMapper.save(userCoupon);
-        
-        if(null == userCoupon.getId()){
-        	 resultObj.put("errno", 1);
-             resultObj.put("errmsg", "优惠券生成失败");
-             return resultObj;
-        }
+//        UserCouponVo userCoupon = new UserCouponVo();
+//        userCoupon.setCoupon_id(11);
+//        userCoupon.setCoupon_number("1");
+//        userCoupon.setUser_id(userId);
+//        userCoupon.setCoupon_status(1);
+//        apiUserCouponMapper.save(userCoupon);
+//        
+//        if(null == userCoupon.getId()){
+//        	 resultObj.put("errno", 1);
+//             resultObj.put("errmsg", "优惠券生成失败");
+//             return resultObj;
+//        }
 
 //        CouponVo couponVo = null;
 //
