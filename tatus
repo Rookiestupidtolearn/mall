@@ -1,0 +1,1563 @@
+[33mcommit eedae8aafc9b58b288960fd8ea027d16d5e2230a[m[33m ([m[1;36mHEAD -> [m[1;32mmaster_gouwu[m[33m, [m[1;31morigin/master_gouwu[m[33m)[m
+Author: zhangran <1130879408@qq.com>
+Date:   Tue Oct 16 15:25:48 2018 +0800
+
+    个人中心页面未登录不弹窗2
+
+[33mcommit be24a645e6fe5a75a7a3619062d051036b3a943f[m
+Author: zhangran <1130879408@qq.com>
+Date:   Tue Oct 16 15:17:41 2018 +0800
+
+    个人中心页面未登录不弹窗2
+
+[33mcommit 46e1ab49d9e92522d025c10486a9e06818f4bdce[m
+Author: zhangran <1130879408@qq.com>
+Date:   Tue Oct 16 15:09:03 2018 +0800
+
+    个人中心页面未登录不弹窗
+
+[33mcommit e7ac82c67e678e55ecebbfb923de9bed40f49fee[m
+Author: zhangran <1130879408@qq.com>
+Date:   Tue Oct 16 14:47:50 2018 +0800
+
+    zr
+
+[33mcommit 8606e3e34e7b2c2b953c6341f79b3ba832b14055[m
+Author: zhangran <1130879408@qq.com>
+Date:   Tue Oct 16 14:04:12 2018 +0800
+
+    登录功能优化
+
+[33mcommit 82b76289be5ddf106b521bb6449700065971c4f6[m
+Author: zhangran <1130879408@qq.com>
+Date:   Tue Oct 16 13:33:31 2018 +0800
+
+    账号安全对接完成
+
+[33mcommit a35be9e1f79415ee9d062dccd5dc64cca7005ee0[m
+Merge: ec150a0 476ba58
+Author: zhangran <1130879408@qq.com>
+Date:   Tue Oct 16 11:42:16 2018 +0800
+
+    Merge branch 'master_wml' of 192.168.1.34:zhangchuntao/platform into master_gouwu
+
+[33mcommit ec150a0ef0b007d64cceba235c6d0abc93a187a9[m
+Author: zhangran <1130879408@qq.com>
+Date:   Tue Oct 16 11:41:30 2018 +0800
+
+    master_gouwu
+
+[33mcommit 476ba5876e3cd57e4bbc68fe34218f39f04a3108[m[33m ([m[1;31morigin/master_wml[m[33m)[m
+Author: wuminglong <18401375498@163.com>
+Date:   Tue Oct 16 11:40:42 2018 +0800
+
+    登陆用户信息
+
+[33mcommit 9033956d1d96c21ce9b73a6a7d8f8b3732ecbfc1[m
+Author: wuminglong <18401375498@163.com>
+Date:   Tue Oct 16 10:44:24 2018 +0800
+
+    ceshihuanjing-用户账户及资金流水
+
+[33mcommit 887dd32f9483ce13660275f2a3ca4764b625ce0b[m
+Author: zhangran <1130879408@qq.com>
+Date:   Tue Oct 16 10:43:25 2018 +0800
+
+    增加标识
+
+[33mcommit 015186f07d3e4bb780723eb61efe0df4730e6f74[m
+Author: zhangran <1130879408@qq.com>
+Date:   Tue Oct 16 10:24:09 2018 +0800
+
+    明细对接
+
+[33mcommit 72a357a55adb8a96871716f4ebe4f14accd3abb9[m
+Author: zhangran <1130879408@qq.com>
+Date:   Tue Oct 16 09:40:32 2018 +0800
+
+    wml
+
+[33mcommit 296f444ac18364a88ab0921718ae2120940ccc26[m
+Merge: 3a80c46 74fd802
+Author: zhangran <1130879408@qq.com>
+Date:   Mon Oct 15 20:05:13 2018 +0800
+
+    wml
+
+[33mcommit 3a80c463dffe0162283ff258c53980f054a68f8d[m
+Author: zhangran <1130879408@qq.com>
+Date:   Mon Oct 15 20:04:34 2018 +0800
+
+    余额与明细对接
+
+[33mcommit 74fd80229fffb4f48446b3436d3ad100ce344c20[m
+Author: wuminglong <18401375498@163.com>
+Date:   Mon Oct 15 20:03:10 2018 +0800
+
+    账户--wml
+
+[33mcommit ce33fa92a62ca0805ea202b80b421f8102678b84[m
+Merge: 3952145 07f72fb
+Author: zhangran <1130879408@qq.com>
+Date:   Mon Oct 15 19:06:04 2018 +0800
+
+    wml
+
+[33mcommit 39521451fa472c3ab0f7c173bea5170fee0e5ce0[m
+Author: zhangran <1130879408@qq.com>
+Date:   Mon Oct 15 18:56:47 2018 +0800
+
+    增加账号安全，帮助中心
+
+[33mcommit 07f72fb7aa5fa53fe3497be9546a5a6f4626b56d[m
+Author: wuminglong <18401375498@163.com>
+Date:   Mon Oct 15 18:27:38 2018 +0800
+
+    用户账户-用户资金流水
+
+[33mcommit b6455503e6d64f4bf37fd40227bfef648020a640[m
+Merge: c8ea68e fa3db36
+Author: wuminglong <18401375498@163.com>
+Date:   Mon Oct 15 11:42:20 2018 +0800
+
+    Merge branch 'master_gouwu' of http://192.168.1.34/zhangchuntao/platform into master_wml
+
+[33mcommit fa3db36492d5934da1a8f844f55731456571e895[m
+Author: zhangran <1130879408@qq.com>
+Date:   Mon Oct 15 11:40:08 2018 +0800
+
+    反馈问题解决
+
+[33mcommit 839ccd4d342e0f343f0c5260d559bea088411873[m
+Author: zhangran <1130879408@qq.com>
+Date:   Mon Oct 15 11:35:42 2018 +0800
+
+    商品详情轮播修改
+
+[33mcommit f54b532e29eddaab1c7b740ce3f684b217dddace[m
+Author: zhangran <1130879408@qq.com>
+Date:   Mon Oct 15 11:12:12 2018 +0800
+
+    轮播改为衔接的
+
+[33mcommit c8ea68e05d1c21ce7032c3de0c08302d4cd944ac[m
+Merge: 183a518 84401c5
+Author: wuminglong <18401375498@163.com>
+Date:   Mon Oct 15 10:18:29 2018 +0800
+
+    Merge remote-tracking branch 'origin/master_gouwu' into master_wml
+
+[33mcommit 183a5188b0dfa4cf14e16f842e47911cf173148c[m
+Author: wuminglong <18401375498@163.com>
+Date:   Mon Oct 15 10:17:24 2018 +0800
+
+    权限-短信
+
+[33mcommit 84401c50334c04f7531f4bc46c77ae351ae52e9a[m
+Author: zhangran <1130879408@qq.com>
+Date:   Mon Oct 15 10:15:24 2018 +0800
+
+    去掉滚动条效果
+
+[33mcommit 2d8ef9084f469d3f7fcae4d286bc5954b835895b[m
+Merge: db8a04e aba86b8
+Author: wuminglong <18401375498@163.com>
+Date:   Mon Oct 15 09:57:35 2018 +0800
+
+    Merge remote-tracking branch 'origin/master_gouwu' into master_wml
+
+[33mcommit db8a04e238b84b5decd97579dc2679efbe11f642[m
+Merge: f474cff 34c8b9e
+Author: wuminglong <18401375498@163.com>
+Date:   Sat Oct 13 17:36:09 2018 +0800
+
+    wml短信-权限
+
+[33mcommit 14523a8247b64c4499295b1e38e667cdc8182561[m
+Merge: aba86b8 1d30813
+Author: zhangran <1130879408@qq.com>
+Date:   Sat Oct 13 16:37:04 2018 +0800
+
+    Merge branch 'master' of 192.168.1.34:zhangchuntao/platform into master_gouwu
+
+[33mcommit aba86b82d7969cbd8276203ce6182452bbf56db2[m
+Author: zhangran <1130879408@qq.com>
+Date:   Sat Oct 13 16:36:48 2018 +0800
+
+    问题修改
+
+[33mcommit f474cffb55ded173d4a132d8de886a8c05bca8be[m
+Author: wuminglong <18401375498@163.com>
+Date:   Sat Oct 13 13:46:19 2018 +0800
+
+    发送短信
+
+[33mcommit 34c8b9e41c01283949c9a41ee89dcbccc7b07302[m
+Author: zhangran <1130879408@qq.com>
+Date:   Sat Oct 13 13:44:24 2018 +0800
+
+    zr
+
+[33mcommit 1d3081387d608761b4a946e207a1f6230ea0a5cd[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Merge: 176ea89 ca3577f
+Author: 张春涛 <501195977@qq.com>
+Date:   Thu Oct 11 19:44:07 2018 +0800
+
+    Merge branch 'master_gouwu' into 'master'
+    
+    zr
+    
+    See merge request zhangchuntao/platform!7
+
+[33mcommit 176ea8968ba6faad1cef7f80f2c225b6a859e863[m
+Merge: deef1e6 765e6c0
+Author: 张春涛 <501195977@qq.com>
+Date:   Thu Oct 11 18:55:57 2018 +0800
+
+    Merge branch 'master_gouwu' into 'master'
+    
+    修改地址问题
+    
+    See merge request zhangchuntao/platform!6
+
+[33mcommit ca3577f25fa8fc951809e9dc30fb8cccb25a6d7e[m
+Author: zhangran <1130879408@qq.com>
+Date:   Thu Oct 11 11:42:34 2018 +0800
+
+    zr
+
+[33mcommit 765e6c029e6fbff9e63b9e32af96ec06e61f5251[m
+Author: zhangran <1130879408@qq.com>
+Date:   Wed Oct 10 18:15:26 2018 +0800
+
+    走通下单流程
+
+[33mcommit 122d45e3b206bfb5d82194eb43dd783b01002818[m
+Author: zhangran <1130879408@qq.com>
+Date:   Wed Oct 10 14:13:49 2018 +0800
+
+    奇子商城后台管理系统修改
+
+[33mcommit deef1e6eeb72001c0a31a134cc855f4bbdac0749[m
+Merge: d87b792 c8a45ca
+Author: 张春涛 <501195977@qq.com>
+Date:   Wed Oct 10 02:37:41 2018 +0800
+
+    Merge branch 'master_gouwu' into 'master'
+    
+    去除开源合肥无用的
+    
+    See merge request zhangchuntao/platform!4
+
+[33mcommit d87b792d6bf96668220c1ba70bdcdd3b60f0406d[m
+Merge: 3f68801 a1536be
+Author: 张春涛 <501195977@qq.com>
+Date:   Wed Oct 10 02:04:45 2018 +0800
+
+    Merge branch 'master_gouwu' into 'master'
+    
+    购物车个数,删除问题修改
+    
+    See merge request zhangchuntao/platform!3
+
+[33mcommit 3f68801b3fe697780ad32e690aca10655458272b[m
+Merge: 4ad5ecb b2e887b
+Author: 张春涛 <501195977@qq.com>
+Date:   Wed Oct 10 00:36:15 2018 +0800
+
+    Merge branch 'master_gouwu' into 'master'
+    
+    购物车修改
+    
+    See merge request zhangchuntao/platform!1
+
+[33mcommit c8a45ca05aca9dd176d4768cc0dc90830f49ec5d[m
+Author: zhangran <1130879408@qq.com>
+Date:   Tue Oct 9 18:28:13 2018 +0800
+
+    去除开源合肥无用的
+
+[33mcommit a1536bed7d4825846e7d115714b8ef954be33321[m
+Author: zhangran <1130879408@qq.com>
+Date:   Tue Oct 9 17:39:19 2018 +0800
+
+    删除所选bug修改
+
+[33mcommit fa0ad66465370a7cd2181778ebf3312f59d6aac1[m
+Author: zhangran <1130879408@qq.com>
+Date:   Tue Oct 9 17:30:25 2018 +0800
+
+    购物车商品个数bug修改
+
+[33mcommit c1478b8bef6965f381b262e66a0682344dafe949[m
+Merge: 13de78f 3f68801
+Author: zhangran <1130879408@qq.com>
+Date:   Tue Oct 9 16:38:25 2018 +0800
+
+    Merge branch 'master' of 192.168.1.34:zhangchuntao/platform into master_gouwu
+
+[33mcommit 13de78fbd96b64250441bab64669b537c315c474[m
+Author: zhangran <1130879408@qq.com>
+Date:   Tue Oct 9 16:38:15 2018 +0800
+
+    抬头改为奇子商城
+
+[33mcommit b2e887bf0019c1174814d389d9a3ed0ac7829236[m
+Author: zhangran <1130879408@qq.com>
+Date:   Tue Oct 9 16:34:56 2018 +0800
+
+    购物车修改
+
+[33mcommit 4ad5ecb6b7946e6134c73e054501207adb8f5064[m[33m ([m[1;31morigin/fengrongji[m[33m)[m
+Author: zhangchuntao <501195977@qq.com>
+Date:   Mon Oct 8 11:17:11 2018 +0800
+
+    hzw
+
+[33mcommit c193a232dc0288609048e50b16d9865834a4298b[m[33m ([m[1;32mmaster[m[33m)[m
+Author: 合肥-传说哥 <939961241@qq.com>
+Date:   Sun Sep 30 23:52:43 2018 +0800
+
+    vue更新
+
+[33mcommit 6e5bb20e270d8b80f5ae5f565b691b5ce07fb039[m
+Author: 合肥-传说哥 <939961241@qq.com>
+Date:   Sat Sep 29 15:13:44 2018 +0800
+
+    解决微信名存在特殊字符导致的无法登陆问题
+
+[33mcommit 43ff6302785150646c581d968c7cf9508d2cf6e1[m
+Author: 合肥-传说哥 <939961241@qq.com>
+Date:   Sat Sep 29 15:11:48 2018 +0800
+
+    change finalName to platform
+
+[33mcommit 25cbad737f6d648629f7209b6dfe769e7d0ff157[m
+Author: 合肥-传说哥 <939961241@qq.com>
+Date:   Sat Sep 29 15:11:09 2018 +0800
+
+    收藏报错修复
+
+[33mcommit a9cbe99629fe1f644e3f220bcfdbb3520db5ad7c[m
+Author: 合肥-传说哥 <939961241@qq.com>
+Date:   Fri Sep 28 20:32:04 2018 +0800
+
+    收藏报错修复
+
+[33mcommit e24c37cd17d147a1e332343d2394f1e9b648bc73[m
+Author: 合肥-传说哥 <939961241@qq.com>
+Date:   Thu Sep 27 10:04:11 2018 +0800
+
+    api接口统一使用post请求
+
+[33mcommit 14ea19417b4c134407d0b500098d50cf3fcc5627[m
+Author: 合肥-传说哥 <939961241@qq.com>
+Date:   Wed Sep 26 17:32:29 2018 +0800
+
+    使用orderSn作为微信订单编号
+
+[33mcommit c8ee760e01b0c3b44c3d63f04edc2cff2166991b[m
+Author: 合肥-传说哥 <939961241@qq.com>
+Date:   Tue Sep 25 16:11:28 2018 +0800
+
+    升级kaptcha 2.3.2解决验证码在服务器上乱码的问题
+
+[33mcommit 1b38da6a01bc8ba72823fefb3706dc879d18224c[m
+Merge: c93f536 13eebb7
+Author: 李鹏军 <939961241@qq.com>
+Date:   Tue Sep 18 08:47:01 2018 +0800
+
+    !18 读取excel时可能存在xml外部实体注入的问题
+    Merge pull request !18 from weiwei/master
+
+[33mcommit 13eebb734553cf94fa114c9bb1d39e8a9f7a4550[m
+Author: fuwei <fuwei@360.net>
+Date:   Mon Sep 17 18:58:47 2018 +0800
+
+    String不可变,重复创建没有意义
+
+[33mcommit ed72696ac8356104f476c06157419e4a6f38aaaa[m
+Author: fuwei <fuwei@360.net>
+Date:   Mon Sep 17 18:14:29 2018 +0800
+
+    设置xml解析器,防止excel读取时的外部实体注入
+
+[33mcommit c93f536dc4cff6f2aa80f8d232d9b323b1b0ec24[m
+Author: 合肥-传说哥 <939961241@qq.com>
+Date:   Sun Sep 16 14:39:28 2018 +0800
+
+    优化
+
+[33mcommit 3e2a3e1eb5169e037dfe2fd41823dbe0e4aa1539[m
+Author: 合肥-传说哥 <939961241@qq.com>
+Date:   Sun Sep 16 13:19:15 2018 +0800
+
+    Revert "update platform-gen"
+    
+    This reverts commit 89c8e91
+
+[33mcommit ec2dd2a47fc893c8468318e150604711c15d3430[m
+Author: 合肥-传说哥 <939961241@qq.com>
+Date:   Sun Sep 16 13:12:45 2018 +0800
+
+    支持跨域请求
+
+[33mcommit 37c85ae7ff89c7d53b9be0ac458006894691595c[m
+Author: 合肥-传说哥 <939961241@qq.com>
+Date:   Tue Sep 11 15:13:15 2018 +0800
+
+    支持跨域请求
+
+[33mcommit 6d25bd28eea691e345d656d92057cd2789dcff74[m
+Author: 合肥-传说哥 <939961241@qq.com>
+Date:   Mon Sep 10 18:12:24 2018 +0800
+
+    vue项目启动介绍
+
+[33mcommit 4e3fd2824318338a77cd074c105ee04f3aa6ca75[m
+Author: wuqianting <1291223264@qq.com>
+Date:   Thu Sep 6 16:07:25 2018 +0800
+
+    1，前端重构version initial
+
+[33mcommit 93a96708696dd8e6f99463902e8e62079323b7ab[m
+Author: wuqianting <1291223264@qq.com>
+Date:   Thu Sep 6 16:00:55 2018 +0800
+
+    1，重构前端项目
+
+[33mcommit 23db77accb84ab8f79f26fb52135b6cb04a25592[m
+Author: 合肥-传说哥 <939961241@qq.com>
+Date:   Mon Sep 3 17:22:02 2018 +0800
+
+    商业版.md
+
+[33mcommit a105c48ea417d05ce630f71043e77d3dde6df2d0[m
+Merge: b62d0fd 41515da
+Author: 李鹏军 <939961241@qq.com>
+Date:   Thu Aug 30 11:31:32 2018 +0800
+
+    !16 增修改产品时支持修改产品规格，修复部分bug
+    Merge pull request !16 from 九级浪/master
+
+[33mcommit b62d0fd806945076d884206c88ec121dd830887f[m
+Author: 合肥-传说哥 <939961241@qq.com>
+Date:   Thu Aug 30 11:24:26 2018 +0800
+
+    修改商品报错修复，修改缓存时间
+
+[33mcommit 41515da7442748ca0b22bbcd121e3522955ee5a0[m
+Author: chensf <chensf@chenshangfeng.com>
+Date:   Thu Aug 30 02:57:51 2018 +0800
+
+    修改产品支持修改产品规格
+
+[33mcommit 57facd6eb37ac894d566c8ebb4879080f2d2e8ad[m
+Merge: 7cc9414 b39e90d
+Author: 李鹏军 <939961241@qq.com>
+Date:   Mon Aug 27 19:09:04 2018 +0800
+
+    !15 修改部分bug，优化部分交互
+    Merge pull request !15 from 九级浪/master
+
+[33mcommit 04e6a2e71cf16fb0a7d7dc6920ced6ced38bccea[m
+Author: chensf <chensf@chenshangfeng.com>
+Date:   Sun Aug 26 07:11:46 2018 +0800
+
+    修复支付时没有传入指定参数
+
+[33mcommit e9268e5c6d6296ebf8dd07c2216e74244fdfccc5[m
+Author: chensf <chensf@chenshangfeng.com>
+Date:   Sun Aug 26 07:10:25 2018 +0800
+
+    一级分类应添加到首项
+
+[33mcommit 9da7111ff73b0f822555a34375a99ad1fbb16edc[m
+Author: chensf <chensf@chenshangfeng.com>
+Date:   Sun Aug 26 07:00:06 2018 +0800
+
+    修復根据数据量展现模块判断错误的问题
+
+[33mcommit b39e90d5e899b64756405f188e04c8acb5af7cc5[m
+Author: chensf <chensf@chenshangfeng.com>
+Date:   Sun Aug 26 06:05:55 2018 +0800
+
+    规格只有一个值时自动选择规格
+
+[33mcommit 9a2cd58b7287bcdd3261b155b20c92fcd28799ec[m
+Author: chensf <chensf@chenshangfeng.com>
+Date:   Sun Aug 26 06:03:33 2018 +0800
+
+    优化确认收货提示
+
+[33mcommit 76e8697c1f83dc7470ed0455778d7090eed4478a[m
+Author: chensf <chensf@chenshangfeng.com>
+Date:   Sun Aug 26 06:00:54 2018 +0800
+
+    修复排序无效
+
+[33mcommit 24646f566fbe7c3dfa5e7d4254527364bb0657e4[m
+Author: chensf <chensf@chenshangfeng.com>
+Date:   Sun Aug 26 05:59:55 2018 +0800
+
+    新增用户收货后手动确认收货功能
+
+[33mcommit b7152b593eefec495a000d5b4a6afc5d8e0d783e[m
+Author: chensf <chensf@chenshangfeng.com>
+Date:   Sun Aug 26 05:57:06 2018 +0800
+
+    自动设置默认收获地址
+
+[33mcommit 4f08e39444a17f37ad595fbc237ad1c9015bf60f[m
+Author: chensf <chensf@chenshangfeng.com>
+Date:   Sun Aug 26 05:55:27 2018 +0800
+
+    优化代码判断流程及状态比较
+
+[33mcommit 8693b3a00f71ea92e65e86f07ffbe93c719b3401[m
+Author: chensf <chensf@chenshangfeng.com>
+Date:   Sun Aug 26 05:51:12 2018 +0800
+
+    修复订单确认没有更新数据库
+
+[33mcommit 2881355aa8eb67938aa1249081cc6fec816caeb6[m
+Author: chensf <chensf@chenshangfeng.com>
+Date:   Sun Aug 26 05:05:06 2018 +0800
+
+    修复提示信息不准确的问题
+
+[33mcommit 7cc94141a9eb5dbbca5c0488e93a973d35d2d5f6[m
+Author: 合肥-传说哥 <939961241@qq.com>
+Date:   Fri Aug 24 12:22:17 2018 +0800
+
+    1、代码生成bug修复：IllegalArgumentException
+    2、调用api接口不再创建session
+
+[33mcommit fef7cb437f02c6954f8009fd97aaaea39cac07ba[m
+Author: 合肥-传说哥 <939961241@qq.com>
+Date:   Thu Aug 16 14:17:08 2018 +0800
+
+    更新readme里修改redis配置的说明
+
+[33mcommit a5c2aa94d1bd606b52fd7bf6b869b670f47fb5c9[m
+Author: 合肥-传说哥 <939961241@qq.com>
+Date:   Thu Aug 16 13:15:40 2018 +0800
+
+    项目依赖调整
+
+[33mcommit f8f7ac0ccf199a70929bfb4b271ecab00fc44186[m
+Author: 合肥-传说哥 <939961241@qq.com>
+Date:   Wed Aug 15 16:56:38 2018 +0800
+
+    sql
+
+[33mcommit 3a172964902fb464ba1c83cc04dbd3b64186d3c8[m
+Author: ethan <ethan@ethandeMacBook-Pro.local>
+Date:   Wed Aug 15 15:10:27 2018 +0800
+
+    修改分页
+
+[33mcommit 793c8f5de9ac4360960aa5d9fb217bf08cec149f[m
+Author: 梦，不愿醒 <295640759@qq.com>
+Date:   Sun Aug 12 15:08:34 2018 +0800
+
+    删除文件wx-mall/static/.DS_Store
+
+[33mcommit 89c8e910fdab3b2bafe5e563dfb93352cdbde13f[m
+Author: ethan <ethan@ethandeMacBook-Pro.local>
+Date:   Sun Aug 12 15:06:03 2018 +0800
+
+    update platform-gen
+
+[33mcommit 099cfc8b360b3c99e9b5e9919f66e345a1e9f149[m
+Merge: 71c1666 fb5b926
+Author: Mr.Liu <liuzhaozhuo126@126.com>
+Date:   Fri Aug 10 16:31:07 2018 +0800
+
+    !14 更正广告列表禁用不显示
+    Merge pull request !14 from gdcjxy/master
+
+[33mcommit fb5b926cff933ccd5d6444a56842b588d57080c7[m
+Author: liuzhaozhuo <liuzhaozhuo126@126.com>
+Date:   Fri Aug 10 16:22:12 2018 +0800
+
+    更正广告列表禁用不显示
+
+[33mcommit 71c166629bc379551c19410992b4c6f51ba2fbaa[m
+Author: 合肥-传说哥 <939961241@qq.com>
+Date:   Thu Aug 9 21:44:23 2018 +0800
+
+    修改说明
+
+[33mcommit 75d169ce98ab3387153cb3b31dd49a8d5dcdad8c[m
+Author: 合肥-传说哥 <939961241@qq.com>
+Date:   Thu Aug 9 20:50:38 2018 +0800
+
+    bug修复
+
+[33mcommit cac4021a28e1df31eea1a0defce082966a1ccf88[m
+Author: 合肥-传说哥 <939961241@qq.com>
+Date:   Thu Aug 9 11:54:59 2018 +0800
+
+    更新readme，添加开发文档目录
+
+[33mcommit 11d7d1b1e347c47caea33e3480e83e75906b4610[m
+Merge: e6c2741 b7acbde
+Author: Mr.Liu <liuzhaozhuo126@126.com>
+Date:   Wed Aug 8 22:14:30 2018 +0800
+
+    !13  修复后台时间格式为24小时制
+    Merge pull request !13 from gdcjxy/master
+
+[33mcommit b7acbde9376b8cf1ebe61aaf210e2367d155a767[m
+Author: liuzhaozhuo <liuzhaozhuo126@126.com>
+Date:   Wed Aug 8 18:29:25 2018 +0800
+
+    修复后台时间格式为24小时制
+
+[33mcommit e6c2741d27c5641ab831abf29b6f32e2ae887c51[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Sun Aug 5 21:56:16 2018 +0800
+
+    小程序在第一次登录时候后台报错 #IKBG0
+
+[33mcommit 558c858b55a04335e05cd662a252cb5cef4af7df[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Sun Aug 5 21:46:18 2018 +0800
+
+    小程序在第一次登录时候后台报错 #IKBG0
+
+[33mcommit 6213833f515d6b62c48a653fb2fd21a9df4c8347[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Sun Aug 5 21:43:20 2018 +0800
+
+    商品类型，添加L1级分类时缺少parent_id字段的值
+
+[33mcommit fac2393cbb6a571b68f6c599ee8033ffd35b1f2f[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Fri Aug 3 09:15:36 2018 +0800
+
+    分布式session处理空指针异常修复
+
+[33mcommit 21484dbd76f1420d8bbf45a1c10765e44397c603[m
+Merge: 23c0956 74b4fa0
+Author: 小哥哥 <939961241@qq.com>
+Date:   Thu Aug 2 14:52:14 2018 +0800
+
+    Merge remote-tracking branch 'origin/master'
+
+[33mcommit 23c0956f67ad61c64d8bab3a8bfb06b99bd79e28[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Thu Aug 2 14:51:49 2018 +0800
+
+    junit单元测试错误修复
+
+[33mcommit 74b4fa01b7bccde1fc484bda1f4b6872ebe80257[m
+Merge: 5b9b92c f6792f0
+Author: scott <keepnemo@hotmail.com>
+Date:   Thu Aug 2 14:11:27 2018 +0800
+
+    !12 小程序鉴权失败时清空本地token和userInfo缓存
+    Merge pull request !12 from scott/master
+
+[33mcommit f6792f002ffd4366fdd95fba323e8cac3b810e4b[m
+Author: ruiqh <keepnemo@hotmail.com>
+Date:   Thu Aug 2 11:45:21 2018 +0800
+
+    小程序启动/request 鉴权失败时清空localstorage中userinf和token缓存
+
+[33mcommit 5b9b92c89c7f258307fe6f786a3520c9394222e1[m
+Merge: 9e4f8e7 683d398
+Author: scott <keepnemo@hotmail.com>
+Date:   Wed Aug 1 18:25:22 2018 +0800
+
+    !11 足迹管理和七牛上传文件处修改
+    Merge pull request !11 from scott/master
+
+[33mcommit 683d39884da5d20fc2d24fe51410d5e780dcca5f[m
+Author: ruiqh <keepnemo@hotmail.com>
+Date:   Wed Aug 1 18:07:00 2018 +0800
+
+    1.足迹管理-> 删除足迹 功能异常处理 2.七牛上传文件前缀使用aliyun前缀处理
+
+[33mcommit 9e4f8e79801cf3f73d126a0c1de0053940925297[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Tue Jul 31 18:34:06 2018 +0800
+
+    添加分布式session管理
+
+[33mcommit 32c3235832e63cb47381a32b0ec578268c8c73ef[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Tue Jul 31 13:38:01 2018 +0800
+
+    更新readme
+
+[33mcommit a7c96bf32af782f181e826b37c663aa1fb481769[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Sun Jul 29 12:50:19 2018 +0800
+
+    更新readme
+
+[33mcommit fe1aabe8dd16c328ff017ffc9331834dda39f042[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Sat Jul 28 11:20:48 2018 +0800
+
+    更新readme
+
+[33mcommit 5c3b40488658090a0bb5b833e72a68920b779e30[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Sat Jul 28 11:16:29 2018 +0800
+
+    更新readme
+
+[33mcommit 8b8493d2cb2dc9b54d5c3645aec6209dbcf737a7[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Sat Jul 28 11:15:39 2018 +0800
+
+    更新readme
+
+[33mcommit dabc763d62e1ae32bed4e027c862957e6cd1e54c[m
+Merge: d97274c 4cb4751
+Author: scott <keepnemo@hotmail.com>
+Date:   Sat Jul 28 11:14:38 2018 +0800
+
+    !10 删除商品功能有一处前端JSON拼写错误
+    Merge pull request !10 from scott/master
+
+[33mcommit d97274cf78e5f5327bd07a54b770227eb56942f5[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Sat Jul 28 11:12:58 2018 +0800
+
+    更新readme
+
+[33mcommit 4cb4751f52ef4fe7d2cfb0bc638680b49ef7ac85[m
+Author: ruiqh <keepnemo@hotmail.com>
+Date:   Fri Jul 27 18:01:34 2018 +0800
+
+    fix JSON spelling mistake while goods delete
+
+[33mcommit 30b022e0af6ab71526d1e847117542d9b9e17c48[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Fri Jul 27 13:03:51 2018 +0800
+
+    添加caffeine配置文件，一级缓存使用ehcache，添加JGroups组播依赖
+
+[33mcommit b0a0547fe6ef8e33d682b3e04a17ca555dfbed2c[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Fri Jul 27 12:49:59 2018 +0800
+
+    回退多提交的代码
+
+[33mcommit 7bf0d77f3a9f01d683453c78d44eb860c1980dc8[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Fri Jul 27 12:24:59 2018 +0800
+
+    图片由七牛OSS转存到阿里OSS
+
+[33mcommit 386d42036a6370cd8fd1bf420b216d2a96c3f736[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Mon Jul 23 17:12:39 2018 +0800
+
+    统一使用InnoDB
+
+[33mcommit 9719b608d8ec1752db0c604a7d5b9958b1453ccc[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Mon Jul 23 10:52:24 2018 +0800
+
+    -
+
+[33mcommit e2547a7fcb6cb8ac57d32a33589f8acef25a0cc6[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Fri Jul 20 21:57:18 2018 +0800
+
+    代码生成优化
+
+[33mcommit 6a1fff46f25377c840201dc5b0b5a4c19ccb9ed6[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Fri Jul 20 15:01:08 2018 +0800
+
+    优化swagger接口
+
+[33mcommit 1ef9c1d4de4947699a387364c46b2dc6ce0afe95[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Fri Jul 20 11:18:52 2018 +0800
+
+    Git 常用命令
+
+[33mcommit 1343e955533ff6696d205f749586fef0766f5507[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Tue Jul 17 18:15:31 2018 +0800
+
+    更新readme，添加redis说明
+
+[33mcommit e93a5907940e431db9575e49e4743388b6cf9274[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Tue Jul 17 17:37:56 2018 +0800
+
+    修复收货地址可能出现越权安全漏洞
+
+[33mcommit 1ebd5114320fceefa5e6e69a8399c88806eb70e9[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Tue Jul 17 09:48:44 2018 +0800
+
+    修复收货地址可能出现越权安全漏洞
+
+[33mcommit 221a077d53b0574c24d30bb03dbab9803e838023[m
+Author: 雨陌花开 <544188838@qq.com>
+Date:   Fri Jul 13 17:11:00 2018 +0800
+
+    API接口添加说明
+
+[33mcommit 863a04912f0921a6d0c3eaef4bacb1807b80e27b[m
+Author: 雨陌花开 <544188838@qq.com>
+Date:   Fri Jul 13 17:09:05 2018 +0800
+
+    no commit message
+
+[33mcommit bd7d2a12dab6d4b0b068f081f202983c67bc4c77[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Fri Jul 13 17:08:00 2018 +0800
+
+    统一使用Ajax.request
+
+[33mcommit 0a9b9756016a64685204470b644809226603b9ed[m
+Merge: 8426355 62c2d41
+Author: 苏振宇 <858514558@qq.com>
+Date:   Fri Jul 13 15:23:09 2018 +0800
+
+    !9 恢复误操作代码
+    Merge pull request !9 from 苏振宇/master
+
+[33mcommit 62c2d413b75cde20504cfe5d6c96d39853b133eb[m
+Author: suzy2 <suzy2@lenovo.com>
+Date:   Fri Jul 13 15:19:49 2018 +0800
+
+    恢复调试代码
+
+[33mcommit 842635555470f8ab4da950785136169f221922ab[m
+Merge: a8e03aa cb134ed
+Author: 苏振宇 <858514558@qq.com>
+Date:   Fri Jul 13 15:16:46 2018 +0800
+
+    !8 替换请求方式 Ajax.request
+    Merge pull request !8 from 苏振宇/master
+
+[33mcommit cb134ed79a509e42530f6187236df352e1e3bd63[m
+Author: suzy2 <suzy2@lenovo.com>
+Date:   Fri Jul 13 15:13:59 2018 +0800
+
+    变更请求方式 第三次提交
+
+[33mcommit 89a8a793234310c0479585fd956120841712a792[m
+Author: suzy2 <suzy2@lenovo.com>
+Date:   Fri Jul 13 15:01:45 2018 +0800
+
+    调整请求方式第二批
+
+[33mcommit c6da5e9c2522d78401a3a28c275b2f9f43797abe[m
+Author: suzy2 <suzy2@lenovo.com>
+Date:   Fri Jul 13 14:46:47 2018 +0800
+
+    替换请求方式  Ajax.request
+
+[33mcommit a8e03aa2a2e5155096624073edaf94911bb42ade[m
+Merge: f3413b2 83cb991
+Author: 小哥哥 <939961241@qq.com>
+Date:   Fri Jul 13 10:50:08 2018 +0800
+
+    Merge remote-tracking branch 'origin/master'
+
+[33mcommit f3413b267a3d8c5b7538a095131b1bd43c9184d1[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Fri Jul 13 10:49:48 2018 +0800
+
+    更新readme，admin模块
+
+[33mcommit 83cb9912e6289bcf66b537f36429876c25976100[m
+Merge: 0a7502a 76ac598
+Author: 李鹏军 <939961241@qq.com>
+Date:   Thu Jul 12 19:00:44 2018 +0800
+
+    !7 切换ip地址分析地址
+    Merge pull request !7 from 苏振宇/master
+
+[33mcommit 76ac5980f24e9769b6c0cec7c8b00444f7f332fc[m
+Author: suzy2 <suzy2@lenovo.com>
+Date:   Thu Jul 12 15:42:57 2018 +0800
+
+    解决下单空指针的bug
+
+[33mcommit fbeac583323936102f37467206f9288202af26ee[m
+Author: suzy2 <suzy2@lenovo.com>
+Date:   Thu Jul 12 11:11:07 2018 +0800
+
+    切换ip地址分析地址
+
+[33mcommit 0a7502ae34d4dda682c817dc4fd563259d152279[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Wed Jul 11 12:53:02 2018 +0800
+
+    package skipTests
+
+[33mcommit 07f7d67a5b9adc179c0062b8389ddb1534c6796a[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Tue Jul 10 18:30:08 2018 +0800
+
+    用户权限存入缓存
+
+[33mcommit f56d4f858cfe21b7c7f23d308f1e16901cac9776[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Tue Jul 10 16:23:39 2018 +0800
+
+    添加shopCache
+
+[33mcommit f3417fd828a58a858f6f6daae0966f0fd64ce507[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Tue Jul 10 15:55:27 2018 +0800
+
+    更新readme
+
+[33mcommit e318c067e250c82f62086d94c922d379e4b96860[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Tue Jul 10 15:54:01 2018 +0800
+
+    更新readme
+
+[33mcommit ecc319b427220c0783cfe1eec7ff2493bc3575ed[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Mon Jul 9 19:12:34 2018 +0800
+
+    使用j2cache缓存
+
+[33mcommit d79af5c6efa1e54302c349235af3153b3e9d0527[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Mon Jul 9 15:44:26 2018 +0800
+
+    基于spring的JUnit单元测试
+
+[33mcommit bdd3e6f74ea1bb4c1f5f008b09a58710d70b98fd[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Sun Jul 8 22:41:22 2018 +0800
+
+    客户案例：T客定制
+
+[33mcommit ae059ae4cdaab117f36347867b97dfc4ad69ed15[m
+Merge: 82b847d d31d88a
+Author: 李鹏军 <939961241@qq.com>
+Date:   Sun Jul 8 22:17:01 2018 +0800
+
+    !5 对项目进行一点优化
+    Merge pull request !5 from 苏振宇/master
+
+[33mcommit d31d88a5ee762fc2d1f4d86b94a79d0ed67c3ad2[m
+Author: suzy2 <suzy2@lenovo.com>
+Date:   Sat Jul 7 18:35:21 2018 +0800
+
+    修复足迹排序的问题，已经登录的不会再调用登录接口
+
+[33mcommit 0958a9b80b79d0ca303aa291070381dbc3db4b25[m
+Author: suzy2 <suzy2@lenovo.com>
+Date:   Sat Jul 7 16:28:40 2018 +0800
+
+    调整足迹查询方式
+
+[33mcommit b5190f83e7e5341080c9896a4a191efa40d3ffed[m
+Author: suzy2 <suzy2@lenovo.com>
+Date:   Sat Jul 7 15:47:52 2018 +0800
+
+    替换http请求工具类
+
+[33mcommit eaa3a96662283130d70f9cfec8ea75c1d0231885[m
+Author: suzy2 <suzy2@lenovo.com>
+Date:   Fri Jul 6 23:32:38 2018 +0800
+
+    优化工具类
+
+[33mcommit 3e1a1691735ae5be42edbe2c4640a5015f13cf43[m
+Merge: 989aa22 82b847d
+Author: suzy2 <suzy2@lenovo.com>
+Date:   Fri Jul 6 22:54:10 2018 +0800
+
+    Merge branch 'master' of https://gitee.com/suzhenyu/platform.git
+
+[33mcommit 989aa22c8350cf1991e3887a37bdbe4e94c1091d[m
+Author: suzy2 <suzy2@lenovo.com>
+Date:   Fri Jul 6 22:48:33 2018 +0800
+
+    增加首页下拉重新加载数据的功能
+
+[33mcommit 82b847d67759d9a4f5b36d2fe5836c2e258a94d7[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Fri Jul 6 12:22:52 2018 +0800
+
+    添加码云挂件
+
+[33mcommit b40bdaf68459287a58a348f517b65976acd4a82b[m
+Merge: ef65d9e 990606b
+Author: 李鹏军 <939961241@qq.com>
+Date:   Thu Jul 5 23:25:21 2018 +0800
+
+    !3 恢复配置文件
+    Merge pull request !3 from 苏振宇/master
+
+[33mcommit ef65d9e903710cb10932d9e498d3b8c2f6c4e6a7[m
+Merge: 0b57e58 14772d4
+Author: CharlesSong <charles2song@gmail.com>
+Date:   Thu Jul 5 23:24:21 2018 +0800
+
+    !4 修复AdVo、GoodsVo中时间字段与数据库不匹配问题。
+    Merge pull request !4 from CharlesSong/master
+
+[33mcommit 14772d489d71ddd2a2ece3066739d5368a77d4a4[m
+Author: CharlesSong <charles2song@gmail.com>
+Date:   Thu Jul 5 22:14:28 2018 +0800
+
+    修复AdVo、GoodsVo中时间字段与数据库不匹配问题。
+
+[33mcommit 990606bb9e95564a958705cd0a8854155d20a56b[m
+Author: suzy2 <suzy2@lenovo.com>
+Date:   Wed Jul 4 17:29:36 2018 +0800
+
+    恢复配置
+
+[33mcommit 95b1faa9e09c52f43f91164032c857259d5e2a4d[m
+Author: suzy2 <suzy2@lenovo.com>
+Date:   Mon Jul 2 23:14:19 2018 +0800
+
+    拆分首页  把单个请求拆分成多个提高首页加载速度
+
+[33mcommit 0b57e581c310c88691315050a5f72d264428815e[m
+Merge: 40732a7 c568a88
+Author: 李鹏军 <939961241@qq.com>
+Date:   Mon Jul 2 18:18:29 2018 +0800
+
+    !1 微调代码优化查询效率
+    Merge pull request !1 from 苏振宇/master
+
+[33mcommit c568a88046b9302de732f0b774fa2100a91b3339[m
+Author: suzy2 <suzy2@lenovo.com>
+Date:   Mon Jul 2 14:33:23 2018 +0800
+
+    分页不再默认count
+
+[33mcommit 60c803029c2b5dddf6a8a6f5dc86d53b62c6ed74[m
+Author: suzy2 <suzy2@lenovo.com>
+Date:   Mon Jul 2 11:53:57 2018 +0800
+
+    修复一个错别字
+
+[33mcommit d71a22980157b41ec9bfeaa801cda13aa5c3844b[m
+Author: suzy2 <suzy2@lenovo.com>
+Date:   Mon Jul 2 11:47:52 2018 +0800
+
+    增加忽略文件
+
+[33mcommit 40732a74b867f6dbca28859cec4290181964f569[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Fri Jun 29 11:24:39 2018 +0800
+
+    合并shiro和common模块
+
+[33mcommit 51ef71f1eeba2efd1116fdcb797535be902f70de[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Fri Jun 29 09:46:36 2018 +0800
+
+    绑定手机获取验证码bug修复
+
+[33mcommit b0e09d3182484630e56127aa54d61c411efa00db[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Thu Jun 28 16:05:26 2018 +0800
+
+    绑定手机获取验证码bug修复
+
+[33mcommit 30939fe8cd5b66b87d83c2f07ac6332d3e62dc4f[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Thu Jun 28 15:54:17 2018 +0800
+
+    绑定手机获取验证码bug修复
+
+[33mcommit a968e732941c10d9ea74ae00490cd9668732ceab[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Thu Jun 28 14:27:04 2018 +0800
+
+    绑定手机获取验证码bug修复
+
+[33mcommit 5ec03b66eebac00d1eefb07d68f6ca5c2a825b70[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Wed Jun 27 10:03:58 2018 +0800
+
+    更新体验地址https://fly2you.cn
+
+[33mcommit 55a8fa78e2265c3b12bbc471e10e7c065aa78395[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Tue Jun 26 13:13:56 2018 +0800
+
+    order.js
+
+[33mcommit dddfc96d7268b24a0f66492fbf3609f52622b0eb[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Tue Jun 26 12:59:18 2018 +0800
+
+    滚动条样式
+
+[33mcommit 8b8563e52c2ddb2c5abbd6a00cf13d6934bf9d2f[m
+Author: 邓壮壮 <251075144@qq.com>
+Date:   Mon Jun 25 17:13:22 2018 +0800
+
+    去除button统一样式
+
+[33mcommit 8072805c60644675480783a9e8c71ca390af1e4c[m
+Author: 邓壮壮 <251075144@qq.com>
+Date:   Mon Jun 25 16:27:45 2018 +0800
+
+    修复订单选择bug
+
+[33mcommit 74156e6a08edf7ce4d74ef8fe4d865293bd35aff[m
+Author: 邓壮壮 <251075144@qq.com>
+Date:   Mon Jun 25 15:43:44 2018 +0800
+
+    修复iPhone下商品详情不显示底部工具条
+
+[33mcommit 93315844110cd88d43139358996c763b7c0226ec[m
+Author: 邓壮壮 <251075144@qq.com>
+Date:   Fri Jun 22 14:49:10 2018 +0800
+
+    下单选择优惠券、订单列表分页加载
+
+[33mcommit dda91632d7973eb075afdb773ea82691a89b3224[m
+Author: 邓壮壮 <251075144@qq.com>
+Date:   Fri Jun 22 09:04:53 2018 +0800
+
+    小程序支持组件开发
+
+[33mcommit 8969cbd9840dfcbb4f483b5ad0a2ae5676a73130[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Thu Jun 21 18:05:37 2018 +0800
+
+    更新脚本
+
+[33mcommit 085bcaf56a848c6625962a18b354195629bfe24c[m
+Merge: b41c032 b5ee6c0
+Author: 邓壮壮 <251075144@qq.com>
+Date:   Thu Jun 21 18:00:00 2018 +0800
+
+    prod配置添加查询订单状态
+
+[33mcommit b41c03284ab6103417bd9b278a19769ec679e71d[m
+Author: 邓壮壮 <251075144@qq.com>
+Date:   Thu Jun 21 17:56:50 2018 +0800
+
+    我的优惠券
+
+[33mcommit b5ee6c088ce744762c4010d44de653625a59fa2b[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Thu Jun 21 17:04:06 2018 +0800
+
+    'No qualifying bean of type' ERROR
+
+[33mcommit d0733330d0907bf06e92fd9c0c489ad85ebbae5b[m
+Author: 邓壮壮 <251075144@qq.com>
+Date:   Thu Jun 21 10:48:32 2018 +0800
+
+    首页推荐数量优化
+
+[33mcommit 52eeaab5a432148e607f5adbf3dcd1f385768cf7[m
+Author: 邓壮壮 <251075144@qq.com>
+Date:   Thu Jun 21 10:34:53 2018 +0800
+
+    修复立即购买（基于redis）、分类加载更多、本地下单支付、联系客服、订单回调查询状态改为同步（鉴于回调地址只能填写一个）
+
+[33mcommit 3bd1e54184fc2829d02ab27796b5e9bb2d1b8a48[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Wed Jun 20 14:58:27 2018 +0800
+
+    更新readme
+
+[33mcommit ec5c5a03d03fa17b1a2909d9794d587b8470e223[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Wed Jun 20 14:53:56 2018 +0800
+
+    更新readme
+
+[33mcommit bc48176bcb296836a96a6216876133b094bbabfe[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Wed Jun 20 11:39:27 2018 +0800
+
+    更新readme
+
+[33mcommit b3904a5f01939a766fb28d5c1af89e8f6e705369[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Wed Jun 20 11:35:25 2018 +0800
+
+    更新readme
+
+[33mcommit 6bdf78435f511890e4bd9fbb5fe730c473e781a5[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Tue Jun 19 18:31:52 2018 +0800
+
+    免责条款
+
+[33mcommit 70c3eaf5e6fc76e37817e2c1032a52168c7b92a8[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Tue Jun 19 17:46:36 2018 +0800
+
+    更新readme
+
+[33mcommit f62642e908166cee13b7a13ced75b7d26d091652[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Tue Jun 19 14:43:04 2018 +0800
+
+    更新readme
+
+[33mcommit dceaadf88379a8e5def1ffd0b2c6f243da71945d[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Mon Jun 18 14:25:27 2018 +0800
+
+    platform-shop
+
+[33mcommit 195428e9069db539f730fe4f223cbfc650cf6cd3[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Thu Jun 14 18:05:51 2018 +0800
+
+    Ajax.request例子
+
+[33mcommit ae02240f7b8a3c25e6fe5c555f1e61dbc6a847fd[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Thu Jun 14 10:46:08 2018 +0800
+
+    更新readme
+
+[33mcommit bc771933caebcc2de503e736b490514300fbfd85[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Thu Jun 14 10:14:19 2018 +0800
+
+    树形结构添加刷新按钮
+
+[33mcommit 0cf19c15dbf682fb5065ed6ecd9f594cc1493719[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Thu Jun 14 10:05:35 2018 +0800
+
+    优化代码生成的js、html
+
+[33mcommit 227185899add72bf6edca4cc9cf329e7dd1c36d6[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Wed Jun 13 20:37:25 2018 +0800
+
+    小程序首页
+
+[33mcommit eac32ef41df3fdac903a4b245277b016bc8052b7[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Wed Jun 13 20:11:16 2018 +0800
+
+    新用户第一次无法登陆BUG处理
+
+[33mcommit d123ab19776e83b2bb04d647514ad3a5ede3379c[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Wed Jun 13 19:54:33 2018 +0800
+
+    新用户第一次无法登陆BUG处理
+
+[33mcommit f50bbe4fd28cdd8688a561bf5132883b02fa929d[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Wed Jun 13 19:41:26 2018 +0800
+
+    我的样式调整
+
+[33mcommit 40ef5c5fae97d3eb00dd15df072745d34a05d9fe[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Mon Jun 11 09:47:41 2018 +0800
+
+    menu
+
+[33mcommit 57f12f90792c1ecef626ef4faf011d4ec83b94e3[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Fri Jun 8 14:28:38 2018 +0800
+
+    封装Grid
+
+[33mcommit 04b12d6106a8faef6731a5b88ec87f60d10ec2bd[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Wed Jun 6 17:51:39 2018 +0800
+
+    install yarn
+
+[33mcommit b2aa1375cd4cb6db87f3c3a891a71c0cab752e56[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Tue Jun 5 15:08:29 2018 +0800
+
+    admin模块代码注释优化
+
+[33mcommit f46a91d531c2c953a320b14d93bc3f51e388a714[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Tue Jun 5 14:18:12 2018 +0800
+
+    添加JavaDoc地址
+
+[33mcommit fd69c04342c87e9ffe30bd9d460125ab6edb2f76[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Tue Jun 5 13:02:34 2018 +0800
+
+    引入maven-javadoc-plugin插件
+
+[33mcommit f0928e50f428397a346ffd0d8c04638b0cb010b9[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Mon Jun 4 10:24:27 2018 +0800
+
+    更新演示地址
+
+[33mcommit 8eea12f427cc4ad69c48850e2c955e3587dad4b3[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Sun Jun 3 09:00:39 2018 +0800
+
+    sql
+
+[33mcommit 4ca11d18aacc2a938c3745d39a4562d9a7f79d3f[m
+Author: luguoxiang <877887564@qq.com>
+Date:   Fri Jun 1 17:29:39 2018 +0800
+
+    系统模块页面按钮位置调整
+
+[33mcommit c34d8b5ddd73e3120965ef2a55412823a1eb5749[m
+Author: luguoxiang <877887564@qq.com>
+Date:   Fri Jun 1 17:14:39 2018 +0800
+
+    系统模块页面按钮位置调整
+
+[33mcommit c10a45c2125da08b5c9a3ca6924487b3864e5da8[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Fri Jun 1 16:51:59 2018 +0800
+
+    系统模块页面调整
+
+[33mcommit e6df70fd10228110b13d6aaaffec455c98a2e653[m
+Merge: 65b5e3e 1398fc5
+Author: luguoxiang <877887564@qq.com>
+Date:   Fri Jun 1 16:32:26 2018 +0800
+
+    Merge remote-tracking branch 'origin/master'
+
+[33mcommit 65b5e3e986a26c2e817cfbe822c1643b40e17820[m
+Author: luguoxiang <877887564@qq.com>
+Date:   Fri Jun 1 16:31:57 2018 +0800
+
+    系统模块页面按钮位置调整
+    系统模块页面按钮位置调整
+    系统模块页面按钮位置调整
+
+[33mcommit 1398fc5995b0af2d021d631421cdbd4a6ec38b1b[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Fri Jun 1 16:01:06 2018 +0800
+
+    补充sql、文档
+
+[33mcommit 790d2596e2d3060e70f1cfa30a20cbe1456af5bf[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Fri Jun 1 15:24:55 2018 +0800
+
+    页面按钮位置调整
+
+[33mcommit fe5cb35fb24c44e52de9eb639dc82031ac715fce[m
+Author: cctgd <cctgd>
+Date:   Thu May 31 16:41:51 2018 +0800
+
+    优化
+
+[33mcommit 39029b70ce1603aa6e7d69e344ee3a083917cc9b[m
+Author: cctgd <cctgd>
+Date:   Thu May 31 13:54:33 2018 +0800
+
+    优化swagger
+
+[33mcommit da92ab4959e85d45887c8b4b0cf1db70ca8d5b8b[m
+Author: cctgd <cctgd>
+Date:   Thu May 31 13:25:54 2018 +0800
+
+    sysconfig
+
+[33mcommit 48755b6bc07d40507872661cf248442b5bd40279[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Thu May 31 10:56:05 2018 +0800
+
+    更新readme
+
+[33mcommit 193f14e7dc00f16a0ac7f521c1323e34594f554d[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Wed May 30 20:28:31 2018 +0800
+
+    1
+
+[33mcommit d82575ca5e46d5ab012ab252f3dcb2ad03ca8df9[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Wed May 30 10:48:13 2018 +0800
+
+    安装教程
+
+[33mcommit b2672880000e2b20bde0c18125017790ef26b2fc[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Wed May 30 10:28:34 2018 +0800
+
+    小程序登录、注册页面
+
+[33mcommit 6de7d7c4065229db5c6a9b9e2792bd14c39a8410[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Mon May 28 17:43:48 2018 +0800
+
+    登录优化
+
+[33mcommit ef1e72795bfd8264b01201b11c8f7228c9d493e3[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Mon May 28 16:42:38 2018 +0800
+
+    弃用wx.getUserInfo接口，使用button组件，将open-type指定为getUserInfo类型，获取用户基本信息
+
+[33mcommit f5ee32d1aae41e3af26932cdc42cd7670854c26f[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Mon May 28 15:32:50 2018 +0800
+
+    绑定手机
+
+[33mcommit 0042c692f55a8575cd6de1e1da77d09be6dfce39[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Sun May 27 22:59:21 2018 +0800
+
+    客户案例小程序码
+
+[33mcommit 8862cb6ddc8f1277dc2bbcf7a50044c3de4d83da[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Sun May 27 22:45:15 2018 +0800
+
+    客户案例小程序码
+
+[33mcommit 84aeb706e0245a46f99f774183da4eecb4b6e9c9[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Sun May 27 22:39:09 2018 +0800
+
+    客户案例小程序码
+
+[33mcommit 080fbcd778ff8485dd74a507305d924266044618[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Sun May 27 22:08:14 2018 +0800
+
+    滚动条样式调整、购物车样式调整
+
+[33mcommit 0adf054e17b0a41d984bd8b4e1c11dfa6a06c709[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Sun May 27 21:59:22 2018 +0800
+
+    mobile
+
+[33mcommit 22ef1fbfcd52ec2bccf42ddf2047f63b18989a03[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Fri May 25 15:54:18 2018 +0800
+
+    1
+
+[33mcommit b0e03f9102bcb49654966e35f76554a9039e072e[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Thu May 24 22:22:14 2018 +0800
+
+    更新readme
+
+[33mcommit 240f79ccfb827bd6896b774623c392b3a5093c79[m
+Author: Neho <daniel.deng.haibiao@gmail.com>
+Date:   Thu May 24 20:40:16 2018 +0800
+
+    1，新增首页接口逻辑
+
+[33mcommit 5bf292a1c8fae7065c975d539ced1632c9676d3e[m
+Author: Neho <daniel.deng.haibiao@gmail.com>
+Date:   Thu May 24 19:59:13 2018 +0800
+
+    1，优化http模块
+
+[33mcommit de003cb742af3e2ac3c47430aa1169ec09ee6766[m
+Author: Neho <daniel.deng.haibiao@gmail.com>
+Date:   Thu May 24 17:32:33 2018 +0800
+
+    1，vue项目添加版本忽略文件
+
+[33mcommit 30ee44fb28c0431d757e1617519dd1c4b4ca34be[m
+Author: yupc <ypc9527@163.com>
+Date:   Thu May 24 08:33:01 2018 +0800
+
+    需求说明书
+
+[33mcommit b407c036f0bd766175f8f7150534108e72e08565[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Tue May 22 22:26:04 2018 +0800
+
+    添加swagger菜单
+
+[33mcommit f9ea4e39e02d36c059d0581bc3f92f28fe8fd30c[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Tue May 22 21:49:31 2018 +0800
+
+    发送验证码使用创瑞云平台
+
+[33mcommit 4e1bb3af4d13a3baeb9a102fc2d43d0c49de0093[m
+Merge: 37171b0 5e888cd
+Author: kling <979583477@qq.com>
+Date:   Tue May 22 21:36:15 2018 +0800
+
+    Merge remote-tracking branch 'origin/master'
+
+[33mcommit 37171b0a9503f0d22f98cd85f24118563ff0b580[m
+Author: kling <979583477@qq.com>
+Date:   Tue May 22 21:35:50 2018 +0800
+
+    增加swagger配置
+
+[33mcommit 5e888cdcbb36231506bb121ad8913762e41a8a2d[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Tue May 22 21:09:34 2018 +0800
+
+    重写confirm导致富文本编辑器无法删除图片BUG修复
+
+[33mcommit 13788147b39c4d3140d6dde7e07bd6b24cdcde2d[m
+Merge: 9c84f59 b831837
+Author: 小哥哥 <939961241@qq.com>
+Date:   Tue May 22 11:38:06 2018 +0800
+
+    Merge remote-tracking branch 'origin/master'
+
+[33mcommit 9c84f59fa03d2a52c5e42e22c4a6ad50003249bd[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Tue May 22 11:37:40 2018 +0800
+
+    支付成功订单状态问题，代码生成问题
+
+[33mcommit f27e3cc1e907242673820c1690bed65012c1be95[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Tue May 22 11:33:50 2018 +0800
+
+    支付成功订单状态问题，代码生成问题
+
+[33mcommit b8318371e506e88cd1b9a28ef7b5fe5c6aed7961[m
+Author: lipengjun92 <30375770+lipengjun92@users.noreply.github.com>
+Date:   Mon May 21 22:13:09 2018 +0800
+
+    Update issue templates
+
+[33mcommit c100700c54964ba9f1ed78b77013ab708dc905f3[m
+Author: lipengjun92 <30375770+lipengjun92@users.noreply.github.com>
+Date:   Mon May 21 22:12:39 2018 +0800
+
+    Set theme jekyll-theme-slate
+
+[33mcommit e7122dfcac80162389df78487f7685d01f758cf4[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Fri May 18 15:39:31 2018 +0800
+
+    Initial commit
+
+[33mcommit 8379f8aa6b65ef158d2e24020530af2e85d6b14d[m
+Author: 小哥哥 <939961241@qq.com>
+Date:   Fri May 18 15:24:40 2018 +0800
+
+    Initial commit
+
+[33mcommit 595fed9899c0c5098a6f85a3d83dadfbc70bf3f0[m
+Author: lipengjun92 <30375770+lipengjun92@users.noreply.github.com>
+Date:   Fri May 18 15:13:56 2018 +0800
+
+    Initial commit
