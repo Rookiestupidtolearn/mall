@@ -3,8 +3,11 @@ package com.platform.service.impl;
 import com.platform.dao.CommentDao;
 import com.platform.dao.CommentPictureDao;
 import com.platform.entity.CommentEntity;
+import com.platform.entity.SysUserEntity;
 import com.platform.service.CommentService;
 import com.platform.utils.Base64;
+import com.platform.utils.ShiroUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +36,26 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<CommentEntity> queryList(Map<String, Object> map) {
+    	
+      	 
+     	/**
+        	 *过滤部门
+        	 *
+        	 */
+        	
+        	SysUserEntity sysUserEntity = ShiroUtils.getUserEntity();
+        	
+        	Long  deptId  =null;
+        	
+        	if(sysUserEntity!=null){
+        		
+        		  deptId = sysUserEntity.getDeptId();
+        		  if(deptId!=null){
+        			  map.put("deptId", deptId);
+        		  }
+        	}
+    	
+    	
         List<CommentEntity> commentEntities = commentDao.queryList(map);
         if (null != commentEntities && commentEntities.size() > 0) {
             for (CommentEntity commentEntity : commentEntities) {
