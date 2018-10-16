@@ -15,14 +15,15 @@ Page({
   getUserInfoMoney: function () {
     var that = this;
     util.request(api.UserAccountDetail).then(function(res){
-      for(var i=0; i<res.data.length; i++){
-        if (res.data[i].tranFlag == 1){
-          res.data[i].tarnAmount = '+' + res.data[i].tarnAmount
-        }else{
-          res.data[i].tarnAmount = '-' + res.data[i].tarnAmount
+      if (res.code == 1) {
+        for(var i=0; i<res.data.length; i++){
+          res.data[i].createTime = that.timestampToTime(res.data[i].createTime);
+          if (res.data[i].tranFlag == 1){
+            res.data[i].tarnAmount = '+' + res.data[i].tarnAmount
+          }else{
+            res.data[i].tarnAmount = '-' + res.data[i].tarnAmount
+          }
         }
-      }
-      if(res.code == 1){
         that.setData({
           boxMount:res.data
         })
@@ -31,7 +32,24 @@ Page({
       }
     })
   },
-
+  //时间戳转换成日期
+  timestampToTime:function (timestamp) {
+    var date = new Date(timestamp);
+    var Y = date.getFullYear() + '-';
+    var M = this.addTo(date.getMonth() + 1) + '-';
+    var D = this.addTo(date.getDate()) + ' ';
+    var h = date.getHours() + ':';
+    var m = date.getMinutes() + ':';
+    var s = date.getSeconds();
+    return Y + M + D + h + m + s;
+  },//月，日格式化
+	addTo:function (e) {
+    if (e < 10) {
+      return '0' + e;
+    } else {
+      return e;
+    }
+  },
   /**
    * 生命周期函数--监听页面加载
    */

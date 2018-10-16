@@ -6,15 +6,13 @@ Page({
    */
   data: {
     helpImg:'../../../static/images/go.png',
-    listArray: [{
-      show: false,
-      question: "如何注册会员?",
-      answer: "登录微信小程序，点击登录授权使用读取微信信息，即可完成初步注册，用户完成手机绑定操作后方才完成注册;"
-    }, {
+    listArray: [
+      {
         show: false,
-        question: "如何点击交互?",
-        answer: "呵呵哒。一顿神操作"
-    }]
+        question: "如何注册会员?",
+        answer: "登录微信小程序，点击登录授权使用读取微信信息，即可完成初步注册，用户完成手机绑定操作后方才完成注册;"
+      }
+    ]
   },
   showList:function(e){
     var userClickIndex = e.currentTarget.dataset.index;
