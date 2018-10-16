@@ -2,8 +2,10 @@ package com.platform.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,7 +14,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.platform.entity.QzRechargeRecordEntity;
+import com.platform.entity.SysUserEntity;
+import com.platform.entity.UserEntity;
 import com.platform.service.QzRechargeRecordService;
+import com.platform.service.SysUserService;
+import com.platform.service.UserService;
 import com.platform.utils.PageUtils;
 import com.platform.utils.Query;
 import com.platform.utils.R;
@@ -29,7 +35,12 @@ import com.platform.utils.R;
 public class QzRechargeRecordController {
     @Autowired
     private QzRechargeRecordService qzRechargeRecordService;
-
+  
+    @Autowired
+    private UserService userService;
+    
+    @Autowired
+    private SysUserService sysUserService;
     /**
      * 查看列表
      */
@@ -41,8 +52,18 @@ public class QzRechargeRecordController {
 
         List<QzRechargeRecordEntity> qzRechargeRecordList = qzRechargeRecordService.queryList(query);
         int total = qzRechargeRecordService.queryTotal(query);
-
-        PageUtils pageUtil = new PageUtils(qzRechargeRecordList, total, query.getLimit(), query.getPage());
+        
+		//封装返回数据
+         List<QzRechargeRecordEntity> result= qzRechargeRecordList.stream().map(x -> {
+        	QzRechargeRecordEntity reponse = new QzRechargeRecordEntity();
+        	 BeanUtils.copyProperties(x, reponse);
+        	 UserEntity uEntity = userService.queryObject(x.getShopUserId());
+        	 reponse.setShopUserName(uEntity.getUsername());
+        	 reponse.setUserPhone(uEntity.getMobile());
+        	 return reponse;
+        }).collect(Collectors.toList());
+        
+        PageUtils pageUtil = new PageUtils(result, total, query.getLimit(), query.getPage());
 
         return R.ok().put("page", pageUtil);
     }
@@ -60,8 +81,20 @@ public class QzRechargeRecordController {
         List<QzRechargeRecordEntity> qzRechargeRecordList = qzRechargeRecordService.queryAuditList(query);
         int total = qzRechargeRecordService.queryAuditTotal(query);
 
-        PageUtils pageUtil = new PageUtils(qzRechargeRecordList, total, query.getLimit(), query.getPage());
-
+    	//封装返回数据
+        List<QzRechargeRecordEntity> result= qzRechargeRecordList.stream().map(x -> {
+       	QzRechargeRecordEntity reponse = new QzRechargeRecordEntity();
+       	 BeanUtils.copyProperties(x, reponse);
+       	 UserEntity uEntity = userService.queryObject(x.getShopUserId());
+       	 reponse.setShopUserName(uEntity.getUsername());
+       	 reponse.setUserPhone(uEntity.getMobile());
+       	 
+       	SysUserEntity sysUserEntity = sysUserService.queryObject(x.getAuditId());
+       	reponse.setOperate(sysUserEntity.getUsername());
+       	 return reponse;
+       }).collect(Collectors.toList());
+       
+       PageUtils pageUtil = new PageUtils(result, total, query.getLimit(), query.getPage());
         return R.ok().put("page", pageUtil);
     }
     

@@ -34,7 +34,7 @@ public class GoodsEntity implements Serializable {
     //商品描述
     private String goodsDesc;
     //上架
-    private Integer isOnSale; //0 下架  1上架 2 申请上架  3申请下架
+    private Integer isOnSale; //0 下架  1上架 2 申请上架  3申请下架  -1编辑状态
     //添加时间
     private Date addTime;
     //修改时间

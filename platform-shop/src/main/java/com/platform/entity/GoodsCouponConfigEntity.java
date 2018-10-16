@@ -32,8 +32,74 @@ public class GoodsCouponConfigEntity  implements Serializable {
     private Long createUserDeptId;
     //
     private String delFlag;
+    
+    //部门名称
+    private String deptName;
+    
+    //名称
+    private String name;
+    
+    //品牌Id
+    private Integer brandId;
+    
+    //商品类型
+    private String categoryName;
+    
+    
+    //商品类型Id
+    private Integer categoryId;
+    
+    //属性类别
+    private String attributeCategoryName;
+ 
+    //品牌
+    private String brandName;
+    
+    
+    public Integer getCategoryId() {
+		return categoryId;
+	}
 
-    /**
+	public void setCategoryId(Integer categoryId) {
+		this.categoryId = categoryId;
+	}
+
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
+
+	public String getAttributeCategoryName() {
+		return attributeCategoryName;
+	}
+
+	public void setAttributeCategoryName(String attributeCategoryName) {
+		this.attributeCategoryName = attributeCategoryName;
+	}
+
+	public String getDeptName() {
+		return deptName;
+	}
+
+	public void setDeptName(String deptName) {
+		this.deptName = deptName;
+	}
+
+	//属性类别
+    private Integer attributeCategory;
+    
+    public String getBrandName() {
+		return brandName;
+	}
+
+	public void setBrandName(String brandName) {
+		this.brandName = brandName;
+	}
+
+	/**
      * 设置：
      */
     public void setId(Integer id) {
@@ -79,7 +145,31 @@ public class GoodsCouponConfigEntity  implements Serializable {
         this.createUserId = createUserId;
     }
 
-    /**
+    public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Integer getBrandId() {
+		return brandId;
+	}
+
+	public void setBrandId(Integer brandId) {
+		this.brandId = brandId;
+	}
+
+	public Integer getAttributeCategory() {
+		return attributeCategory;
+	}
+
+	public void setAttributeCategory(Integer attributeCategory) {
+		this.attributeCategory = attributeCategory;
+	}
+
+	/**
      * 获取：
      */
     public Long getCreateUserId() {

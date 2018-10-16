@@ -3,8 +3,19 @@ $(function () {
         url: '../goodscouponconfig/list',
         colModel: [
 			{label: 'id', name: 'id', index: 'id', key: true, hidden: true},
-			{label: '商品ID', name: 'goodsId', index: 'goods_id', width: 80},
+			/*{label: '商品ID', name: 'goodsId', index: 'goods_id', width: 80}*/
+		
+			{label: '商户', name: 'deptName', index: 'dept_id', width: 80},
+			
+			{label: '商品', name: 'name', index: 'goods_id', width: 80},
+			
+			{label: '类型', name: 'categoryName', index: 'category_id', width: 80},
+			
+			{label: '品牌', name: 'brandName', index: 'brand_id', width: 80},
+			
 			{label: '配比值', name: 'goodValue', index: 'good_value', width: 80},
+			
+			
 	/*		{label: '创建用户ID', name: 'createUserId', index: 'create_user_id', width: 80},
 			{label: '更新用户ID', name: 'updateUserId', index: 'update_user_id', width: 80},
 			{label: '更新时间', name: 'updateTime', index: 'update_time', width: 80},

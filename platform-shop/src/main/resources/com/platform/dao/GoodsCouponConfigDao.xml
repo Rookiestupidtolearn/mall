@@ -29,17 +29,34 @@
 	</select>
 
 	<select id="queryList" resultType="com.platform.entity.GoodsCouponConfigEntity">
-		select
-    		`id`,
-    		`goods_id`,
-    		`good_value`,
-    		`create_user_id`,
-    		`update_user_id`,
-    		`update_time`,
-    		`create_user_dept_id`,
-    		`del_flag`
-		from goods_coupon_config
-		WHERE 1=1
+		SELECT  
+ 	goods_coupon_config.id id,
+	goods_coupon_config.good_value,
+ 	nideshop_goods.category_id category_id,
+ 	nideshop_goods.name name,
+ 	goods_coupon_config.goods_id goods_id,
+	goods_coupon_config.good_value good_value,
+ 
+	goods_coupon_config.update_user_id goods_coupon_config,
+ 	goods_coupon_config.update_time update_time,
+	nideshop_goods.create_user_dept_id create_user_dept_id,
+ 	goods_coupon_config.del_flag del_flag,
+ 	sys_dept. NAME deptName,
+	sys_dept.dept_id dept_id,
+ 	nideshop_category. NAME category_name,
+ 	nideshop_attribute_category. NAME attribute_category_name,
+	nideshop_brand. NAME brand_name
+	FROM	nideshop_goods
+	LEFT JOIN nideshop_category ON nideshop_goods.category_id = nideshop_category.id
+	LEFT JOIN nideshop_attribute_category ON nideshop_goods.attribute_category = nideshop_attribute_category.id
+	LEFT JOIN nideshop_brand ON nideshop_brand.id = nideshop_goods.brand_id
+	LEFT JOIN goods_coupon_config ON nideshop_goods.id = goods_coupon_config.goods_id
+	LEFT JOIN sys_user ON nideshop_goods.create_user_id = sys_user.user_id
+	LEFT JOIN sys_dept ON sys_dept.dept_id = sys_user.dept_id
+
+
+        WHERE 1=1
+		  
 		<if test="name != null and name.trim() != ''">
 			AND name LIKE concat('%',#{name},'%')
 		</if>
