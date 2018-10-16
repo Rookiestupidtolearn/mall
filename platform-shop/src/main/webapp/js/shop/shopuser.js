@@ -47,7 +47,12 @@ var vm = new Vue({
     el: '#rrapp',
     data: {
         showList: true,
+        addList:false,
+        rechargeList :false,
         title: null,
+        mobiles: null,
+        amount :null,
+        memo : null,
         user: {
             gender: 1
         },
@@ -65,8 +70,51 @@ var vm = new Vue({
         query: function () {
             vm.reload();
         },
-        add: function () {
+        recharge: function () {
+            var ids = $("#jqGrid").getGridParam("selarrrow");
+            var mobiles = [];
+            var iday = [];
+            for(i=0;i<ids.length;i++){
+            	var rowData = $("#jqGrid").jqGrid("getRowData",ids[i]);//根据上面的id获得本行的所有数据
+            	var mobile= rowData.mobile;
+            	var id= rowData.id;
+            	if(mobile.length >0){
+            		mobiles.push(mobile);
+        			iday.push(id);
+            	}
+            }
             vm.showList = false;
+            vm.rechargeList = true;
+            vm.title = "充值";
+            vm.mobiles = mobiles.join(",");
+         
+        },
+        rechargeSubmit: function () {
+            var url = "../qzrechargerecord/recharge";
+            var mobiles=  vm.mobiles;
+            var amount=  vm.amount;
+            var memo = vm.memo;  
+            Ajax.request({
+                type: "GET",
+                url: url,
+                contentType: "application/json",
+                params: {
+                	"mobiles" : mobiles,
+                	amount : amount,
+                	memo : memo
+                },
+                successCallback: function (r) {
+                    alert('操作成功', function (index) {
+                        vm.reload();
+                    });
+                }
+            });
+        },
+
+        add: function () {
+        	 vm.addList=true,
+            vm.showList = false;
+            vm.rechargeList =false,
             vm.title = "新增";
             vm.user = {gender: '1'};
             vm.userLevels = [];
@@ -78,7 +126,9 @@ var vm = new Vue({
             if (id == null) {
                 return;
             }
+            vm.addList=true,
             vm.showList = false;
+            vm.rechargeList =false,
             vm.title = "修改";
 
             vm.getInfo(id)
@@ -179,6 +229,8 @@ var vm = new Vue({
         },
         reload: function (event) {
             vm.showList = true;
+            vm.addList=false;
+            vm.rechargeList=false;
             var page = $("#jqGrid").jqGrid('getGridParam', 'page');
             $("#jqGrid").jqGrid('setGridParam', {
                 postData: {'username': vm.q.username},

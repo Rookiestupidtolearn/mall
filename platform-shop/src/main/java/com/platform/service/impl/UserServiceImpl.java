@@ -1,12 +1,16 @@
 package com.platform.service.impl;
 
 import com.platform.dao.UserDao;
+import com.platform.entity.QzRechargeRecordEntity;
 import com.platform.entity.UserEntity;
 import com.platform.service.UserService;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -56,5 +60,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public int deleteBatch(Integer[] ids) {
         return userDao.deleteBatch(ids);
+    }
+    
+    @Override
+    public UserEntity queryEntityByMobile(String mobile){
+    	UserEntity entity = new UserEntity();
+    	Map<String, Object> map = new HashMap<String, Object>();
+    	map.put("mobile", mobile);
+    	List<UserEntity> entities =	queryList(map);
+    	if (!CollectionUtils.isEmpty(entities)) {
+    		entity = entities.get(0);
+		}
+		return entity;
     }
 }
