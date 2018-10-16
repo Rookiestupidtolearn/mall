@@ -1,4 +1,8 @@
 // pages/ucenter/accountSecurity/accountSecurity.js
+var api = require('../../../config/api.js');
+var util = require('../../../utils/util.js');
+var app = getApp()
+
 Page({
 
   /**
@@ -7,7 +11,7 @@ Page({
   data: {
     loginName:'',
     loginUrl:'',
-    telephone:'12345678915'
+    telephone:''
   },
   exitLogin: function () {
     wx.showModal({
@@ -26,29 +30,42 @@ Page({
     })
 
   },
+  validateMobile:function(mobile){
+    /*手机号加密处理*/
+    var first = mobile.substr(0, 3);
+    var last = mobile.substr(mobile.length - 4, 4);
+    var finalPhone = first + '****' + last;
+    return finalPhone;
+  },
+  bindPhone:function(){
+    wx.navigateTo({
+      url: '/pages/auth/mobile/mobile',
+    })
+  },
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
     var that = this;
-    /*手机号加密处理*/ 
-    var telephone = this.data.telephone;
-    var first = telephone.substr(0,3);
-    var last = telephone.substr(telephone.length-4,4);
-    var final = first+'****'+last;
-    that.setData({
-      telephone:final
-    })
-    /*读取缓存信息*/
-    wx.getStorage({
-      key: 'userInfo',
-      success: function(res) {
+
+    /*获取手机号*/
+    util.request(api.UserMobile).then(function (res) {
+      var mobile = res.data.mobile;
+      that.setData({
+        loginName: res.data.nickname,
+        loginUrl: res.data.avatar
+      })
+      if (mobile == null || mobile == ''){
         that.setData({
-          loginName:res.data.nickName,
-          loginUrl:res.data.avatarUrl
+          telephone: '去绑定'
         })
-      },
+      }else{
+        that.setData({
+          telephone: that.validateMobile(mobile)
+        })
+      }
     })
+    
   },
 
   /**

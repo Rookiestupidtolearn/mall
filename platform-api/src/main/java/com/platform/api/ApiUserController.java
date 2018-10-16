@@ -197,9 +197,13 @@ public class ApiUserController extends ApiBaseAction {
     public Object userInfo(@LoginUser UserVo loginUser) {
     	Map<String, Object> obj = new HashMap<String, Object>();
     	if(loginUser == null){
-    		return obj.put("data", "");
+    		obj.put("data","查询用户信息异常");
+    		return obj;
     	}else{
-    		return obj.put("data",loginUser);
+    		UserVo userInfo = loginUser;
+    		userInfo.setPassword("");
+    		obj.put("data",userInfo);
+    		return obj;
     	}
     }
     
