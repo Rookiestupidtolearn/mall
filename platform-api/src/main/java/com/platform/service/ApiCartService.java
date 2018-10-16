@@ -1,10 +1,17 @@
 package com.platform.service;
 
 import com.platform.dao.ApiCartMapper;
+import com.platform.dao.ApiUserCouponMapper;
+import com.platform.dao.GoodsCouponConfigMapper;
 import com.platform.entity.CartVo;
+import com.platform.entity.GoodsCouponConfigVo;
+import com.platform.entity.ProductVo;
+import com.platform.entity.UserCouponVo;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +22,12 @@ import java.util.Map;
 public class ApiCartService {
     @Autowired
     private ApiCartMapper cartDao;
+    @Autowired
+    private ApiUserCouponMapper apiUserCouponMapper;
+    @Autowired
+    private GoodsCouponConfigMapper goodsCouponConfigMapper;
+    @Autowired
+    private ApiProductService productService;
 
     public CartVo queryObject(Integer id) {
         return cartDao.queryObject(id);
@@ -119,6 +132,8 @@ public class ApiCartService {
             for (CartVo cartItem : cartUpdateList) {
                 cartDao.update(cartItem);
             }
+            ProductVo productInfo = productService.queryObject(Integer.parseInt(productIds[0]));
+            updateUserCouponPrice(userId, cartUpdateList.get(0).getGoods_id(),Integer.parseInt(productIds[0]),productInfo != null ? productInfo : null, cartUpdateList.size());
         }
     }
 
@@ -132,6 +147,50 @@ public class ApiCartService {
 
     public void deleteByCart(Long user_id, Integer session_id, Integer checked) {
         cartDao.deleteByCart(user_id, session_id, checked);
+    }
+    public Object updateUserCouponPrice(Long userId,Integer goodId,Integer productId,ProductVo productInfo,Integer number){
+    	BigDecimal couponTotalPrice = BigDecimal.ZERO;
+    	Map<String, Object> param = new HashMap<String, Object>();
+    	 //删除原有优惠券信息
+        param.put("good_id", goodId);
+        param.put("user_id", userId);
+        apiUserCouponMapper.delete(param);
+        //获取优惠券比例
+        GoodsCouponConfigVo goodsCoupon = goodsCouponConfigMapper.getUserCoupon((new Long(goodId).intValue()));
+        if(goodsCoupon != null){
+        	couponTotalPrice = productInfo.getRetail_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(number));
+        }
+      //新生成优惠券
+        UserCouponVo userCoupon = new UserCouponVo();
+        userCoupon.setCoupon_id(11);
+        userCoupon.setCoupon_number("1");
+        userCoupon.setUser_id(userId);
+        userCoupon.setCoupon_status(1);
+        userCoupon.setCoupon_price(couponTotalPrice);
+        userCoupon.setGood_id(productInfo.getGoods_id());
+        apiUserCouponMapper.save(userCoupon);
+        if(null == userCoupon.getId()){
+        	return this.toResponsObject(400, "优惠券生成失败", "");
+        }
+        return this.toResponsObject(0, "优惠券生成成功", "");
+    }
+    /**
+     * @param requestCode
+     * @param msg
+     * @param data
+     * @return Map<String,Object>
+     * @throws
+     * @Description:构建统一格式返回对象
+     * @date 2016年9月2日
+     * @author zhuliyun
+     */
+    public Map<String, Object> toResponsObject(int requestCode, String msg, Object data) {
+        Map<String, Object> obj = new HashMap<String, Object>();
+        obj.put("errno", requestCode);
+        obj.put("errmsg", msg);
+        if (data != null)
+            obj.put("data", data);
+        return obj;
     }
 
 }

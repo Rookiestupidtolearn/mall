@@ -1,6 +1,7 @@
 package com.platform.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 
@@ -30,9 +31,12 @@ public class UserCouponVo implements Serializable {
     private String source_key;
     //分享人
     private Long referrer;
-    
+    //优惠券状态
     private int coupon_status;
-
+    //优惠券价格
+    private BigDecimal coupon_price;
+    //商品id
+    private Integer good_id;
     public Integer getId() {
         return id;
     }
@@ -112,6 +116,22 @@ public class UserCouponVo implements Serializable {
 
 	public void setCoupon_status(int coupon_status) {
 		this.coupon_status = coupon_status;
+	}
+
+	public BigDecimal getCoupon_price() {
+		return coupon_price;
+	}
+
+	public void setCoupon_price(BigDecimal coupon_price) {
+		this.coupon_price = coupon_price;
+	}
+
+	public Integer getGood_id() {
+		return good_id;
+	}
+
+	public void setGood_id(Integer good_id) {
+		this.good_id = good_id;
 	}
     
     
