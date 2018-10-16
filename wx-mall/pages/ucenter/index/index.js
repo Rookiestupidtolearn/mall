@@ -26,7 +26,6 @@ Page({
     onLoad: function (options) {
         // 页面初始化 options为页面跳转所带来的参数
         console.log(app.globalData);
-      this.userAccount();
     },
     onReady: function () {
 
@@ -39,15 +38,17 @@ Page({
         if (userInfo && token) {
             app.globalData.userInfo = userInfo;
             app.globalData.token = token;
+          this.userAccount();
             this.setData({
-              availResult: false
+              availResult: false,
+              userInfo: app.globalData.userInfo
             });
         }
 
         this.setData({
             userInfo: app.globalData.userInfo,
         });
-
+        
     },
     onHide: function () {
         // 页面隐藏
@@ -65,6 +66,7 @@ Page({
         if (e.detail.userInfo){
             //用户按了允许授权按钮
             user.loginByWeixin(e.detail).then(res => {
+              this.userAccount();
                 this.setData({
                     userInfo: res.data.userInfo,
                     availResult: false

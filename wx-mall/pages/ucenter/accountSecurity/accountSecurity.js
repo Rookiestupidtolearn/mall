@@ -5,7 +5,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-    loginName:'卢峰',
+    loginName:'',
     loginUrl:'',
     telephone:'12345678915'
   },
