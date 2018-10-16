@@ -231,8 +231,6 @@ public class ApiCartController extends ApiBaseAction {
              * 			1.2  没有    新增一条
              * */  
             getUserCouponTotalPrice(loginUser.getUserId(),couponTotalPrice);
-            
-            
             /***
              * 购物车 时效性 
              * 			

@@ -189,7 +189,7 @@ public class ApiOrderService {
         //留言
         orderInfo.setPostscript(postscript);
         //使用的优惠券
-        orderInfo.setCoupon_id(userCoupon.getId());
+//        orderInfo.setCoupon_id(userCoupon.getId());
         orderInfo.setCoupon_price(couponTotalPrice);//查询抵扣比例
         orderInfo.setAdd_time(new Date());
         orderInfo.setGoods_price(goodsTotalPrice);
@@ -245,10 +245,10 @@ public class ApiOrderService {
         //
         resultObj.put("data", orderInfoMap);
         // 优惠券标记已用
-        if (userCoupon != null && userCoupon.getCoupon_status() == 1) {
-        	userCoupon.setCoupon_status(2);
-            apiUserCouponMapper.updateUserCoupon(userCoupon);
-        }
+//        if (userCoupon != null && userCoupon.getCoupon_status() == 1) {
+//        	userCoupon.setCoupon_status(2);
+//            apiUserCouponMapper.updateUserCoupon(userCoupon);
+//        }
 
         return resultObj;
     }
