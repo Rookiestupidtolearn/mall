@@ -188,4 +188,19 @@ public class ApiUserController extends ApiBaseAction {
         }
         return null;
     }
+    
+    /**
+     * 提供登录的用户信息,供小程序调用使用
+     */
+    @ApiOperation(value = "获取登录用户信息")
+    @PostMapping("userInfo")
+    public Object userInfo(@LoginUser UserVo loginUser) {
+    	Map<String, Object> obj = new HashMap<String, Object>();
+    	if(loginUser == null){
+    		return obj.put("data", "");
+    	}else{
+    		return obj.put("data",loginUser);
+    	}
+    }
+    
 }
