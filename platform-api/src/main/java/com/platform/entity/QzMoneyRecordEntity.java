@@ -2,7 +2,10 @@ package com.platform.entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import com.platform.utils.DateUtils;
 
 /**
  * 用户资金流水实体
@@ -113,8 +116,12 @@ public class QzMoneyRecordEntity implements Serializable {
     /**
      * 设置：创建时间
      */
-    public void setCreateTime(Date createTime) {
+   /* public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }*/
+    public void setCreateTime(Date createTime) {
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        this.createTime = DateUtils.strToDate(sdf.format(createTime));
     }
 
     /**

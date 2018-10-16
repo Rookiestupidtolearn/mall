@@ -190,10 +190,6 @@
 		where shop_user_id = #{userId}
 	</select>
 	
-<<<<<<< HEAD
-=======
-    
->>>>>>> 74fd80229fffb4f48446b3436d3ad100ce344c20
     <!-- 查询用户资金流水 -->
     <select id="queryuserAccountDetail" resultType="com.platform.entity.QzMoneyRecordEntity">
 	    select
