@@ -1,25 +1,47 @@
 package com.platform.api;
 
-import com.alibaba.fastjson.JSONObject;
-import com.platform.annotation.LoginUser;
-import com.platform.cache.J2CacheUtils;
-import com.platform.dao.ApiCouponMapper;
-import com.platform.dao.ApiUserCouponMapper;
-import com.platform.dao.GoodsCouponConfigMapper;
-import com.platform.entity.*;
-import com.platform.service.*;
-import com.platform.util.ApiBaseAction;
-import com.qiniu.util.StringUtils;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.alibaba.fastjson.JSONObject;
+import com.platform.annotation.LoginUser;
+import com.platform.cache.J2CacheUtils;
+import com.platform.dao.ApiCouponMapper;
+import com.platform.dao.ApiOrderMapper;
+import com.platform.dao.ApiUserCouponMapper;
+import com.platform.dao.GoodsCouponConfigMapper;
+import com.platform.entity.AddressVo;
+import com.platform.entity.BuyGoodsVo;
+import com.platform.entity.CartVo;
+import com.platform.entity.CouponInfoVo;
+import com.platform.entity.CouponVo;
+import com.platform.entity.GoodsCouponConfigVo;
+import com.platform.entity.GoodsSpecificationVo;
+import com.platform.entity.GoodsVo;
+import com.platform.entity.OrderVo;
+import com.platform.entity.ProductVo;
+import com.platform.entity.UserCouponVo;
+import com.platform.entity.UserVo;
+import com.platform.service.ApiAddressService;
+import com.platform.service.ApiCartService;
+import com.platform.service.ApiCouponService;
+import com.platform.service.ApiGoodsService;
+import com.platform.service.ApiGoodsSpecificationService;
+import com.platform.service.ApiProductService;
+import com.platform.util.ApiBaseAction;
+import com.qiniu.util.StringUtils;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * 作者: @author Harmon <br>
@@ -48,6 +70,8 @@ public class ApiCartController extends ApiBaseAction {
     private GoodsCouponConfigMapper goodsCouponConfigMapper;
     @Autowired
     private ApiUserCouponMapper apiUserCouponMapper;
+    @Autowired
+    private ApiOrderMapper apiOrderMapper;
 
     /**
      * 获取购物车中的数据
@@ -231,20 +255,6 @@ public class ApiCartController extends ApiBaseAction {
              * 			1.2  没有    新增一条
              * */  
             getUserCouponTotalPrice(loginUser.getUserId(),couponTotalPrice);
-            /***
-             * 购物车 时效性 
-             * 			
-             * 		1.支付成功	
-             * 		     	优惠券已经使用
-             * 
-             * 		2.超时未支付
-             * 			   	优惠券失效 逻辑删除
-             * 				失效操作：
-             * 					回滚平台币
-             * 					作废优惠券
-             * 					查看是否需要清除购物车
-             */
-            
         } else {
             //如果已经存在购物车中，则数量增加
             if (productInfo.getGoods_number() < (number + cartInfo.getNumber())) {
@@ -260,7 +270,19 @@ public class ApiCartController extends ApiBaseAction {
         }
         return toResponsSuccess(getCart(loginUser));
     }
-    
+    /***
+     * 购物车 时效性 
+     * 			
+     * 		1.支付成功	
+     * 		     	优惠券已经使用
+     * 
+     * 		2.超时未支付 
+     * 			   	优惠券失效 逻辑删除
+     * 				失效操作：
+     * 					回滚平台币
+     * 					作废优惠券
+     * 					查看是否需要清除购物车
+     */
     
 
     /**
