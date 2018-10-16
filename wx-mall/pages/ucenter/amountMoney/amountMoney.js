@@ -1,38 +1,55 @@
 // pages/ucenter/amountMoney/amountMoney.js
+var util = require('../../../utils/util.js');
+var api = require('../../../config/api.js');
+var app = getApp();
+
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-      boxMount:[
-        {
-          ExchangeName: "平台发放",
-          ExchangeDate: "2017-12-08 10:05:36",
-          PayPoints: "-100.00",
-        },
-        {
-          ExchangeName: "兑换优惠券",
-          ExchangeDate: "2017-12-08 10:05:36",
-          PayPoints: "+600.00",
-        },
-        {
-          ExchangeName: "兑换10¥代金券",
-          ExchangeDate: "2017-12-08 10:05:36",
-          PayPoints: "-190.00",
-        },
-        {
-          ExchangeName: "兑换5¥代金券",
-          ExchangeDate: "2017-12-08 10:05:36",
-          PayPoints: "-100.00",
-        }
-      ]
+      boxMount:[]
   },
 
   getUserInfoMoney: function () {
-      
+    var that = this;
+    util.request(api.UserAccountDetail).then(function(res){
+      if (res.code == 1) {
+        for(var i=0; i<res.data.length; i++){
+          res.data[i].createTime = that.timestampToTime(res.data[i].createTime);
+          if (res.data[i].tranFlag == 1){
+            res.data[i].tarnAmount = '+' + res.data[i].tarnAmount
+          }else{
+            res.data[i].tarnAmount = '-' + res.data[i].tarnAmount
+          }
+        }
+        that.setData({
+          boxMount:res.data
+        })
+      }else{
+        util.showSuccessToast(res.data);
+      }
+    })
   },
-
+  //时间戳转换成日期
+  timestampToTime:function (timestamp) {
+    var date = new Date(timestamp);
+    var Y = date.getFullYear() + '-';
+    var M = this.addTo(date.getMonth() + 1) + '-';
+    var D = this.addTo(date.getDate()) + ' ';
+    var h = date.getHours() + ':';
+    var m = date.getMinutes() + ':';
+    var s = date.getSeconds();
+    return Y + M + D + h + m + s;
+  },//月，日格式化
+	addTo:function (e) {
+    if (e < 10) {
+      return '0' + e;
+    } else {
+      return e;
+    }
+  },
   /**
    * 生命周期函数--监听页面加载
    */
