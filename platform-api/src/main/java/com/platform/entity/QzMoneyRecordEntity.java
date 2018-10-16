@@ -116,14 +116,10 @@ public class QzMoneyRecordEntity implements Serializable {
     /**
      * 设置：创建时间
      */
-   /* public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }*/
     public void setCreateTime(Date createTime) {
-    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        this.createTime = DateUtils.strToDate(sdf.format(createTime));
+        this.createTime = createTime;
     }
-
+    
     /**
      * 获取：创建时间
      */
