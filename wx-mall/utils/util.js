@@ -35,7 +35,8 @@ function request(url, data = {}, method = "POST", header = "application/x-www-fo
         console.log("success");
         if (res.statusCode == 200) {
           if (res.data.errno == 401) {
-            if (url !== 'http://localhost:8080/platform/api/user/userAccount'){
+            var urlSub = url.substr(url.length-11,11);
+            if (urlSub !== 'userAccount'){
               //需要登录后才可以操作
               wx.showModal({
                   title: '',
