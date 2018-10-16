@@ -1,13 +1,11 @@
 package com.platform.dao;
 
-import com.platform.entity.CouponVo;
-import com.platform.entity.SmsLogVo;
-import com.platform.entity.UserCouponVo;
-
 import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
+
+import com.platform.entity.UserCouponVo;
 
 /**
  * @author lipengjun
