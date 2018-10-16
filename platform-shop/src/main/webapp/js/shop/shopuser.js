@@ -112,7 +112,9 @@ var vm = new Vue({
         },
 
         add: function () {
+        	 vm.addList=true,
             vm.showList = false;
+            vm.rechargeList =false,
             vm.title = "新增";
             vm.user = {gender: '1'};	
             vm.userLevels = [];
@@ -124,7 +126,9 @@ var vm = new Vue({
             if (id == null) {
                 return;
             }
+            vm.addList=true,
             vm.showList = false;
+            vm.rechargeList =false,
             vm.title = "修改";
 
             vm.getInfo(id)
