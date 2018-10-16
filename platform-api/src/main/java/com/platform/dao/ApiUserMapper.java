@@ -1,6 +1,7 @@
 package com.platform.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -48,4 +49,11 @@ public interface ApiUserMapper extends BaseDao<UserVo> {
      * @return
      */
     List<QzMoneyRecordEntity> queryuserAccountDetail(Integer userId);
+    
+    /**根据条件查询实体
+     * 
+     * @param paramMap
+     * @return
+     */
+	List<UserVo> queryUserInfo(Map paramMap);
 }

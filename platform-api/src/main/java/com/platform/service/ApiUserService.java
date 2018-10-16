@@ -111,8 +111,23 @@ public class ApiUserService {
 		return userDao.queryUserAccount(userId);
 	}
 
+	/**
+	 * 查询用户资金流水
+	 * @param userId
+	 * @return
+	 */
 	public List<QzMoneyRecordEntity> queryuserAccountDetail(Integer userId) {
 		return userDao.queryuserAccountDetail(userId);
+	}
+
+	/**
+	 * 根据条件查询用户信息
+	 * @param Map
+	 * map中可传参数：userid 用户id、username 用户名、gender 性别、nickname 昵称、mobile 手机号、weixin_openid 微信openId
+	 * @return List<UserVo>
+	 */
+	public List<UserVo> queryUserInfo(Map paramMap) {
+		return userDao.queryUserInfo(paramMap);
 	}
 
     

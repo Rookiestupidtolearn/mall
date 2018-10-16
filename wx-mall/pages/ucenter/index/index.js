@@ -19,7 +19,7 @@ Page({
             availMoney: res.data
           });
         }else{
-          util.showErrorToast(res.data);
+            util.showErrorToast(res.data);
         }
       })
     },

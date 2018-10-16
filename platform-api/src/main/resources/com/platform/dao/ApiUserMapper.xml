@@ -48,6 +48,17 @@
     <select id="queryObject" resultMap="userMap">
 		select * from nideshop_user where id = #{value}
 	</select>
+	
+	
+	<select id="queryUserInfo" parameterType="java.util.Map" resultType="com.platform.entity.UserVo">
+		select * from nideshop_user where 1=1
+		<if test="userid != null"> and id = #{userid}</if>
+		<if test="username != null and username.trim() != ''"> and username = #{username}</if>
+		<if test="gender != null"> and gender = #{gender} </if>
+		<if test="nickname != null and nickname.trim() != ''"> and nickname = #{nickname}</if>
+		<if test="mobile != null and mobile.trim() != ''"> and mobile = #{mobile}</if>
+		<if test="weixin_openid != null and weixin_openid.trim() != ''"> and weixin_openid = #{weixin_openid}</if>
+	</select>
 
     <select id="queryByOpenId" resultMap="userMap">
         select * from nideshop_user

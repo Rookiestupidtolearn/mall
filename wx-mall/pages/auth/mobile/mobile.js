@@ -94,7 +94,7 @@ Page({
                 }else{
                   wx.showModal({
                     title: '提示',
-                    content: res.msg,
+                    content: res.errmsg,
                     showCancel: false
                   })
                 }
@@ -124,7 +124,7 @@ Page({
                 } else {
                     wx.showModal({
                         title: '提示',
-                        content: '验证码错误',
+                        content: res.errmsg,
                         showCancel: false
                     })
                 }
