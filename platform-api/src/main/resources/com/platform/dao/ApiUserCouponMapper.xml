@@ -14,6 +14,8 @@
         <result property="order_id" column="order_id"/>
         <result property="source_key" column="source_key"/>
         <result property="referrer" column="referrer"/>
+         <result property="coupon_price" column="coupon_price"/>
+        <result property="good_id" column="good_id"/>
     </resultMap>
 
     <select id="queryObject" resultMap="userCouponMap">
@@ -127,7 +129,7 @@
 		and uc.good_id = #{good_id} 
 		and uc.coupon_status = 1
 	</select>
-	<delete id="delete">
+	<delete id="deleteUserCoupon">
 		delete from nideshop_user_coupon where 
 		<if test="good_id != null">
            good_id = #{good_id}
