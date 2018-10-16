@@ -6,7 +6,7 @@ Page({
    */
   data: {
     loginName:'卢峰',
-    loginUrl:'../../../static/images/icon_go_more.png',
+    loginUrl:'',
     telephone:'12345678915'
   },
   exitLogin: function () {
@@ -30,12 +30,24 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    var that = this;
+    /*手机号加密处理*/ 
     var telephone = this.data.telephone;
     var first = telephone.substr(0,3);
     var last = telephone.substr(telephone.length-4,4);
     var final = first+'****'+last;
-    this.setData({
+    that.setData({
       telephone:final
+    })
+    /*读取缓存信息*/
+    wx.getStorage({
+      key: 'userInfo',
+      success: function(res) {
+        that.setData({
+          loginName:res.data.nickName,
+          loginUrl:res.data.avatarUrl
+        })
+      },
     })
   },
 
