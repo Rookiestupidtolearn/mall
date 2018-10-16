@@ -8,12 +8,25 @@ Page({
         userInfo: {},
         hasMobile: '',
         availUrl:'/pages/ucenter/amountMoney/amountMoney',
-        availMoney:'5000.00',
+        availMoney:'',
         availResult:true
+    },
+    userAccount:function(){
+      var that = this;
+      util.request(api.UserAccount).then(function (res) {
+        if(res.code == 1){
+          that.setData({
+            availMoney: res.data
+          });
+        }else{
+          util.showErrorToast(res.data);
+        }
+      })
     },
     onLoad: function (options) {
         // 页面初始化 options为页面跳转所带来的参数
-        console.log(app.globalData)
+        console.log(app.globalData);
+      this.userAccount();
     },
     onReady: function () {
 

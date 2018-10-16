@@ -1,0 +1,11 @@
+<view class='container'>
+  <view wx:for="{{listArray}}" wx:key="{{idx}}" data-index="{{index}}" bindtap='showList'>
+    <view class="question">
+      <text>{{item.question}}</text>
+      <image src='{{helpImg}}' class="{{item.show?'animation':''}}"></image>
+    </view>
+    <view class='answer' wx:if="{{item.show}}">
+      {{item.answer}}
+    </view>
+  </view>
+</view> 

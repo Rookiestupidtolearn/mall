@@ -1,0 +1,15 @@
+<!--pages/ucenter/accountSecurity/accountSecurity.wxml-->
+<view>
+  <view class='titleTop'>
+    <p>绑定账号</p>
+    <view>
+      <text class='col5e5e5e'>昵称:{{loginName}}</text>
+      <image src="{{loginUrl}}"></image>
+    </view>
+  </view>
+  <view class="titleBottom">
+    <text>绑定手机号</text>
+    <text class='col5e5e5e'>{{telephone}}</text>
+  </view>
+  <view class="logout" bindtap="exitLogin">退出登录</view>
+</view>

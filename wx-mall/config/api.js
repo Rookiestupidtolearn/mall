@@ -1,8 +1,9 @@
 const root = '/platform/api/';
 
 // const API_BASE_URL = 'http://fly2you.cn' + root;
-const API_BASE_URL = 'http://localhost:8080' + root;
-//const API_BASE_URL = 'http://192.144.156.42:8080' +  root;
+//const API_BASE_URL = 'http://localhost:8080' + root;
+ const API_BASE_URL = 'http://192.144.156.42:8080' + root;
+
 module.exports = {
     IndexUrlNewGoods: API_BASE_URL + 'index/newGoods', //新品首发
     IndexUrlHotGoods: API_BASE_URL + 'index/hotGoods', //热卖商品
@@ -77,5 +78,7 @@ module.exports = {
     GoodsCouponList: API_BASE_URL + 'coupon/listByGoods', // 商品优惠券列表   
     OrderQuery: API_BASE_URL + 'pay/query',//微信查询订单状态
 
+    UserAccount: API_BASE_URL + 'user/userAccount',//账户余额
+    UserAccountDetail: API_BASE_URL + 'user/userAccountDetail',//平台币明细
 };
 

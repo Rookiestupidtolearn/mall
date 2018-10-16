@@ -39,13 +39,13 @@
       </navigator>
     </view>
     <view class="item ">
-      <navigator url="../address/address" class="a">
+      <navigator url="/pages/ucenter/address/address" class="a">
         <text class="icon address"></text>
         <text class="txt">地址管理</text>
       </navigator>
     </view>
     <view class="item no-border">
-      <navigator url="url" class="a">
+      <navigator url="/pages/ucenter/accountSecurity/accountSecurity" class="a">
         <text class="icon security"></text>
         <text class="txt">账号安全</text>
       </navigator>
@@ -59,7 +59,7 @@
       </view>
     </button>
     <view class="item">
-      <navigator url="url" class="a">
+      <navigator url="/pages/ucenter/helpCenter/helpCenter" class="a">
         <text class="icon help"></text>
         <text class="txt">帮助中心</text>
       </navigator>
