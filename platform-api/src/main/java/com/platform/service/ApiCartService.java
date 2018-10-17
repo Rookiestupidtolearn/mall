@@ -3,11 +3,14 @@ package com.platform.service;
 import com.platform.dao.ApiCartMapper;
 import com.platform.dao.ApiUserCouponMapper;
 import com.platform.dao.GoodsCouponConfigMapper;
+import com.platform.dao.QzUserAccountMapper;
 import com.platform.entity.CartVo;
 import com.platform.entity.GoodsCouponConfigVo;
 import com.platform.entity.ProductVo;
+import com.platform.entity.QzUserAccountVo;
 import com.platform.entity.UserCouponVo;
 
+import org.apache.shiro.util.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +31,10 @@ public class ApiCartService {
     private GoodsCouponConfigMapper goodsCouponConfigMapper;
     @Autowired
     private ApiProductService productService;
+    @Autowired
+    private ApiCartMapper cartMapper;
+    @Autowired
+    private QzUserAccountMapper qzUserAccountMapper;
 
     public CartVo queryObject(Integer id) {
         return cartDao.queryObject(id);
@@ -142,7 +149,25 @@ public class ApiCartService {
     }
 
     public void deleteByUserAndProductIds(Long userId, String[] productIds) {
-        cartDao.deleteByUserAndProductIds(userId, productIds);
+    	 List<String> products= new ArrayList<>();	
+    	 cartDao.deleteByUserAndProductIds(userId, productIds);
+    	 Map<String,Object> param = new HashMap<String, Object>();
+    	 if(productIds != null && productIds.length > 0){
+    		 for(int i = 0;i < productIds.length;i++){
+    			 if(!products.contains(productIds[i])) {
+    				 products.add(productIds[i]);
+    			 }
+    		 }
+    	 }
+    	 
+	    if(!CollectionUtils.isEmpty(products)){
+	    	for(int i = 0;i<products.size();i++){
+	    		param.put("product_id", products.get(i));
+	    		param.put("user_id", userId);
+	    		List<CartVo> cart = cartMapper.queryList(param);
+	    		updateUserCouponPrice(cart.get(0).getGoods_id(),cart.get(0).getProduct_id(),cart.get(0).getNumber(),userId);
+	    	}
+	    }
     }
 
     public void deleteByCart(Long user_id, Integer session_id, Integer checked) {
@@ -156,7 +181,7 @@ public class ApiCartService {
         param.put("user_id", userId);
         apiUserCouponMapper.delete(param);
         //获取优惠券比例
-        GoodsCouponConfigVo goodsCoupon = goodsCouponConfigMapper.getUserCoupon((new Long(goodId).intValue()));
+        GoodsCouponConfigVo goodsCoupon = goodsCouponConfigMapper.getUserCoupons((new Long(goodId).intValue()),userId);
         if(goodsCoupon != null){
         	couponTotalPrice = productInfo.getRetail_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(number));
         }
@@ -192,5 +217,66 @@ public class ApiCartService {
             obj.put("data", data);
         return obj;
     }
-
+    
+    /**
+     * 获取商品优惠券
+     * @param goodsId
+     * @param productId
+     * @param number
+     * @param userId
+     * @return
+     */
+    public Object updateUserCouponPrice(Integer goodsId,Integer productId,Integer number,Long userId){
+   	 BigDecimal couponTotalPrice = BigDecimal.ZERO;//优惠券总价值
+        BigDecimal couponlPrice = BigDecimal.ZERO;//优惠券临时总价值
+        // 获取平台币 TODO
+        BigDecimal amount = BigDecimal.ZERO;
+        QzUserAccountVo userAmountVo =qzUserAccountMapper.queruUserAccountInfo(userId);
+        ProductVo productInfo = productService.queryObject(productId);
+        if(number != null){
+       	 if (null == productInfo || productInfo.getGoods_number() < number) {
+       		 return this.toResponsObject(400, "库存不足", "");
+       	 }
+        }
+        if(userAmountVo != null){
+        	amount = userAmountVo.getAmount();
+        }
+        //获取产品配比值
+        GoodsCouponConfigVo goodsCoupon = goodsCouponConfigMapper.getUserCoupons(goodsId,userId);
+        /**
+         * 1.获取用户的平台币
+         *   获取产品配比
+         *   	判断配比
+         *   	  1.1  平台币 等于配比值  直接兑换
+         *   	  1.2 平台币 大于配比值   取配置值
+         *   	  1.3 平台币 小于配比值   按平台币最小规则兑换 			
+         * */    
+        if(goodsCoupon != null){
+        	couponlPrice = productInfo.getRetail_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(number));
+        }
+        if(amount.compareTo(couponlPrice) == 0){
+        	couponTotalPrice = couponlPrice;
+        }
+        if(amount.compareTo(couponlPrice)>0){
+        	couponTotalPrice = amount;
+        }
+        if(amount.compareTo(couponlPrice)<0){
+        	couponTotalPrice = couponlPrice;
+        }
+        /**
+         * 1.检查当前购物车是否已经生成了优惠券
+         * 			1.1  有       更新的优惠券值
+         * 			1.2  没有    新增一条
+         * */  
+        getUserCouponTotalPrice(userId,couponTotalPrice);
+        return this.toResponsObject(0, "执行成功", "");
+   }
+    public Object  getUserCouponTotalPrice(Long userId,BigDecimal couponTotalPrice){
+    	UserCouponVo userCouponVo = apiUserCouponMapper.queryUserCouponTotalPrice(userId);
+	    if(userCouponVo != null){
+     	   userCouponVo.setCoupon_price(userCouponVo.getCoupon_price().subtract(couponTotalPrice));
+     	   apiUserCouponMapper.update(userCouponVo);
+        }
+    	return this.toResponsObject(0, "优惠券发送成功", "");
+    }
 }
