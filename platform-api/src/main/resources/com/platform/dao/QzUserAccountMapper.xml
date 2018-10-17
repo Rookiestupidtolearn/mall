@@ -13,4 +13,12 @@
    <select id="queruUserAccountInfo" resultMap="qzUseAccountMap">
    		select * from qz_user_account where shop_user_id = #{shop_user_id}
    </select>
+   
+     <update id="updateUserAccount" parameterType="com.platform.entity.QzUserAccountVo">
+        update qz_user_account
+        <set>
+            <if test="amount != null">`amount` = #{amount}</if>
+        </set>
+        where shop_user_id = #{shop_user_id} 
+    </update>
 </mapper>

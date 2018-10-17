@@ -150,7 +150,6 @@ public class ApiCartService {
 
     public void deleteByUserAndProductIds(Long userId, String[] productIds) {
     	 List<String> products= new ArrayList<>();	
-    	 cartDao.deleteByUserAndProductIds(userId, productIds);
     	 Map<String,Object> param = new HashMap<String, Object>();
     	 if(productIds != null && productIds.length > 0){
     		 for(int i = 0;i < productIds.length;i++){
@@ -159,15 +158,17 @@ public class ApiCartService {
     			 }
     		 }
     	 }
-    	 
 	    if(!CollectionUtils.isEmpty(products)){
 	    	for(int i = 0;i<products.size();i++){
 	    		param.put("product_id", products.get(i));
 	    		param.put("user_id", userId);
-	    		List<CartVo> cart = cartMapper.queryList(param);
-	    		updateUserCouponPrice(cart.get(0).getGoods_id(),cart.get(0).getProduct_id(),cart.get(0).getNumber(),userId);
+	    		List<CartVo> cart = cartMapper.getCarts(param);
+	    		if(!CollectionUtils.isEmpty(cart)){
+	    			updateUserCouponPrice(cart.get(0).getGoods_id(),cart.get(0).getProduct_id(),cart.get(0).getNumber(),userId);
+	    		}
 	    	}
 	    }
+	    cartDao.deleteByUserAndProductIds(userId, productIds);
     }
 
     public void deleteByCart(Long user_id, Integer session_id, Integer checked) {
@@ -258,10 +259,10 @@ public class ApiCartService {
         	couponTotalPrice = couponlPrice;
         }
         if(amount.compareTo(couponlPrice)>0){
-        	couponTotalPrice = amount;
+        	couponTotalPrice = couponlPrice;
         }
         if(amount.compareTo(couponlPrice)<0){
-        	couponTotalPrice = couponlPrice;
+        	couponTotalPrice = amount;
         }
         /**
          * 1.检查当前购物车是否已经生成了优惠券
