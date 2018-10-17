@@ -264,6 +264,8 @@ public class ApiCartService {
         if(amount.compareTo(couponlPrice)<0){
         	couponTotalPrice = amount;
         }
+        userAmountVo.setAmount(userAmountVo.getAmount().add(couponTotalPrice));
+        qzUserAccountMapper.updateUserAccount(userAmountVo);
         /**
          * 1.检查当前购物车是否已经生成了优惠券
          * 			1.1  有       更新的优惠券值
@@ -276,7 +278,7 @@ public class ApiCartService {
     	UserCouponVo userCouponVo = apiUserCouponMapper.queryUserCouponTotalPrice(userId);
 	    if(userCouponVo != null){
      	   userCouponVo.setCoupon_price(userCouponVo.getCoupon_price().subtract(couponTotalPrice));
-     	  userCouponVo.setCoupon_status(1);
+     	   userCouponVo.setCoupon_status(1);
      	   apiUserCouponMapper.update(userCouponVo);
         }
     	return this.toResponsObject(0, "优惠券发送成功", "");
