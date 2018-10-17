@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.platform.dao.QzUserAccountMapper">
+	 <!-- 可根据自己的需求，是否要使用 -->
+    	<resultMap type="com.platform.entity.QzUserAccountVo" id="qzUseAccountMap">
+        <result property="id" column="id"/>
+        <result property="amount" column="amount"/>
+        <result property="last_update_time" column="last_update_time"/>
+        <result property="create_time" column="create_time"/>
+        <result property="shop_user_id" column="shop_user_id"/>
+    </resultMap>
+   <select id="queruUserAccountInfo" resultMap="qzUseAccountMap">
+   		select * from qz_user_account where shop_user_id = #{shop_user_id}
+   </select>
+   
+     <update id="updateUserAccount" parameterType="com.platform.entity.QzUserAccountVo">
+        update qz_user_account
+        <set>
+            <if test="amount != null">`amount` = #{amount}</if>
+        </set>
+        where shop_user_id = #{shop_user_id} 
+    </update>
+</mapper>

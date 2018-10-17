@@ -236,4 +236,9 @@ public class CartEntity implements Serializable {
     public void setUserName(String userName) {
         this.userName = userName;
     }
+
+	public Long getUserId() {
+		return userId;
+	}
+    
 }
