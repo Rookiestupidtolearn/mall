@@ -1,6 +1,7 @@
 package com.platform.dao;
 
 import com.platform.entity.QzUserAccountVo;
+import com.platform.entity.UserCouponVo;
 
 public interface QzUserAccountMapper extends BaseDao<QzUserAccountVo>{
 	/**
@@ -9,4 +10,10 @@ public interface QzUserAccountMapper extends BaseDao<QzUserAccountVo>{
 	 * @return
 	 */
 	QzUserAccountVo queruUserAccountInfo(Long shop_user_id);
+	/**
+	 * 更新用户平台币
+	 * @param userCouponVo
+	 * @return
+	 */
+	int updateUserAccount(QzUserAccountVo userAmountVo);
 }

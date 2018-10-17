@@ -1,6 +1,11 @@
 package com.platform.dao;
 
 import com.platform.entity.CartVo;
+import com.platform.entity.UserCouponVo;
+
+import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -17,4 +22,6 @@ public interface ApiCartMapper extends BaseDao<CartVo> {
     void deleteByUserAndProductIds(@Param("user_id") Long user_id,@Param("productIds") String[] productIds);
 
     void deleteByCart(@Param("user_id") Long user_id, @Param("session_id") Integer session_id, @Param("checked") Integer checked);
+    
+    List<CartVo> getCarts(Map<String, Object> params);
 }
