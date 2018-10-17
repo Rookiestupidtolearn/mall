@@ -249,7 +249,7 @@ public class ApiOrderService {
         	amount = userAmountVo.getAmount();
         }
 		if(orderVo != null){
-			if(orderVo.getPay_status() == 1){
+			if(orderVo.getPay_status() == 2){
 				if(userCouponVo != null){
 					userCouponVo.setCoupon_status(2);
 					apiUserCouponMapper.updateUserCoupon(userCouponVo);
