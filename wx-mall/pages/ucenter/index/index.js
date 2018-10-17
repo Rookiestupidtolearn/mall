@@ -19,14 +19,14 @@ Page({
             availMoney: res.data
           });
         }else{
-          util.showErrorToast(res.data);
+            util.showErrorToast(res.data);
         }
       })
     },
     onLoad: function (options) {
         // 页面初始化 options为页面跳转所带来的参数
         console.log(app.globalData);
-      this.userAccount();
+        this.userAccount();
     },
     onReady: function () {
 
@@ -36,18 +36,25 @@ Page({
         let token = wx.getStorageSync('token');
 
         // 页面显示
-        if (userInfo && token) {
+        if (userInfo !== '') {
             app.globalData.userInfo = userInfo;
             app.globalData.token = token;
             this.setData({
-              availResult: false
+              availResult: false,
+              userInfo: app.globalData.userInfo
             });
+        }else{
+          this.userAccount();
+          userInfo = {
+            nickName: 'Hi,游客',
+            userName: '点击去登录',
+            avatarUrl: 'https://platform-wxmall.oss-cn-beijing.aliyuncs.com/upload/20180727/150547696d798c.png'
+          };
+          this.setData({
+            availResult: true,
+            userInfo: userInfo
+          });
         }
-
-        this.setData({
-            userInfo: app.globalData.userInfo,
-        });
-
     },
     onHide: function () {
         // 页面隐藏
@@ -65,6 +72,7 @@ Page({
         if (e.detail.userInfo){
             //用户按了允许授权按钮
             user.loginByWeixin(e.detail).then(res => {
+              this.userAccount();
                 this.setData({
                     userInfo: res.data.userInfo,
                     availResult: false

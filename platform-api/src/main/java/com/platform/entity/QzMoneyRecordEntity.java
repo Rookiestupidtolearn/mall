@@ -119,7 +119,7 @@ public class QzMoneyRecordEntity implements Serializable {
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
-
+    
     /**
      * 获取：创建时间
      */

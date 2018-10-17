@@ -1,13 +1,17 @@
 // pages/ucenter/accountSecurity/accountSecurity.js
+var api = require('../../../config/api.js');
+var util = require('../../../utils/util.js');
+var app = getApp()
+
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    loginName:'卢峰',
-    loginUrl:'../../../static/images/icon_go_more.png',
-    telephone:'12345678915'
+    loginName:'',
+    loginUrl:'',
+    telephone:''
   },
   exitLogin: function () {
     wx.showModal({
@@ -19,24 +23,49 @@ Page({
           wx.removeStorageSync('token');
           wx.removeStorageSync('userInfo');
           wx.switchTab({
-            url: '/pages/index/index'
+            url: '/pages/ucenter/index/index'
           });
         }
       }
     })
 
   },
+  validateMobile:function(mobile){
+    /*手机号加密处理*/
+    var first = mobile.substr(0, 3);
+    var last = mobile.substr(mobile.length - 4, 4);
+    var finalPhone = first + '****' + last;
+    return finalPhone;
+  },
+  bindPhone:function(){
+    wx.navigateTo({
+      url: '/pages/auth/mobile/mobile',
+    })
+  },
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    var telephone = this.data.telephone;
-    var first = telephone.substr(0,3);
-    var last = telephone.substr(telephone.length-4,4);
-    var final = first+'****'+last;
-    this.setData({
-      telephone:final
+    var that = this;
+
+    /*获取手机号*/
+    util.request(api.UserMobile).then(function (res) {
+      var mobile = res.data.mobile;
+      that.setData({
+        loginName: res.data.nickname,
+        loginUrl: res.data.avatar
+      })
+      if (mobile == null || mobile == ''){
+        that.setData({
+          telephone: '去绑定'
+        })
+      }else{
+        that.setData({
+          telephone: that.validateMobile(mobile)
+        })
+      }
     })
+    
   },
 
   /**

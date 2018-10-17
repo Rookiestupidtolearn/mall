@@ -94,7 +94,7 @@ Page({
                 }else{
                   wx.showModal({
                     title: '提示',
-                    content: res.msg,
+                    content: res.errmsg,
                     showCancel: false
                   })
                 }
@@ -113,18 +113,13 @@ Page({
       util.request(api.BindMobile, { mobile_code: e.detail.value.code, mobile: mobile }, 'post', 'application/json')
             .then(function (res) {
                 if (res.errno == 0) {
-                    wx.showModal({
-                        title: '提示',
-                        content: '操作成功',
-                        showCancel: false
-                    })
                     wx.switchTab({
-                        url: '/pages/ucenter/index/index'
+                        url: '/pages/index/index'
                     });
                 } else {
                     wx.showModal({
                         title: '提示',
-                        content: '验证码错误',
+                        content: res.errmsg,
                         showCancel: false
                     })
                 }
