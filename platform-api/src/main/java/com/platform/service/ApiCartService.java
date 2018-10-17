@@ -161,8 +161,8 @@ public class ApiCartService {
     	 }
     	 
 	    if(!CollectionUtils.isEmpty(products)){
-	    	for(String product : products){
-	    		param.put("product_id", product);
+	    	for(int i = 0;i<products.size();i++){
+	    		param.put("product_id", products.get(i));
 	    		param.put("user_id", userId);
 	    		List<CartVo> cart = cartMapper.queryList(param);
 	    		updateUserCouponPrice(cart.get(0).getGoods_id(),cart.get(0).getProduct_id(),cart.get(0).getNumber(),userId);
