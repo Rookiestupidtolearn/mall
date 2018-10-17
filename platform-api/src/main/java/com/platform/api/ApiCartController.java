@@ -71,13 +71,12 @@ public class ApiCartController extends ApiBaseAction {
     @Autowired
     private GoodsCouponConfigMapper goodsCouponConfigMapper;
     @Autowired
-    private static ApiUserCouponMapper apiUserCouponMapper;
+    private  ApiUserCouponMapper apiUserCouponMapper;
     @Autowired
-    private static QzUserAccountMapper qzUserAccountMapper;
+    private  QzUserAccountMapper qzUserAccountMapper;
     @Autowired
     private ApiCartMapper apiCartMapper;
-    @Autowired
-    private static ApiOrderMapper orderDao;
+
     /**
      * 获取购物车中的数据
      */
@@ -597,7 +596,7 @@ public class ApiCartController extends ApiBaseAction {
           *   	判断配比
           *   	  1.1  平台币 等于配比值  直接兑换
           *   	  1.2 平台币 大于配比值   取配置值
-          *   	  1.3 平台币 小于配比值   按平台币最小规则兑换 			
+          *   	  1.3 平台币 小于配比值   按平台币最小规则兑换 		9514.02  9497.28
           * */    
          if(goodsCoupon != null){
          	couponlPrice = productInfo.getRetail_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(number));

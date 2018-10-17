@@ -252,12 +252,14 @@ public class ApiOrderService {
 			if(orderVo.getPay_status() == 1){
 				if(userCouponVo != null){
 					userCouponVo.setCoupon_status(2);
+					apiUserCouponMapper.updateUserCoupon(userCouponVo);
 				}
 				resultObj.put("couponStatus", "支付成功,优惠券已用");
 			}
 			if(orderVo.getPay_status() == 3){
 				if(userCouponVo != null){
-					userCouponVo.setCoupon_status(2);
+					userCouponVo.setCoupon_status(4);
+					apiUserCouponMapper.updateUserCoupon(userCouponVo);
 				}
 				//回滚平台币
 				amount = amount.add(userCouponVo.getCoupon_price());

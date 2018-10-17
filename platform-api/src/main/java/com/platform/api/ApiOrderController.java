@@ -225,12 +225,12 @@ public class ApiOrderController extends ApiBaseAction {
         }
         return toResponsFail("提交失败");
     }
-    @ApiOperation(value = "判断订单有效性")
+    @ApiOperation(value = "判断订单有效性") 
     @PostMapping("checkOrderValid")
     public JSONObject checkOrderValid(Integer orderId) {
     	JSONObject obj = new JSONObject();
         try {
-            JSONObject orderVo = orderService.checkOrderValid(21,29);
+            JSONObject orderVo = orderService.checkOrderValid(28,29);
             obj.put("statuc", "success");
             return obj;
         } catch (Exception e) {
