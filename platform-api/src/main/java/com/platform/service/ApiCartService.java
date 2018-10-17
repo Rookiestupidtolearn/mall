@@ -160,7 +160,7 @@ public class ApiCartService {
     		 }
     	 }
     	 
-	    if(CollectionUtils.isEmpty(products)){
+	    if(!CollectionUtils.isEmpty(products)){
 	    	for(String product : products){
 	    		param.put("product_id", product);
 	    		param.put("user_id", userId);
