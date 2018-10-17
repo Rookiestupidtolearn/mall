@@ -34,6 +34,9 @@
 		<if test="name != null and name.trim() != ''">
 			AND name LIKE concat('%',#{name},'%')
 		</if>
+		<if test="shopUserId != null">
+			AND shop_user_id =#{shopUserId}
+		</if>
         <choose>
             <when test="sidx != null and sidx.trim() != ''">
                 order by ${sidx} ${order}
@@ -53,6 +56,9 @@
         <if test="name != null and name.trim() != ''">
             AND name LIKE concat('%',#{name},'%')
         </if>
+        <if test="shopUserId != null">
+			AND shop_user_id =#{shopUserId}
+		</if>
 	</select>
 	 
 	<insert id="save" parameterType="com.platform.entity.QzUserAccountEntity" useGeneratedKeys="true" keyProperty="id">
