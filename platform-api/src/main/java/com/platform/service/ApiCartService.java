@@ -276,6 +276,7 @@ public class ApiCartService {
     	UserCouponVo userCouponVo = apiUserCouponMapper.queryUserCouponTotalPrice(userId);
 	    if(userCouponVo != null){
      	   userCouponVo.setCoupon_price(userCouponVo.getCoupon_price().subtract(couponTotalPrice));
+     	  userCouponVo.setCoupon_status(1);
      	   apiUserCouponMapper.update(userCouponVo);
         }
     	return this.toResponsObject(0, "优惠券发送成功", "");
