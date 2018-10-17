@@ -6,30 +6,53 @@ var app = getApp();
 Page({
     data: {
         userInfo: {},
-        hasMobile: ''
+        hasMobile: '',
+        availUrl:'/pages/ucenter/amountMoney/amountMoney',
+        availMoney:'',
+        availResult:true
+    },
+    userAccount:function(){
+      var that = this;
+      util.request(api.UserAccount).then(function (res) {
+        if(res.code == 1){
+          that.setData({
+            availMoney: res.data
+          });
+        }else{
+            util.showErrorToast(res.data);
+        }
+      })
     },
     onLoad: function (options) {
         // 页面初始化 options为页面跳转所带来的参数
-        console.log(app.globalData)
+        console.log(app.globalData);
     },
     onReady: function () {
-
     },
     onShow: function () {
-
+        this.userAccount();
         let userInfo = wx.getStorageSync('userInfo');
         let token = wx.getStorageSync('token');
 
         // 页面显示
-        if (userInfo && token) {
+        if (userInfo !== '') {
             app.globalData.userInfo = userInfo;
             app.globalData.token = token;
+            this.setData({
+              availResult: false,
+              userInfo: app.globalData.userInfo
+            });
+        }else{
+          userInfo = {
+            nickName: 'Hi,游客',
+            userName: '点击去登录',
+            avatarUrl: 'https://platform-wxmall.oss-cn-beijing.aliyuncs.com/upload/20180727/150547696d798c.png'
+          };
+          this.setData({
+            availResult: true,
+            userInfo: userInfo
+          });
         }
-
-        this.setData({
-            userInfo: app.globalData.userInfo,
-        });
-
     },
     onHide: function () {
         // 页面隐藏
@@ -47,8 +70,10 @@ Page({
         if (e.detail.userInfo){
             //用户按了允许授权按钮
             user.loginByWeixin(e.detail).then(res => {
+              this.userAccount();
                 this.setData({
-                    userInfo: res.data.userInfo
+                    userInfo: res.data.userInfo,
+                    availResult: false
                 });
                 app.globalData.userInfo = res.data.userInfo;
                 app.globalData.token = res.data.token;

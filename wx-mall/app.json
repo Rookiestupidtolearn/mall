@@ -12,13 +12,13 @@
     "pages/ucenter/feedback/feedback",
     "pages/ucenter/coupon/coupon",
     "pages/ucenter/collect/collect",
+    "pages/ucenter/amountMoney/amountMoney",
     "pages/auth/login/login",
     "pages/auth/register/register",
     "pages/auth/reset/reset",
     "pages/pay/pay",
     "pages/payResult/payResult",
     "pages/ucenter/index/index",
-    "pages/topic/topic",
     "pages/comment/comment",
     "pages/commentPost/commentPost",
     "pages/topicComment/topicComment",
@@ -33,14 +33,16 @@
     "pages/goods/goods",
     "pages/topicDetail/topicDetail",
     "pages/auth/mobile/mobile",
-    "pages/shopping/selCoupon/selCoupon"
+    "pages/shopping/selCoupon/selCoupon",
+    "pages/ucenter/accountSecurity/accountSecurity",
+    "pages/ucenter/helpCenter/helpCenter"
   ],
   "window": {
     "backgroundTextStyle": "dark",
     "navigationBarBackgroundColor": "#fff",
     "navigationBarTitleText": "奇子商城",
     "navigationBarTextStyle": "black",
-    "enablePullDownRefresh": true
+    "enablePullDownRefresh": false
   },
   "tabBar": {
     "backgroundColor": "#fafafa",
@@ -53,12 +55,6 @@
         "iconPath": "static/images/ic_menu_choice_nor.png",
         "selectedIconPath": "static/images/ic_menu_choice_pressed.png",
         "text": "首页"
-      },
-      {
-        "pagePath": "pages/topic/topic",
-        "iconPath": "static/images/ic_menu_topic_nor.png",
-        "selectedIconPath": "static/images/ic_menu_topic_pressed.png",
-        "text": "专题"
       },
       {
         "pagePath": "pages/catalog/catalog",

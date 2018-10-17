@@ -181,13 +181,20 @@ var vm = new Vue({
             var url = vm.goods.id == null ? "../goods/save" : "../goods/update";
             vm.goods.goodsDesc = $('#goodsDesc').editable('getHTML');
             vm.goods.goodsImgList = vm.uploadList;
-
+            $('#goodsName').next('div').remove();
+            if($('#goodsName input').val()==""){
+            	$('#goodsName').parent().append('<div class="ivu-form-item-error-tip">名称不能为空</div>');
+            	$('#goodsName').parent().parent().addClass('ivu-form-item-error');
+            	return false;
+            }
             Ajax.request({
                 type: "POST",
                 url: url,
                 contentType: "application/json",
                 params: JSON.stringify(vm.goods),
                 successCallback: function (r) {
+                	$('#goodsName').next('div').remove();
+                	$('#goodsName').parent().parent().removeClass('ivu-form-item-error');
                     alert('操作成功', function (index) {
                         vm.reload();
                     });

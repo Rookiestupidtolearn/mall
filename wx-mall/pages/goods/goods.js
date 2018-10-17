@@ -315,7 +315,7 @@ Page({
       }
 
       // 直接购买商品
-      util.request(api.BuyAdd, { goodsId: this.data.goods.id, number: this.data.number, productId: checkedProduct[0].id }, "POST")
+      util.request(api.BuyAdd, { goodsId: this.data.goods.id, number: this.data.number, productId: checkedProduct[0].id }, "POST","application/json")
         .then(function (res) {
           let _res = res;
           if (_res.errno == 0) {
@@ -363,12 +363,14 @@ Page({
       let checkedProduct = this.getCheckedProductItem(this.getCheckedSpecKey());
       if (!checkedProduct || checkedProduct.length <= 0) {
         //找不到对应的product信息，提示没有库存
+        util.showErrorToast("商品无库存")
         return false;
       }
 
       //验证库存
       if (checkedProduct.goods_number < this.data.number) {
         //找不到对应的product信息，提示没有库存
+        util.showErrorToast("商品无库存")
         return false;
       }
 

@@ -28,7 +28,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": -1,
+			"current": 8,
 			"list": [
 				{
 					"id": 0,
@@ -53,6 +53,35 @@
 					"name": "我的订单",
 					"pathName": "pages/ucenter/order/order",
 					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "个人中心",
+					"pathName": "pages/ucenter/index/index",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "明细",
+					"pathName": "pages/ucenter/amountMoney/amountMoney",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "账号安全",
+					"pathName": "pages/ucenter/accountSecurity/accountSecurity",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "帮助中心",
+					"pathName": "pages/ucenter/helpCenter/helpCenter",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "分类",
+					"pathName": "pages/catalog/catalog"
 				}
 			]
 		}

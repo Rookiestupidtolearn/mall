@@ -11,7 +11,7 @@
     <form bindsubmit="bindLoginMobilecode">
       <form bindsubmit="bindGetPassCode">
         <view class="login">
-          <view class="first-line"><input type="digit" name="mobile" bindinput="bindInputMobile" placeholder="输入手机号" value="{{mobile}}" auto-focus/></view>
+          <view class="first-line"><input type="digit" maxlength="11" name="mobile" bindinput="bindInputMobile" placeholder="输入手机号" value="{{mobile}}" auto-focus/></view>
           <view class="second-line">
             <input type="digit" name="code" placeholder="四位验证码"/>
             <button bindtap="countDownPassCode" disabled="{{disableGetMobileCode}}">{{getCodeButtonText}}</button>

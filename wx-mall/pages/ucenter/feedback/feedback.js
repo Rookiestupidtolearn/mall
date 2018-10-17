@@ -65,7 +65,7 @@ Page({
 
     console.log(that.data);
 
-    util.request(api.FeedbackAdd, { mobile: that.data.mobile, index: that.data.index, content: that.data.content}).then(function (res) {
+    util.request(api.FeedbackAdd, { mobile: that.data.mobile, index: that.data.index, content: that.data.content},'post','application/json').then(function (res) {
       if (res.errno === 0) {
         console.log(res.data);
       
@@ -86,7 +86,7 @@ Page({
           }
         });
       } else {
-        util.showErrorToast(res.data);
+        util.showErrorToast(res.errmsg);
       }
       
     });

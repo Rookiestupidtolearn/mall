@@ -20,9 +20,44 @@
         <result property="avatar" column="avatar"/>
         <result property="weixin_openid" column="weixin_openid"/>
     </resultMap>
+    
+    <!-- 用户资金流水实体 -->
+    <resultMap type="com.platform.entity.QzMoneyRecordEntity" id="qzMoneyRecordMap">
+        <result property="id" column="id"/>
+        <result property="shopUserId" column="shop_user_id"/>
+        <result property="tranType" column="tran_type"/>
+        <result property="tranFlag" column="tran_flag"/>
+        <result property="tarnAmount" column="tarn_amount"/>
+        <result property="currentAmount" column="current_amount"/>
+        <result property="createTime" column="create_time"/>
+        <result property="tradeNo" column="trade_no"/>
+    </resultMap>
+    
+    <!-- 用户账户实体 -->
+    <resultMap type="com.platform.entity.QzUserAccountEntity" id="qzUserAccountMap">
+        <result property="id" column="id"/>
+        <result property="shopUserId" column="shop_user_id"/>
+        <result property="amount" column="amount"/>
+        <result property="lastUpdateTime" column="last_update_time"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+    
+    
+    
 
     <select id="queryObject" resultMap="userMap">
 		select * from nideshop_user where id = #{value}
+	</select>
+	
+	
+	<select id="queryUserInfo" parameterType="java.util.Map" resultType="com.platform.entity.UserVo">
+		select * from nideshop_user where 1=1
+		<if test="userid != null"> and id = #{userid}</if>
+		<if test="username != null and username.trim() != ''"> and username = #{username}</if>
+		<if test="gender != null"> and gender = #{gender} </if>
+		<if test="nickname != null and nickname.trim() != ''"> and nickname = #{nickname}</if>
+		<if test="mobile != null and mobile.trim() != ''"> and mobile = #{mobile}</if>
+		<if test="weixin_openid != null and weixin_openid.trim() != ''"> and weixin_openid = #{weixin_openid}</if>
 	</select>
 
     <select id="queryByOpenId" resultMap="userMap">
@@ -151,5 +186,34 @@
         #{sms_text}
         )
     </insert>
+    
+    
+    
+    <!-- 根据用户id查询用户账户 -->
+	<select id="queryUserAccount" resultMap="qzUserAccountMap">
+		select
+			`id`,
+			`shop_user_id`,
+			`amount`,
+			`last_update_time`,
+			`create_time`
+		from qz_user_account
+		where shop_user_id = #{userId}
+	</select>
+	
+    <!-- 查询用户资金流水 -->
+    <select id="queryuserAccountDetail" resultType="com.platform.entity.QzMoneyRecordEntity">
+	    select
+				`id`,
+				`shop_user_id`,
+				case when `tran_type` = 1 then '充值' else '未知' end 'tran_type',
+				`tran_flag`,
+				`tarn_amount`,
+				`current_amount`,
+				`create_time`,
+				`trade_no`
+			from qz_money_record
+			where shop_user_id = #{userId}
+    </select>
 
 </mapper>
