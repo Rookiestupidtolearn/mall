@@ -17,32 +17,6 @@
   </view>
  </view>
 
-<view class="a-section a-topic" wx:if="{{brand.length > 0}}">
-  <view class="a-section a-brand">
-    <view class="h">
-      <navigator url="../brand/brand">
-        <text class="txt">品牌制造商直供</text>
-      </navigator>
-    </view>
-    <view class="b">
-    <scroll-view scroll-x="true" class="list">
-      <view class="item" wx:for="{{brand}}" wx:key="item.id">
-        <navigator url="/pages/brandDetail/brandDetail?id={{item.id}}">
-          <view class="wrap">
-            <image class="img" src="{{item.new_pic_url}}" mode="aspectFill"></image>
-            <view class="mt">
-              <text class="brand">{{item.name}}</text>
-              <text class="price">{{item.floor_price}}</text>
-              <text class="unit">元起</text>
-            </view>
-          </view>
-        </navigator>
-      </view>
-    </scroll-view>
-    </view>
-  </view>
-  </view>
-
   <view class="a-section a-new" wx:if="{{newGoods.length > 0}}">
     <view class="h">
       <view>

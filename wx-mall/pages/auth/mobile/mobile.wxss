@@ -1,3 +1,6 @@
+page{
+  background-color:#f4f4f4 
+}
 .userinfo {
   display: flex;
   flex-direction: column;
@@ -219,4 +222,53 @@
 
 .profile-button text {
   font-size: 25rpx;
+}
+.yesBind p{
+  font-size:29rpx;
+  color:#333;
+  display:block;
+  padding-top:11rpx;
+}
+.yesBind image{
+  width:56rpx;
+  height:56rpx;
+  border-radius:50%;
+  
+}
+.yesBind .titleTop{
+  padding:0 30rpx;
+  background-color:#fff;
+  margin-top:30rpx;
+  margin-bottom:5rpx;
+}
+.yesBind .titleBottom{
+  background-color:#fff;
+  display: flex;
+  justify-content:space-between;
+  padding:30rpx;
+}
+.yesBind .titleTop view text{
+  font-size:26rpx;
+  padding-top:20rpx;
+  padding-bottom: 30rpx;
+}
+.yesBind .titleTop view{
+  display: flex;
+  justify-content:space-between;
+}
+.yesBind .logout{
+  width:560rpx;
+  height:80rpx;
+  line-height:80rpx;
+  background: #c9c9c9;
+  color:#333;
+  border-radius:10rpx;
+  text-align: center;
+  margin:0 auto;
+  font-weight: bold;
+  font-size:30rpx;
+  margin-top:210rpx;
+}
+.yesBind f.col5e5e5e{
+  color:#5e5e5e;
 }

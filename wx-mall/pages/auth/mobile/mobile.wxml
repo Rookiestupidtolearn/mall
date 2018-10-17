@@ -1,3 +1,4 @@
+<view class="noBind" hidden="{{!bindResult}}">
 <view class="userinfo">
   <image class="userinfo-avatar" src="{{userInfo.avatarUrl}}" background-size="cover"></image>
   <text class="userinfo-nickname">{{userInfo.nickName}}</text>
@@ -22,3 +23,18 @@
     </form>
   </view>
 </view>
+</view>
+<view class="yesBind" hidden="{{bindResult}}">
+  <view class='titleTop'>
+    <p>绑定账号</p>
+    <view>
+      <text class='col5e5e5e'>昵称:{{loginName}}</text>
+      <image src="{{loginUrl}}"></image>
+    </view>
+  </view>
+  <view class="titleBottom">
+    <text>绑定手机号</text>
+    <text class='col5e5e5e' bindtap="{{telephone == '去绑定' ? 'bindPhone' : ''}}">{{telephone}}</text>
+  </view>
+</view>
+
