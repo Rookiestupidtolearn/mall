@@ -35,6 +35,8 @@ function request(url, data = {}, method = "POST", header = "application/x-www-fo
         console.log("success");
         if (res.statusCode == 200) {
           if (res.data.errno == 401) {
+            var urlSub = url.substr(url.length-11,11);
+            if (urlSub !== 'userAccount' && res.data.errmsg !== 'token失效，请重新登录'){
               //需要登录后才可以操作
               wx.showModal({
                   title: '',
@@ -50,6 +52,7 @@ function request(url, data = {}, method = "POST", header = "application/x-www-fo
                       }
                   }
               });
+            }
           } else {
             resolve(res.data);
           }

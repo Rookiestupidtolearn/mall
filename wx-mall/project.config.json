@@ -28,7 +28,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 7,
+			"current": 8,
 			"list": [
 				{
 					"id": 0,
@@ -75,7 +75,13 @@
 				{
 					"id": -1,
 					"name": "帮助中心",
-					"pathName": "pages/ucenter/helpCenter/helpCenter"
+					"pathName": "pages/ucenter/helpCenter/helpCenter",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "分类",
+					"pathName": "pages/catalog/catalog"
 				}
 			]
 		}
