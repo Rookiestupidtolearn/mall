@@ -66,6 +66,7 @@ function goodsTransIsNot(value) {
     return '<span class="label label-danger">编辑状态</span>';
 };
 
+
 var ztree;
 
 var setting = {

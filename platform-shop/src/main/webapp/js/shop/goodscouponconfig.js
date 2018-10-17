@@ -13,7 +13,7 @@ $(function () {
 			
 			{label: '品牌', name: 'brandName', index: 'brand_id', width: 80},
 			
-			{label: '配比值', name: 'goodValue', index: 'good_value', width: 80},
+			{label: '配比值', name: 'goodValue', index: 'good_value', width: 80}
 			
 			
 	/*		{label: '创建用户ID', name: 'createUserId', index: 'create_user_id', width: 80},
@@ -105,6 +105,8 @@ let vm = new Vue({
 				});
 			});
 		},
+		
+		
 		getInfo: function(id){
             Ajax.request({
                 url: "../goodscouponconfig/info/"+id,
@@ -115,10 +117,7 @@ let vm = new Vue({
             });
 		},
 		
-		
-		
 		reload: function (event) {
-			alert(1111)
 			vm.showList = true;
             let page = $("#jqGrid").jqGrid('getGridParam', 'page');
 			$("#jqGrid").jqGrid('setGridParam', {
@@ -127,12 +126,12 @@ let vm = new Vue({
             }).trigger("reloadGrid");
             vm.handleReset('formValidate');
 		},
-        reloadSearch: function() {
-            vm.q = {
-                name: ''
-            }
-            vm.reload();
-        },
+		 reloadSearch: function() {
+	            vm.q = {
+	                name: ''
+	            }
+	            vm.reload();
+	        },
         handleSubmit: function (name) {
             handleSubmitValidate(this, name, function () {
                 vm.saveOrUpdate()
