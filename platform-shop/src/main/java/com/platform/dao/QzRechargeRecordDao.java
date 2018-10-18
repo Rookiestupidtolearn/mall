@@ -18,5 +18,4 @@ public interface QzRechargeRecordDao extends BaseDao<QzRechargeRecordEntity> {
 
 	int queryAuditTotal(Map<String, Object> map);
 	
-	 int save(QzRechargeRecordEntity t);
 }
