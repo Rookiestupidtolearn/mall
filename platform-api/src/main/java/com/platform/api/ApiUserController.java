@@ -59,6 +59,15 @@ public class ApiUserController extends ApiBaseAction {
         if (null != smsLogVo && (System.currentTimeMillis() / 1000 - smsLogVo.getLog_date()) < 1 * 60) {
             return toResponsFail("一分钟内重复发送短信");
         }
+        
+        Map paramMap = new HashMap();
+        paramMap.put("mobile", phone);
+        //校验该手机号是否已被绑定
+        List<UserVo> userLi = userService.queryUserInfo(paramMap);
+        if(CollectionUtils.isNotEmpty(userLi)){
+        	return toResponsFail("该手机号已被绑定");
+        }
+        
         //生成验证码
         String sms_code = CharUtil.getRandomNum(4);
         String msgContent = "您的验证码是：" + sms_code + "，请在页面中提交验证码完成验证。";

@@ -45,9 +45,10 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
         } else {
             return true;
         }
-
+        
         //如果有@IgnoreAuth注解，则不验证token
         if (annotation != null) {
+        	
             return true;
         }
 
@@ -58,18 +59,18 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
             token = request.getParameter(LOGIN_TOKEN_KEY);
         }
 
-//        //token为空
+        //token为空
         if (StringUtils.isBlank(token)) {
             throw new ApiRRException("请先登录", 401);
         }
-//
-//        //查询token信息
+
+        //查询token信息
         TokenEntity tokenEntity = tokenService.queryByToken(token);
         if (tokenEntity == null || tokenEntity.getExpireTime().getTime() < System.currentTimeMillis()) {
             throw new ApiRRException("token失效，请重新登录", 401);
         }
-//
-//        //设置userId到request里，后续根据userId，获取用户信息
+
+        //设置userId到request里，后续根据userId，获取用户信息
         request.setAttribute(LOGIN_USER_KEY, tokenEntity.getUserId());
 
         return true;

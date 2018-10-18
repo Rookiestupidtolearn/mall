@@ -9,12 +9,40 @@ Page({
             avatarUrl: '',
             nickName: ''
         },
+        loginName: '',
+        loginUrl: '',
+        telephone: '',
+        bindResult:false,
         disableGetMobileCode: false,
         disableSubmitMobileCode: true,
         getCodeButtonText: '获取验证码'
     },
-
+    validateMobile: function (mobile) {
+      /*手机号加密处理*/
+      var first = mobile.substr(0, 3);
+      var last = mobile.substr(mobile.length - 4, 4);
+      var finalPhone = first + '****' + last;
+      return finalPhone;
+    },
     onShow: function () {
+      /*获取手机号*/
+      var that = this;
+      util.request(api.UserMobile).then(function (res) {
+        var mobile = res.data.mobile;
+        that.setData({
+          loginName: res.data.nickname,
+          loginUrl: res.data.avatar
+        })
+        if (mobile == null || mobile == '') {
+          that.setData({
+            bindResult:true
+          })
+        } else {
+          that.setData({
+            telephone: that.validateMobile(mobile),
+          })
+        }
+      })
     },
 
     onLoad: function () {

@@ -46,6 +46,10 @@
         <if test="valueName != null and valueName.trim() != ''">
             AND nideshop_goods.name LIKE concat('%',#{valueName},'%')
         </if>
+        
+         <if test="deptId != null">
+            AND nideshop_goods.create_user_dept_id = #{deptId}
+ 		</if>
         <if test="status != null">
             AND nideshop_comment.status = #{status}
         </if>
@@ -81,6 +85,11 @@
         <if test="picUrl == 'true'">
             AND EXISTS(SELECT 1 FROM nideshop_comment_picture WHERE nideshop_comment.id = nideshop_comment_picture.comment_id)
         </if>
+        
+         <if test="deptId != null">
+            AND nideshop_goods.create_user_dept_id = #{deptId}
+ 		 </if>
+ 		 
     </select>
 
     <insert id="save" parameterType="com.platform.entity.CommentEntity" useGeneratedKeys="true" keyProperty="id">

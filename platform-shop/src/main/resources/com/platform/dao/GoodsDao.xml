@@ -39,6 +39,8 @@
         <result property="createUserId" column="create_user_id"/>
         <result property="createUserDeptId" column="create_user_dept_id"/>
         <result property="updateUserId" column="update_user_id"/>
+       
+        
     </resultMap>
 
     <select id="queryObject" resultType="com.platform.entity.GoodsEntity">
@@ -84,12 +86,14 @@
         nideshop_goods.update_user_id,
         nideshop_category.name category_name,
         nideshop_attribute_category.name attribute_category_name,
-        nideshop_brand.name brand_name
+        nideshop_brand.name brand_name,
+        goods_coupon_config.good_value value
         from nideshop_goods
         LEFT JOIN nideshop_category
         ON nideshop_goods.category_id = nideshop_category.id
         LEFT JOIN nideshop_attribute_category ON nideshop_goods.attribute_category = nideshop_attribute_category.id
         LEFT JOIN nideshop_brand ON nideshop_brand.id = nideshop_goods.brand_id
+        LEFT JOIN goods_coupon_config ON nideshop_goods.id =  goods_coupon_config.goods_id
         WHERE 1=1
         <!--  数据过滤  -->
         ${filterSql}

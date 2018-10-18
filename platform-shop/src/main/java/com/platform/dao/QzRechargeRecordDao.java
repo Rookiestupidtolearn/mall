@@ -13,7 +13,9 @@ import com.platform.entity.QzRechargeRecordEntity;
  * @date 2018-10-13 18:37:01
  */
 public interface QzRechargeRecordDao extends BaseDao<QzRechargeRecordEntity> {
+	
 	List<QzRechargeRecordEntity> queryAuditList(Map<String, Object> map);
 
 	int queryAuditTotal(Map<String, Object> map);
+	
 }

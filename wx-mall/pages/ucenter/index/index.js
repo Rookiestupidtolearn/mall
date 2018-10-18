@@ -19,7 +19,19 @@ Page({
             availMoney: res.data
           });
         }else{
-            util.showErrorToast(res.data);
+           //token失效显示
+            let userInfo = wx.getStorageSync('userInfo');
+            if(res.errmsg == 'token失效，请重新登录'){
+              userInfo = {
+                nickName: 'Hi,游客',
+                userName: '点击去登录',
+                avatarUrl: 'https://platform-wxmall.oss-cn-beijing.aliyuncs.com/upload/20180727/150547696d798c.png'
+              };
+              that.setData({
+                availResult: true,
+                userInfo: userInfo
+              });
+            }
         }
       })
     },
@@ -28,6 +40,9 @@ Page({
         console.log(app.globalData);
     },
     onReady: function () {
+    },
+    showUserIfno:function(){
+
     },
     onShow: function () {
         this.userAccount();
@@ -43,6 +58,7 @@ Page({
               userInfo: app.globalData.userInfo
             });
         }else{
+          //退出登录显示
           userInfo = {
             nickName: 'Hi,游客',
             userName: '点击去登录',

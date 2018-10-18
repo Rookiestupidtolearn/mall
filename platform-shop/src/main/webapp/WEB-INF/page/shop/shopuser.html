@@ -106,11 +106,18 @@
         <Card v-show="rechargeList">
         <p slot="title">{{title}}</p>
          <!-- <p slot="title">{{mobiles}}</p> -->
+ <div id="app">
+    <input type="file" @change="getFile($event)" /><button @click="upload">上传</button>
+    <div>{{ result }}</div>
+  </div>
+         
         <i-form ref="rechargeForm" :model="user" :rules="ruleValidate" :label-width="80">
       
             <Form-item label="充值手机号码" prop="mobiles">
                 <i-input    v-model="mobiles"  placeholder="手机号码"></i-input>
             </Form-item>
+                <Form-item :label-width="1">
+          </Form-item>
             <Form-item label="充值金额" prop="amount">
             <i-input  v-model="amount" placeholder="充值金额"/>
             </Form-item>

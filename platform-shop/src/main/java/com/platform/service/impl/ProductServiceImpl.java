@@ -3,6 +3,7 @@ package com.platform.service.impl;
 import com.platform.dao.GoodsSpecificationDao;
 import com.platform.entity.GoodsSpecificationEntity;
 import com.platform.utils.BeanUtils;
+import com.platform.utils.ShiroUtils;
 import com.platform.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import java.util.Map;
 
 import com.platform.dao.ProductDao;
 import com.platform.entity.ProductEntity;
+import com.platform.entity.SysUserEntity;
 import com.platform.service.ProductService;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +39,23 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductEntity> queryList(Map<String, Object> map) {
+    	/**
+    	 *过滤部门
+    	 *
+    	 */
+    	
+    	SysUserEntity sysUserEntity = ShiroUtils.getUserEntity();
+    	
+    	Long  deptId  =null;
+    	
+    	if(sysUserEntity!=null){
+    		
+    		  deptId = sysUserEntity.getDeptId();
+    		  if(deptId!=null){
+    			  map.put("deptId", deptId);
+    		  }
+    	}
+    	
         List<ProductEntity> list = productDao.queryList(map);
 
         List<ProductEntity> result = new ArrayList<>();
