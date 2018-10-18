@@ -37,7 +37,7 @@ function request(url, data = {}, method = "POST", header = "application/x-www-fo
           if (res.data.errno == 401) {
             var urlSub = url.substr(url.length-11,11);
             /*个人中心，分类搜索，商品搜索去除请先登录*/
-            if (urlSub !== 'userAccount' && res.data.errmsg !== 'token失效，请重新登录' && urlSub !== 'earch/index' 
+            if (urlSub !== 'userAccount' || res.data.errmsg == 'token失效，请重新登录' && urlSub !== 'earch/index' 
             && urlSub !== '/goods/list'){
               //需要登录后才可以操作
               wx.showModal({
