@@ -53,8 +53,6 @@ public class ApiOrderService {
     @Autowired
     private ApiUserCouponMapper apiUserCouponMapper;
     @Autowired
-    private GoodsCouponConfigMapper goodsCouponConfigMapper;
-    @Autowired
     private QzUserAccountMapper qzUserAccountMapper;
     
 
