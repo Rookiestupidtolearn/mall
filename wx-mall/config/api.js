@@ -1,26 +1,8 @@
 const root = '/platform/api/';
 
-// const API_BASE_URL = 'http://fly2you.cn' + root;
-<<<<<<< HEAD
-const API_BASE_URL = 'http://localhost:8080' + root;
-// const API_BASE_URL = 'http://192.144.156.42:8080' + root;
-=======
-<<<<<<< HEAD
-// const API_BASE_URL = 'http://localhost:8080' + root;
 const API_BASE_URL = 'http://192.144.156.42:8080' + root;
-=======
-<<<<<<< HEAD
-// const API_BASE_URL = 'http://localhost:8080' + root;
-  const API_BASE_URL = 'http://localhost:8085' + root;
-//const API_BASE_URL = 'http://192.144.156.42:8080' +  root;
-=======
-const API_BASE_URL = 'http://localhost:8080' + root;
-// const API_BASE_URL = 'http://192.144.156.42:8080' + root;
->>>>>>> origin/platform_master_xushaoxiong
->>>>>>> a13076518654ff4d9212a837e89e7e5879e410f4
-//  const API_BASE_URL = 'http://192.168.1.244:8093' + root;
+ //const API_BASE_URL = 'http://localhost:8093' + root;
 
->>>>>>> origin/master_gouwu
 module.exports = {
     IndexUrlNewGoods: API_BASE_URL + 'index/newGoods', //新品首发
     IndexUrlHotGoods: API_BASE_URL + 'index/hotGoods', //热卖商品
