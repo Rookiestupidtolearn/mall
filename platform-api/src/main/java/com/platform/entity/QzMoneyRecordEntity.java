@@ -22,7 +22,7 @@ public class QzMoneyRecordEntity implements Serializable {
     private Integer id;
     //会员id
     private Integer shopUserId;
-    //资金变动类型 1-充值
+    //资金变动类型 1-充值2 -优惠券
     private String tranType;
     //金额变动标志 0-支出 1-收入
     private Integer tranFlag;

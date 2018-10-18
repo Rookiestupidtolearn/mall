@@ -28,7 +28,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 9,
+			"current": 8,
 			"list": [
 				{
 					"id": 0,
@@ -81,13 +81,7 @@
 				{
 					"id": -1,
 					"name": "分类",
-					"pathName": "pages/catalog/catalog",
-					"query": ""
-				},
-				{
-					"id": -1,
-					"name": "绑定手机号",
-					"pathName": "pages/auth/mobile/mobile"
+					"pathName": "pages/catalog/catalog"
 				}
 			]
 		}
