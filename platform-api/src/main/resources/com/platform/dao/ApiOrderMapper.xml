@@ -197,5 +197,9 @@
             #{id}
         </foreach>
     </delete>
+    <select id="queryOrderInfo">
+    	select nio.*
+    	from nideshop_order nio where user_id = #{userId}
+    </select>
 
 </mapper>
