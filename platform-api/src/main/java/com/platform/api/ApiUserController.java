@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
+import com.platform.annotation.IgnoreAuth;
 import com.platform.annotation.LoginUser;
 import com.platform.entity.QzMoneyRecordEntity;
 import com.platform.entity.QzUserAccountEntity;
@@ -56,8 +57,17 @@ public class ApiUserController extends ApiBaseAction {
         // 一分钟之内不能重复发送短信
         SmsLogVo smsLogVo = userService.querySmsCodeByUserId(loginUser.getUserId());
         if (null != smsLogVo && (System.currentTimeMillis() / 1000 - smsLogVo.getLog_date()) < 1 * 60) {
-            return toResponsFail("短信已发送");
+            return toResponsFail("一分钟内重复发送短信");
         }
+        
+        Map paramMap = new HashMap();
+        paramMap.put("mobile", phone);
+        //校验该手机号是否已被绑定
+        List<UserVo> userLi = userService.queryUserInfo(paramMap);
+        if(CollectionUtils.isNotEmpty(userLi)){
+        	return toResponsFail("该手机号已被绑定");
+        }
+        
         //生成验证码
         String sms_code = CharUtil.getRandomNum(4);
         String msgContent = "您的验证码是：" + sms_code + "，请在页面中提交验证码完成验证。";
@@ -130,7 +140,15 @@ public class ApiUserController extends ApiBaseAction {
 
         String mobile_code = jsonParams.getString("mobile_code");
         String mobile = jsonParams.getString("mobile");
-
+        
+        
+        Map paramMap = new HashMap();
+        paramMap.put("mobile", mobile);
+        //校验该手机号是否已被绑定
+        List<UserVo> userLi = userService.queryUserInfo(paramMap);
+        if(CollectionUtils.isNotEmpty(userLi)){
+        	return toResponsFail("该手机号已被绑定");
+        }
         if (!mobile_code.equals(smsLogVo.getSms_code())) {
             return toResponsFail("验证码错误");
         }
@@ -188,4 +206,23 @@ public class ApiUserController extends ApiBaseAction {
         }
         return null;
     }
+    
+    /**
+     * 提供登录的用户信息,供小程序调用使用
+     */
+    @ApiOperation(value = "获取登录用户信息")
+    @PostMapping("userInfo")
+    public Object userInfo(@LoginUser UserVo loginUser) {
+    	Map<String, Object> obj = new HashMap<String, Object>();
+    	if(loginUser == null){
+    		obj.put("data","查询用户信息异常");
+    		return obj;
+    	}else{
+    		UserVo userInfo = loginUser;
+    		userInfo.setPassword("");
+    		obj.put("data",userInfo);
+    		return obj;
+    	}
+    }
+    
 }

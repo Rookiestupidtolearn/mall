@@ -33,25 +33,28 @@ function request(url, data = {}, method = "POST", header = "application/x-www-fo
       },
       success: function (res) {
         console.log("success");
-
         if (res.statusCode == 200) {
-
           if (res.data.errno == 401) {
-            //需要登录后才可以操作
-            wx.showModal({
-                title: '',
-                content: '请先登录',
-                success: function (res){
-                    if (res.confirm) {
-                        wx.removeStorageSync("userInfo");
-                        wx.removeStorageSync("token");
-                        
-                        wx.switchTab({
-                            url: '/pages/ucenter/index/index'
-                        });
-                    }
-                }
-            });
+            var urlSub = url.substr(url.length-11,11);
+            /*个人中心，分类搜索，商品搜索去除请先登录*/
+            if (urlSub !== 'userAccount' || res.data.errmsg == 'token失效，请重新登录' && urlSub !== 'earch/index' 
+            && urlSub !== '/goods/list'){
+              //需要登录后才可以操作
+              wx.showModal({
+                  title: '',
+                  content: '请先登录',
+                  success: function (res){
+                      if (res.confirm) {
+                          wx.removeStorageSync("userInfo");
+                          wx.removeStorageSync("token");
+                          
+                          wx.switchTab({
+                              url: '/pages/ucenter/index/index'
+                          });
+                      }
+                  }
+              });
+            }
           } else {
             resolve(res.data);
           }

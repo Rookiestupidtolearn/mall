@@ -42,7 +42,7 @@
     "navigationBarBackgroundColor": "#fff",
     "navigationBarTitleText": "奇子商城",
     "navigationBarTextStyle": "black",
-    "enablePullDownRefresh": true
+    "enablePullDownRefresh": false
   },
   "tabBar": {
     "backgroundColor": "#fafafa",

@@ -9,7 +9,7 @@
   </view>
   <view class="titleBottom">
     <text>绑定手机号</text>
-    <text class='col5e5e5e'>{{telephone}}</text>
+    <text class='col5e5e5e' bindtap="{{telephone == '去绑定' ? 'bindPhone' : ''}}">{{telephone}}</text>
   </view>
   <view class="logout" bindtap="exitLogin">退出登录</view>
 </view>

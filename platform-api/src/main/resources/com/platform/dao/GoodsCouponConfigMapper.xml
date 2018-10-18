@@ -13,10 +13,12 @@
         <result property="create_user_dept_id" column="create_user_dept_id"/>
         <result property="del_flag" column="del_flag"/>
     </resultMap>
-    <select id="getUserCoupon">
+    <select id="getUserCoupons" resultMap="goodsCouponConfigMap">
 		select gcc.*
 		from goods_coupon_config gcc left join nideshop_cart sc on 	gcc.goods_id = sc.goods_id
-		where 1=1 and sc.goods_id = #{goodId}
+		where 1=1 
+		and sc.goods_id = #{0} 
+		and sc.user_id = #{1}
 	</select>
     
 </mapper>

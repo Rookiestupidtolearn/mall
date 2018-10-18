@@ -46,12 +46,6 @@ Page({
       that.setData(data);
       }
     });
-    util.request(api.IndexUrlBrand).then(function (res) {
-      if (res.errno === 0) {
-        data.brand = res.data.brandList
-      that.setData(data);
-      }
-    });
     util.request(api.IndexUrlCategory).then(function (res) {
       if (res.errno === 0) {
         data.floorGoods = res.data.categoryList

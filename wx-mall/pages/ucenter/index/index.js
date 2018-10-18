@@ -19,35 +19,56 @@ Page({
             availMoney: res.data
           });
         }else{
-          util.showErrorToast(res.data);
+           //token失效显示
+            let userInfo = wx.getStorageSync('userInfo');
+            if(res.errmsg == 'token失效，请重新登录'){
+              userInfo = {
+                nickName: 'Hi,游客',
+                userName: '点击去登录',
+                avatarUrl: 'https://platform-wxmall.oss-cn-beijing.aliyuncs.com/upload/20180727/150547696d798c.png'
+              };
+              that.setData({
+                availResult: true,
+                userInfo: userInfo
+              });
+            }
         }
       })
     },
     onLoad: function (options) {
         // 页面初始化 options为页面跳转所带来的参数
         console.log(app.globalData);
-      this.userAccount();
     },
     onReady: function () {
+    },
+    showUserIfno:function(){
 
     },
     onShow: function () {
+        this.userAccount();
         let userInfo = wx.getStorageSync('userInfo');
         let token = wx.getStorageSync('token');
 
         // 页面显示
-        if (userInfo && token) {
+        if (userInfo !== '') {
             app.globalData.userInfo = userInfo;
             app.globalData.token = token;
             this.setData({
-              availResult: false
+              availResult: false,
+              userInfo: app.globalData.userInfo
             });
+        }else{
+          //退出登录显示
+          userInfo = {
+            nickName: 'Hi,游客',
+            userName: '点击去登录',
+            avatarUrl: 'https://platform-wxmall.oss-cn-beijing.aliyuncs.com/upload/20180727/150547696d798c.png'
+          };
+          this.setData({
+            availResult: true,
+            userInfo: userInfo
+          });
         }
-
-        this.setData({
-            userInfo: app.globalData.userInfo,
-        });
-
     },
     onHide: function () {
         // 页面隐藏
@@ -65,6 +86,7 @@ Page({
         if (e.detail.userInfo){
             //用户按了允许授权按钮
             user.loginByWeixin(e.detail).then(res => {
+              this.userAccount();
                 this.setData({
                     userInfo: res.data.userInfo,
                     availResult: false

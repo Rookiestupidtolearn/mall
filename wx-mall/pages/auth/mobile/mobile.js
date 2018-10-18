@@ -9,12 +9,40 @@ Page({
             avatarUrl: '',
             nickName: ''
         },
+        loginName: '',
+        loginUrl: '',
+        telephone: '',
+        bindResult:false,
         disableGetMobileCode: false,
         disableSubmitMobileCode: true,
         getCodeButtonText: '获取验证码'
     },
-
+    validateMobile: function (mobile) {
+      /*手机号加密处理*/
+      var first = mobile.substr(0, 3);
+      var last = mobile.substr(mobile.length - 4, 4);
+      var finalPhone = first + '****' + last;
+      return finalPhone;
+    },
     onShow: function () {
+      /*获取手机号*/
+      var that = this;
+      util.request(api.UserMobile).then(function (res) {
+        var mobile = res.data.mobile;
+        that.setData({
+          loginName: res.data.nickname,
+          loginUrl: res.data.avatar
+        })
+        if (mobile == null || mobile == '') {
+          that.setData({
+            bindResult:true
+          })
+        } else {
+          that.setData({
+            telephone: that.validateMobile(mobile),
+          })
+        }
+      })
     },
 
     onLoad: function () {
@@ -94,7 +122,7 @@ Page({
                 }else{
                   wx.showModal({
                     title: '提示',
-                    content: res.msg,
+                    content: res.errmsg,
                     showCancel: false
                   })
                 }
@@ -113,18 +141,13 @@ Page({
       util.request(api.BindMobile, { mobile_code: e.detail.value.code, mobile: mobile }, 'post', 'application/json')
             .then(function (res) {
                 if (res.errno == 0) {
-                    wx.showModal({
-                        title: '提示',
-                        content: '操作成功',
-                        showCancel: false
-                    })
                     wx.switchTab({
-                        url: '/pages/ucenter/index/index'
+                        url: '/pages/index/index'
                     });
                 } else {
                     wx.showModal({
                         title: '提示',
-                        content: '验证码错误',
+                        content: res.errmsg,
                         showCancel: false
                     })
                 }
