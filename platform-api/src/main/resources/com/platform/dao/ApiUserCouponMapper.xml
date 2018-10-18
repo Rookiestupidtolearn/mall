@@ -20,7 +20,7 @@
     </resultMap>
 
     <select id="queryObject" resultMap="userCouponMap">
-		select * from nideshop_user_coupon where id = #{value}
+		select * from nideshop_user_coupon where id = #{id}
 	</select>
 
     <select id="queryByCouponNumber" resultMap="userCouponMap">
