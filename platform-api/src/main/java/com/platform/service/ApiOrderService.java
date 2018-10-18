@@ -102,7 +102,6 @@ public class ApiOrderService {
         String postscript = jsonParam.getString("postscript");
 //        AddressVo addressVo = jsonParam.getObject("checkedAddress",AddressVo.class);
         AddressVo addressVo = apiAddressMapper.queryObject(jsonParam.getInteger("addressId"));
-        Long userId = loginUser.getUserId();
 
         Integer freightPrice = 0;
         
@@ -217,7 +216,7 @@ public class ApiOrderService {
         resultObj.put("data", orderInfoMap);
         // 优惠券标记已用
         if (userCoupon != null && userCoupon.getCoupon_status() == 1) {
-        	userCoupon.setCoupon_status(2);
+        	userCoupon.setCoupon_status(4);
             apiUserCouponMapper.updateUserCoupon(userCoupon);
         }
         return resultObj;
