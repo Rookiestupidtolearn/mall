@@ -27,7 +27,7 @@
                             <abbr title="Phone">总机：</abbr> (86) xxxxxxxx
                         </address> -->
                         <p>
-                            <span><strong>日期：</strong> {{nowDate}}</span>
+                            <span><strong>日期：</strong><br> {{nowDate}}</span>
                         </p>
                     </div>
                 </div>
@@ -83,7 +83,7 @@
             order: {},
             orderGoods: {},
             sumRetailPrice: 0,
-            nowDate: transDate(new Date())
+            nowDate: '',
         },
         methods: {
             print: function () {
@@ -109,6 +109,8 @@
                     }
                 }
             });
+            var nowDateTo = transDate((new Date()).getTime());
+            this.nowDate = nowDateTo;
         }
     });
 </script>
