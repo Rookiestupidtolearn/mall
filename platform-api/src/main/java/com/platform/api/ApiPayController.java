@@ -145,7 +145,7 @@ public class ApiPayController extends ApiBaseAction {
             String return_msg = MapUtils.getString("return_msg", resultUn);
             //
             if (return_code.equalsIgnoreCase("FAIL")) {
-            	saveMoneyRecord(loginUser.getUserId(),0);
+            	saveMoneyRecord(loginUser.getUserId(),0,orderInfo.getOrder_sn());
                 return toResponsFail("支付失败," + return_msg);
             } else if (return_code.equalsIgnoreCase("SUCCESS")) {
                 // 返回数据
@@ -358,8 +358,7 @@ public class ApiPayController extends ApiBaseAction {
     }
     
     
-    @ApiOperation(value = "生成优惠券流水")
-    @PostMapping("saveMoneyRecord")
+
     public void saveMoneyRecord(Long userId,Integer type,String order_sn){
     	UserCouponVo userCouponVo = apiUserCouponMapper.queryUserUsedCouponTotalPrice(userId);
 		QzUserAccountVo userAmountVo =qzUserAccountMapper.queruUserAccountInfo(Long.parseLong(userId.toString()));
