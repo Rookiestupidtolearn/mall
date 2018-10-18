@@ -70,7 +70,8 @@ public class UserServiceImpl implements UserService {
     	List<UserEntity> entities =	queryList(map);
     	if (!CollectionUtils.isEmpty(entities)) {
     		entity = entities.get(0);
+    		return  entity;
 		}
-		return entity;
+		return null;
     }
 }
