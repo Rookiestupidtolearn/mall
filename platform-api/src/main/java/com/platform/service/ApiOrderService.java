@@ -19,13 +19,17 @@ import com.platform.dao.ApiCartMapper;
 import com.platform.dao.ApiCouponMapper;
 import com.platform.dao.ApiOrderGoodsMapper;
 import com.platform.dao.ApiOrderMapper;
+import com.platform.dao.ApiUserCouponMapper;
+import com.platform.dao.GoodsCouponConfigMapper;
+import com.platform.dao.QzUserAccountMapper;
 import com.platform.entity.AddressVo;
 import com.platform.entity.BuyGoodsVo;
 import com.platform.entity.CartVo;
-import com.platform.entity.CouponVo;
 import com.platform.entity.OrderGoodsVo;
 import com.platform.entity.OrderVo;
 import com.platform.entity.ProductVo;
+import com.platform.entity.QzUserAccountVo;
+import com.platform.entity.UserCouponVo;
 import com.platform.entity.UserVo;
 import com.platform.util.CommonUtil;
 
@@ -46,6 +50,13 @@ public class ApiOrderService {
     private ApiOrderGoodsMapper apiOrderGoodsMapper;
     @Autowired
     private ApiProductService productService;
+    @Autowired
+    private ApiUserCouponMapper apiUserCouponMapper;
+    @Autowired
+    private GoodsCouponConfigMapper goodsCouponConfigMapper;
+    @Autowired
+    private QzUserAccountMapper qzUserAccountMapper;
+    
 
 
     public OrderVo queryObject(Integer id) {
@@ -83,22 +94,22 @@ public class ApiOrderService {
     }
 
 
-    @Transactional
+	@Transactional
     public Map<String, Object> submit(JSONObject jsonParam, UserVo loginUser) {
         Map<String, Object> resultObj = new HashMap<String, Object>();
-
-        Integer couponId = jsonParam.getInteger("couponId");
+//        Integer couponId = jsonParam.getInteger("couponId");
         String type = jsonParam.getString("type");
         String postscript = jsonParam.getString("postscript");
 //        AddressVo addressVo = jsonParam.getObject("checkedAddress",AddressVo.class);
         AddressVo addressVo = apiAddressMapper.queryObject(jsonParam.getInteger("addressId"));
-
+        Long userId = loginUser.getUserId();
 
         Integer freightPrice = 0;
-
+        
         // * 获取要购买的商品
         List<CartVo> checkedGoodsList = new ArrayList<>();
         BigDecimal goodsTotalPrice;
+        UserCouponVo userCoupon = apiUserCouponMapper.queryUserCouponTotalPrice(loginUser.getUserId());
         if (type.equals("cart")) {
             Map<String, Object> param = new HashMap<String, Object>();
             param.put("user_id", loginUser.getUserId());
@@ -121,32 +132,17 @@ public class ApiOrderService {
             //计算订单的费用
             //商品总价
             goodsTotalPrice = productInfo.getRetail_price().multiply(new BigDecimal(goodsVo.getNumber()));
-
+            
             CartVo cartVo = new CartVo();
             BeanUtils.copyProperties(productInfo, cartVo);
             cartVo.setNumber(goodsVo.getNumber());
             cartVo.setProduct_id(goodsVo.getProductId());
             checkedGoodsList.add(cartVo);
         }
-
-
-        //获取订单使用的优惠券
-        BigDecimal couponPrice = new BigDecimal(0.00);
-        CouponVo couponVo = null;
-        if (couponId != null && couponId != 0) {
-            couponVo = apiCouponMapper.getUserCoupon(couponId);
-            if (couponVo != null && couponVo.getCoupon_status() == 1) {
-                couponPrice = couponVo.getType_money();
-            }
-        }
-
         //订单价格计算
         BigDecimal orderTotalPrice = goodsTotalPrice.add(new BigDecimal(freightPrice)); //订单的总价
 
-        BigDecimal actualPrice = orderTotalPrice.subtract(couponPrice);  //减去其它支付的金额后，要实际支付的金额
-
-        Long currentTime = System.currentTimeMillis() / 1000;
-
+        BigDecimal actualPrice = orderTotalPrice.subtract(userCoupon.getCoupon_price());  //减去其它支付的金额后，要实际支付的金额
         //
         OrderVo orderInfo = new OrderVo();
         orderInfo.setOrder_sn(CommonUtil.generateOrderNumber());
@@ -164,8 +160,8 @@ public class ApiOrderService {
         //留言
         orderInfo.setPostscript(postscript);
         //使用的优惠券
-        orderInfo.setCoupon_id(couponId);
-        orderInfo.setCoupon_price(couponPrice);
+        orderInfo.setCoupon_id(userCoupon.getId());
+        orderInfo.setCoupon_price(userCoupon.getCoupon_price());//查询抵扣比例
         orderInfo.setAdd_time(new Date());
         orderInfo.setGoods_price(goodsTotalPrice);
         orderInfo.setOrder_price(orderTotalPrice);
@@ -220,12 +216,58 @@ public class ApiOrderService {
         //
         resultObj.put("data", orderInfoMap);
         // 优惠券标记已用
-        if (couponVo != null && couponVo.getCoupon_status() == 1) {
-            couponVo.setCoupon_status(2);
-            apiCouponMapper.updateUserCoupon(couponVo);
+        if (userCoupon != null && userCoupon.getCoupon_status() == 1) {
+        	userCoupon.setCoupon_status(2);
+            apiUserCouponMapper.updateUserCoupon(userCoupon);
         }
-
         return resultObj;
     }
-
+	
+	/***
+     * 购物车 时效性 
+     * 			
+     * 		1.支付成功	
+     * 		     	优惠券已经使用
+     * 
+     * 		2.超时未支付 
+     * 			   	优惠券失效 逻辑删除
+     * 				失效操作：
+     * 					回滚平台币
+     * 					作废优惠券
+     * 					查看是否需要清除购物车
+     */
+	public JSONObject checkOrderValid(Integer orderId, Integer userId){
+		JSONObject resultObj = new JSONObject();
+		OrderVo orderVo =  orderDao.queryObject(orderId);
+		if(orderVo == null){
+        	resultObj.put("couponStatus", "没有查询到相关订单");
+        }
+		UserCouponVo userCouponVo = apiUserCouponMapper.queryObject(orderVo.getCoupon_id());
+		BigDecimal amount = BigDecimal.ZERO;
+		QzUserAccountVo userAmountVo =qzUserAccountMapper.queruUserAccountInfo(Long.parseLong(userId.toString()));
+        if(userAmountVo != null){
+        	amount = userAmountVo.getAmount();
+        }
+		if(orderVo != null){
+			if(orderVo.getPay_status() == 1){
+				if(userCouponVo != null){
+					userCouponVo.setCoupon_status(2);
+					apiUserCouponMapper.updateUserCoupon(userCouponVo);
+				}
+				resultObj.put("couponStatus", "支付成功,优惠券已用");
+			}
+			if(orderVo.getPay_status() == 3){
+				if(userCouponVo != null){
+					userCouponVo.setCoupon_status(4);
+					apiUserCouponMapper.updateUserCoupon(userCouponVo);
+				}
+				//回滚平台币
+				amount = amount.add(userCouponVo.getCoupon_price());
+				userAmountVo.setAmount(amount);
+				qzUserAccountMapper.updateUserAccount(userAmountVo);
+				resultObj.put("couponStatus", "支付失败,优惠券作废");
+			}
+		}
+		return resultObj;
+	}
 }

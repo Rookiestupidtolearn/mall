@@ -62,6 +62,9 @@
         <if test="username != null and username.trim() != ''">
             and username like concat('%',#{username},'%')
         </if>
+        <if test="mobile != null and mobile != ''">
+            and mobile = #{username}
+        </if>
         <choose>
             <when test="sidx != null and sidx.trim() != ''">
                 order by ${sidx} ${order}
