@@ -120,6 +120,9 @@
         <if test="category_id != null and category_id != ''">
             and a.category_id = #{category_id}
         </if>
+         <if test="is_on_sale != null and is_on_sale != ''">
+            and is_on_sale = #{is_on_sale}
+        </if>
         <if test="keyword != null">
             and a.keywords like concat('%',#{keyword},'%')
         </if>

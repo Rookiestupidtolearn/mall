@@ -180,6 +180,7 @@ public class ApiIndexController extends ApiBaseAction {
         //
         Map<String, Object> param = new HashMap<String, Object>();
         param.put("is_hot", "1");
+        param.put("is_on_sale", 1);
         param.put("is_delete", 0);
         PageHelper.startPage(0, 3, false);
         List<GoodsVo> hotGoods = goodsService.queryHotGoodsList(param);

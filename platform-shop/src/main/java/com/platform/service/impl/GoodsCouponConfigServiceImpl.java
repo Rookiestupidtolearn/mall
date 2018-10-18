@@ -75,6 +75,10 @@ public class GoodsCouponConfigServiceImpl implements GoodsCouponConfigService {
 
     @Override
     public int update(GoodsCouponConfigEntity goodsCouponConfig) {
+    	
+    	if(goodsCouponConfig.getGoodValue()<0||goodsCouponConfig.getGoodValue()>1){
+			throw new RRException("商品配比值为大于0且小于等于1");
+		}
         return goodsCouponConfigDao.update(goodsCouponConfig);
     }
 
