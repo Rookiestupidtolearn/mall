@@ -25,7 +25,6 @@ import com.platform.dao.QzUserAccountMapper;
 import com.platform.entity.AddressVo;
 import com.platform.entity.BuyGoodsVo;
 import com.platform.entity.CartVo;
-import com.platform.entity.GoodsCouponConfigVo;
 import com.platform.entity.OrderGoodsVo;
 import com.platform.entity.OrderVo;
 import com.platform.entity.ProductVo;
@@ -237,7 +236,7 @@ public class ApiOrderService {
      * 					作废优惠券
      * 					查看是否需要清除购物车
      */
-	public JSONObject checkOrderValid(Integer orderId, UserVo loginUser){
+	public JSONObject checkOrderValid(Integer orderId, Integer userId){
 		JSONObject resultObj = new JSONObject();
 		OrderVo orderVo =  orderDao.queryObject(orderId);
 		if(orderVo == null){
@@ -245,7 +244,7 @@ public class ApiOrderService {
         }
 		UserCouponVo userCouponVo = apiUserCouponMapper.queryObject(orderVo.getCoupon_id());
 		BigDecimal amount = BigDecimal.ZERO;
-		QzUserAccountVo userAmountVo =qzUserAccountMapper.queruUserAccountInfo(loginUser.getUserId());
+		QzUserAccountVo userAmountVo =qzUserAccountMapper.queruUserAccountInfo(Long.parseLong(userId.toString()));
         if(userAmountVo != null){
         	amount = userAmountVo.getAmount();
         }
@@ -253,15 +252,19 @@ public class ApiOrderService {
 			if(orderVo.getPay_status() == 1){
 				if(userCouponVo != null){
 					userCouponVo.setCoupon_status(2);
+					apiUserCouponMapper.updateUserCoupon(userCouponVo);
 				}
 				resultObj.put("couponStatus", "支付成功,优惠券已用");
 			}
 			if(orderVo.getPay_status() == 3){
 				if(userCouponVo != null){
-					userCouponVo.setCoupon_status(2);
+					userCouponVo.setCoupon_status(4);
+					apiUserCouponMapper.updateUserCoupon(userCouponVo);
 				}
 				//回滚平台币
 				amount = amount.add(userCouponVo.getCoupon_price());
+				userAmountVo.setAmount(amount);
+				qzUserAccountMapper.updateUserAccount(userAmountVo);
 				resultObj.put("couponStatus", "支付失败,优惠券作废");
 			}
 		}

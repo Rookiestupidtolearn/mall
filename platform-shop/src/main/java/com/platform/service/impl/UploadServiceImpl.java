@@ -58,7 +58,7 @@ public class UploadServiceImpl implements UploadService {
                     Map<String, Object> map = new HashMap<>(); 
                     map.put("mobiles",mobile);
                     map.put("amount",amount);
-                    map.put("memo","Excel导入充值");
+                    map.put("memo","uploadRechargeExcel");
                     
                     qzRechargeRecordService.rechargeBatch(map);
 

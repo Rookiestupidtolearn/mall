@@ -28,7 +28,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 7,
+			"current": 9,
 			"list": [
 				{
 					"id": 0,
@@ -75,7 +75,19 @@
 				{
 					"id": -1,
 					"name": "帮助中心",
-					"pathName": "pages/ucenter/helpCenter/helpCenter"
+					"pathName": "pages/ucenter/helpCenter/helpCenter",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "分类",
+					"pathName": "pages/catalog/catalog",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "绑定手机号",
+					"pathName": "pages/auth/mobile/mobile"
 				}
 			]
 		}

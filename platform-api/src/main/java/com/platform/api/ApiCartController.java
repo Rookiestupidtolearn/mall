@@ -18,6 +18,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.platform.annotation.LoginUser;
 import com.platform.cache.J2CacheUtils;
 import com.platform.dao.ApiCartMapper;
+import com.platform.dao.ApiOrderMapper;
 import com.platform.dao.ApiUserCouponMapper;
 import com.platform.dao.GoodsCouponConfigMapper;
 import com.platform.dao.QzUserAccountMapper;
@@ -29,6 +30,7 @@ import com.platform.entity.CouponVo;
 import com.platform.entity.GoodsCouponConfigVo;
 import com.platform.entity.GoodsSpecificationVo;
 import com.platform.entity.GoodsVo;
+import com.platform.entity.OrderVo;
 import com.platform.entity.ProductVo;
 import com.platform.entity.QzUserAccountVo;
 import com.platform.entity.UserCouponVo;
@@ -69,9 +71,9 @@ public class ApiCartController extends ApiBaseAction {
     @Autowired
     private GoodsCouponConfigMapper goodsCouponConfigMapper;
     @Autowired
-    private ApiUserCouponMapper apiUserCouponMapper;
+    private  ApiUserCouponMapper apiUserCouponMapper;
     @Autowired
-    private QzUserAccountMapper qzUserAccountMapper;
+    private  QzUserAccountMapper qzUserAccountMapper;
     @Autowired
     private ApiCartMapper apiCartMapper;
 
@@ -594,7 +596,7 @@ public class ApiCartController extends ApiBaseAction {
           *   	判断配比
           *   	  1.1  平台币 等于配比值  直接兑换
           *   	  1.2 平台币 大于配比值   取配置值
-          *   	  1.3 平台币 小于配比值   按平台币最小规则兑换 			
+          *   	  1.3 平台币 小于配比值   按平台币最小规则兑换 		9514.02  9497.28
           * */    
          if(goodsCoupon != null){
          	couponlPrice = productInfo.getRetail_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(number));
