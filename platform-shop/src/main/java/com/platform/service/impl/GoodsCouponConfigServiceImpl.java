@@ -50,11 +50,13 @@ public class GoodsCouponConfigServiceImpl implements GoodsCouponConfigService {
     	
     	SysUserEntity user = ShiroUtils.getUserEntity();
     	
-    	
 		Map<String, Object> map = new HashMap<>();
-		map.put("goodsId",goodsCouponConfig.getGoodsId());
-		List<GoodsCouponConfigEntity> list = queryList(map);
-		if (null != list && list.size() != 0) {
+//		map.put("id",goodsCouponConfig.getId());
+//		List<GoodsCouponConfigEntity> list = queryList(map);
+		
+		GoodsCouponConfigEntity  goodsCouponConfigEntity = goodsCouponConfigDao.queryObject(goodsCouponConfig.getId());
+		
+		if (null != goodsCouponConfigEntity) {
 			throw new RRException("商品配比已存在！");
 		}
 		

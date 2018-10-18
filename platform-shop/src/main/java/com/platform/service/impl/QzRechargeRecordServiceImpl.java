@@ -126,7 +126,7 @@ public class QzRechargeRecordServiceImpl implements QzRechargeRecordService {
 				record.setMemo((String) params.get("memo"));
 				record.setTradeNo(GenerateCodeUtil.buildBizNo());
 				qzRechargeRecordDao.save(record);
-
+				
 			}
 
 		}

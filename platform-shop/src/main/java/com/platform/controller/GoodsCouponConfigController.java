@@ -42,6 +42,7 @@ public class GoodsCouponConfigController {
 
         List<GoodsCouponConfigEntity> goodsCouponConfigList = goodsCouponConfigService.queryList(query);
         
+        
         int total = goodsCouponConfigService.queryTotal(query);
 
         PageUtils pageUtil = new PageUtils(goodsCouponConfigList, total, query.getLimit(), query.getPage());

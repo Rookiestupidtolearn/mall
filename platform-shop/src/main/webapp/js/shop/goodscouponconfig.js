@@ -30,6 +30,7 @@ let vm = new Vue({
 	data: {
         showList: true,
         title: null,
+       
 		goodsCouponConfig: {},
 		ruleValidate: {
 			name: [

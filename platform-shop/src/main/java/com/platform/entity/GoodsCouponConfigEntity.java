@@ -1,11 +1,10 @@
 package com.platform.entity;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * 产品-平台币配置表实 体
+ * 商品配比 
  * 表名 goods_coupon_config
  *
  * @author lipengjun
@@ -15,10 +14,9 @@ import java.util.Date;
 public class GoodsCouponConfigEntity  implements Serializable {
 	
     private static final long serialVersionUID = 1L;
-
-    //
+    
     private Integer id;
-    //产品ID
+    //配置ID
     private Integer goodsId;
     //配比值
     private double goodValue;
@@ -112,19 +110,7 @@ public class GoodsCouponConfigEntity  implements Serializable {
     public Integer getId() {
         return id;
     }
-    /**
-     * 设置：产品ID
-     */
-    public void setGoodsId(Integer goodsId) {
-        this.goodsId = goodsId;
-    }
-
-    /**
-     * 获取：产品ID
-     */
-    public Integer getGoodsId() {
-        return goodsId;
-    }
+  
     /**
      * 设置：配比值
      */
@@ -227,4 +213,16 @@ public class GoodsCouponConfigEntity  implements Serializable {
     public String getDelFlag() {
         return delFlag;
     }
+
+	public Integer getGoodsId() {
+		return goodsId;
+	}
+
+	public void setGoodsId(Integer goodsId) {
+		this.goodsId = goodsId;
+	}
+
+
+    
+    
 }
