@@ -108,6 +108,7 @@ var vm = new Vue({
 		memo : null,
 		upath : '',
 		result : '',
+		file : '',
 		user : {
 			gender : 1
 		},
@@ -133,6 +134,7 @@ var vm = new Vue({
 			vm.rechargeList = false;
 			vm.uploadList = true;
 			vm.result = '';
+			vm.file = '';
 		},
 		recharge : function() {
 			var ids = $("#jqGrid").getGridParam("selarrrow");
