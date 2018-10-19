@@ -1,16 +1,21 @@
 package com.platform.controller;
 
+import java.util.List;
+import java.util.Map;
+
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.platform.entity.GoodsEntity;
 import com.platform.service.GoodsService;
 import com.platform.utils.PageUtils;
 import com.platform.utils.Query;
 import com.platform.utils.R;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * Controller
@@ -22,8 +27,11 @@ import java.util.Map;
 @RestController
 @RequestMapping("goods")
 public class GoodsController {
+	
     @Autowired
     private GoodsService goodsService;
+  
+    
 
     /**
      * 查看列表
@@ -35,7 +43,9 @@ public class GoodsController {
         Query query = new Query(params);
 
         query.put("isDelete", 0);
+        
         List<GoodsEntity> goodsList = goodsService.queryList(query);
+        
         int total = goodsService.queryTotal(query);
 
         PageUtils pageUtil = new PageUtils(goodsList, total, query.getLimit(), query.getPage());
@@ -51,6 +61,7 @@ public class GoodsController {
     public R info(@PathVariable("id") Integer id) {
         GoodsEntity goods = goodsService.queryObject(id);
 
+ 
         return R.ok().put("goods", goods);
     }
 
@@ -60,8 +71,9 @@ public class GoodsController {
     @RequestMapping("/save")
     @RequiresPermissions("goods:save")
     public R save(@RequestBody GoodsEntity goods) {
+    	
         goodsService.save(goods);
-
+        
         return R.ok();
     }
 
@@ -161,4 +173,22 @@ public class GoodsController {
 
         return R.ok();
     }
+    
+    /**
+     * 申请上架
+     */
+    @RequestMapping("/applyEnSale")
+    public R applySale(@RequestBody Integer id) {
+        goodsService.applySale(id);
+        return R.ok();
+    }
+    
+    @RequestMapping("/applyUnSale")
+    public R applyUnSale(@RequestBody Integer id) {
+        goodsService.applyUnSale(id);
+        return R.ok();
+    }
+    
+    
+    
 }

@@ -116,7 +116,7 @@ var vm = new Vue({
             vm.showList = false;
             vm.rechargeList =false,
             vm.title = "新增";
-            vm.user = {gender: '1'};
+            vm.user = {gender: '1'};	
             vm.userLevels = [];
 
             this.getUserLevels();

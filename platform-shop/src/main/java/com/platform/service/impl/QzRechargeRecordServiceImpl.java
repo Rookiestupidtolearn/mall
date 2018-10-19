@@ -111,7 +111,10 @@ public class QzRechargeRecordServiceImpl implements QzRechargeRecordService {
 		String mobile = (String) params.get("mobiles");
 		String[] arr = mobile.split(","); // 用,分割
 		for (int i = 0; i < arr.length; i++) {
-			UserEntity entity = userService.queryEntityByMobile(mobile);
+			UserEntity entity = userService.queryEntityByMobile(arr[i]);
+			if (entity == null) {
+				continue;
+			}
 			if (entity.getId() != null) {
 				// 充值记录流水
 				QzRechargeRecordEntity record = new QzRechargeRecordEntity();

@@ -9,7 +9,7 @@ $(function () {
             {
                 label: '上架', name: 'isOnSale', index: 'is_on_sale', width: 50,
                 formatter: function (value) {
-                    return transIsNot(value);
+                    return goodsTransIsNot(value);
                 }
             },
             {
@@ -26,7 +26,10 @@ $(function () {
                 label: '热销', name: 'isHot', index: 'is_hot', width: 80, formatter: function (value) {
                     return transIsNot(value);
                 }
-            }]
+            },
+            {label: '配比值', name: 'value', index: 'good_value', width: 80},
+            {label: '排序', name: 'sortOrder', index: 'sort_order', width: 80}
+            ]
     });
     $('#goodsDesc').editable({
         inlineMode: false,
@@ -44,6 +47,24 @@ $(function () {
         imagesLoadURL: '../sys/oss/queryAll'
     })
 });
+
+//0 下架  1上架 2 申请上架  3申请下架  -1编辑状态
+function goodsTransIsNot(value) {
+
+    if (value == 0) {
+        return '<span class="label label-success">下架 </span>';
+    }
+    if (value == 1) {
+        return '<span class="label label-success">下架 </span>';
+    }
+    if (value == 2) {
+        return '<span class="label label-success">申请上架</span>';
+    }
+    if (value == 3) {
+        return '<span class="label label-success">申请下架</span>';
+    }
+    return '<span class="label label-danger">编辑状态</span>';
+};
 
 var ztree;
 
@@ -103,7 +124,7 @@ var vm = new Vue({
                 primaryPicUrl: '',
                 listPicUrl: '',
                 categoryId: '',
-                isOnSale: 1,
+                isOnSale: 2,
                 isNew: 1,
                 isAppExclusive: 0,
                 isLimited: 0,
@@ -221,6 +242,51 @@ var vm = new Vue({
                 });
             });
         },
+        //申请上架
+        applyEnSale:function() {
+            var id = getSelectedRow("#jqGrid");
+            if (id == null) {
+                return;
+            }
+            confirm('确定要申请上架选中的商品？', function () {
+                Ajax.request({
+                    type: "POST",
+                    url: "../goods/applyEnSale",
+                    params: JSON.stringify(id),
+                    contentType: "application/json",
+                    type: 'POST',
+                    successCallback: function () {
+                        alert('提交成功', function (index) {
+                            vm.reload();
+                        });
+                    }
+                });
+            });
+        },
+        
+        //申请上架
+        applyUnSale:function() {
+            var id = getSelectedRow("#jqGrid");
+            if (id == null) {
+                return;
+            }
+            confirm('确定要申请下架选中的商品？', function () {
+                Ajax.request({
+                    type: "POST",
+                    url: "../goods/applyUnSale",
+                    params: JSON.stringify(id),
+                    contentType: "application/json",
+                    type: 'POST',
+                    successCallback: function () {
+                        alert('提交成功', function (index) {
+                            vm.reload();
+                        });
+                    }
+                });
+            });
+        },
+        
+        
         openSpe: function () {
             var id = getSelectedRow("#jqGrid");
             if (id == null) {

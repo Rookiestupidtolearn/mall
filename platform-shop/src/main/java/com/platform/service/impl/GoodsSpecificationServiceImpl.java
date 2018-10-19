@@ -8,7 +8,9 @@ import java.util.Map;
 
 import com.platform.dao.GoodsSpecificationDao;
 import com.platform.entity.GoodsSpecificationEntity;
+import com.platform.entity.SysUserEntity;
 import com.platform.service.GoodsSpecificationService;
+import com.platform.utils.ShiroUtils;
 
 /**
  * 商品对应规格表值表Service实现类
@@ -29,6 +31,27 @@ public class GoodsSpecificationServiceImpl implements GoodsSpecificationService 
 
     @Override
     public List<GoodsSpecificationEntity> queryList(Map<String, Object> map) {
+    	
+    	/**
+    	 *过滤部门
+    	 *
+    	 */
+    	
+    	SysUserEntity sysUserEntity = ShiroUtils.getUserEntity();
+    	
+    	Long  deptId  =null;
+    	
+    	if(sysUserEntity!=null){
+    		
+    		  deptId = sysUserEntity.getDeptId();
+    		  if(deptId!=null){
+    			  map.put("deptId", deptId);
+    		  }
+    	}
+    	
+   
+    	  
+    	  
         return goodsSpecificationDao.queryList(map);
     }
 

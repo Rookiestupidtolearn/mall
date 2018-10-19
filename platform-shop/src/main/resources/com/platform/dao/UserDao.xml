@@ -63,7 +63,7 @@
             and username like concat('%',#{username},'%')
         </if>
         <if test="mobile != null and mobile != ''">
-            and mobile = #{username}
+            and mobile = #{mobile}
         </if>
         <choose>
             <when test="sidx != null and sidx.trim() != ''">
