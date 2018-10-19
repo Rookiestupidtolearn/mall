@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -17,8 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.platform.entity.UserEntity;
 import com.platform.service.QzRechargeRecordService;
 import com.platform.service.UploadService;
+import com.platform.service.UserService;
 import com.platform.utils.R;
 
 @Service("uploadService")
@@ -26,11 +30,15 @@ public class UploadServiceImpl implements UploadService {
    
 	@Autowired
 	private QzRechargeRecordService qzRechargeRecordService;
+	@Autowired
+	private UserService userService;
 	
 	@Override
 	public R uploadRechargeExcel( MultipartFile file ){
 		 //获得Workbook工作薄对象
         Workbook workbook = getWorkBook(file);
+        
+      List<String>  info  = new ArrayList<>();
         
         if(workbook != null){
             for(int sheetNum = 0;sheetNum < workbook.getNumberOfSheets();sheetNum++){
@@ -55,11 +63,73 @@ public class UploadServiceImpl implements UploadService {
                     Cell cell1 = row.getCell(1);
                     String amount = cell1.getStringCellValue();
                     
-                    Map<String, Object> map = new HashMap<>(); 
+                 
+                    //校验手机号，金额参数
+        	  
+        	            String regex = "^((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(166)|(17[0,1,3,5,6,7,8])|(18[0-9])|(19[8|9]))\\d{8}$";
+        	            if (mobile.length() != 11) {
+        	            	info.add(mobile+":手机号长度错误，应该是11位!");
+        	            	continue ;
+        	            } 
+        	                Pattern p = Pattern.compile(regex);
+        	                Matcher m = p.matcher(mobile);
+        	                boolean isMatch = m.matches();
+        	         
+        	                if (!isMatch) {
+        	                	info.add(mobile+":请填入正确的手机号!");
+        	                 	continue ;
+        	                }
+        	            
+        	                UserEntity entity = userService.queryEntityByMobile(mobile);
+        	    			if (entity == null) {
+        	    				info.add("手机号【"+mobile+"】不是会员!");
+        	                 	continue ;
+        	    			}
+        	    			
+        	    			Map<String, Object>  map1 = new HashMap<>();
+        	    			map1.put("mobile", mobile);
+        	    			List<UserEntity> uEntities = userService.queryList(map1);
+        	    			if (uEntities.size() >1) {
+        	    				info.add("手机号【"+mobile+"】不能绑定两个会员!");
+        	                 	continue ;
+        					}
+        	         
+        	        
+        	        if (amount.equals("") ) {
+        	        	info.add("手机号【"+mobile+"】转账金额不能为空!");
+	                 	continue ;
+        			}
+        	        
+        	        Pattern pattern=Pattern.compile("\\d\\.\\d*|[1-9]\\d*|\\d*\\.\\d*|\\d"); 
+        	        Matcher match=pattern.matcher(amount); 
+        	        if(match.matches()==false){ 
+        	          	info.add("手机号【"+mobile+"】转账金额不合法，请检查!");
+	                 	continue ;
+        	        }
+        	        
+        	        Double checkAmount = Double.valueOf(amount);
+        	        if (checkAmount <=0) {
+        	        	info.add("手机号【"+mobile+"】转账金额应大于0元!");
+	                 	continue ;
+        			}
+        	        
+        	        Double bigAmount = Double.valueOf(amount);
+        	        if (bigAmount > 90000000) {
+        	        	info.add("手机号【"+mobile+"】转账金额不能大于9千万元!");
+	                 	continue ;
+        			}
+        	        
+        	        Pattern pattern2=Pattern.compile("^(([1-9]{1}\\d*)|([0]{1}))(\\.(\\d){0,2})?$"); // 判断小数点后2位的数字的正则表达式
+        	        Matcher match2=pattern2.matcher(amount); 
+        	        if(match2.matches()==false){ 
+        	        	info.add("手机号【"+mobile+"】转账金额小数点后保留2位");
+	                 	continue ;
+        	        }
+                    
+        	        Map<String, Object> map = new HashMap<>(); 
                     map.put("mobiles",mobile);
                     map.put("amount",amount);
                     map.put("memo","uploadRechargeExcel");
-                    
                     qzRechargeRecordService.rechargeBatch(map);
 
                 }
@@ -68,9 +138,10 @@ public class UploadServiceImpl implements UploadService {
       
         }
         
-		return R.ok();
+		return R.error(400, info.toString());
 		
 	}
+
 	
 	
 	public static  Workbook getWorkBook(MultipartFile file) {
