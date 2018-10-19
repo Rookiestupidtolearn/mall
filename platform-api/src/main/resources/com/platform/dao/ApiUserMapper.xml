@@ -213,7 +213,7 @@
 				`create_time`,
 				`trade_no`
 			from qz_money_record
-			where shop_user_id = #{userId}
+			where shop_user_id = #{userId} order by create_time desc
     </select>
 
 </mapper>

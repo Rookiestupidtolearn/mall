@@ -122,6 +122,8 @@ Page({
             cartGoods: res.data.cartList,
             cartTotal: res.data.cartTotal
           });
+        }else{
+          util.showErrorToast(res.msg);
         }
 
         that.setData({
@@ -275,6 +277,12 @@ Page({
         that.setData({
           cartGoods: cartList,
           cartTotal: res.data.cartTotal
+        });
+      }else{
+        wx.showToast({
+          image: '/static/images/icon_error.png',
+          title: res.msg,
+          mask: true
         });
       }
 

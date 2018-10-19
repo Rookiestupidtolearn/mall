@@ -73,7 +73,11 @@ $(function() {
 			name : 'registerIp',
 			index : 'register_ip',
 			hidden : true
-		}, {
+		},{
+            label: '会员账户金额',
+            name: 'amount',
+            width: 40
+        }, {
 			label : '头像',
 			name : 'avatar',
 			index : 'avatar',

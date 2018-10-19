@@ -71,6 +71,12 @@ Page({
                 }
             })
         }
+      }else{
+        wx.showToast({
+          image: '/static/images/icon_error.png',
+          title: res.msg,
+          mask: true
+        });
       }
       wx.hideLoading();
     });
