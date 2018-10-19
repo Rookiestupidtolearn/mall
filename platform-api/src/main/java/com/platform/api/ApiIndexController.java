@@ -73,6 +73,7 @@ public class ApiIndexController extends ApiBaseAction {
         param = new HashMap<String, Object>();
         param.put("is_new", 1);
         param.put("is_delete", 0);
+        param.put("is_on_sale", 1);
         param.put("fields", "id, name, list_pic_url, retail_price");
         PageHelper.startPage(0, 4, false);
         List<GoodsVo> newGoods = goodsService.queryList(param);
@@ -159,11 +160,13 @@ public class ApiIndexController extends ApiBaseAction {
         //
         Map<String, Object> param = new HashMap<String, Object>();
         param.put("is_new", 1);
+        param.put("is_on_sale", 1);
         param.put("is_delete", 0);
         param.put("fields", "id, name, list_pic_url, retail_price");
         PageHelper.startPage(0, 4, false);
         List<GoodsVo> newGoods = goodsService.queryList(param);
         resultObj.put("newGoodsList", newGoods);
+        resultObj.put("newGoodsList", null);
         //
 
         return toResponsSuccess(resultObj);
@@ -177,6 +180,7 @@ public class ApiIndexController extends ApiBaseAction {
         //
         Map<String, Object> param = new HashMap<String, Object>();
         param.put("is_hot", "1");
+        param.put("is_on_sale", 1);
         param.put("is_delete", 0);
         PageHelper.startPage(0, 3, false);
         List<GoodsVo> hotGoods = goodsService.queryHotGoodsList(param);

@@ -1,13 +1,11 @@
 package com.platform.dao;
 
-import com.platform.entity.CouponVo;
-import com.platform.entity.SmsLogVo;
-import com.platform.entity.UserCouponVo;
-
 import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
+
+import com.platform.entity.UserCouponVo;
 
 /**
  * @author lipengjun
@@ -40,4 +38,16 @@ public interface ApiUserCouponMapper extends BaseDao<UserCouponVo> {
      * @return
      */
     int deleteUserCouponPrice(Map<String, Object> params);
+    /**
+     * 根据userid查询用户使用的优惠券
+     * @param userId
+     * @return
+     */
+    UserCouponVo queryUserUsedCouponTotalPrice (Long userId);
+    /**
+     * 根据主键id查询用户优惠券
+     * @param id
+     * @return
+     */
+    UserCouponVo queryObject(Integer id);
 }

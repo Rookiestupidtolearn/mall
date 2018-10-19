@@ -87,7 +87,7 @@ public class ApiGoodsController extends ApiBaseAction {
     }
 
     /**
-     * 获取商品规格信息，用于购物车编辑时选择规格
+     * 获取 商品规格信息，用于购物车编辑时选择规格
      */
     @ApiOperation(value = " 获取商品规格信息")
     @ApiImplicitParams({@ApiImplicitParam(name = "id", value = "商品id", paramType = "path", required = true)})
@@ -350,7 +350,9 @@ public class ApiGoodsController extends ApiBaseAction {
         if (null != categoryEntityList && categoryEntityList.size() > 0) {
             List<Integer> categoryIds = new ArrayList();
             for (GoodsVo goodsVo : categoryEntityList) {
-                categoryIds.add(goodsVo.getCategory_id());
+            	if(goodsVo!=null){
+            		categoryIds.add(goodsVo.getCategory_id());
+            	}
             }
             //查找二级分类的parent_id
             Map categoryParam = new HashMap();

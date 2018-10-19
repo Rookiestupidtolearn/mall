@@ -397,7 +397,7 @@ Page({
           } else {
             wx.showToast({
               image: '/static/images/icon_error.png',
-              title: _res.errmsg,
+              title: _res.msg,
               mask: true
             });
           }

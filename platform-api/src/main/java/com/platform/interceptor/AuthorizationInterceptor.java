@@ -45,9 +45,10 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
         } else {
             return true;
         }
-
+        
         //如果有@IgnoreAuth注解，则不验证token
         if (annotation != null) {
+        	
             return true;
         }
 
@@ -58,7 +59,7 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
             token = request.getParameter(LOGIN_TOKEN_KEY);
         }
 
-        //token为空
+//        //token为空
         if (StringUtils.isBlank(token)) {
             throw new ApiRRException("请先登录", 401);
         }

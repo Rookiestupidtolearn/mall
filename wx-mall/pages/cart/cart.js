@@ -56,7 +56,7 @@ Page({
   isCheckedAll: function () {
     //判断购物车商品已全选
     return this.data.cartGoods.every(function (element, index, array) {
-      if (element.checked             = true) {
+      if (element.checked == true) {
         return true;
       } else {
         return false;
@@ -122,6 +122,8 @@ Page({
             cartGoods: res.data.cartList,
             cartTotal: res.data.cartTotal
           });
+        }else{
+          util.showErrorToast(res.msg);
         }
 
         that.setData({
@@ -275,6 +277,12 @@ Page({
         that.setData({
           cartGoods: cartList,
           cartTotal: res.data.cartTotal
+        });
+      }else{
+        wx.showToast({
+          image: '/static/images/icon_error.png',
+          title: res.msg,
+          mask: true
         });
       }
 
