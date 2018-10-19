@@ -1,6 +1,7 @@
 package com.platform.controller;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -185,7 +186,14 @@ public class QzRechargeRecordController {
     			if (entity == null) {
     				return R.error(400,"手机号【"+mobile[i]+"】不是会员!");
     			}
-                
+    			
+    			Map<String, Object>  map = new HashMap<>();
+    			map.put("mobile", mobile[i]);
+    			List<UserEntity> uEntities = userService.queryList(map);
+    			if (uEntities.size() >1) {
+    				return R.error(400,"手机号【"+mobile[i]+"】不能绑定两个会员!");
+				}
+    			
             }
         
         if (params.get("amount").equals("") ) {
@@ -202,6 +210,11 @@ public class QzRechargeRecordController {
         Double checkAmount = Double.valueOf(amount);
         if (checkAmount <=0) {
         	return R.error(400,"转账金额应大于0元");
+		}
+        
+        Double bigAmount = Double.valueOf(amount);
+        if (bigAmount > 90000000) {
+        	return R.error(400,"转账金额不能大于9千万元");
 		}
         
         Pattern pattern2=Pattern.compile("^(([1-9]{1}\\d*)|([0]{1}))(\\.(\\d){0,2})?$"); // 判断小数点后2位的数字的正则表达式
