@@ -101,6 +101,7 @@ var vm = new Vue({
 		showList : true,
 		addList : false,
 		rechargeList : false,
+		uploadList : false,
 		title : null,
 		mobiles : null,
 		amount : null,
@@ -126,6 +127,13 @@ var vm = new Vue({
 		query : function() {
 			vm.reload();
 		},
+		rechargeBench : function() {
+
+			vm.showList = false;
+			vm.rechargeList = false;
+			vm.uploadList = true;
+
+		},
 		recharge : function() {
 			var ids = $("#jqGrid").getGridParam("selarrrow");
 			var mobiles = [];
@@ -142,6 +150,7 @@ var vm = new Vue({
 			}
 			vm.showList = false;
 			vm.rechargeList = true;
+			vm.uploadList = false;
 			vm.title = "充值";
 			vm.mobiles = mobiles.join(",");
 			 vm.amount = '';
@@ -195,8 +204,11 @@ var vm = new Vue({
 			this.upath = event.target.files[0];
 		},
 		add : function() {
-			vm.addList = true, vm.showList = false;
-			vm.rechargeList = false, vm.title = "新增";
+			vm.addList = true,
+			vm.showList = false;
+			vm.rechargeList = false, 
+			vm.uploadList = false,
+			vm.title = "新增";
 			vm.user = {
 				gender : '1'
 			};
@@ -210,7 +222,9 @@ var vm = new Vue({
 				return;
 			}
 			vm.addList = true, vm.showList = false;
-			vm.rechargeList = false, vm.title = "修改";
+			vm.rechargeList = false,
+			vm.uploadList = false,
+			vm.title = "修改";
 
 			vm.getInfo(id)
 			this.getUserLevels();
@@ -314,6 +328,7 @@ var vm = new Vue({
 			vm.showList = true;
 			vm.addList = false;
 			vm.rechargeList = false;
+			vm.uploadList = false;
 			var page = $("#jqGrid").jqGrid('getGridParam', 'page');
 			$("#jqGrid").jqGrid('setGridParam', {
 				postData : {
