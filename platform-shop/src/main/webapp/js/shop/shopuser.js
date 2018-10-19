@@ -125,6 +125,7 @@ var vm = new Vue({
 		recharge : function() {
 			var ids = $("#jqGrid").getGridParam("selarrrow");
 			var mobiles = [];
+			
 			var iday = [];
 			for (i = 0; i < ids.length; i++) {
 				var rowData = $("#jqGrid").jqGrid("getRowData", ids[i]);//根据上面的id获得本行的所有数据
@@ -139,7 +140,8 @@ var vm = new Vue({
 			vm.rechargeList = true;
 			vm.title = "充值";
 			vm.mobiles = mobiles.join(",");
-
+			 vm.amount = '';
+			 vm.memo = '';
 		},
 		rechargeSubmit : function() {
 			var url = "../qzrechargerecord/recharge";

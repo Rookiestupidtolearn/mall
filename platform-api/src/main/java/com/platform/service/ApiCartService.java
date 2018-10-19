@@ -264,8 +264,11 @@ public class ApiCartService {
         if(amount.compareTo(couponlPrice)<0){
         	couponTotalPrice = amount;
         }
-        userAmountVo.setAmount(userAmountVo.getAmount().add(couponTotalPrice));
-        qzUserAccountMapper.updateUserAccount(userAmountVo);
+        if (userAmountVo != null) {
+            userAmountVo.setAmount(userAmountVo.getAmount().add(couponTotalPrice));
+            qzUserAccountMapper.updateUserAccount(userAmountVo);
+		}
+
         /**
          * 1.检查当前购物车是否已经生成了优惠券
          * 			1.1  有       更新的优惠券值
