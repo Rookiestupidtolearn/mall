@@ -56,8 +56,9 @@
         nideshop_user.register_ip,
         nideshop_user.avatar,
         nideshop_user.weixin_openid,
-        nideshop_user_level.name levelName
-        from nideshop_user LEFT JOIN nideshop_user_level ON nideshop_user.user_level_id=nideshop_user_level.id
+        nideshop_user_level.name levelName,
+        qz_user_account.amount amount
+        from nideshop_user left join qz_user_account on nideshop_user.id = qz_user_account.shop_user_id left join  nideshop_user_level on  nideshop_user.user_level_id=nideshop_user_level.id  
         WHERE 1=1
         <if test="username != null and username.trim() != ''">
             and username like concat('%',#{username},'%')
