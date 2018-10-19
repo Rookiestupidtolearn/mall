@@ -5,10 +5,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
 import com.platform.dao.QzRechargeRecordDao;
 import com.platform.entity.QzMoneyRecordEntity;
 import com.platform.entity.QzRechargeRecordEntity;
@@ -32,6 +34,9 @@ import com.platform.utils.ShiroUtils;
  */
 @Service("qzRechargeRecordService")
 public class QzRechargeRecordServiceImpl implements QzRechargeRecordService {
+	
+	private static final Logger log = LoggerFactory.getLogger(QzRechargeRecordServiceImpl.class);
+	
 	@Autowired
 	private QzUserAccountService qzUserAccountService;
 	@Autowired
@@ -125,8 +130,11 @@ public class QzRechargeRecordServiceImpl implements QzRechargeRecordService {
 				record.setAmount(new BigDecimal(amount));
 				record.setMemo((String) params.get("memo"));
 				record.setTradeNo(GenerateCodeUtil.buildBizNo());
+				
+				log.info("充值记录信息"+JSON.toJSONString(record));
+				
 				qzRechargeRecordDao.save(record);
-
+				
 			}
 
 		}

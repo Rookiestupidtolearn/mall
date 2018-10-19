@@ -84,4 +84,3 @@ module.exports = {
 
   UserMobile: API_BASE_URL + 'user/userInfo',//获取手机号
 };
-

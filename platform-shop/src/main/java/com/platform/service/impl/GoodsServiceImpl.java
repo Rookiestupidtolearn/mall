@@ -246,7 +246,7 @@ public class GoodsServiceImpl implements GoodsService {
 		if (-1 == goodsEntity.getIsOnSale()) {
 			throw new RRException("此商品处于编辑状态！");
 		}
-		goodsEntity.setIsOnSale(2);
+		goodsEntity.setIsOnSale(3);
 		goodsEntity.setUpdateUserId(user.getUserId());
 		goodsEntity.setUpdateTime(new Date());
 		return goodsDao.update(goodsEntity);

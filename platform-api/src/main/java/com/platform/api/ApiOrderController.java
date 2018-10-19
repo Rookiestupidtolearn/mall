@@ -1,10 +1,27 @@
 package com.platform.api;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.alibaba.fastjson.JSONObject;
 import com.platform.annotation.IgnoreAuth;
 import com.platform.annotation.LoginUser;
+import com.platform.dao.ApiUserCouponMapper;
+import com.platform.dao.QzUserAccountMapper;
 import com.platform.entity.OrderGoodsVo;
 import com.platform.entity.OrderVo;
+import com.platform.entity.QzUserAccountVo;
+import com.platform.entity.UserCouponVo;
 import com.platform.entity.UserVo;
 import com.platform.service.ApiKdniaoService;
 import com.platform.service.ApiOrderGoodsService;
@@ -14,17 +31,9 @@ import com.platform.util.ApiPageUtils;
 import com.platform.util.wechat.WechatRefundApiResult;
 import com.platform.util.wechat.WechatUtil;
 import com.platform.utils.Query;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 作者: @author Harmon <br>
@@ -41,6 +50,10 @@ public class ApiOrderController extends ApiBaseAction {
     private ApiOrderGoodsService orderGoodsService;
     @Autowired
     private ApiKdniaoService apiKdniaoService;
+    @Autowired
+    private QzUserAccountMapper qzUserAccountMapper;
+    @Autowired
+    private ApiUserCouponMapper apiUserCouponMapper;
 
     /**
      */
@@ -175,6 +188,7 @@ public class ApiOrderController extends ApiBaseAction {
     public Object cancelOrder(Integer orderId) {
         try {
             OrderVo orderVo = orderService.queryObject(orderId);
+            QzUserAccountVo userAmountVo =qzUserAccountMapper.queruUserAccountInfo(orderVo.getUser_id());
             if (orderVo.getOrder_status() == 300) {
                 return toResponsFail("已发货，不能取消");
             } else if (orderVo.getOrder_status() == 301) {
@@ -192,7 +206,13 @@ public class ApiOrderController extends ApiBaseAction {
                     }
                     orderVo.setPay_status(4);
                     orderService.update(orderVo);
+                    UserCouponVo userCoupon=  apiUserCouponMapper.queryObject(orderVo.getCoupon_id());
+                    userCoupon.setCoupon_status(3);
+                    apiUserCouponMapper.update(userCoupon);
+                    userAmountVo.setAmount(userAmountVo.getAmount().add(userCoupon.getCoupon_price()));
+                    qzUserAccountMapper.update(userAmountVo);
                     return toResponsMsgSuccess("取消成功");
+                    
                 } else {
                     return toResponsObject(400, "取消成失败", "");
                 }

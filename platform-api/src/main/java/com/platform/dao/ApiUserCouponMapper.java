@@ -38,4 +38,16 @@ public interface ApiUserCouponMapper extends BaseDao<UserCouponVo> {
      * @return
      */
     int deleteUserCouponPrice(Map<String, Object> params);
+    /**
+     * 根据userid查询用户使用的优惠券
+     * @param userId
+     * @return
+     */
+    UserCouponVo queryUserUsedCouponTotalPrice (Long userId);
+    /**
+     * 根据主键id查询用户优惠券
+     * @param id
+     * @return
+     */
+    UserCouponVo queryObject(Integer id);
 }

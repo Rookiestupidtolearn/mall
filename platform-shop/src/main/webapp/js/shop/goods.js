@@ -55,7 +55,7 @@ function goodsTransIsNot(value) {
         return '<span class="label label-success">下架 </span>';
     }
     if (value == 1) {
-        return '<span class="label label-success">下架 </span>';
+        return '<span class="label label-success">上架 </span>';
     }
     if (value == 2) {
         return '<span class="label label-success">申请上架</span>';
@@ -65,6 +65,7 @@ function goodsTransIsNot(value) {
     }
     return '<span class="label label-danger">编辑状态</span>';
 };
+
 
 var ztree;
 
