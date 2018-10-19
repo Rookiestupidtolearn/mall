@@ -118,6 +118,11 @@ public class GoodsServiceImpl implements GoodsService {
 	@Override
 	@Transactional
 	public int update(GoodsEntity goods) {
+		
+		
+		if(1==goods.getIsOnSale()){
+			throw new RRException("此商品已处于上架状态！,不能修改");
+		}
 		SysUserEntity user = ShiroUtils.getUserEntity();
 		List<GoodsAttributeEntity> attributeEntityList = goods.getAttributeEntityList();
 		if (null != attributeEntityList && attributeEntityList.size() > 0) {
