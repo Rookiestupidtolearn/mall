@@ -209,14 +209,14 @@ page{
 }
 
 .order-bottom .total{
-    height: 106rpx;
+    height: 136rpx;
     padding-top: 20rpx;
     border-bottom: 1px solid #f4f4f4;
 }
 
 .order-bottom .total .t{
-    height: 25rpx;
-    line-height: 25rpx;
+    height: 30rpx;
+    line-height: 30rpx;
     margin-bottom: 7.5rpx;
     display: flex;
 }
@@ -235,6 +235,10 @@ page{
     height: 35rpx;
     line-height: 35rpx;
     font-size: 25rpx;
+}
+
+.order-bottom .total .txt2{
+    color:#33cc99;
 }
 
 .order-bottom .pay-fee{
