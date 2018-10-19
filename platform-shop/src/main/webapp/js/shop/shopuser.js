@@ -132,7 +132,7 @@ var vm = new Vue({
 			vm.showList = false;
 			vm.rechargeList = false;
 			vm.uploadList = true;
-
+			vm.result = '';
 		},
 		recharge : function() {
 			var ids = $("#jqGrid").getGridParam("selarrrow");
@@ -192,6 +192,7 @@ var vm = new Vue({
 			        success : function(res) {
                          if(res.code=='400'){
                         	   iview.Message.error(res.msg);
+                        		vm.result = res.msg;
                          }else{
                         	 vm.result = '上传成功';
                          }
