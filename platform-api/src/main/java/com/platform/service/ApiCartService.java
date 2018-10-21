@@ -301,23 +301,16 @@ public class ApiCartService {
         if(amount.compareTo(couponTotalPrice)<0){
          	couponTotalPrice = amount;
         }
-<<<<<<< HEAD
-        if (userAmountVo != null) {
-            userAmountVo.setAmount(userAmountVo.getAmount().add(couponTotalPrice));
-            qzUserAccountMapper.updateUserAccount(userAmountVo);
-		}
-
         /**
          * 1.检查当前购物车是否已经生成了优惠券
          * 			1.1  有       更新的优惠券值
          * 			1.2  没有    新增一条
-         * */ 
-=======
-        userAmountVo.setAmount(userAmountVo.getAmount().subtract(couponTotalPrice));
-        qzUserAccountMapper.updateUserAccount(userAmountVo);
-
->>>>>>> c5fea595bd77b89f7fecbe05e529ed9ff2dc4702
-        getUserCouponTotalPrice(userId,couponTotalPrice);
+         * */
+        if (userAmountVo != null) {
+            userAmountVo.setAmount(userAmountVo.getAmount().add(couponTotalPrice));
+            qzUserAccountMapper.updateUserAccount(userAmountVo);
+		}
+		getUserCouponTotalPrice(userId,couponTotalPrice);
         return this.toResponsObject(0, "执行成功", "");
     }
     public Object  getUserCouponTotalPrice(Long userId,BigDecimal couponTotalPrice){
