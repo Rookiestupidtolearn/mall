@@ -448,7 +448,12 @@ public class ApiCartController extends ApiBaseAction {
     public Object checkout(@LoginUser UserVo loginUser, Integer couponId, @RequestParam(defaultValue = "cart") String type) {
         Map<String, Object> resultObj = new HashMap();
         //根据收货地址计算运费
-
+        
+        JSONObject jsonParam = getJsonRequest();
+        
+        if(!StringUtils.isNullOrEmpty(jsonParam.getString("type"))){
+        	type = jsonParam.getString("type");
+        }
         BigDecimal freightPrice = new BigDecimal(0.00);
         //默认收货地址
         Map<String,Object> param = new HashMap<>();
