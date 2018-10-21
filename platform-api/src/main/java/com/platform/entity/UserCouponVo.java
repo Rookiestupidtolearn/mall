@@ -31,7 +31,7 @@ public class UserCouponVo implements Serializable {
     private String source_key;
     //分享人
     private Long referrer;
-    //优惠券状态
+    //优惠券状态 1. 可用 2. 已用 3. 过期 4.未支付5.支付中',
     private int coupon_status;
     //优惠券价格
     private BigDecimal coupon_price;
