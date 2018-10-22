@@ -58,7 +58,9 @@
             limit #{offset}, #{limit}
         </if>
     </select>
-
+	<select id = "queryUserCarts" resultMap = "cartMap">
+		select * from nideshop_cart where user_id = #{user_id}
+	</select>
     <select id="queryTotal" resultType="int">
         select count(*) from nideshop_cart a
         where 1 = 1

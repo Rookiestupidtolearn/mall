@@ -34,7 +34,7 @@ public class OrderVo implements Serializable {
     private Integer order_status;
     //发货状态 商品配送情况;0未发货,1已发货,2已收货,4退货
     private Integer shipping_status;
-    //付款状态 支付状态;0未付款;1付款中;2已付款;4退款
+    //付款状态 支付状态;0未付款;1付款中;2已付款4退款
     private Integer pay_status;
     //收货人
     private String consignee;

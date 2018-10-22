@@ -57,6 +57,8 @@ public class CouponVo implements Serializable {
     private Integer min_transmit_num;
     //优惠券状态 1 可用 2 已用 3 过期
     private Integer coupon_status = 1;
+    
+    private BigDecimal coupon_price; // 优惠券价格
 
     public Integer getUser_coupon_id() {
         return user_coupon_id;
@@ -201,4 +203,13 @@ public class CouponVo implements Serializable {
     public void setMin_transmit_num(Integer min_transmit_num) {
         this.min_transmit_num = min_transmit_num;
     }
+
+	public BigDecimal getCoupon_price() {
+		return coupon_price;
+	}
+
+	public void setCoupon_price(BigDecimal coupon_price) {
+		this.coupon_price = coupon_price;
+	}
+    
 }
