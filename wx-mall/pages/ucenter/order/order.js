@@ -15,23 +15,17 @@ Page({
     // 页面初始化 options为页面跳转所带来的参数
     // 页面显示
     wx.showLoading({
-      title: '加载中...',
-      success: function () {
-
-      }
+      title: '加载中...'
     });
   },
   getOrderList(){
     let that = this;
-
-    if (that.data.totalPages <= that.data.page - 1) {
-      that.setData({
-        nomore: true
-      })
-      return;
-    }
-
     util.request(api.OrderList, {page: that.data.page, size: that.data.size}).then(function (res) {
+      if(that.data.page > res.totalPages){
+        that.setData({
+          nomore:true
+        })
+      }
       if (res.errno === 0) {
         console.log(res.data);
         that.setData({
