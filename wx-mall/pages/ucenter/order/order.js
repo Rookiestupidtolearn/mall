@@ -20,14 +20,15 @@ Page({
   },
   getOrderList(){
     let that = this;
+    var totalPages;
+    if (that.data.totalPages <= that.data.page - 1) {
+      that.setData({
+        nomore: true
+      })
+      return;
+    }
     util.request(api.OrderList, {page: that.data.page, size: that.data.size}).then(function (res) {
-      if(that.data.page > res.totalPages){
-        that.setData({
-          nomore:true
-        })
-      }
       if (res.errno === 0) {
-        console.log(res.data);
         that.setData({
           orderList: that.data.orderList.concat(res.data.data),
           page: res.data.currentPage + 1,
