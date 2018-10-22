@@ -133,7 +133,7 @@
            <p slot="title">{{title}}</p>
 
     <input  v-model="file"  type="file" @change="getFile($event)" /><button @click="upload">上传</button>
-    <div>{{ result }}</div>
+    <div id="result"></div>
  
         <i-form ref="rechargeForm" :model="user" :rules="ruleValidate" :label-width="80">
       
