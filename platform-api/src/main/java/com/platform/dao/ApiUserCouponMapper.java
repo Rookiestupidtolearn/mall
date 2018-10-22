@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.platform.entity.CouponVo;
 import com.platform.entity.UserCouponVo;
 
 /**
@@ -31,7 +32,7 @@ public interface ApiUserCouponMapper extends BaseDao<UserCouponVo> {
      * @param userId
      * @return
      */
-    UserCouponVo queryUserCouponTotalPrice(Long userId);
+    List<UserCouponVo> queryUserCouponTotalPrice(Long userId);
     /**
      * 根据userid删除用户优惠券
      * @param userId
@@ -50,4 +51,8 @@ public interface ApiUserCouponMapper extends BaseDao<UserCouponVo> {
      * @return
      */
     UserCouponVo queryObject(Integer id);
+   
+    List<CouponVo> queryUsernewCoupons(Map<String, Object> params);
+    
+    int  updateUserOrderCoupon(UserCouponVo userCouponVo);
 }

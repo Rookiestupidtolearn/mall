@@ -71,6 +71,12 @@ Page({
                 }
             })
         }
+      }else{
+        wx.showToast({
+          image: '/static/images/icon_error.png',
+          title: res.msg,
+          mask: true
+        });
       }
       wx.hideLoading();
     });
@@ -120,7 +126,7 @@ Page({
       })
     } else if (app.globalData.userCoupon == 'NO_USE_COUPON') {
       this.setData({
-        couponDesc: "不使用优惠券",
+        couponDesc: "平台抵扣券",
         couponId: '',
       })
     }

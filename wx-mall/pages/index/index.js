@@ -20,11 +20,7 @@ Page({
       desc: '仿网易严选微信小程序商城',
       path: '/pages/index/index'
     }
-  },onPullDownRefresh(){
-	  	// 增加下拉刷新数据的功能
-	    var self = this;
-	    this.getIndexData();
- },
+  },
   getIndexData: function () {
     let that = this;
     var data = new Object();
@@ -67,14 +63,15 @@ Page({
     });
 
   },
-  onLoad: function (options) {
-    this.getIndexData();
+  onLoad: function () {
+
   },
   onReady: function () {
     // 页面渲染完成
   },
   onShow: function () {
     // 页面显示
+    this.getIndexData();
   },
   onHide: function () {
     // 页面隐藏
