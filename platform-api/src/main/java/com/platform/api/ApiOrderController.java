@@ -226,6 +226,11 @@ public class ApiOrderController extends ApiBaseAction {
             } else {
                 orderVo.setOrder_status(101);
                 orderService.update(orderVo);
+                UserCouponVo userCoupon=  apiUserCouponMapper.queryObject(orderVo.getCoupon_id());
+                userCoupon.setCoupon_status(3);
+                apiUserCouponMapper.update(userCoupon);
+                userAmountVo.setAmount(userAmountVo.getAmount().add(userCoupon.getCoupon_price()));
+                qzUserAccountMapper.updateUserAccount(userAmountVo);
                 return toResponsSuccess("取消成功");
             }
         } catch (Exception e) {

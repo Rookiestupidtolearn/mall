@@ -124,7 +124,7 @@ public class ApiCartService {
                 cartUpdateList.add(cartItem);
             }
         }
-        if (null != goods_ids && goods_ids.size() > 0) {
+        if (null != goods_ids && goods_ids.size() > 1) {
             crashParam.put("goods_ids", goods_ids);
             for (CartVo cartItem : cartInfoList) {
                 // 存在原始的
@@ -134,6 +134,16 @@ public class ApiCartService {
                             cartUpdateList.add(cartCrash);
                             break;
                         }
+                    }
+                }
+            }
+        }
+        if (null != goods_ids && goods_ids.size() == 1) {
+            for (CartVo cartItem : cartInfoList) {
+                // 存在原始的
+                if (null != cartItem.getChecked() && 1 == cartItem.getChecked()) {
+                    if (null != cartItem.getChecked() && 1 == cartItem.getChecked()) {
+                        cartUpdateList.add(cartItem);
                     }
                 }
             }
