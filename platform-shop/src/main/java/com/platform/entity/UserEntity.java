@@ -1,6 +1,7 @@
 package com.platform.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 
@@ -48,8 +49,18 @@ public class UserEntity implements Serializable {
      */
     //会员级别
     private String levelName;
+    //用户账户金额
+    private BigDecimal amount;
 
-    /**
+    public BigDecimal getAmount() {
+		return amount;
+	}
+
+	public void setAmount(BigDecimal amount) {
+		this.amount = amount;
+	}
+
+	/**
      * 设置：主键
      */
     public void setId(Integer id) {
