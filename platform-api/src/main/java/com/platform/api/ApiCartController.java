@@ -498,7 +498,12 @@ public class ApiCartController extends ApiBaseAction {
         //获取可用的优惠券信息
         BigDecimal couponPrice = new BigDecimal(0.00);
         UserCouponVo userCoupon = apiUserCouponMapper.queryUserCouponTotalPrice(loginUser.getUserId());
-        couponPrice = couponPrice.add(userCoupon.getCoupon_price());
+        
+        if(userCoupon==null){
+        	couponPrice =  couponPrice.add(BigDecimal.ZERO);
+        }else{
+        	couponPrice = couponPrice.add(userCoupon.getCoupon_price());
+        }
         //订单的总价
         BigDecimal orderTotalPrice = goodsTotalPrice.add(freightPrice);
         BigDecimal actualPrice = orderTotalPrice.subtract(couponPrice);  //减去其它支付的金额后，要实际支付的金额
