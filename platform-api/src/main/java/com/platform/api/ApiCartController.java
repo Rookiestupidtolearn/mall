@@ -497,6 +497,7 @@ public class ApiCartController extends ApiBaseAction {
 
         //获取可用的优惠券信息
         BigDecimal couponPrice = new BigDecimal(0.00);
+
 //        UserCouponVo userCoupon = apiUserCouponMapper.queryUserCouponTotalPrice(loginUser.getUserId());
         
         map.put("user_id", loginUser.getUserId());
@@ -614,7 +615,7 @@ public class ApiCartController extends ApiBaseAction {
          }
          if(userCouponVo != null){
         	 //购物车发生修改  原有优惠券作废，重新生成优惠券
-        	 userCouponVo.setCoupon_status(3);
+        	 userCouponVo.setCoupon_status(7);
         	 apiUserCouponMapper.update(userCouponVo);
         	 //回滚平台币
         	 userAmountVo.setAmount(userAmountVo.getAmount().add(userCouponVo.getCoupon_price()));

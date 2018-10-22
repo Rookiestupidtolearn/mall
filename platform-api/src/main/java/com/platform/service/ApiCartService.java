@@ -190,7 +190,7 @@ public class ApiCartService {
     		 }
     		 if(userCouponVo != null){
     			 //购物车发生修改  原有优惠券作废，重新生成优惠券
-    			 userCouponVo.setCoupon_status(3);
+    			 userCouponVo.setCoupon_status(7);
     			 apiUserCouponMapper.update(userCouponVo);
     			 //回滚平台币
     			 userAmountVo.setAmount(userAmountVo.getAmount().add(userCouponVo.getCoupon_price()));
@@ -279,7 +279,7 @@ public class ApiCartService {
         }
         if(userCouponVo != null){
        	 //购物车发生修改  原有优惠券作废，重新生成优惠券
-       	 userCouponVo.setCoupon_status(3);
+       	 userCouponVo.setCoupon_status(7);
        	 apiUserCouponMapper.update(userCouponVo);
        	 //回滚平台币
        	 userAmountVo.setAmount(userAmountVo.getAmount().add(userCouponVo.getCoupon_price()));
@@ -303,16 +303,16 @@ public class ApiCartService {
         if(amount.compareTo(couponTotalPrice)<0){
          	couponTotalPrice = amount;
         }
+
+
         /**
          * 1.检查当前购物车是否已经生成了优惠券
          * 			1.1  有       更新的优惠券值
          * 			1.2  没有    新增一条
-         * */
-        if (userAmountVo != null) {
-            userAmountVo.setAmount(userAmountVo.getAmount().add(couponTotalPrice));
-            qzUserAccountMapper.updateUserAccount(userAmountVo);
-		}
-		getUserCouponTotalPrice(userId,couponTotalPrice);
+         * */  
+        userAmountVo.setAmount(userAmountVo.getAmount().subtract(couponTotalPrice));
+        qzUserAccountMapper.updateUserAccount(userAmountVo);
+        getUserCouponTotalPrice(userId,couponTotalPrice);
         return this.toResponsObject(0, "执行成功", "");
     }
     public Object  getUserCouponTotalPrice(Long userId,BigDecimal couponTotalPrice){
@@ -379,7 +379,7 @@ public class ApiCartService {
            }
            if(userCouponVo != null){
           	 //购物车发生修改  原有优惠券作废，重新生成优惠券
-          	 userCouponVo.setCoupon_status(3);
+          	 userCouponVo.setCoupon_status(7);
           	 apiUserCouponMapper.update(userCouponVo);
           	 //回滚平台币
           	 userAmountVo.setAmount(userAmountVo.getAmount().add(userCouponVo.getCoupon_price()));

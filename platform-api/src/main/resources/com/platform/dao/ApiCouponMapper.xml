@@ -154,7 +154,7 @@
                 order by ${sidx} ${order}
             </when>
             <otherwise>
-                order by b.coupon_status asc
+                 order by b.add_time desc
             </otherwise>
         </choose>
     </select>
@@ -225,12 +225,13 @@
 	</select>
 	
 	<select id = "queryUsernewCoupons" resultMap="couponMap">
-		 select a.*,b.coupon_number,b.user_id,b.coupon_status,b.id user_coupon_id,b.coupon_price
+		select a.*,b.coupon_number,b.user_id,b.coupon_status,b.id user_coupon_id,b.coupon_price
         from nideshop_coupon a
         left join nideshop_user_coupon b on a.id = b.coupon_id
-        where 1 = 1 and b.coupon_status in (1,2)
+        where 1 = 1 and b.coupon_status in (1,2,3)
         <if test="user_id != null">
             and b.`user_id` = #{user_id}
         </if>
+        order by b.add_time desc
 	</select>
 </mapper>

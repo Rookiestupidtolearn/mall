@@ -58,7 +58,7 @@ public class ApiCouponService {
 //            if (couponVo.getCoupon_status()==1) {
 //                // 检查是否过期
 //                if(couponVo.getUse_end_date().before(new Date())) {
-//                    couponVo.setCoupon_status(3);
+//                    couponVo.setCoupon_status(7);
 //                    apiCouponMapper.updateUserCoupon(couponVo);
 //                }
 //            }
