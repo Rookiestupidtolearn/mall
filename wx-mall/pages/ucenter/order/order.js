@@ -14,24 +14,13 @@ Page({
   onLoad:function(options){
     // 页面初始化 options为页面跳转所带来的参数
     // 页面显示
-
     wx.showLoading({
       title: '加载中...',
       success: function () {
 
       }
     });
-    this.getOrderList();
   },
-
-  /**
-       * 页面上拉触底事件的处理函数
-       */
-  onReachBottom: function () {
-    console.log("下一页")
-    this.getOrderList()
-  },
-
   getOrderList(){
     let that = this;
 
@@ -66,7 +55,7 @@ Page({
     // 页面渲染完成
   },
   onShow:function(){
-
+    this.getOrderList();
   },
   onHide:function(){
     // 页面隐藏

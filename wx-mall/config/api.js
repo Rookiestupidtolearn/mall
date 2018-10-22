@@ -1,9 +1,10 @@
 const root = '/platform/api/';
 
+//const API_BASE_URL = 'http://192.144.156.42:8080' + root;
+ const API_BASE_URL = 'http://localhost:8093' + root;
 // const API_BASE_URL = 'http://fly2you.cn' + root;
-
-//const API_BASE_URL = 'http://localhost:8081' + root;
- const API_BASE_URL = 'http://192.144.156.42:8080' + root;
+//const API_BASE_URL = 'http://localhost:8080' + root;
+// const API_BASE_URL = 'http://192.144.156.42:8080' + root;
 //  const API_BASE_URL = 'http://192.168.1.244:8093' + root;
 
 module.exports = {
@@ -61,7 +62,7 @@ module.exports = {
     AddressSave: API_BASE_URL + 'address/save',  //保存收货地址
     AddressDelete: API_BASE_URL + 'address/delete',  //删除收货地址
 
-    RegionList: API_BASE_URL + 'rergion/list',  //获取区域列表
+    RegionList: API_BASE_URL + 'region/list',  //获取区域列表
 
     OrderList: API_BASE_URL + 'order/list',  //订单列表
     OrderDetail: API_BASE_URL + 'order/detail',  //订单详情
@@ -85,5 +86,3 @@ module.exports = {
 
   UserMobile: API_BASE_URL + 'user/userInfo',//获取手机号
 };
-
-

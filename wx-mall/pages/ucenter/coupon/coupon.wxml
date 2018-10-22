@@ -6,7 +6,7 @@
     </view>
     <view class="add-btn disabled">兑换</view>
   </view> -->
-  <view class="help">使用说明</view>
+  <!-- <view class="help">使用说明</view> -->
   <show-empty-data wx:if="{{couponList.length<=0}}" showType="NO_COUPON"></show-empty-data>
   <view wx:else class="coupon-list">
     <block wx:for="{{couponList}}" wx:for-index="index" wx:for-item="item" wx:key="{{item.id}}">
@@ -24,7 +24,7 @@
           </view>
         </view>
         <view class="condition">
-          <text class="txt">满￥{{item.min_goods_amount}} 减￥{{item.type_money}}</text>
+          <text class="txt">抵扣￥{{item.coupon_price}}</text>
         </view>
       </view>
     </block>
