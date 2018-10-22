@@ -1,4 +1,4 @@
-<view class="container">
+<scroll-view class="container" scroll-y="true" bindscrolltolower="getOrderList">
     <view class="orders">
         <navigator url="../orderDetail/orderDetail?id={{item.id}}" class="order" wx:for="{{orderList}}" wx:key="{{item.id}}">
             <view class="h">
@@ -24,7 +24,7 @@
         </navigator>
     </view>
 
-    <!-- <view wx:if="{{orderList.length>6}}" class="loadmore">
+    <view wx:if="{{orderList.length>6}}" class="loadmore">
       <block wx:if="{{nomore}}">
         <text>{{nomoreText}}</text>
       </block>
@@ -32,5 +32,5 @@
         <text class="iconfont icon-loading loading" space="nbsp"></text>
         <text> {{loadmoreText}}</text>
       </block>
-    </view> -->
-</view>
+    </view>
+</scroll-view>
