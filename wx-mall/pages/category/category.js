@@ -101,10 +101,13 @@ Page({
       return;
     }
 
-    util.request(api.GoodsList, {categoryId: that.data.id, page: that.data.page, size: that.data.size},'post','application/json')
+    util.request(api.GoodsList, {categoryId: that.data.id, page: that.data.page, size: that.data.size})
       .then(function (res) {
         if(res.code == 500 ){
           util.showErrorToast('数据返回错误');
+        }
+        if(res.data.goodsList == ""){
+          util.showErrorToast('内容为空');
         }
         that.setData({
           goodsList: that.data.goodsList.concat(res.data.goodsList),        
