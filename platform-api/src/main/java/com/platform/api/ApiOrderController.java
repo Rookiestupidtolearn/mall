@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
 import com.platform.annotation.IgnoreAuth;
 import com.platform.annotation.LoginUser;
+import com.platform.dao.ApiOrderMapper;
 import com.platform.dao.ApiUserCouponMapper;
 import com.platform.dao.QzUserAccountMapper;
 import com.platform.entity.OrderGoodsVo;
@@ -54,6 +55,8 @@ public class ApiOrderController extends ApiBaseAction {
     private QzUserAccountMapper qzUserAccountMapper;
     @Autowired
     private ApiUserCouponMapper apiUserCouponMapper;
+    @Autowired
+    private ApiOrderMapper apiOrderMapper;
 
     /**
      */
@@ -82,7 +85,7 @@ public class ApiOrderController extends ApiBaseAction {
         params.put("order", "asc");
         //查询列表数据
         Query query = new Query(params);
-        List<OrderVo> orderEntityList = orderService.queryList(query);
+        List<OrderVo> orderEntityList = apiOrderMapper.queryList(query);
         int total = orderService.queryTotal(query);
         ApiPageUtils pageUtil = new ApiPageUtils(orderEntityList, total, query.getLimit(), query.getPage());
         //
