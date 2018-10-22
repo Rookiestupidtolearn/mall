@@ -614,7 +614,7 @@ public class ApiCartController extends ApiBaseAction {
          }
          if(userCouponVo != null){
         	 //购物车发生修改  原有优惠券作废，重新生成优惠券
-        	 userCouponVo.setCoupon_status(3);
+        	 userCouponVo.setCoupon_status(7);
         	 apiUserCouponMapper.update(userCouponVo);
         	 //回滚平台币
         	 userAmountVo.setAmount(userAmountVo.getAmount().add(userCouponVo.getCoupon_price()));
