@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
-import com.platform.annotation.IgnoreAuth;
 import com.platform.annotation.LoginUser;
 import com.platform.entity.QzMoneyRecordEntity;
 import com.platform.entity.QzUserAccountEntity;
 import com.platform.entity.SmsConfig;
 import com.platform.entity.SmsLogVo;
 import com.platform.entity.UserVo;
+import com.platform.service.ApiUserCouponService;
 import com.platform.service.ApiUserService;
 import com.platform.service.SysConfigService;
 import com.platform.util.ApiBaseAction;
@@ -45,6 +45,9 @@ public class ApiUserController extends ApiBaseAction {
     private ApiUserService userService;
     @Autowired
     private SysConfigService sysConfigService;
+    @Autowired
+    private ApiUserCouponService apiUserCouponService;
+    
 
     /**
      * 发送短信
@@ -168,12 +171,14 @@ public class ApiUserController extends ApiBaseAction {
     	Map<String, Object> obj = new HashMap<String, Object>();
        try{
     	   QzUserAccountEntity qzUserAccount = userService.queryUserAccount(loginUser.getUserId().intValue());
+    	   
+    	   
+    	   obj.put("code", 1);
            if(qzUserAccount == null){
-           	obj.put("code", 1); //未查询到用户账户
+        	   //未查询到用户账户
                obj.put("data", "0.00");
                return obj;
            }
-           obj.put("code", 1);
            obj.put("data", qzUserAccount.getAmount().toString());
            return obj;
        }catch(Exception e){

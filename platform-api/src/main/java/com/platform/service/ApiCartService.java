@@ -313,9 +313,15 @@ public class ApiCartService {
         if(amount.compareTo(couponTotalPrice)<0){
          	couponTotalPrice = amount;
         }
+
+
+        /**
+         * 1.检查当前购物车是否已经生成了优惠券
+         * 			1.1  有       更新的优惠券值
+         * 			1.2  没有    新增一条
+         * */  
         userAmountVo.setAmount(userAmountVo.getAmount().subtract(couponTotalPrice));
         qzUserAccountMapper.updateUserAccount(userAmountVo);
-
         getUserCouponTotalPrice(userId,couponTotalPrice);
         return this.toResponsObject(0, "执行成功", "");
     }

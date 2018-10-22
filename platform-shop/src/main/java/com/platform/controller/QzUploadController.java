@@ -1,5 +1,10 @@
 package com.platform.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
@@ -24,18 +29,19 @@ public class QzUploadController {
 	  * 上传文件
 	  */
 	@RequestMapping("/upload")
-	 public R upload(@RequestParam("file") MultipartFile file,HttpServletRequest  request) {
+	 public List<String> upload(@RequestParam("file") MultipartFile file,HttpServletRequest  request) {
+		 List<String> error = new ArrayList<>();
 	  if (file.isEmpty()) {
-	     return R.error(400,"上传文件不能为空");
+		  error.add("上传文件不能为空");
+	     return error;
 	  }
 	  String fileName = file.getOriginalFilename();// 文件名
 	  String fileExtension = fileName.substring(fileName.lastIndexOf("."));//扩展名
 	  if((!StringUtils.endsWithIgnoreCase(fileName, ".xls") && (!StringUtils.endsWithIgnoreCase(fileName, ".xlsx") ))){
-		  return R.error(400,"请上传Excel文件");
+		  error.add("请上传Excel文件");
+		     return error;  
       }
-      
-	 R  r = uploadService.uploadRechargeExcel(file);
-	  
-	  return r ;
+	   List<String>  iStrings = uploadService.uploadRechargeExcel(file);
+	  return iStrings ;
 	}
 }
