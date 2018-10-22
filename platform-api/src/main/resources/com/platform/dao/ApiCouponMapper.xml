@@ -154,7 +154,7 @@
                 order by ${sidx} ${order}
             </when>
             <otherwise>
-                order by b.coupon_status asc
+                 order by b.add_time desc
             </otherwise>
         </choose>
     </select>
@@ -232,5 +232,6 @@
         <if test="user_id != null">
             and b.`user_id` = #{user_id}
         </if>
+        order by b.add_time desc
 	</select>
 </mapper>
