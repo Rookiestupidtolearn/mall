@@ -42,7 +42,7 @@
             AND nideshop_goods_specification.goods_id = #{goodsId}
         </if>
         <if test="specificationId != null">
-            AND nideshop_goods.specification_id = #{specificationId}
+            AND nideshop_goods_specification.specification_id = #{specificationId}
         </if>
         
         <if test="deptId != null">

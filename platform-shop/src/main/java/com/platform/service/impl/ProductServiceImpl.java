@@ -48,7 +48,7 @@ public class ProductServiceImpl implements ProductService {
     	
     	Long  deptId  =null;
     	
-    	if(sysUserEntity!=null){
+    	if(sysUserEntity!=null && sysUserEntity.getUserId() != 1){
     		
     		  deptId = sysUserEntity.getDeptId();
     		  if(deptId!=null){
