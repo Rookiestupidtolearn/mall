@@ -93,7 +93,6 @@ public class ApiOrderService {
     }
 
 
-	@Transactional
     public Map<String, Object> submit(JSONObject jsonParam, UserVo loginUser) {
         Map<String, Object> resultObj = new HashMap<String, Object>();
 //        Integer couponId = jsonParam.getInteger("couponId");
