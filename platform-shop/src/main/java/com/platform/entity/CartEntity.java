@@ -42,6 +42,8 @@ public class CartEntity implements Serializable {
     private Integer checked;
     //商品图片
     private String listPicUrl;
+    //状态
+    private Integer state;
 
     /**
      * 设置：主键
@@ -239,6 +241,14 @@ public class CartEntity implements Serializable {
 
 	public Long getUserId() {
 		return userId;
+	}
+
+	public Integer getState() {
+		return state;
+	}
+
+	public void setState(Integer state) {
+		this.state = state;
 	}
     
 }
