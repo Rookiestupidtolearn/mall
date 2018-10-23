@@ -1,9 +1,7 @@
 package com.platform.controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.platform.service.UploadService;
-import com.platform.utils.R;
 
 @RestController
 @RequestMapping("qzUpload")
