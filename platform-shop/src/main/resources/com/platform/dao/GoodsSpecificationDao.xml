@@ -117,5 +117,16 @@
             #{id}
         </foreach>
     </delete>
+    
+    
+    <select id="querySpecificationByGoodId" resultType="com.platform.entity.GoodsSpecificationEntity">
+    	select
+			`id`,
+			`goods_id`,
+			`specification_id`,
+			`value`,
+			`pic_url` from nideshop_goods_specification
+		where goods_id = #{goodsId}
+    </select>
 
 </mapper>

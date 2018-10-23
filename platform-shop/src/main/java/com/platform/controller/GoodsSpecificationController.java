@@ -101,4 +101,19 @@ public class GoodsSpecificationController {
 
         return R.ok().put("list", list);
     }
+    
+    
+    
+    
+    @RequestMapping("/querySpecificationByGoodId")
+    public R querySpecificationByGoodId(Integer goodId) {
+
+        List<GoodsSpecificationEntity> list = goodsSpecificationService.querySpecificationByGoodId(goodId);
+
+        return R.ok().put("list", list);
+    }
+    
+    
 }
+
+

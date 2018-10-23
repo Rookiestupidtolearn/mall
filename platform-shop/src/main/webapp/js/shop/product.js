@@ -51,6 +51,22 @@ let vm = new Vue({
         query: function () {
             vm.reload();
         },
+        
+      
+      querySpecificationByGoodId:function(goodId){
+      	
+          Ajax.request({
+              type: "POST",
+              url: "../goodsspecification/querySpecificationByGoodId?goodId="+goodId,
+              contentType: "application/json",
+              successCallback: function (r) {
+                  alert('操作成功', function (index) {
+                      vm.reload();
+                  });
+              }
+          });
+      },
+      
         add: function () {
             vm.showList = false;
             vm.title = "新增";
@@ -72,7 +88,9 @@ let vm = new Vue({
         changeGoods: function (opt) {
             let goodsId = opt.value;
             if(!goodsId)return;
-
+            console.log("开始")
+            vm.querySpecificationByGoodId(goodsId);
+            console.log("结束")
             Ajax.request({
                 url: "../goods/info/" + goodsId,
                 async: true,

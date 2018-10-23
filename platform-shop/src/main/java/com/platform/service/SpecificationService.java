@@ -27,4 +27,7 @@ public interface SpecificationService {
 	void delete(Integer id);
 	
 	void deleteBatch(Integer[] ids);
+	
+	
+	
 }
