@@ -143,9 +143,7 @@ Page({
   },
   onUnload: function () {
     // 页面关闭
-    util.request(api.CancelAddBuyCoupons, { isBuy: this.data.isBuyType}, 'post', 'application/json').then(res => {
-      console.log('1111');
-    })
+    util.request(api.CancelAddBuyCoupons, { isBuy: this.data.isBuyType}, 'post', 'application/json').then(res => {})
   },
 
   /**
