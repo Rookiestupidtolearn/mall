@@ -79,4 +79,10 @@ public class GoodsSpecificationServiceImpl implements GoodsSpecificationService 
     public int deleteBatch(Integer[]ids) {
         return goodsSpecificationDao.deleteBatch(ids);
     }
+
+	@Override
+	public List<GoodsSpecificationEntity> querySpecificationByGoodId(Integer goodId) {
+		
+		return goodsSpecificationDao.querySpecificationByGoodId(goodId);
+	}
 }

@@ -1,11 +1,11 @@
 package com.platform.service;
 
-import org.springframework.web.multipart.MultipartFile;
+import java.util.List;
 
-import com.platform.utils.R;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface UploadService {
 
-	R uploadRechargeExcel(MultipartFile file);
+	List<String> uploadRechargeExcel(MultipartFile file);
 
 }

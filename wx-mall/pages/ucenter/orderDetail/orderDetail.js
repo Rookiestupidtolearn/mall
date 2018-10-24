@@ -28,7 +28,7 @@ Page({
           handleOption: res.data.handleOption
         });
         //that.payTimer();
-      if (res.data.orderInfo.order_status == '101') {
+      if (res.data.orderInfo.order_status == '101' || res.data.orderInfo.order_status == '301') {
         that.setData({
           cancelBtnShow: true
         })

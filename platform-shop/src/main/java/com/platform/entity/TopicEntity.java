@@ -17,7 +17,7 @@ public class TopicEntity implements Serializable {
     //主键
     private Integer id;
     //活动主题
-    private String title;
+    private String title; 
     //活动内容
     private String content;
     //化名

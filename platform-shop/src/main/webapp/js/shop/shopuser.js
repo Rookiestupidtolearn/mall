@@ -135,6 +135,7 @@ var vm = new Vue({
 			vm.uploadList = true;
 			vm.result = '';
 			vm.file = '';
+			document.getElementById('result').innerHTML="";
 		},
 		recharge : function() {
 			var ids = $("#jqGrid").getGridParam("selarrrow");
@@ -192,12 +193,11 @@ var vm = new Vue({
 			        dataType:"json",
 			        mimeType:"multipart/form-data",
 			        success : function(res) {
-                         if(res.code=='400'){
-                        	   iview.Message.error(res.msg);
-                        		vm.result = res.msg;
-                         }else{
-                        	 vm.result = '上传成功';
-                         }
+			        	 var  haha = ''; 
+			        	for(i=0;i<res.length;i++){
+			        		haha += res[i]+"<br>";
+			        	}
+			        	document.getElementById('result').innerHTML = haha;
 			        }
 			    });
 

@@ -126,7 +126,7 @@ Page({
       })
     } else if (app.globalData.userCoupon == 'NO_USE_COUPON') {
       this.setData({
-        couponDesc: "不使用优惠券",
+        couponDesc: "平台抵扣券",
         couponId: '',
       })
     }
