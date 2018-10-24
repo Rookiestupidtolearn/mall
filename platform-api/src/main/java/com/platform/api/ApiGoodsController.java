@@ -230,7 +230,7 @@ public class ApiGoodsController extends ApiBaseAction {
         resultObj.put("comment", comment);
         resultObj.put("brand", brand);
         resultObj.put("specificationList", specificationList);
-        resultObj.put("productList", productEntityList);
+        resultObj.put("productList", productEntityList);  // 所有产品规则
         // 记录推荐人是否可以领取红包，用户登录时校验
         try {
             // 是否已经有可用的转发红包

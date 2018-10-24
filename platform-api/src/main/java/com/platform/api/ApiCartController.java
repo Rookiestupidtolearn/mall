@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -497,6 +498,7 @@ public class ApiCartController extends ApiBaseAction {
 
         //获取可用的优惠券信息
         BigDecimal couponPrice = new BigDecimal(0.00);
+
 //        UserCouponVo userCoupon = apiUserCouponMapper.queryUserCouponTotalPrice(loginUser.getUserId());
         
         map.put("user_id", loginUser.getUserId());
@@ -590,9 +592,9 @@ public class ApiCartController extends ApiBaseAction {
 	     }
     	return this.toResponsObject(0, "优惠券发送成功", "");
     }
-    public Object updateUserCouponPrice(Integer goodsId,Integer productId,Integer number,Long userId){
+    public synchronized Object updateUserCouponPrice(Integer goodsId,Integer productId,Integer number,Long userId){
     	 BigDecimal couponTotalPrice = BigDecimal.ZERO;//优惠券总价值
-         BigDecimal couponlPrice = BigDecimal.ZERO;//优惠券临时总价值
+        
          Map<String,Object> map = new HashMap<>();
          map.put("userId",userId);
          BigDecimal amount = BigDecimal.ZERO;//初始化用户平台币
@@ -622,14 +624,17 @@ public class ApiCartController extends ApiBaseAction {
          }
          if(!CollectionUtils.isEmpty(carts)){
         	for(CartVo cart : carts){
-        		 //获取产品配比值
-                GoodsCouponConfigVo goodsCoupon = goodsCouponConfigMapper.getUserCoupons(cart.getGoods_id(),userId);
-                ProductVo productInfo = productService.queryObject(cart.getProduct_id());
-                //计算该产品优惠券总和
-                if(goodsCoupon != null){
-                	couponlPrice = productInfo.getRetail_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(cart.getNumber()));
-                }
-                couponTotalPrice = couponTotalPrice.add(couponlPrice);
+        		if(null != cart.getChecked() && 1 == cart.getChecked()){
+        			//获取产品配比值
+        			GoodsCouponConfigVo goodsCoupon = goodsCouponConfigMapper.getUserCoupons(cart.getGoods_id(),userId);
+        			ProductVo productInfo = productService.queryObject(cart.getProduct_id());
+        			BigDecimal couponlPrice = BigDecimal.ZERO;//优惠券临时总价值
+        			//计算该产品优惠券总和
+        			if(goodsCoupon != null){
+        				couponlPrice = productInfo.getRetail_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(cart.getNumber()));
+        			}
+        			couponTotalPrice = couponTotalPrice.add(couponlPrice);
+        		}
         	}
          }
          amount = userAmountVo.getAmount();//获取用户平台币
@@ -642,95 +647,5 @@ public class ApiCartController extends ApiBaseAction {
          getUserCouponTotalPrice(userId,couponTotalPrice);
          return this.toResponsObject(0, "执行成功", "");
     }
-    
-    public Object updateAllCartCouponPrice(Long userId,Integer num,BigDecimal originPrice){
-    	Map<String,Object> map = new HashMap<>();
-    	map.put("user_id", userId);
-    	List<CartVo> carts = apiCartMapper.queryList(map);
-    	if(!CollectionUtils.isEmpty(carts)){
-    		for(int i = 0;i<carts.size();i++){
-    			updateUserCouponNewPrice(carts.get(i).getGoods_id(), carts.get(i).getProduct_id(), carts.get(i).getNumber(), userId,num,originPrice);
-    		}
-    	}
-    	return this.toResponsObject(0, "执行成功", "");
-    }
-    
-    public Object updateUserCouponNewPrice(Integer goodsId,Integer productId,Integer number,Long userId,Integer num,BigDecimal originPrice){
-   	 	BigDecimal couponTotalPrice = BigDecimal.ZERO;//优惠券总价值
-        BigDecimal couponlPrice = BigDecimal.ZERO;//优惠券临时总价值
-        BigDecimal originalPrice = BigDecimal.ZERO;
-        Map<String,Object> param = new HashMap<>();
-        // 获取平台币 TODO
-        BigDecimal amount = BigDecimal.ZERO;
-        QzUserAccountVo userAmountVo =qzUserAccountMapper.queruUserAccountInfo(userId);
-        BigDecimal orginPrice = userAmountVo.getAmount();
-        ProductVo productInfo = productService.queryObject(productId);
-        if(number != null){
-       	 if (null == productInfo || (productInfo.getGoods_number() == null ? 0 : productInfo.getGoods_number()) < number) {
-       		 return this.toResponsObject(400, "库存不足", "");
-       	 }
-        }
-        if(userAmountVo != null && userAmountVo.getAmount().compareTo(BigDecimal.ZERO) > 0){
-        	amount = userAmountVo.getAmount();
-        }
-        //获取产品配比值
-        GoodsCouponConfigVo goodsCoupon = goodsCouponConfigMapper.getUserCoupons(goodsId,userId);
-        /**
-         * 1.获取用户的平台币
-         *   获取产品配比
-         *   	判断配比
-         *   	  1.1  平台币 等于配比值  直接兑换
-         *   	  1.2 平台币 大于配比值   取配置值
-         *   	  1.3 平台币 小于配比值   按平台币最小规则兑换 		9514.02  9497.28
-         * */    
-        if(number>num){//现有数量大于原有数量
-        	if(goodsCoupon != null){
-        		couponlPrice = productInfo.getRetail_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(number-num));
-        	}
-        	if(amount.compareTo(couponlPrice) == 0){
-        		couponTotalPrice = couponlPrice;
-        	}
-        	if(amount.compareTo(couponlPrice)>0){
-        		couponTotalPrice = couponlPrice;
-        	}
-        	if(amount.compareTo(couponlPrice)<0){
-        		couponTotalPrice = amount;
-        	}
-        	userAmountVo.setAmount(userAmountVo.getAmount().subtract(couponTotalPrice));
-        	qzUserAccountMapper.updateUserAccount(userAmountVo);
-        }
-        if(number<num){//现有数量小于原有数量
-        	if(goodsCoupon != null){
-        		couponlPrice = productInfo.getRetail_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(num-number));
-        	}
-        	if(amount.compareTo(originalPrice) == 0){
-        		couponTotalPrice = originalPrice;
-        	}
-        	if(amount.compareTo(originalPrice)>0){
-        		couponTotalPrice = originalPrice;
-        	}
-        	if(amount.compareTo(originalPrice)<0){
-        		couponTotalPrice = amount;
-        	}
-        	if(amount.compareTo(BigDecimal.ZERO) == 0){
-        		userAmountVo.setAmount(originPrice.subtract(productInfo.getRetail_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(number))));
-        		qzUserAccountMapper.updateUserAccount(userAmountVo);
-        	}else{
-        		userAmountVo.setAmount(userAmountVo.getAmount().add(productInfo.getRetail_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(num-number))));
-        		qzUserAccountMapper.updateUserAccount(userAmountVo);
-        	}
-        }
-        /**
-         * 1.检查当前购物车是否已经生成了优惠券
-         * 			1.1  有       更新的优惠券值
-         * 			1.2  没有    新增一条
-         * */ 
-        if(userAmountVo.getAmount().compareTo(BigDecimal.ZERO) == 0){
-        	 getUserCouponTotalPrice(userId,originPrice.add(couponTotalPrice));
-             return this.toResponsObject(0, "执行成功", "");
-        }else{
-        	getUserCouponTotalPrice(userId,productInfo.getRetail_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(number)));
-        	return this.toResponsObject(0, "执行成功", "");
-        }
-   }
+
 }

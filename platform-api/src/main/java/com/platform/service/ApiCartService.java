@@ -13,6 +13,7 @@ import com.platform.entity.UserCouponVo;
 import org.apache.shiro.util.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -178,7 +179,7 @@ public class ApiCartService {
          }
     	 QzUserAccountVo userAmountVo =qzUserAccountMapper.queruUserAccountInfo(userId);//查询用户平台币信息
     	 BigDecimal couponTotalPrice = BigDecimal.ZERO;//优惠券总价值
-         BigDecimal couponlPrice = BigDecimal.ZERO;//优惠券临时总价值
+       
          BigDecimal amount = BigDecimal.ZERO;//初始化用户平台币
     	 List<String> products= new ArrayList<>();	
     	 Map<String,Object> param = new HashMap<String, Object>();
@@ -212,14 +213,17 @@ public class ApiCartService {
     	 List<CartVo> carts = apiCartMapper.queryUserCarts(userId);	
     	 if(!CollectionUtils.isEmpty(carts)){
          	for(CartVo cart : carts){
-         		 ProductVo productInfo = productService.queryObject(cart.getProduct_id());
-         		 //获取产品配比值
-                 GoodsCouponConfigVo goodsCoupon = goodsCouponConfigMapper.getUserCoupons(cart.getGoods_id(),userId);
-                 //计算该产品优惠券总和
-                 if(goodsCoupon != null){
-                 	couponlPrice = productInfo.getRetail_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(cart.getNumber()));
-                 }
-                 couponTotalPrice = couponTotalPrice.add(couponlPrice);
+         		if(null != cart.getChecked() && 1 == cart.getChecked()){
+         			ProductVo productInfo = productService.queryObject(cart.getProduct_id());
+         			//获取产品配比值
+         			GoodsCouponConfigVo goodsCoupon = goodsCouponConfigMapper.getUserCoupons(cart.getGoods_id(),userId);
+         			BigDecimal couponlPrice = BigDecimal.ZERO;//优惠券临时总价值
+         			//计算该产品优惠券总和
+         			if(goodsCoupon != null){
+         				couponlPrice = productInfo.getRetail_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(cart.getNumber()));
+         			}
+         			couponTotalPrice = couponTotalPrice.add(couponlPrice);
+         		}
          	}
           }
           amount = userAmountVo.getAmount();//获取用户平台币
@@ -264,10 +268,10 @@ public class ApiCartService {
      * @param userId
      * @return
      */
-    public Object updateUserCouponPrice(Integer goodsId,Integer productId,Integer number,Long userId){
+    public synchronized Object updateUserCouponPrice(Integer goodsId,Integer productId,Integer number,Long userId){
 
    	 BigDecimal couponTotalPrice = BigDecimal.ZERO;//优惠券总价值
-        BigDecimal couponlPrice = BigDecimal.ZERO;//优惠券临时总价值
+       
         Map<String,Object> map = new HashMap<>();
         map.put("userId",userId);
         BigDecimal amount = BigDecimal.ZERO;//初始化用户平台币
@@ -302,6 +306,7 @@ public class ApiCartService {
        			GoodsCouponConfigVo goodsCoupon = goodsCouponConfigMapper.getUserCoupons(cart.getGoods_id(),userId);
        			ProductVo productInfo = productService.queryObject(cart.getProduct_id());
        			//计算该产品优惠券总和
+       			BigDecimal couponlPrice = BigDecimal.ZERO;//优惠券临时总价值
        			if(goodsCoupon != null){
        				couponlPrice = productInfo.getRetail_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(cart.getNumber()));
        			}
@@ -313,9 +318,15 @@ public class ApiCartService {
         if(amount.compareTo(couponTotalPrice)<0){
          	couponTotalPrice = amount;
         }
+
+
+        /**
+         * 1.检查当前购物车是否已经生成了优惠券
+         * 			1.1  有       更新的优惠券值
+         * 			1.2  没有    新增一条
+         * */  
         userAmountVo.setAmount(userAmountVo.getAmount().subtract(couponTotalPrice));
         qzUserAccountMapper.updateUserAccount(userAmountVo);
-
         getUserCouponTotalPrice(userId,couponTotalPrice);
         return this.toResponsObject(0, "执行成功", "");
     }
@@ -358,10 +369,9 @@ public class ApiCartService {
 	    }
     
     
-    public Object updateUserCouponPrice(Long userId){
+    public synchronized Object updateUserCouponPrice(Long userId){
 
       	 BigDecimal couponTotalPrice = BigDecimal.ZERO;//优惠券总价值
-           BigDecimal couponlPrice = BigDecimal.ZERO;//优惠券临时总价值
            Map<String,Object> map = new HashMap<>();
            map.put("userId",userId);
            BigDecimal amount = BigDecimal.ZERO;//初始化用户平台币
@@ -395,6 +405,7 @@ public class ApiCartService {
           			//获取产品配比值
           			GoodsCouponConfigVo goodsCoupon = goodsCouponConfigMapper.getUserCoupons(cart.getGoods_id(),userId);
           			ProductVo productInfo = productService.queryObject(cart.getProduct_id());
+          			BigDecimal couponlPrice = BigDecimal.ZERO;//优惠券临时总价值
           			//计算该产品优惠券总和
           			if(goodsCoupon != null){
           				couponlPrice = productInfo.getRetail_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(cart.getNumber()));
@@ -403,6 +414,7 @@ public class ApiCartService {
           		}
           	}
            }
+           
            amount = userAmountVo.getAmount();//获取用户平台币
            if(amount.compareTo(couponTotalPrice)<0){
             	couponTotalPrice = amount;
