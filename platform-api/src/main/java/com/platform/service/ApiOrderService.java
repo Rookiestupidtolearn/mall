@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -106,7 +107,22 @@ public class ApiOrderService {
         // * 获取要购买的商品
         List<CartVo> checkedGoodsList = new ArrayList<>();
         BigDecimal goodsTotalPrice;
-        UserCouponVo userCoupon = apiUserCouponMapper.queryUserCouponTotalPrice(loginUser.getUserId());
+        
+        List<UserCouponVo> userCouponVos = apiUserCouponMapper.queryUserCouponTotalPrice(loginUser.getUserId());//查询用户优惠券信息
+        List<UserCouponVo> coupons = new ArrayList<>();
+        if(!CollectionUtils.isEmpty(userCouponVos)){
+       	 for(int i = 0;i<userCouponVos.size();i++){
+       		 if(userCouponVos.get(i).getCoupon_id() == 11){
+       			 coupons.add(userCouponVos.get(i));
+       		 }
+       	 }
+        }
+      UserCouponVo userCoupon = null;
+      if(!CollectionUtils.isEmpty(coupons)){
+    	  userCoupon = coupons.get(0);
+      }
+      
+      
         if (type.equals("cart")) {
             Map<String, Object> param = new HashMap<String, Object>();
             param.put("user_id", loginUser.getUserId());
@@ -158,14 +174,22 @@ public class ApiOrderService {
         orderInfo.setPostscript(postscript);
         //使用的优惠券
         orderInfo.setCoupon_id(userCoupon.getId());
-        orderInfo.setCoupon_price(userCoupon.getCoupon_price());//查询抵扣比例
+        orderInfo.setCoupon_price(userCoupon.getCoupon_price());
         orderInfo.setAdd_time(new Date());
         orderInfo.setGoods_price(goodsTotalPrice);
         orderInfo.setOrder_price(orderTotalPrice);
         orderInfo.setActual_price(actualPrice);
-        // 待付款
+        /*
+         * 0 订单创建成功等待付款，　101订单已取消，　102订单已删除
+         * 201订单已付款，等待发货
+         * 300订单已发货， 301用户确认收货
+         * 401 没有发货，退款　402 已收货，退款退货
+         */
         orderInfo.setOrder_status(0);
+        
+        //发货状态 商品配送情况;0未发货,1已发货,2已收货,4退货
         orderInfo.setShipping_status(0);
+        
         orderInfo.setPay_status(0);
         orderInfo.setShipping_id(0);
         orderInfo.setShipping_fee(new BigDecimal(0));
@@ -214,8 +238,8 @@ public class ApiOrderService {
         resultObj.put("data", orderInfoMap);
         // 优惠券标记已用
         if (userCoupon != null && userCoupon.getCoupon_status() == 1) {
-        	userCoupon.setCoupon_status(4);
-            apiUserCouponMapper.updateUserCoupon(userCoupon);
+        	userCoupon.setCoupon_status(4);//支付中
+            apiUserCouponMapper.updateUserOrderCoupon(userCoupon);
         }
         return resultObj;
     }
@@ -246,16 +270,18 @@ public class ApiOrderService {
         	amount = userAmountVo.getAmount();
         }
 		if(orderVo != null){
-			if(orderVo.getPay_status() == 2){
+			//0未付款;1 付款中;2已付款;4退款
+			if(orderVo.getPay_status() == 2){//已付款
 				if(userCouponVo != null){
 					userCouponVo.setCoupon_status(2);
 					apiUserCouponMapper.updateUserCoupon(userCouponVo);
 				}
 				resultObj.put("couponStatus", "支付成功,优惠券已用");
 			}
-			if(orderVo.getPay_status() == 3){
+			//0未支付 1 付款中 2 已付款 4退款
+			if(orderVo.getPay_status() == 4){//退款
 				if(userCouponVo != null){
-					userCouponVo.setCoupon_status(4);
+					userCouponVo.setCoupon_status(3);//作废
 					apiUserCouponMapper.updateUserCoupon(userCouponVo);
 				}
 				//回滚平台币
@@ -263,6 +289,9 @@ public class ApiOrderService {
 				userAmountVo.setAmount(amount);
 				qzUserAccountMapper.updateUserAccount(userAmountVo);
 				resultObj.put("couponStatus", "支付失败,优惠券作废");
+			}
+			if(orderVo.getPay_status() == 0){//未支付
+				
 			}
 		}
 		return resultObj;

@@ -60,4 +60,6 @@ public interface ApiCouponMapper extends BaseDao<CouponVo> {
     List<CouponVo> getUserDeductibleCoupon(Map<String, Object> params);
     
     CouponVo getUserDeductCoupon(Long userId);
+    
+    List<CouponVo> queryUsernewCoupons(Map<String, Object> params);
 }
