@@ -1,11 +1,10 @@
 package com.platform.service;
 
+import java.io.IOException;
 import java.util.List;
-
-import org.springframework.web.multipart.MultipartFile;
 
 public interface UploadService {
 
-	List<String> uploadRechargeExcel(MultipartFile file);
+	List<String> uploadRechargeExcelByHave(String filepath, String fileName) throws IOException;
 
 }
