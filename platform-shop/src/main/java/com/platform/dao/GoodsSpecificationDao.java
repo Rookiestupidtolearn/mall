@@ -1,5 +1,7 @@
 package com.platform.dao;
 
+import java.util.List;
+
 import com.platform.entity.GoodsSpecificationEntity;
 
 /**
@@ -11,4 +13,5 @@ import com.platform.entity.GoodsSpecificationEntity;
  */
 public interface GoodsSpecificationDao extends BaseDao<GoodsSpecificationEntity> {
 
+	public List<GoodsSpecificationEntity> querySpecificationByGoodId(Integer goodId);
 }

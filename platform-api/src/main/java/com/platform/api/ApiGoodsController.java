@@ -115,14 +115,14 @@ public class ApiGoodsController extends ApiBaseAction {
             @ApiImplicitParam(name = "referrer", value = "商品referrer", paramType = "path", required = false)})
     @PostMapping(value = "detail")
     public Object detail(Integer id, Long referrer) {
-        Map<String, Object> resultObj = new HashMap();
+        Map<String, Object> resultObj = new HashMap<>();
         //
         Long userId = getUserId();
         GoodsVo info = goodsService.queryObject(id);
-        Map param = new HashMap();
+        Map<String,Object> param = new HashMap<>();
         param.put("goods_id", id);
         //
-        Map specificationParam = new HashMap();
+        Map<String, Object> specificationParam = new HashMap<>();
         specificationParam.put("fields", "gs.*, s.name");
         specificationParam.put("goods_id", id);
         specificationParam.put("specification", true);
@@ -130,9 +130,11 @@ public class ApiGoodsController extends ApiBaseAction {
         specificationParam.put("order", "asc");
         List<GoodsSpecificationVo> goodsSpecificationEntityList = goodsSpecificationService.queryList(specificationParam);
 
-        List<Map> specificationList = new ArrayList();
+        List<Map> specificationList = new ArrayList<>();
+        
         //按规格名称分组
         for (int i = 0; i < goodsSpecificationEntityList.size(); i++) {
+        	
             GoodsSpecificationVo specItem = goodsSpecificationEntityList.get(i);
             //
             List<GoodsSpecificationVo> tempList = null;
@@ -230,7 +232,7 @@ public class ApiGoodsController extends ApiBaseAction {
         resultObj.put("comment", comment);
         resultObj.put("brand", brand);
         resultObj.put("specificationList", specificationList);
-        resultObj.put("productList", productEntityList);  // 所有产品规则
+        resultObj.put("productList", productEntityList);
         // 记录推荐人是否可以领取红包，用户登录时校验
         try {
             // 是否已经有可用的转发红包
@@ -302,6 +304,7 @@ public class ApiGoodsController extends ApiBaseAction {
             @ApiImplicitParam(name = "brandId", value = "品牌Id", paramType = "path", required = true),
             @ApiImplicitParam(name = "isNew", value = "新商品", paramType = "path", required = true),
             @ApiImplicitParam(name = "isHot", value = "热卖商品", paramType = "path", required = true)})
+    @IgnoreAuth
     @PostMapping(value = "list")
     public Object list(@LoginUser UserVo loginUser, Integer categoryId,
                        Integer brandId, String keyword, Integer isNew, Integer isHot,
