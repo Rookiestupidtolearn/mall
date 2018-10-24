@@ -15,7 +15,8 @@
         <view class="content">
           <view class="left">
             <view class="name">{{item.name}}</view>
-            <view class="time">有效期至{{item.use_end_date}}</view>
+            <!-- <view class="time">有效期至{{item.use_end_date}}</view> -->
+            <view class="time">仅限该单使用</view>
           </view>
           <view class="right">
             <image wx:if="{{item.coupon_status==1}}" class='mid-img' src='../../../static/images/coupon_ksy.png'></image>

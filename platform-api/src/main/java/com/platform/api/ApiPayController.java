@@ -82,9 +82,9 @@ public class ApiPayController extends ApiBaseAction {
      */
     @ApiOperation(value = "获取支付的请求参数")
     @PostMapping("prepay")
-    @Transactional
     public Object payPrepay(@LoginUser UserVo loginUser, Integer orderId) {
         //
+    	
         OrderVo orderInfo = orderService.queryObject(orderId);
 
         if (null == orderInfo) {

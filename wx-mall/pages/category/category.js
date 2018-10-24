@@ -106,6 +106,9 @@ Page({
         if(res.code == 500 ){
           util.showErrorToast('数据返回错误');
         }
+        if(res.data.goodsList == ""){
+          util.showErrorToast('内容为空');
+        }
         that.setData({
           goodsList: that.data.goodsList.concat(res.data.goodsList),        
           page: res.data.currentPage+1,

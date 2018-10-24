@@ -40,7 +40,7 @@
   "window": {
     "backgroundTextStyle": "dark",
     "navigationBarBackgroundColor": "#fff",
-    "navigationBarTitleText": "奇子商城",
+    "navigationBarTitleText": "电商项目",
     "navigationBarTextStyle": "black",
     "enablePullDownRefresh": false
   },

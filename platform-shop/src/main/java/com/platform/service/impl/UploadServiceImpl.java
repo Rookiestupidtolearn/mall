@@ -17,6 +17,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.platform.entity.UserEntity;
@@ -34,7 +35,7 @@ public class UploadServiceImpl implements UploadService {
 	private UserService userService;
 	
 	@Override
-	public R uploadRechargeExcel( MultipartFile file ){
+	public List<String> uploadRechargeExcel( MultipartFile file ){
 		 //获得Workbook工作薄对象
         Workbook workbook = getWorkBook(file);
         
@@ -137,8 +138,12 @@ public class UploadServiceImpl implements UploadService {
      
       
         }
+        if (CollectionUtils.isEmpty(info)) {
+     	   info.add("上传成功");
+	    }
+    
         
-		return R.error(400, info.toString());
+		return info;
 		
 	}
 
