@@ -89,7 +89,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public int save(ProductEntity product) {
-        int result = 0;
+       /* int result = 0;
         String goodsSpecificationIds = product.getGoodsSpecificationIds();
         if (!StringUtils.isNullOrEmpty(goodsSpecificationIds)) {
             String[] goodsSpecificationIdArr = goodsSpecificationIds.split("_");
@@ -111,7 +111,9 @@ public class ProductServiceImpl implements ProductService {
                 }
             }
         }
-        return result;
+        return result;*/
+    	return productDao.save(product);
+    	
     }
 
     @Override

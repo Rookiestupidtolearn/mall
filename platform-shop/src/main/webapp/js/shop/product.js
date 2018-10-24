@@ -39,15 +39,27 @@ let vm = new Vue({
         q: {
             goodsName: ''
         },
+        goodsspecificationIds:{
+        	
+       
+        },
         goodss: [],
         attribute: [],
-        color: [], guige: [], weight: [],
-        colors: [],
-        guiges: [],
-        weights: [],
+      //  color: [], guige: [], weight: [],
+        specification:[],
+     //   colors: [],
+       // guiges: [],
+      //  weights: [],
+        specificationList:[],
+        specificationGoodsList:[],
+        specificationValueList:[],
+        valuesaaa:[],
         type: ''
+        	        	
     },
     methods: {
+    	
+    
         query: function () {
             vm.reload();
         },
@@ -60,13 +72,31 @@ let vm = new Vue({
               url: "../goodsspecification/querySpecificationByGoodId?goodId="+goodId,
               contentType: "application/json",
               successCallback: function (r) {
-                  alert('操作成功', function (index) {
-                      vm.reload();
-                  });
+            	vm.specificationGoodsList=r.list;	
+            	vm.specificationList=r.specificationList;
+            	vm.specificationValueList=r.specificationValueList;
               }
           });
       },
       
+      checkALl:function(id){
+    	  
+    	  if(vm.valuesaaa.indexOf(id) == -1){
+    		  vm.valuesaaa.push(id);
+    	  }else{
+    		  var a  =this.valuesaaa.indexOf(id)
+    		  vm.valuesaaa.splice(a,1);
+    		  delete vm.goodsspecificationIds.id;
+    	      delete vm.goodsspecificationIds[id]; 		
+    	  }
+	     },
+	  selectChange:function(value){
+		var id  = value.id;
+		var specificationId = value.specificationId ;
+		vm.goodsspecificationIds[specificationId]=id;
+		
+	  },
+	      
         add: function () {
             vm.showList = false;
             vm.title = "新增";
@@ -88,20 +118,20 @@ let vm = new Vue({
         changeGoods: function (opt) {
             let goodsId = opt.value;
             if(!goodsId)return;
-            console.log("开始")
+         
             vm.querySpecificationByGoodId(goodsId);
-            console.log("结束")
+        
             Ajax.request({
                 url: "../goods/info/" + goodsId,
                 async: true,
                 successCallback: function (r) {
                     if (vm.type == 'add') {
                         vm.product.goodsSn = r.goods.goodsSn;
-                        vm.product.goodsNumber = r.goods.goodsNumber;
+                        /*vm.product.goodsNumber = r.goods.goodsNumber;
                         vm.product.retailPrice = r.goods.retailPrice;
-                        vm.product.marketPrice = r.goods.marketPrice;
+                        vm.product.marketPrice = r.goods.marketPrice;*/
                     }
-                    Ajax.request({
+                  /*  Ajax.request({
                         url: "../goodsspecification/queryAll?goodsId=" + goodsId + "&specificationId=1",
                         async: true,
                         successCallback: function (r) {
@@ -121,17 +151,22 @@ let vm = new Vue({
                         successCallback: function (r) {
                             vm.weights = r.list;
                         }
-                    });
+                    });*/
                 }
             });
         },
         saveOrUpdate: function (event) {
             let url = vm.product.id == null ? "../product/save" : "../product/update";
-
-            if(vm.attribute.indexOf(1) == -1)vm.color = [];
-            if(vm.attribute.indexOf(2) == -1)vm.guige = [];
-            if(vm.attribute.indexOf(4) == -1)vm.weight = [];
-            vm.product.goodsSpecificationIds = vm.color + '_' + vm.guige + '_' + vm.weight;
+            var  goodsspecificationIdsStr = "";
+            
+            for(var i = 0; i< vm.valuesaaa.length;i++){
+            	var jValue=vm.goodsspecificationIds[vm.valuesaaa[i]];//key所对应的value 
+                goodsspecificationIdsStr=goodsspecificationIdsStr+jValue+"_"
+            }
+            goodsspecificationIdsStr =  goodsspecificationIdsStr.substring(0,goodsspecificationIdsStr.length-1);
+            
+            console.log(goodsspecificationIdsStr);
+            vm.product.goodsSpecificationIds =goodsspecificationIdsStr;
 
             Ajax.request({
                 type: "POST",
@@ -230,3 +265,5 @@ let vm = new Vue({
         }
     }
 });
+
+

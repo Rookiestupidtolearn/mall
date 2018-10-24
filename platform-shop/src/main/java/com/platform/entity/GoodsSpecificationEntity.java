@@ -25,8 +25,19 @@ public class GoodsSpecificationEntity implements Serializable {
     private String value;
     //规范图片
     private String picUrl;
+    //规范name
+    private String name;
+    
 
-    /**
+    public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
      * 翻译用字段
      */
     //商品

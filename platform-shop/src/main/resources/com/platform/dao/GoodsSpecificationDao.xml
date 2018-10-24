@@ -121,11 +121,15 @@
     
     <select id="querySpecificationByGoodId" resultType="com.platform.entity.GoodsSpecificationEntity">
     	select
-			`id`,
-			`goods_id`,
-			`specification_id`,
-			`value`,
-			`pic_url` from nideshop_goods_specification
+			nideshop_goods_specification.id,
+			nideshop_goods_specification.goods_id,
+			nideshop_goods_specification.specification_id,
+			nideshop_goods_specification.value,
+			nideshop_goods_specification.pic_url, 
+			nideshop_specification.name
+			from nideshop_goods_specification
+			
+				left join  nideshop_specification on nideshop_goods_specification.specification_id =  nideshop_specification.id
 		where goods_id = #{goodsId}
     </select>
 
