@@ -30,7 +30,7 @@ Page({
       isBuyType: options.isBuy
     })
     // 页面初始化 options为页面跳转所带来的参数
-    if (options.isBuy!=null) {
+    if (options.isBuy!="false") {
       this.data.isBuy = options.isBuy
     }
     this.data.buyType = this.data.isBuy?'buy':'cart'
