@@ -20,11 +20,15 @@ Page({
     isBuy: false,
     couponDesc: '',
     couponCode: '',
-    buyType: ''
+    buyType: '',
+    isBuyType:''
   },
   onLoad: function (options) {
 
     console.log(options.isBuy)
+    this.setData({
+      isBuyType: options.isBuy
+    })
     // 页面初始化 options为页面跳转所带来的参数
     if (options.isBuy!=null) {
       this.data.isBuy = options.isBuy
@@ -96,7 +100,8 @@ Page({
 
   },
   onShow: function () {
-    this.getCouponData()
+    this.getCouponData();
+
     // 页面显示
     wx.showLoading({
       title: '加载中...',
@@ -138,7 +143,9 @@ Page({
   },
   onUnload: function () {
     // 页面关闭
-
+    util.request(api.CancelAddBuyCoupons, { isBuy: this.data.isBuyType}, 'post', 'application/json').then(res => {
+      console.log('1111');
+    })
   },
 
   /**
