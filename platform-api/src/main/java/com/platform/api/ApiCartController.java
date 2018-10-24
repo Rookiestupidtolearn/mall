@@ -624,15 +624,17 @@ public class ApiCartController extends ApiBaseAction {
          }
          if(!CollectionUtils.isEmpty(carts)){
         	for(CartVo cart : carts){
-        		 //获取产品配比值
-                GoodsCouponConfigVo goodsCoupon = goodsCouponConfigMapper.getUserCoupons(cart.getGoods_id(),userId);
-                ProductVo productInfo = productService.queryObject(cart.getProduct_id());
-                BigDecimal couponlPrice = BigDecimal.ZERO;//优惠券临时总价值
-                //计算该产品优惠券总和
-                if(goodsCoupon != null){
-                	couponlPrice = productInfo.getRetail_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(cart.getNumber()));
-                }
-                couponTotalPrice = couponTotalPrice.add(couponlPrice);
+        		if(null != cart.getChecked() && 1 == cart.getChecked()){
+        			//获取产品配比值
+        			GoodsCouponConfigVo goodsCoupon = goodsCouponConfigMapper.getUserCoupons(cart.getGoods_id(),userId);
+        			ProductVo productInfo = productService.queryObject(cart.getProduct_id());
+        			BigDecimal couponlPrice = BigDecimal.ZERO;//优惠券临时总价值
+        			//计算该产品优惠券总和
+        			if(goodsCoupon != null){
+        				couponlPrice = productInfo.getRetail_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(cart.getNumber()));
+        			}
+        			couponTotalPrice = couponTotalPrice.add(couponlPrice);
+        		}
         	}
          }
          amount = userAmountVo.getAmount();//获取用户平台币

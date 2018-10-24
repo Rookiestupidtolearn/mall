@@ -213,15 +213,17 @@ public class ApiCartService {
     	 List<CartVo> carts = apiCartMapper.queryUserCarts(userId);	
     	 if(!CollectionUtils.isEmpty(carts)){
          	for(CartVo cart : carts){
-         		 ProductVo productInfo = productService.queryObject(cart.getProduct_id());
-         		 //获取产品配比值
-                 GoodsCouponConfigVo goodsCoupon = goodsCouponConfigMapper.getUserCoupons(cart.getGoods_id(),userId);
-                 BigDecimal couponlPrice = BigDecimal.ZERO;//优惠券临时总价值
-                 //计算该产品优惠券总和
-                 if(goodsCoupon != null){
-                 	couponlPrice = productInfo.getRetail_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(cart.getNumber()));
-                 }
-                 couponTotalPrice = couponTotalPrice.add(couponlPrice);
+         		if(null != cart.getChecked() && 1 == cart.getChecked()){
+         			ProductVo productInfo = productService.queryObject(cart.getProduct_id());
+         			//获取产品配比值
+         			GoodsCouponConfigVo goodsCoupon = goodsCouponConfigMapper.getUserCoupons(cart.getGoods_id(),userId);
+         			BigDecimal couponlPrice = BigDecimal.ZERO;//优惠券临时总价值
+         			//计算该产品优惠券总和
+         			if(goodsCoupon != null){
+         				couponlPrice = productInfo.getRetail_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(cart.getNumber()));
+         			}
+         			couponTotalPrice = couponTotalPrice.add(couponlPrice);
+         		}
          	}
           }
           amount = userAmountVo.getAmount();//获取用户平台币
