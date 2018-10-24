@@ -15,7 +15,9 @@
                 <i-button @click="query">查询</i-button>
             </div>
             <div class="buttons-group">
+                #if($shiro.hasPermission("user:recharge"))
                 <i-button type="info" @click="recharge"><i class="fa fa-plus"></i>&nbsp;充值</i-button>
+                #end
              <i-button type="info" @click="rechargeBench"><i class="fa fa-plus"></i>&nbsp;批量充值</i-button>
                 #if($shiro.hasPermission("user:save"))
                 <i-button type="info" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</i-button>
