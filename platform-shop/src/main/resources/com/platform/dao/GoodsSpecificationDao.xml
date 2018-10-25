@@ -132,5 +132,13 @@
 				left join  nideshop_specification on nideshop_goods_specification.specification_id =  nideshop_specification.id
 		where goods_id = #{goodsId}
     </select>
+    
+    <select id="findgoodsSpecification" resultType="com.platform.entity.GoodsSpecificationEntity">
+    	select * from nideshop_goods_specification where id in 
+    	<foreach item ="id" collection="array" open="(" separator="," close=")" >
+    		#{id}
+    	</foreach>
+    </select>
+    
 
 </mapper>
