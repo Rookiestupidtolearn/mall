@@ -409,6 +409,9 @@ public class OrderVo implements Serializable {
                 case 0:
                     order_status_text = "未付款";
                     break;
+                case 103:
+                    order_status_text = "订单失效";
+                    break;
                 case 201:
                     order_status_text = "等待发货";
                     break;

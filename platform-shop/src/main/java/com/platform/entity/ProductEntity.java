@@ -2,6 +2,8 @@ package com.platform.entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -29,10 +31,24 @@ public class ProductEntity implements Serializable {
     private BigDecimal retailPrice;
     //市场价格
     private BigDecimal marketPrice;
+    
+    
+    private List<Map<Integer, String>> specificationList;
+    
+    
+    
 
 
 
-    /**
+    public List<Map<Integer, String>> getSpecificationList() {
+		return specificationList;
+	}
+
+	public void setSpecificationList(List<Map<Integer, String>> specificationList) {
+		this.specificationList = specificationList;
+	}
+
+	/**
      * 翻译用字段
      */
     //商品

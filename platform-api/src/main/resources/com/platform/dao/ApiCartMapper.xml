@@ -20,6 +20,7 @@
         <result property="goods_specifition_ids" column="goods_specifition_ids"/>
         <result property="checked" column="checked"/>
         <result property="list_pic_url" column="list_pic_url"/>
+        <result property="good_url" column="good_url"/>
     </resultMap>
 
     <select id="queryObject" resultMap="cartMap">
@@ -93,7 +94,8 @@
 			`goods_specifition_name_value`, 
 			`goods_specifition_ids`, 
 			`checked`, 
-			`list_pic_url`
+			`list_pic_url`,
+			`good_url`
 		)
 		values
 		(
@@ -109,7 +111,8 @@
 			#{goods_specifition_name_value}, 
 			#{goods_specifition_ids}, 
 			#{checked}, 
-			#{list_pic_url}
+			#{list_pic_url},
+			#{good_url}
 		)
 	</insert>
 
@@ -130,7 +133,8 @@
             </if>
             <if test="goods_specifition_ids != null">`goods_specifition_ids` = #{goods_specifition_ids},</if>
             <if test="checked != null">`checked` = #{checked},</if>
-            <if test="list_pic_url != null">`list_pic_url` = #{list_pic_url}</if>
+            <if test="list_pic_url != null">`list_pic_url` = #{list_pic_url},</if>
+            <if test="good_url != null">`good_url` = #{good_url}</if>
         </set>
         where id = #{id}
     </update>
