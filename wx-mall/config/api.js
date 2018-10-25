@@ -84,5 +84,5 @@ module.exports = {
     UserAccountDetail: API_BASE_URL + 'user/userAccountDetail',//平台币明细
 
     UserMobile: API_BASE_URL + 'user/userInfo',//获取手机号
-    CancelAddBuyCoupons: API_BASE_URL + 'buy/cancelAddBuyCoupons',//获取手机号
+    CancelAddBuyCoupons: API_BASE_URL + 'buy/cancelAddBuyCoupons',//区分立即购买还是加入购物车
 };
