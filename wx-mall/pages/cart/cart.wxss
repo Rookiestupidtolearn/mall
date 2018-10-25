@@ -114,18 +114,18 @@ page{
     float: left;
     height: 34rpx;
     width: 34rpx;
-    margin: 65rpx 18rpx 65rpx 26rpx;
-    background: url(http://nos.netease.com/mailpub/hxm/yanxuan-wap/p/20150730/style/img/icon-normal/checkbox-0e09baa37e.png) no-repeat;
+    padding: 80rpx 18rpx 80rpx 56rpx;
+    background: url(http://nos.netease.com/mailpub/hxm/yanxuan-wap/p/20150730/style/img/icon-normal/checkbox-0e09baa37e.png) no-repeat center center;
     background-size: 34rpx;
 }
 
 .cart-view .item .checkbox.checked{
-    background: url(http://nos.netease.com/mailpub/hxm/yanxuan-wap/p/20150730/style/img/icon-normal/checkbox-checked-822e54472a.png) no-repeat;
+    background: url(http://nos.netease.com/mailpub/hxm/yanxuan-wap/p/20150730/style/img/icon-normal/checkbox-checked-822e54472a.png) no-repeat center center;
     background-size: 34rpx;
 }
 
 .cart-view .item .cart-goods{
-    float: left;
+    float: right;
     height: 164rpx;
     width: 672rpx;
     border-bottom: 1px solid #f4f4f4;
