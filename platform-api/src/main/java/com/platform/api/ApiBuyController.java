@@ -70,9 +70,10 @@ public class ApiBuyController extends ApiBaseAction {
     public Object updateBuyUserCouponPrice(@LoginUser UserVo loginUser){
     	JSONObject jsonParam = getJsonRequest();
     	BuyGoodsVo goodsVO = (BuyGoodsVo) J2CacheUtils.get(J2CacheUtils.SHOP_CACHE_NAME, "goods" + loginUser.getUserId() + "");
-        ProductVo productInfo = productService.queryObject(goodsVO.getProductId());
-    	if("addBuy".equals(jsonParam.getString("type"))){
-    		updateBuyUserCouponPrice(goodsVO.getGoodsId(), productInfo.getProduct_id(), goodsVO.getNumber(), loginUser.getUserId());
+    	if(goodsVO != null){
+    		if("true".equals(jsonParam.getString("isBuy"))){
+    			updateBuyUserCouponPrice(goodsVO.getGoodsId(), goodsVO.getProductId(), goodsVO.getNumber(), loginUser.getUserId());
+    		}
     	}
     	return this.toResponsObject(0, "执行成功", "");
     }
@@ -207,8 +208,6 @@ public class ApiBuyController extends ApiBaseAction {
         if(!CollectionUtils.isEmpty(coupons)){
         	userCouponVo = coupons.get(0);
         }
-        
-        
         if(!CollectionUtils.isEmpty(carts)){
           	for(CartVo cart : carts){
           		if(null != cart.getChecked() && 1 == cart.getChecked()){
@@ -231,26 +230,10 @@ public class ApiBuyController extends ApiBaseAction {
        	 userCouponVo.setCoupon_status(7);
        	 apiUserCouponMapper.update(userCouponVo);
        	 //回滚平台币
-       	 userAmountVo.setAmount(userAmountVo.getAmount().add(userCouponVo.getCoupon_price()).subtract(couponCartTotalPrice));
+       	 userAmountVo.setAmount(userAmountVo.getAmount().add(userCouponVo.getCoupon_price()));
        	 qzUserAccountMapper.updateUserAccount(userAmountVo);
         }
-        
-       //获取产品配比值
-       GoodsCouponConfigVo goodsCoupon = goodsCouponConfigMapper.getUserBuyNowCoupons(goodsId);
-       ProductVo productInfo = productService.queryObject(productId);
-       //计算该产品优惠券总和
-       if(goodsCoupon != null){
-       	couponlPrice = productInfo.getRetail_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(number));
-       }
-       couponTotalPrice = couponTotalPrice.add(couponlPrice);
-        amount = userAmountVo.getAmount();//获取用户平台币
-        if(amount.compareTo(couponTotalPrice)<0){
-         	couponTotalPrice = amount;
-        }
-        userAmountVo.setAmount(userAmountVo.getAmount().add(couponTotalPrice));
-        qzUserAccountMapper.updateUserAccount(userAmountVo);
-
-        getUserCouponTotalPrice(userId,couponTotalPrice);
+        getUserCouponTotalPrice(userId,couponCartTotalPrice);
         return this.toResponsObject(0, "执行成功", "");
    }
 }

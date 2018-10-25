@@ -470,7 +470,7 @@ public class ApiCartController extends ApiBaseAction {
         }
         // * 获取要购买的商品和总价
         ArrayList checkedGoodsList = new ArrayList();
-        BigDecimal goodsTotalPrice;
+        BigDecimal goodsTotalPrice = BigDecimal.ZERO;
         if (type.equals("cart")) {
             Map<String, Object> cartData = (Map<String, Object>) this.getCart(loginUser);
 
@@ -482,17 +482,19 @@ public class ApiCartController extends ApiBaseAction {
             goodsTotalPrice = (BigDecimal) ((HashMap) cartData.get("cartTotal")).get("checkedGoodsAmount");
         } else { // 是直接购买的
             BuyGoodsVo goodsVO = (BuyGoodsVo) J2CacheUtils.get(J2CacheUtils.SHOP_CACHE_NAME, "goods" + loginUser.getUserId() + "");
-            ProductVo productInfo = productService.queryObject(goodsVO.getProductId());
-            //计算订单的费用
-            //商品总价
-            goodsTotalPrice = productInfo.getRetail_price().multiply(new BigDecimal(goodsVO.getNumber()));
-
-            CartVo cartVo = new CartVo();
-            cartVo.setGoods_name(productInfo.getGoods_name());
-            cartVo.setNumber(goodsVO.getNumber());
-            cartVo.setRetail_price(productInfo.getRetail_price());
-            cartVo.setList_pic_url(productInfo.getList_pic_url());
-            checkedGoodsList.add(cartVo);
+            if(goodsVO != null){
+            	ProductVo productInfo = productService.queryObject(goodsVO.getProductId());
+            	//计算订单的费用
+            	//商品总价
+            	goodsTotalPrice = productInfo.getRetail_price().multiply(new BigDecimal(goodsVO.getNumber()));
+            	
+            	CartVo cartVo = new CartVo();
+            	cartVo.setGoods_name(productInfo.getGoods_name());
+            	cartVo.setNumber(goodsVO.getNumber());
+            	cartVo.setRetail_price(productInfo.getRetail_price());
+            	cartVo.setList_pic_url(productInfo.getList_pic_url());
+            	checkedGoodsList.add(cartVo);
+            }
         }
 
 
