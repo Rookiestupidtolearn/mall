@@ -104,7 +104,7 @@ public class ApiCartController extends ApiBaseAction {
                 checkedGoodsCount += cartItem.getNumber();
                 checkedGoodsAmount = checkedGoodsAmount.add(cartItem.getRetail_price().multiply(new BigDecimal(cartItem.getNumber())));
             }
-            cartItem.setGood_url("/pages/category/category?id=" + cartItem.getGoods_id());
+            cartItem.setGood_url("/pages/goods/goods?id=" + cartItem.getGoods_id());
         }
         // 获取优惠信息提示
         Map couponParam = new HashMap();
@@ -626,10 +626,12 @@ public class ApiCartController extends ApiBaseAction {
          if(userCouponVo != null){
         	 //购物车发生修改  原有优惠券作废，重新生成优惠券
         	 userCouponVo.setCoupon_status(7);
+        	 logger.info("【更新用户优惠券】原有优惠券作废，原有优惠券金额" + userCouponVo.getCoupon_price()+"原用户平台币" + userAmountVo.getAmount());
         	 apiUserCouponMapper.update(userCouponVo);
         	 //回滚平台币
         	 userAmountVo.setAmount(userAmountVo.getAmount().add(userCouponVo.getCoupon_price()));
         	 qzUserAccountMapper.updateUserAccount(userAmountVo);
+        	 logger.info("更新用户平台币,更新后平台币金额" + userAmountVo.getAmount() );
          }
          if(!CollectionUtils.isEmpty(carts)){
         	for(CartVo cart : carts){

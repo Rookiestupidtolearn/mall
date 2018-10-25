@@ -11,6 +11,8 @@ import com.platform.entity.QzUserAccountVo;
 import com.platform.entity.UserCouponVo;
 
 import org.apache.shiro.util.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +27,9 @@ import java.util.Map;
 
 @Service
 public class ApiCartService {
+	
+    
+	private Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
     private ApiCartMapper cartDao;
     @Autowired
@@ -164,6 +169,7 @@ public class ApiCartService {
     }
 
     public void deleteByUserAndProductIds(Long userId, String[] productIds) {
+    	logger.info("【购物车删除商品开始】用户id" + userId);
     	 List<UserCouponVo> userCouponVos = apiUserCouponMapper.queryUserCouponTotalPrice(userId);//查询用户优惠券信息
          List<UserCouponVo> coupons = new ArrayList<>();
          if(!CollectionUtils.isEmpty(userCouponVos)){
@@ -202,10 +208,12 @@ public class ApiCartService {
     		 if(userCouponVo != null){
     			 //购物车发生修改  原有优惠券作废，重新生成优惠券
     			 userCouponVo.setCoupon_status(7);
+    			 logger.info("【更新用户优惠券】原有优惠券作废，原有优惠券金额" + userCouponVo.getCoupon_price()+"原用户平台币" + userAmountVo.getAmount());
     			 apiUserCouponMapper.update(userCouponVo);
     			 //回滚平台币
     			 userAmountVo.setAmount(userAmountVo.getAmount().add(userCouponVo.getCoupon_price()));
     			 qzUserAccountMapper.updateUserAccount(userAmountVo);
+    			 logger.info("更新用户平台币,更新后平台币金额" + userAmountVo.getAmount() );
     		 }
     	 }
          
@@ -275,6 +283,7 @@ public class ApiCartService {
         Map<String,Object> map = new HashMap<>();
         map.put("userId",userId);
         BigDecimal amount = BigDecimal.ZERO;//初始化用户平台币
+        logger.info("【更新用户优惠券开始】,用户id" + userId);
         QzUserAccountVo userAmountVo =qzUserAccountMapper.queruUserAccountInfo(userId);//查询用户平台币信息
        
         List<UserCouponVo> userCouponVos = apiUserCouponMapper.queryUserCouponTotalPrice(userId);//查询用户优惠券信息
@@ -294,9 +303,11 @@ public class ApiCartService {
         if(userCouponVo != null){
        	 //购物车发生修改  原有优惠券作废，重新生成优惠券
        	 userCouponVo.setCoupon_status(7);
+       	 logger.info("【更新用户优惠券】原有优惠券作废，原有优惠券金额" + userCouponVo.getCoupon_price()+"原用户平台币" + userAmountVo.getAmount());
        	 apiUserCouponMapper.update(userCouponVo);
        	 //回滚平台币
        	 userAmountVo.setAmount(userAmountVo.getAmount().add(userCouponVo.getCoupon_price()));
+         logger.info("更新用户平台币,更新后平台币金额" + userAmountVo.getAmount() );
        	 qzUserAccountMapper.updateUserAccount(userAmountVo);
         }
         if(!CollectionUtils.isEmpty(carts)){
