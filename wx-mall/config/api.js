@@ -61,7 +61,7 @@ module.exports = {
     AddressSave: API_BASE_URL + 'address/save',  //保存收货地址
     AddressDelete: API_BASE_URL + 'address/delete',  //删除收货地址
 
-    RegionList: API_BASE_URL + 'rergion/list',  //获取区域列表
+    RegionList: API_BASE_URL + 'region/list',  //获取区域列表
 
     OrderList: API_BASE_URL + 'order/list',  //订单列表
     OrderDetail: API_BASE_URL + 'order/detail',  //订单详情
@@ -84,5 +84,5 @@ module.exports = {
     UserAccountDetail: API_BASE_URL + 'user/userAccountDetail',//平台币明细
 
     UserMobile: API_BASE_URL + 'user/userInfo',//获取手机号
-  CancelAddBuyCoupons: API_BASE_URL + 'buy/cancelAddBuyCoupons',//获取手机号
+    CancelAddBuyCoupons: API_BASE_URL + 'buy/cancelAddBuyCoupons',//获取手机号
 };

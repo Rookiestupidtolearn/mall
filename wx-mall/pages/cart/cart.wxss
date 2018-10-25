@@ -129,6 +129,7 @@ page{
     height: 164rpx;
     width: 672rpx;
     border-bottom: 1px solid #f4f4f4;
+    position:relative;
 }
 
 .cart-view .item .img{
@@ -136,13 +137,18 @@ page{
     height:125rpx;
     width: 125rpx;
     background: #f4f4f4;
-    margin: 19.5rpx 18rpx 19.5rpx 0;
+    margin: 0 18rpx 0 0;
+}
+
+.midHover{
+  float:left;
+  height:125rpx;
 }
 
 .cart-view .item .info{
     float: left;
     height:125rpx;
-    width: 503rpx;
+    width: 653rpx;
     margin: 19.5rpx 26rpx 19.5rpx 0;
 }
 
@@ -207,9 +213,8 @@ page{
 }
 
 .cart-view .item.edit .attr{
-    text-align: right;
-    background: url(http://yanxuan.nosdn.127.net/hxm/yanxuan-wap/p/20161201/style/img/icon-normal/arrow-right1-e9828c5b35.png) right center no-repeat;
-    padding-right: 25rpx;
+    position:absolute;
+    right:20rpx;
     background-size: 12rpx 20rpx;
     margin-bottom: 24rpx;
     height: 39rpx;
@@ -220,7 +225,9 @@ page{
 }
 
 .cart-view .item.edit .b{
-    display: flex;
+    position:absolute;
+    right:20rpx;
+    bottom:25rpx;
     height: 52rpx;
     overflow: hidden;
 }
@@ -228,7 +235,8 @@ page{
 .cart-view .item.edit .price{
     line-height: 52rpx;
     height: 52rpx;
-    flex: 1;
+    flex:1;
+    margin-top:78rpx;
 }
 
 .cart-view .item .selnum{
