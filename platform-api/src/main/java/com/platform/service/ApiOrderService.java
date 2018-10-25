@@ -277,9 +277,9 @@ public class ApiOrderService {
 						userAmountVo.setAmount(amount);
 						qzUserAccountMapper.updateUserAccount(userAmountVo);
 					}
+					order.setOrder_status(103);//订单失效
+					apiOrderMapper.update(order);
 				}
-				order.setOrder_status(103);//订单失效
-				apiOrderMapper.update(order);
 			}
 			return this.toResponsObject(0, "执行成功", "");
 		}
