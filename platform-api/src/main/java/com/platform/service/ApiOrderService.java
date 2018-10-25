@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,6 +56,7 @@ public class ApiOrderService {
     @Autowired
     private QzUserAccountMapper qzUserAccountMapper;
     
+	private Logger logger = LoggerFactory.getLogger(getClass());
 
 
     public OrderVo queryObject(Integer id) {
@@ -268,9 +271,10 @@ public class ApiOrderService {
 				}
 				//如果当前日期减掉订单创建时间大于一天则回滚平台币
 				if(new Date().getTime() - order.getAdd_time().getTime() > 24*60*60*1000){
+					logger.info("【定时查询订单有效性】订单标号:" +order.getId() +""+"订单创建时间:" + order.getAdd_time());
 					if(userCouponVo != null){
 						userCouponVo.setCoupon_status(3);//作废
-						apiUserCouponMapper.updateUserCoupon(userCouponVo);
+						apiUserCouponMapper.update(userCouponVo);
 						amount = amount.add(userCouponVo.getCoupon_price());
 					}
 					if(userAmountVo != null){
@@ -306,5 +310,5 @@ public class ApiOrderService {
             obj.put("data", data);
         return obj;
     }
-
+   
 }
