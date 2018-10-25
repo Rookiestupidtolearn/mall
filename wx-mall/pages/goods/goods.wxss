@@ -624,8 +624,6 @@
 .attr-pop .p{
     font-size: 33rpx;
     color: #333;
-    height: 33rpx;
-    line-height: 33rpx;
     margin-bottom: 10rpx;
 }
 
