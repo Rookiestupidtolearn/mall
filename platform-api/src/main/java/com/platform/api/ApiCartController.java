@@ -99,6 +99,7 @@ public class ApiCartController extends ApiBaseAction {
                 checkedGoodsCount += cartItem.getNumber();
                 checkedGoodsAmount = checkedGoodsAmount.add(cartItem.getRetail_price().multiply(new BigDecimal(cartItem.getNumber())));
             }
+            cartItem.setGood_url("/api/goods/detail?id=" + cartItem.getId());
         }
         // 获取优惠信息提示
         Map couponParam = new HashMap();
