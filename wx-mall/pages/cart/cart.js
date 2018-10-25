@@ -237,7 +237,7 @@ Page({
 
 
     wx.navigateTo({
-      url: '../shopping/checkout/checkout'
+      url: '../shopping/checkout/checkout?isBuy=false'
     })
   },
   deleteCart: function () {
