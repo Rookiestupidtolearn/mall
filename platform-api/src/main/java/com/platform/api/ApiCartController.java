@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -76,6 +78,9 @@ public class ApiCartController extends ApiBaseAction {
     @Autowired
     private ApiCartMapper apiCartMapper;
 
+    
+	private Logger logger = LoggerFactory.getLogger(getClass());
+	
     /**
      * 获取购物车中的数据
      */
@@ -99,7 +104,7 @@ public class ApiCartController extends ApiBaseAction {
                 checkedGoodsCount += cartItem.getNumber();
                 checkedGoodsAmount = checkedGoodsAmount.add(cartItem.getRetail_price().multiply(new BigDecimal(cartItem.getNumber())));
             }
-            cartItem.setGood_url("/api/goods/detail?id=" + cartItem.getId());
+            cartItem.setGood_url("/pages/category/category?id=" + cartItem.getGoods_id());
         }
         // 获取优惠信息提示
         Map couponParam = new HashMap();
@@ -601,6 +606,7 @@ public class ApiCartController extends ApiBaseAction {
          Map<String,Object> map = new HashMap<>();
          map.put("userId",userId);
          BigDecimal amount = BigDecimal.ZERO;//初始化用户平台币
+         logger.info("【更新用户优惠券开始】,用户id" + userId);
          QzUserAccountVo userAmountVo =qzUserAccountMapper.queruUserAccountInfo(userId);//查询用户平台币信息
         
          List<UserCouponVo> userCouponVos = apiUserCouponMapper.queryUserCouponTotalPrice(userId);//查询用户优惠券信息
