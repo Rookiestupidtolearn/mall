@@ -14,4 +14,6 @@ import com.platform.entity.GoodsSpecificationEntity;
 public interface GoodsSpecificationDao extends BaseDao<GoodsSpecificationEntity> {
 
 	public List<GoodsSpecificationEntity> querySpecificationByGoodId(Integer goodId);
+
+	public List<GoodsSpecificationEntity> findgoodsSpecification(String[] goodsSpecificationIdsArray);
 }

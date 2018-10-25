@@ -54,7 +54,9 @@ let vm = new Vue({
         specificationGoodsList:[],
         specificationValueList:[],
         valuesaaa:[],
-        type: ''
+        type: '',
+        editProductId:'',
+        pecificationCheck:[],
         	        	
     },
     methods: {
@@ -112,7 +114,8 @@ let vm = new Vue({
             vm.showList = false;
             vm.title = "修改";
             vm.type = 'update';
-
+            //存储productId,方便修改时使用
+            vm.editProductId = id; 
             vm.getInfo(id)
         },
         changeGoods: function (opt) {
@@ -122,14 +125,20 @@ let vm = new Vue({
             vm.querySpecificationByGoodId(goodsId);
         
             Ajax.request({
-                url: "../goods/info/" + goodsId,
+                url: "../product/info/" + vm.editProductId,
                 async: true,
                 successCallback: function (r) {
                     if (vm.type == 'add') {
-                        vm.product.goodsSn = r.goods.goodsSn;
+                        vm.product.goodsSn = r.product.goodsSn;
                         /*vm.product.goodsNumber = r.goods.goodsNumber;
                         vm.product.retailPrice = r.goods.retailPrice;
                         vm.product.marketPrice = r.goods.marketPrice;*/
+                    }
+                    if(vm.type == 'update'){
+                    	 vm.product.goodsSn = r.product.goodsSn;
+                         vm.product.goodsNumber = r.product.goodsNumber;
+                         vm.product.retailPrice = r.product.retailPrice;
+                         vm.product.marketPrice = r.product.marketPrice;
                     }
                   /*  Ajax.request({
                         url: "../goodsspecification/queryAll?goodsId=" + goodsId + "&specificationId=1",
@@ -206,12 +215,21 @@ let vm = new Vue({
         },
         getInfo: function (id) {
             vm.attribute = [];
+            vm.valuesaaa=[];
+            
             Ajax.request({
-                url: "../product/info/" + id,
+                url: "../product/editProductInfo/" + id,
                 async: true,
                 successCallback: function (r) {
                     vm.product = r.product;
-                    let goodsSpecificationIds = vm.product.goodsSpecificationIds.split("_");
+                    let specificationIdList =  r.specificationIdList;
+                    for(var i = 0;i<specificationIdList.length;i++){
+                    	vm.pecificationCheck.push(specificationIdList[i].specificationId);
+                    	vm.valuesaaa.push(specificationIdList[i].specificationId);
+                    }
+                    
+                    
+                  /*  let goodsSpecificationIds = vm.product.goodsSpecificationIds.split("_");
                     goodsSpecificationIds.forEach((goodsSpecificationId, index) => {
                         let specificationIds = goodsSpecificationId.split(",").filter(id => !!id).map(id => Number(id));
 
@@ -231,7 +249,7 @@ let vm = new Vue({
                                 vm.attribute.push(4);
                             }
                         }
-                    });
+                    });*/
 
                     vm.getGoodss();
                 }

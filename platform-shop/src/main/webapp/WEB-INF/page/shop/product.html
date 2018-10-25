@@ -43,10 +43,8 @@
 	            
 		   <Form-item label="商品规格" >
 		            
-		             <Checkbox-group label="商品规格" v-for="pecification in specificationList" @on-change="checkALl(pecification.id)"  style="display:inline-block;">
-		             
+		             <Checkbox-group v-model="pecificationCheck" label="商品规格" v-for="pecification in specificationList" @on-change="checkALl(pecification.id)"  style="display:inline-block;">
 		                    <Checkbox :label="pecification.id">{{pecification.name}}</Checkbox>
-		                     	
 		             </Checkbox-group> 
 		              
 		    </Form-item>
