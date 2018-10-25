@@ -22,7 +22,7 @@
             <view class="checkbox {{item.checked ? 'checked' : ''}}" bindtap="checkedItem" data-item-index="{{index}}"></view>
             <view class="cart-goods">
               <view class="info">
-                <navigator class="midHover" url="item.url">
+                <navigator class="midHover" url="{{item.good_url}}">
                   <image class="img" src="{{item.list_pic_url}}"></image>
                   <view class="t">
                     <text class="name">{{item.goods_name}}</text>
