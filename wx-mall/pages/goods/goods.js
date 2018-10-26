@@ -7,7 +7,7 @@ Page({
   data: {
     undercarriage:'',
     undercarriName:'加入购物车',
-    retail_price:'',
+    market_price:'',
     winHeight: "",
     id: 0,
     goods: {},
@@ -33,8 +33,8 @@ Page({
     util.request(api.GoodsDetail, { id: that.data.id }).then(function (res) {
       if (res.errno === 0) {
         that.setData({
-          undercarriage:res.data.info.is_on_sale,
-          retail_price: res.data.info.retail_price,
+          undercarriage:res.data.info.is_on_sale, //上下架按钮显示状态
+          market_price: res.data.info.market_price, //商品默认价格
           goods: res.data.info,
           gallery: res.data.gallery,
           attribute: res.data.attribute,
@@ -203,7 +203,7 @@ Page({
       return false;
     }
     this.setData({
-      retail_price: checkedProduct[0].market_price
+      market_price: checkedProduct[0].market_price
     })
 
   },
