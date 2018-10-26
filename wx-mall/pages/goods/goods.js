@@ -7,6 +7,7 @@ Page({
   data: {
     undercarriage:'',
     undercarriName:'加入购物车',
+    retail_price:'',
     winHeight: "",
     id: 0,
     goods: {},
@@ -33,6 +34,7 @@ Page({
       if (res.errno === 0) {
         that.setData({
           undercarriage:res.data.info.is_on_sale,
+          retail_price: res.data.info.retail_price,
           goods: res.data.info,
           gallery: res.data.gallery,
           attribute: res.data.attribute,
@@ -182,6 +184,27 @@ Page({
         'checkedSpecText': '请选择规格数量'
       });
     }
+    //提示选择完整规格
+    if (!this.isCheckedAllSpec()) {
+      return false;
+    }
+    //根据选中的规格，判断是否有对应的sku信息
+    let checkedProduct = this.getCheckedProductItem(this.getCheckedSpecKey());
+    if (!checkedProduct || checkedProduct.length <= 0) {
+      //找不到对应的product信息，提示没有库存
+      util.showErrorToast("商品无库存")
+      return false;
+    }
+
+    //验证库存
+    if (checkedProduct.goods_number < this.data.number) {
+      //找不到对应的product信息，提示没有库存
+      util.showErrorToast("商品无库存")
+      return false;
+    }
+    this.setData({
+      retail_price: checkedProduct[0].market_price
+    })
 
   },
   getCheckedProductItem: function (key) {
