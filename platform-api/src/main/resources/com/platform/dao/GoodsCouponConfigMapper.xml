@@ -14,11 +14,8 @@
         <result property="del_flag" column="del_flag"/>
     </resultMap>
     <select id="getUserCoupons" resultMap="goodsCouponConfigMap">
-		select gcc.*
-		from goods_coupon_config gcc left join nideshop_cart sc on 	gcc.goods_id = sc.goods_id
-		where 1=1 
-		and sc.goods_id = #{0} 
-		and sc.user_id = #{1}
+		select gcc.* from goods_coupon_config gcc where 1=1 
+		and gcc.goods_id = #{0} 
 	</select>
 	<select id = "getUserBuyNowCoupons" resultMap="goodsCouponConfigMap">
 		select * from goods_coupon_config  where 1=1 and goods_id = #{goods_id}

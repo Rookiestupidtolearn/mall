@@ -11,7 +11,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,10 +20,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.platform.annotation.LoginUser;
 import com.platform.cache.J2CacheUtils;
 import com.platform.dao.ApiCartMapper;
+import com.platform.dao.ApiTranInfoRecordMapper;
 import com.platform.dao.ApiUserCouponMapper;
 import com.platform.dao.GoodsCouponConfigMapper;
 import com.platform.dao.QzUserAccountMapper;
 import com.platform.entity.AddressVo;
+import com.platform.entity.ApiTranInfoRecordVo;
 import com.platform.entity.BuyGoodsVo;
 import com.platform.entity.CartVo;
 import com.platform.entity.CouponInfoVo;
@@ -77,6 +78,8 @@ public class ApiCartController extends ApiBaseAction {
     private  QzUserAccountMapper qzUserAccountMapper;
     @Autowired
     private ApiCartMapper apiCartMapper;
+    @Autowired
+    private ApiTranInfoRecordMapper apiTranInfoRecordMapper;
 
     
 	private Logger logger = LoggerFactory.getLogger(getClass());
@@ -104,7 +107,7 @@ public class ApiCartController extends ApiBaseAction {
                 checkedGoodsCount += cartItem.getNumber();
                 checkedGoodsAmount = checkedGoodsAmount.add(cartItem.getRetail_price().multiply(new BigDecimal(cartItem.getNumber())));
             }
-            cartItem.setGood_url("/pages/category/category?id=" + cartItem.getGoods_id());
+            cartItem.setGood_url("/pages/goods/goods?id=" + cartItem.getGoods_id());
         }
         // 获取优惠信息提示
         Map couponParam = new HashMap();
@@ -597,6 +600,8 @@ public class ApiCartController extends ApiBaseAction {
 	     	userCouponVo.setCoupon_price(userCouponVo.getCoupon_price().add(couponTotalPrice));
 	     	userCouponVo.setCoupon_status(1);
 	     	apiUserCouponMapper.update(userCouponVo);
+
+        	saveTranInfoRecord(userId, "1", "1", couponTotalPrice, userCouponVo.getCoupon_price(), "原有优惠券作废,重新更新新优惠券");
 	     }
     	return this.toResponsObject(0, "优惠券发送成功", "");
     }
@@ -626,10 +631,16 @@ public class ApiCartController extends ApiBaseAction {
          if(userCouponVo != null){
         	 //购物车发生修改  原有优惠券作废，重新生成优惠券
         	 userCouponVo.setCoupon_status(7);
+        	 logger.info("【更新用户优惠券】原有优惠券作废，原有优惠券金额" + userCouponVo.getCoupon_price()+"原用户平台币" + userAmountVo.getAmount());
         	 apiUserCouponMapper.update(userCouponVo);
+        	 
+        	 saveTranInfoRecord(userId, "1", "2", userCouponVo.getCoupon_price(), userCouponVo.getCoupon_price(), "购物车发生修改  原有优惠券作废");
         	 //回滚平台币
         	 userAmountVo.setAmount(userAmountVo.getAmount().add(userCouponVo.getCoupon_price()));
         	 qzUserAccountMapper.updateUserAccount(userAmountVo);
+        	
+        	 logger.info("更新用户平台币,更新后平台币金额" + userAmountVo.getAmount());
+        	 saveTranInfoRecord(userId, "2", "1", userCouponVo.getCoupon_price(), userAmountVo.getAmount(), "原有优惠券作废,原优惠券金额回滚到平台币");
          }
          if(!CollectionUtils.isEmpty(carts)){
         	for(CartVo cart : carts){
@@ -652,9 +663,33 @@ public class ApiCartController extends ApiBaseAction {
          }
          userAmountVo.setAmount(userAmountVo.getAmount().subtract(couponTotalPrice));
          qzUserAccountMapper.updateUserAccount(userAmountVo);
-
+         logger.info("更新用户平台币,更新后平台币金额" + userAmountVo.getAmount());
+         saveTranInfoRecord(userId, "2", "2", couponTotalPrice, userAmountVo.getAmount(), "回滚平台币后扣减购物车中生成优惠券金额");
          getUserCouponTotalPrice(userId,couponTotalPrice);
          return this.toResponsObject(0, "执行成功", "");
     }
+    /**
+     * 生成平台币、优惠券流水
+     * @param userId
+     * @param tranType
+     * @param TranFlag
+     * @param tranAmount
+     * @param currentAmount
+     * @param remark
+     */
+    public void saveTranInfoRecord(Long userId,String tranType,String TranFlag,BigDecimal tranAmount,BigDecimal currentAmount
+    		,String remark){
+    	 ApiTranInfoRecordVo tranInfo = new ApiTranInfoRecordVo();
+    	 tranInfo.setUser_id(userId);
+    	 tranInfo.setTran_type(tranType);//1优惠券 2 平台币
+    	 tranInfo.setTran_flag(TranFlag);//1收入 2支出
+    	 tranInfo.setTran_amount(tranAmount);
+    	 tranInfo.setCurrent_amount(currentAmount);
+    	 tranInfo.setCreate_time(new Date());
+    	 tranInfo.setRemark(remark);
+    	 apiTranInfoRecordMapper.save(tranInfo);
+    }
+  
+    
 
 }
