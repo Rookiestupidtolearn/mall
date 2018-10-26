@@ -10,6 +10,8 @@ import com.platform.entity.ProductVo;
 import com.platform.entity.QzUserAccountVo;
 import com.platform.entity.UserCouponVo;
 
+import jline.internal.Log;
+
 import org.apache.shiro.util.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -428,7 +430,12 @@ public class ApiCartService {
     
     
     
-    public boolean roolbackAllCartsCoupons(List<CartVo> carts){
+    public boolean roolbackAllCartsCoupons(Integer[] CartEntityIds){
+    	if(CartEntityIds.length < 1){
+    		Log.info("【回滚平台币并删除优惠券】购物车id为空");
+    		return false;
+    	}
+    	List<CartVo> carts = apiCartMapper.queryCartsByCartId(CartEntityIds);
     	if(!CollectionUtils.isEmpty(carts)){
     		for(CartVo cart :carts){
     			try {
@@ -470,6 +477,6 @@ public class ApiCartService {
     		}
     		return true;
     	}
-    	return true;
+    	return false;
     }
 }
