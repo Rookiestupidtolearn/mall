@@ -130,7 +130,7 @@
 			from nideshop_goods_specification
 			
 				left join  nideshop_specification on nideshop_goods_specification.specification_id =  nideshop_specification.id
-		where goods_id = #{goodsId}
+		where goods_id = #{goodsId} order by nideshop_specification.id asc
     </select>
     
     <select id="findgoodsSpecification" resultType="com.platform.entity.GoodsSpecificationEntity">

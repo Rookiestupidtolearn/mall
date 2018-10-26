@@ -126,7 +126,7 @@ public class ApiGoodsController extends ApiBaseAction {
         specificationParam.put("fields", "gs.*, s.name");
         specificationParam.put("goods_id", id);
         specificationParam.put("specification", true);
-        specificationParam.put("sidx", "s.sort_order");
+        specificationParam.put("sidx", "s.id");
         specificationParam.put("order", "asc");
         List<GoodsSpecificationVo> goodsSpecificationEntityList = goodsSpecificationService.queryList(specificationParam);
 

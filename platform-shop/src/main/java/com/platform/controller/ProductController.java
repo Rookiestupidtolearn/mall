@@ -56,8 +56,18 @@ public class ProductController {
     @RequestMapping("/info/{id}")
     @RequiresPermissions("product:info")
     public R info(@PathVariable("id") Integer id) {
+    	R result = R.ok();
         ProductEntity product = productService.queryObject(id);
-        return R.ok().put("product", product);
+        if(product != null){
+        	String goodsSpecificationIds = product.getGoodsSpecificationIds();
+        	String[] goodsSpecificationIdsArray = goodsSpecificationIds.split("_");
+        	List<GoodsSpecificationEntity> GoodsSpecificationList = goodsSpecificationService.findgoodsSpecification(goodsSpecificationIdsArray);
+        	if(CollectionUtils.isNotEmpty(GoodsSpecificationList)){
+        		result.put("specificationIdList",GoodsSpecificationList);
+        	}
+        }
+        result.put("product", product);
+        return result;
     }
 
     /**
@@ -66,8 +76,13 @@ public class ProductController {
     @RequestMapping("/save")
     @RequiresPermissions("product:save")
     public R save(@RequestBody ProductEntity product) {
-        productService.save(product);
-
+        int num = productService.save(product);
+        if(num == -1){
+        	return R.error("该规格已存在");
+        }
+        if(num == 0){
+        	return R.error("规格保存失败");
+        }
         return R.ok();
     }
 

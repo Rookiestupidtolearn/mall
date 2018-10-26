@@ -93,7 +93,6 @@ let vm = new Vue({
     	  }
 	     },
 	  selectChange:function(e){
-	  console.log(e);
 	  var id,specificationId;
 		for(var i=0; i<e.values.length; i++){
 			if(e.values[i].value == e.model12){
@@ -159,6 +158,9 @@ let vm = new Vue({
                          vm.product.goodsNumber = r.product.goodsNumber;
                          vm.product.retailPrice = r.product.retailPrice;
                          vm.product.marketPrice = r.product.marketPrice;
+                         for(var i = 0;i<vm.specificationValueList.length;i++){
+                        	 vm.specificationValueList[i].model12 = r.specificationIdList[i].value;
+                         }
 	                }
 	            });
 	        }
@@ -167,14 +169,21 @@ let vm = new Vue({
         saveOrUpdate: function (event) {
             let url = vm.product.id == null ? "../product/save" : "../product/update";
             var  goodsspecificationIdsStr = "";
-            
+            //冒泡排序，防止商品规格数据错乱
+            for(var i = 0;i<vm.valuesaaa.length-1;i++){
+            	for(var j =0;j<vm.valuesaaa.length-i-1;j++){
+            		if(vm.valuesaaa[j]>vm.valuesaaa[j+1]){
+            			var temp = vm.valuesaaa[j];
+            			vm.valuesaaa[j]=vm.valuesaaa[j+1];
+            			vm.valuesaaa[j+1]=temp;
+            		}
+            	}
+            }
             for(var i = 0; i< vm.valuesaaa.length;i++){
             	var jValue=vm.goodsspecificationIds[vm.valuesaaa[i]];//key所对应的value 
                 goodsspecificationIdsStr=goodsspecificationIdsStr+jValue+"_"
             }
             goodsspecificationIdsStr =  goodsspecificationIdsStr.substring(0,goodsspecificationIdsStr.length-1);
-            
-            console.log(goodsspecificationIdsStr);
             vm.product.goodsSpecificationIds =goodsspecificationIdsStr;
 
             Ajax.request({
@@ -188,15 +197,12 @@ let vm = new Vue({
                     });
                 }
             });
-
-
         },
         del: function (event) {
             let ids = getSelectedRows("#jqGrid");
             if (ids == null) {
                 return;
             }
-
             confirm('确定要删除选中的记录？', function () {
                 Ajax.request({
                     type: "POST",
