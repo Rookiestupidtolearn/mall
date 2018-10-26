@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSON;
 import com.platform.dao.QzRechargeRecordDao;
@@ -143,6 +144,7 @@ public class QzRechargeRecordServiceImpl implements QzRechargeRecordService {
 	}
 
 	@Override
+	@Transactional
 	public R rechargeAudit(Integer id, String state) {
 		SysUserEntity sysUserEntity = ShiroUtils.getUserEntity();
 		SysUserEntity user = new SysUserEntity();

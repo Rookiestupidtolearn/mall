@@ -138,48 +138,31 @@ let vm = new Vue({
         changeGoods: function (opt) {
             let goodsId = opt.value;
             if(!goodsId)return;
-         
             vm.querySpecificationByGoodId(goodsId);
-        
-            Ajax.request({
-                url: "../product/info/" + vm.editProductId,
-                async: true,
-                successCallback: function (r) {
-                    if (vm.type == 'add') {
-                        vm.product.goodsSn = r.product.goodsSn;
-                        /*vm.product.goodsNumber = r.goods.goodsNumber;
-                        vm.product.retailPrice = r.goods.retailPrice;
-                        vm.product.marketPrice = r.goods.marketPrice;*/
-                    }
-                    if(vm.type == 'update'){
+            
+	        if(vm.type == 'add'){
+	        	//查询商品信息，给商品序列号赋值
+	        	Ajax.request({
+	                url: "../goods/info/" + goodsId,
+	                async: true,
+	                successCallback: function (r) {
+	                    vm.product.goodsSn = r.goods.goodsSn;
+	                }
+	            });
+	        }
+	        if(vm.type == 'update'){
+	        	Ajax.request({
+	                url: "../product/info/" + vm.editProductId,
+	                async: true,
+	                successCallback: function (r) {
                     	 vm.product.goodsSn = r.product.goodsSn;
                          vm.product.goodsNumber = r.product.goodsNumber;
                          vm.product.retailPrice = r.product.retailPrice;
                          vm.product.marketPrice = r.product.marketPrice;
-                    }
-                  /*  Ajax.request({
-                        url: "../goodsspecification/queryAll?goodsId=" + goodsId + "&specificationId=1",
-                        async: true,
-                        successCallback: function (r) {
-                            vm.colors = r.list;
-                        }
-                    });
-                    Ajax.request({
-                        url: "../goodsspecification/queryAll?goodsId=" + goodsId + "&specificationId=2",
-                        async: true,
-                        successCallback: function (r) {
-                            vm.guiges = r.list;
-                        }
-                    });
-                    Ajax.request({
-                        url: "../goodsspecification/queryAll?goodsId=" + goodsId + "&specificationId=4",
-                        async: true,
-                        successCallback: function (r) {
-                            vm.weights = r.list;
-                        }
-                    });*/
-                }
-            });
+	                }
+	            });
+	        }
+            
         },
         saveOrUpdate: function (event) {
             let url = vm.product.id == null ? "../product/save" : "../product/update";
