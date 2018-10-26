@@ -5,6 +5,8 @@ var api = require('../../config/api.js');
 
 Page({
   data: {
+    undercarriage:'',
+    undercarriName:'加入购物车',
     winHeight: "",
     id: 0,
     goods: {},
@@ -30,6 +32,7 @@ Page({
     util.request(api.GoodsDetail, { id: that.data.id }).then(function (res) {
       if (res.errno === 0) {
         that.setData({
+          undercarriage:res.data.info.is_on_sale,
           goods: res.data.info,
           gallery: res.data.gallery,
           attribute: res.data.attribute,
@@ -40,8 +43,20 @@ Page({
           productList: res.data.productList,
           userHasCollect: res.data.userHasCollect
         });
-          //设置默认值
-          that.setDefSpecInfo(that.data.specificationList);
+        //购物车下架至灰
+        if (that.data.undercarriage == '0'){
+          that.setData({
+            undercarriage:true,
+            undercarriName: '商品已下架'
+          })
+        }else{
+          that.setData({
+            undercarriage:false,
+            undercarriName: '加入购物车'
+          })
+        }
+        //设置默认值
+        that.setDefSpecInfo(that.data.specificationList);
         if (res.data.userHasCollect == 1) {
           that.setData({
             'collectBackImage': that.data.hasCollectImage
