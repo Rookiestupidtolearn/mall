@@ -50,8 +50,8 @@
 		    </Form-item>
   			 <Form-item v-for="specificationValue in specificationValueList"  >
  			 	<label v-if="valuesaaa.indexOf(specificationValue.id) != -1" >{{specificationValue.name}}</label>
-            	 <i-select    v-if="valuesaaa.indexOf(specificationValue.id) != -1"  v-model="specification"   filterable  @on-change="selectChange" not-found-text>
-                    <i-option   v-for= "specification in specificationValue.values" :value="specification" >{{specification.value}}</i-option>
+            	 <i-select    v-if="valuesaaa.indexOf(specificationValue.id) != -1"  v-model.sync="specificationValue.model12"   filterable  @on-change="selectChange(specificationValue)" not-found-text>
+                    <i-option   v-for= "specification in specificationValue.values" :value="specification.value" >{{specification.value}}</i-option>
                  </i-select> 
              </Form-item>  
             <Form-item label="商品序列号" prop="goodsSn">

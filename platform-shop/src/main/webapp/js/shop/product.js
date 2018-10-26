@@ -92,14 +92,25 @@ let vm = new Vue({
     	      delete vm.goodsspecificationIds[id]; 		
     	  }
 	     },
-	  selectChange:function(value){
-		var id  = value.id;
-		var specificationId = value.specificationId ;
+	  selectChange:function(e){
+	  console.log(e);
+	  var id,specificationId;
+		for(var i=0; i<e.values.length; i++){
+			if(e.values[i].value == e.model12){
+				id = e.values[i].id ;
+				specificationId =  e.values[i].specificationId;
+			}
+		}
 		vm.goodsspecificationIds[specificationId]=id;
-		
 	  },
 	      
         add: function () {
+        	vm.specificationGoodsList=[];	
+        	vm.specificationList=[];
+        	vm.specificationValueList=[];
+        	vm.pecificationCheck=[];
+        	vm.valuesaaa=[];
+        	vm.editProductId="";
             vm.showList = false;
             vm.title = "新增";
             vm.product = {};
@@ -111,6 +122,12 @@ let vm = new Vue({
             if (id == null) {
                 return;
             }
+            vm.specificationGoodsList=[];	
+        	vm.specificationList=[];
+        	vm.specificationValueList=[];
+        	vm.pecificationCheck=[];
+        	vm.valuesaaa=[];
+            vm.editProductId="";
             vm.showList = false;
             vm.title = "修改";
             vm.type = 'update';
