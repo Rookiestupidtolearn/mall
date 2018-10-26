@@ -25,4 +25,9 @@ public interface ApiOrderMapper extends BaseDao<OrderVo> {
 	 * @return
 	 */
 	List<OrderVo> queryList(Map<String,Object> params);
+	/**
+	 * 判断订单有效性
+	 * @return
+	 */
+	List<OrderVo> checkOrderValid();
 }

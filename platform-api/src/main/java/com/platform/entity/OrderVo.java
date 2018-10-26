@@ -26,7 +26,7 @@ public class OrderVo implements Serializable {
     private Long user_id;
     /*
     订单状态
-    1xx 表示订单取消和删除等状态 0订单创建成功等待付款，　101订单已取消，　102订单已删除
+    1xx 表示订单取消和删除等状态 0订单创建成功等待付款，　101订单已取消，　102订单已删除 103 订单失效
     2xx 表示订单支付状态　201订单已付款，等待发货
     3xx 表示订单物流相关状态　300订单已发货， 301用户确认收货
     4xx 表示订单退换货相关的状态　401 没有发货，退款　402 已收货，退款退货
@@ -408,6 +408,9 @@ public class OrderVo implements Serializable {
             switch (order_status) {
                 case 0:
                     order_status_text = "未付款";
+                    break;
+                case 103:
+                    order_status_text = "订单失效";
                     break;
                 case 201:
                     order_status_text = "等待发货";

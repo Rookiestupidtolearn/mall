@@ -44,6 +44,8 @@ public class CartEntity implements Serializable {
     private String listPicUrl;
     //状态
     private Integer state;
+    //商品地址
+    private String good_url;
 
     /**
      * 设置：主键
@@ -249,6 +251,14 @@ public class CartEntity implements Serializable {
 
 	public void setState(Integer state) {
 		this.state = state;
+	}
+
+	public String getGood_url() {
+		return good_url;
+	}
+
+	public void setGood_url(String good_url) {
+		this.good_url = good_url;
 	}
     
 }

@@ -1,5 +1,6 @@
 package com.platform.api;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -17,8 +18,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.platform.annotation.IgnoreAuth;
 import com.platform.annotation.LoginUser;
 import com.platform.dao.ApiOrderMapper;
+import com.platform.dao.ApiTranInfoRecordMapper;
 import com.platform.dao.ApiUserCouponMapper;
 import com.platform.dao.QzUserAccountMapper;
+import com.platform.entity.ApiTranInfoRecordVo;
 import com.platform.entity.OrderGoodsVo;
 import com.platform.entity.OrderVo;
 import com.platform.entity.QzUserAccountVo;
@@ -57,6 +60,8 @@ public class ApiOrderController extends ApiBaseAction {
     private ApiUserCouponMapper apiUserCouponMapper;
     @Autowired
     private ApiOrderMapper apiOrderMapper;
+    @Autowired
+    private ApiTranInfoRecordMapper apiTranInfoRecordMapper;
 
     /**
      */
@@ -219,8 +224,10 @@ public class ApiOrderController extends ApiBaseAction {
                     UserCouponVo userCoupon=  apiUserCouponMapper.queryObject(orderVo.getCoupon_id());
                     userCoupon.setCoupon_status(3);
                     apiUserCouponMapper.update(userCoupon);
+                    saveTranInfoRecord(orderVo.getUser_id(), "1", "2", userCoupon.getCoupon_price(), BigDecimal.ZERO, "取消订单，原优惠券作废");
                     userAmountVo.setAmount(userAmountVo.getAmount().add(userCoupon.getCoupon_price()));
                     qzUserAccountMapper.update(userAmountVo);
+                    saveTranInfoRecord(orderVo.getUser_id(), "2", "1", userCoupon.getCoupon_price(), userAmountVo.getAmount(), "取消订单，原优惠券回滚到平台币");
                     return toResponsMsgSuccess("取消成功");
                     
                 } else {
@@ -232,8 +239,10 @@ public class ApiOrderController extends ApiBaseAction {
                 UserCouponVo userCoupon=  apiUserCouponMapper.queryObject(orderVo.getCoupon_id());
                 userCoupon.setCoupon_status(3);
                 apiUserCouponMapper.update(userCoupon);
+                saveTranInfoRecord(orderVo.getUser_id(), "1", "2", userCoupon.getCoupon_price(), userCoupon.getCoupon_price(), "取消订单，原优惠券作废");
                 userAmountVo.setAmount(userAmountVo.getAmount().add(userCoupon.getCoupon_price()));
                 qzUserAccountMapper.updateUserAccount(userAmountVo);
+                saveTranInfoRecord(orderVo.getUser_id(), "2", "1", userCoupon.getCoupon_price(), userAmountVo.getAmount(), "取消订单，原优惠券回滚到平台币");
                 return toResponsSuccess("取消成功");
             }
         } catch (Exception e) {
@@ -260,19 +269,26 @@ public class ApiOrderController extends ApiBaseAction {
         }
         return toResponsFail("提交失败");
     }
-    @ApiOperation(value = "判断订单有效性") 
-    @PostMapping("checkOrderValid")
-    public JSONObject checkOrderValid(Integer orderId) {
-    	JSONObject obj = new JSONObject();
-        try {
-            JSONObject orderVo = orderService.checkOrderValid(28,29);
-            obj.put("statuc", "success");
-            return obj;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-		return obj;
+    /**
+     * 生成平台币、优惠券流水
+     * @param userId
+     * @param tranType
+     * @param TranFlag
+     * @param tranAmount
+     * @param currentAmount
+     * @param remark
+     */
+    public void saveTranInfoRecord(Long userId,String tranType,String TranFlag,BigDecimal tranAmount,BigDecimal currentAmount
+    		,String remark){
+    	 ApiTranInfoRecordVo tranInfo = new ApiTranInfoRecordVo();
+    	 tranInfo.setUser_id(userId);
+    	 tranInfo.setTran_type(tranType);//1优惠券 2 平台币
+    	 tranInfo.setTran_flag(TranFlag);//1收入 2支出
+    	 tranInfo.setTran_amount(tranAmount);
+    	 tranInfo.setCurrent_amount(currentAmount);
+    	 tranInfo.setCreate_time(new Date());
+    	 tranInfo.setRemark(remark);
+    	 apiTranInfoRecordMapper.save(tranInfo);
     }
-    
     
 }

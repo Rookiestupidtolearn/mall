@@ -20,11 +20,18 @@
         <result property="goodsSpecifitionIds" column="goods_specifition_ids"/>
         <result property="checked" column="checked"/>
         <result property="listPicUrl" column="list_pic_url"/>
+        <result property="good_url" column="good_url"/>
     </resultMap>
 
     <select id="queryObject" resultType="com.platform.entity.CartEntity">
 		select * from nideshop_cart where id = #{value}
 	</select>
+	
+	
+	<select id="queryCartListByGoodsId" resultType="com.platform.entity.CartEntity">
+		select * from nideshop_cart where goods_id = #{goodsId}
+	</select>
+	
 
     <select id="queryList" resultMap="cartMap">
         select a.* ,b.username as user_name
@@ -62,7 +69,9 @@
 			`goods_specifition_name_value`, 
 			`goods_specifition_ids`, 
 			`checked`, 
-			`list_pic_url`
+			`list_pic_url`,
+			`good_url`
+			
 		)
 		values
 		(
@@ -78,7 +87,8 @@
 			#{goodsSpecifitionNameValue}, 
 			#{goodsSpecifitionIds}, 
 			#{checked}, 
-			#{listPicUrl}
+			#{listPicUrl},
+			#{good_url}
 		)
 	</insert>
 
@@ -99,7 +109,8 @@
             </if>
             <if test="goodsSpecifitionIds != null">`goods_specifition_ids` = #{goodsSpecifitionIds},</if>
             <if test="checked != null">`checked` = #{checked},</if>
-            <if test="listPicUrl != null">`list_pic_url` = #{listPicUrl}</if>
+            <if test="listPicUrl != null">`list_pic_url` = #{listPicUrl},</if>
+             <if test="good_url != null">`good_url` = #{good_url}</if>
         </set>
         where id = #{id}
     </update>

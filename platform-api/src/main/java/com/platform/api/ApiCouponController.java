@@ -111,9 +111,11 @@ public class ApiCouponController extends ApiBaseAction {
             }
         } else { // 是直接购买的
             BuyGoodsVo goodsVo = (BuyGoodsVo) J2CacheUtils.get(J2CacheUtils.SHOP_CACHE_NAME, "goods" + loginUser.getUserId() + "");
-            ProductVo productInfo = apiProductService.queryObject(goodsVo.getProductId());
-            //商品总价
-            goodsTotalPrice = productInfo.getRetail_price().multiply(new BigDecimal(goodsVo.getNumber()));
+            if(goodsVo != null){
+            	ProductVo productInfo = apiProductService.queryObject(goodsVo.getProductId());
+            	//商品总价
+            	goodsTotalPrice = productInfo.getRetail_price().multiply(new BigDecimal(goodsVo.getNumber()));
+            }
         }
 
         // 获取可用优惠券

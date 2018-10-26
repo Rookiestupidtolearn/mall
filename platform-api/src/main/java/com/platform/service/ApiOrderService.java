@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,10 +22,12 @@ import com.platform.dao.ApiCartMapper;
 import com.platform.dao.ApiCouponMapper;
 import com.platform.dao.ApiOrderGoodsMapper;
 import com.platform.dao.ApiOrderMapper;
+import com.platform.dao.ApiTranInfoRecordMapper;
 import com.platform.dao.ApiUserCouponMapper;
 import com.platform.dao.GoodsCouponConfigMapper;
 import com.platform.dao.QzUserAccountMapper;
 import com.platform.entity.AddressVo;
+import com.platform.entity.ApiTranInfoRecordVo;
 import com.platform.entity.BuyGoodsVo;
 import com.platform.entity.CartVo;
 import com.platform.entity.OrderGoodsVo;
@@ -44,8 +48,6 @@ public class ApiOrderService {
     @Autowired
     private ApiCartMapper apiCartMapper;
     @Autowired
-    private ApiCouponMapper apiCouponMapper;
-    @Autowired
     private ApiOrderMapper apiOrderMapper;
     @Autowired
     private ApiOrderGoodsMapper apiOrderGoodsMapper;
@@ -55,7 +57,10 @@ public class ApiOrderService {
     private ApiUserCouponMapper apiUserCouponMapper;
     @Autowired
     private QzUserAccountMapper qzUserAccountMapper;
+    @Autowired
+    private ApiTranInfoRecordMapper apiTranInfoRecordMapper;
     
+	private Logger logger = LoggerFactory.getLogger(getClass());
 
 
     public OrderVo queryObject(Integer id) {
@@ -105,7 +110,7 @@ public class ApiOrderService {
         
         // * 获取要购买的商品
         List<CartVo> checkedGoodsList = new ArrayList<>();
-        BigDecimal goodsTotalPrice;
+        BigDecimal goodsTotalPrice = BigDecimal.ZERO;
         
         List<UserCouponVo> userCouponVos = apiUserCouponMapper.queryUserCouponTotalPrice(loginUser.getUserId());//查询用户优惠券信息
         List<UserCouponVo> coupons = new ArrayList<>();
@@ -140,16 +145,18 @@ public class ApiOrderService {
             }
         } else {
             BuyGoodsVo goodsVo = (BuyGoodsVo) J2CacheUtils.get(J2CacheUtils.SHOP_CACHE_NAME, "goods" + loginUser.getUserId());
-            ProductVo productInfo = productService.queryObject(goodsVo.getProductId());
-            //计算订单的费用
-            //商品总价
-            goodsTotalPrice = productInfo.getRetail_price().multiply(new BigDecimal(goodsVo.getNumber()));
-            
-            CartVo cartVo = new CartVo();
-            BeanUtils.copyProperties(productInfo, cartVo);
-            cartVo.setNumber(goodsVo.getNumber());
-            cartVo.setProduct_id(goodsVo.getProductId());
-            checkedGoodsList.add(cartVo);
+            if(goodsVo != null){
+            	ProductVo productInfo = productService.queryObject(goodsVo.getProductId());
+            	//计算订单的费用
+            	//商品总价
+            	goodsTotalPrice = productInfo.getRetail_price().multiply(new BigDecimal(goodsVo.getNumber()));
+            	
+            	CartVo cartVo = new CartVo();
+            	BeanUtils.copyProperties(productInfo, cartVo);
+            	cartVo.setNumber(goodsVo.getNumber());
+            	cartVo.setProduct_id(goodsVo.getProductId());
+            	checkedGoodsList.add(cartVo);
+            }
         }
         //订单价格计算
         BigDecimal orderTotalPrice = goodsTotalPrice.add(new BigDecimal(freightPrice)); //订单的总价
@@ -256,43 +263,80 @@ public class ApiOrderService {
      * 					作废优惠券
      * 					查看是否需要清除购物车
      */
-	public JSONObject checkOrderValid(Integer orderId, Integer userId){
-		JSONObject resultObj = new JSONObject();
-		OrderVo orderVo =  orderDao.queryObject(orderId);
-		if(orderVo == null){
-        	resultObj.put("couponStatus", "没有查询到相关订单");
-        }
-		UserCouponVo userCouponVo = apiUserCouponMapper.queryObject(orderVo.getCoupon_id());
-		BigDecimal amount = BigDecimal.ZERO;
-		QzUserAccountVo userAmountVo =qzUserAccountMapper.queruUserAccountInfo(Long.parseLong(userId.toString()));
-        if(userAmountVo != null){
-        	amount = userAmountVo.getAmount();
-        }
-		if(orderVo != null){
-			//0未付款;1 付款中;2已付款;4退款
-			if(orderVo.getPay_status() == 2){//已付款
-				if(userCouponVo != null){
-					userCouponVo.setCoupon_status(2);
-					apiUserCouponMapper.updateUserCoupon(userCouponVo);
+	public Object checkOrderValid(){
+		List<OrderVo> orderVos =  apiOrderMapper.checkOrderValid();
+		if(!CollectionUtils.isEmpty(orderVos)){
+			for(OrderVo order : orderVos){
+				UserCouponVo userCouponVo = apiUserCouponMapper.queryObject(order.getCoupon_id());
+				BigDecimal amount = BigDecimal.ZERO;
+				QzUserAccountVo userAmountVo =qzUserAccountMapper.queruUserAccountInfo(order.getUser_id());
+				if(userAmountVo != null){
+					amount = userAmountVo.getAmount();
 				}
-				resultObj.put("couponStatus", "支付成功,优惠券已用");
-			}
-			//0未支付 1 付款中 2 已付款 4退款
-			if(orderVo.getPay_status() == 4){//退款
-				if(userCouponVo != null){
-					userCouponVo.setCoupon_status(3);//作废
-					apiUserCouponMapper.updateUserCoupon(userCouponVo);
+				//如果当前日期减掉订单创建时间大于一天则回滚平台币
+				if(new Date().getTime() - order.getAdd_time().getTime() > 24*60*60*1000){
+					logger.info("【定时查询订单有效性】订单标号:" +order.getId() +""+"订单创建时间:" + order.getAdd_time());
+					if(userCouponVo != null){
+						userCouponVo.setCoupon_status(3);//作废
+						apiUserCouponMapper.update(userCouponVo);
+						saveTranInfoRecord(order.getUser_id(), "1", "2", userCouponVo.getCoupon_price(),
+								userCouponVo.getCoupon_price(), "订单失效，原优惠券作废");
+						amount = amount.add(userCouponVo.getCoupon_price());
+					}
+					if(userAmountVo != null){
+						userAmountVo.setAmount(amount);
+						qzUserAccountMapper.updateUserAccount(userAmountVo);
+						saveTranInfoRecord(order.getUser_id(), "2", "1", userCouponVo.getCoupon_price(), userAmountVo.getAmount(),
+								"订单失效，原优惠券金额回滚平台币中");
+					}
+					order.setOrder_status(103);//订单失效
+					apiOrderMapper.update(order);
 				}
-				//回滚平台币
-				amount = amount.add(userCouponVo.getCoupon_price());
-				userAmountVo.setAmount(amount);
-				qzUserAccountMapper.updateUserAccount(userAmountVo);
-				resultObj.put("couponStatus", "支付失败,优惠券作废");
 			}
-			if(orderVo.getPay_status() == 0){//未支付
-				
-			}
+			return this.toResponsObject(0, "执行成功", "");
 		}
-		return resultObj;
+		if(CollectionUtils.isEmpty(orderVos)){
+			return this.toResponsObject(0, "没有失效订单", "");
+		}
+		return null;
 	}
+    /**
+     * @param requestCode
+     * @param msg
+     * @param data
+     * @return Map<String,Object>
+     * @throws
+     * @Description:构建统一格式返回对象
+     * @date 2016年9月2日
+     * @author zhuliyun
+     */
+    public Map<String, Object> toResponsObject(int requestCode, String msg, Object data) {
+        Map<String, Object> obj = new HashMap<String, Object>();
+        obj.put("errno", requestCode);
+        obj.put("errmsg", msg);
+        if (data != null)
+            obj.put("data", data);
+        return obj;
+    }
+    /**
+     * 生成平台币、优惠券流水
+     * @param userId
+     * @param tranType
+     * @param TranFlag
+     * @param tranAmount
+     * @param currentAmount
+     * @param remark
+     */
+    public void saveTranInfoRecord(Long userId,String tranType,String TranFlag,BigDecimal tranAmount,BigDecimal currentAmount
+    		,String remark){
+    	 ApiTranInfoRecordVo tranInfo = new ApiTranInfoRecordVo();
+    	 tranInfo.setUser_id(userId);
+    	 tranInfo.setTran_type(tranType);//1优惠券 2 平台币
+    	 tranInfo.setTran_flag(TranFlag);//1收入 2支出
+    	 tranInfo.setTran_amount(tranAmount);
+    	 tranInfo.setCurrent_amount(currentAmount);
+    	 tranInfo.setCreate_time(new Date());
+    	 tranInfo.setRemark(remark);
+    	 apiTranInfoRecordMapper.save(tranInfo);
+    }
 }
