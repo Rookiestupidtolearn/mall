@@ -138,6 +138,7 @@
     	<foreach item ="id" collection="array" open="(" separator="," close=")" >
     		#{id}
     	</foreach>
+    	order by nideshop_goods_specification.specification_id asc
     </select>
     
 
