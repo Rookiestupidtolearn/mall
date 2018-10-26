@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.platform.dao.ApiTranInfoRecordMapper">
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.platform.entity.ApiTranInfoRecordVo" id="tranInfoRecordMap">
+        <result property="id" column="id"/>
+        <result property="user_id" column="user_id"/>
+        <result property="tran_type" column="tran_type"/>
+        <result property="tran_flag" column="tran_flag"/>
+        <result property="tran_amount" column="tran_amount"/>
+        <result property="current_amount" column="current_amount"/>
+        <result property="create_time" column="create_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+    <insert id="save" parameterType="com.platform.entity.ApiTranInfoRecordVo" useGeneratedKeys="true" keyProperty="id">
+		insert into nideshop_traninfo_record
+		(
+			`user_id`, 
+			`tran_type`, 
+			`tran_flag`, 
+			`tran_amount`, 
+			`current_amount`,
+			`create_time`,
+			`remark`
+		)
+		values
+		(
+            #{user_id},
+			#{tran_type},
+			#{tran_flag},
+			#{tran_amount},
+			#{current_amount},
+			#{create_time},
+			#{remark}
+		)
+	</insert>
+    
+    
+</mapper>
