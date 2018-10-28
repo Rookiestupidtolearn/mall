@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.platform.dao.SysUserAuthDao">
+
+    <resultMap type="com.platform.entity.SysUserAuthEntity" id="sysUserAuthMap">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="name" column="name"/>
+        <result property="sex" column="sex"/>
+        <result property="cardId" column="card_id"/>
+        <result property="addressCompony" column="address_compony"/>
+        <result property="phone" column="phone"/>
+        <result property="createUserId" column="create_user_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateUserId" column="update_user_id"/>
+        <result property="delflag" column="delflag"/>
+        <result property="updteTime" column="updte_time"/>
+    </resultMap>
+
+	<select id="queryObject" resultType="com.platform.entity.SysUserAuthEntity">
+		select
+		    sys_user_auth.`id`,
+		    sys_user_auth.`user_id`,
+		    sys_user_auth.`dept_id`,
+		    sys_user_auth.`name`,
+		    sys_user_auth.`sex`,
+		    sys_user_auth.`card_id`,
+		    sys_user_auth.`address_compony`,
+		    sys_user_auth.`phone`,
+		    sys_user_auth.`create_user_id`,
+		    sys_user_auth.`create_time`,
+		    sys_user_auth.`update_user_id`,
+		    sys_user_auth.`delflag`,
+		    sys_user_auth.`updte_time`,
+		    sys_user.username useraccount
+		from sys_user_auth  left join  sys_user  on sys_user_auth.user_id  =  sys_user.user_id
+
+		where id = #{id}
+	</select>
+
+	<select id="queryList" resultType="com.platform.entity.SysUserAuthEntity">
+		select
+		    sys_user_auth.`id`,
+		    sys_user_auth.`user_id`,
+		    sys_user_auth.`dept_id`,
+		    sys_user_auth.`name`,
+		    sys_user_auth.`sex`,
+		    sys_user_auth.`card_id`,
+		    sys_user_auth.`address_compony`,
+		    sys_user_auth.`phone`,
+		    sys_user_auth.`create_user_id`,
+		    sys_user_auth.`create_time`,
+		    sys_user_auth.`update_user_id`,
+		    sys_user_auth.`delflag`,
+		    sys_user_auth.`updte_time`,
+		    sys_user.username useraccount
+		from sys_user_auth  left join  sys_user  on sys_user_auth.user_id  =  sys_user.user_id
+		WHERE 1=1
+		<if test="name != null and name.trim() != ''">
+			AND name LIKE concat('%',#{name},'%')
+		</if>
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from sys_user_auth
+		WHERE 1=1
+        <if test="name != null and name.trim() != ''">
+            AND name LIKE concat('%',#{name},'%')
+        </if>
+	</select>
+	 
+	<insert id="save" parameterType="com.platform.entity.SysUserAuthEntity">
+		insert into sys_user_auth(
+			`id`,
+			`user_id`,
+			`dept_id`,
+			`name`,
+			`sex`,
+			`card_id`,
+			`address_compony`,
+			`phone`,
+			`create_user_id`,
+			`create_time`,
+			`update_user_id`,
+			`delflag`,
+			`updte_time`)
+		values(
+			#{id},
+			#{userId},
+			#{deptId},
+			#{name},
+			#{sex},
+			#{cardId},
+			#{addressCompony},
+			#{phone},
+			#{createUserId},
+			#{createTime},
+			#{updateUserId},
+			#{delflag},
+			#{updteTime})
+	</insert>
+	 
+	<update id="update" parameterType="com.platform.entity.SysUserAuthEntity">
+		update sys_user_auth 
+		<set>
+			<if test="userId != null">`user_id` = #{userId}, </if>
+			<if test="deptId != null">`dept_id` = #{deptId}, </if>
+			<if test="name != null">`name` = #{name}, </if>
+			<if test="sex != null">`sex` = #{sex}, </if>
+			<if test="cardId != null">`card_id` = #{cardId}, </if>
+			<if test="addressCompony != null">`address_compony` = #{addressCompony}, </if>
+			<if test="phone != null">`phone` = #{phone}, </if>
+			<if test="createUserId != null">`create_user_id` = #{createUserId}, </if>
+			<if test="createTime != null">`create_time` = #{createTime}, </if>
+			<if test="updateUserId != null">`update_user_id` = #{updateUserId}, </if>
+			<if test="delflag != null">`delflag` = #{delflag}, </if>
+			<if test="updteTime != null">`updte_time` = #{updteTime}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from sys_user_auth where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from sys_user_auth where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

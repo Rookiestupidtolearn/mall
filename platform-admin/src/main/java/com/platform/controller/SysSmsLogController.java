@@ -1,5 +1,18 @@
 package com.platform.controller;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.alibaba.fastjson.JSON;
 import com.platform.annotation.SysLog;
 import com.platform.entity.SmsConfig;
@@ -10,12 +23,6 @@ import com.platform.utils.Constant;
 import com.platform.utils.PageUtils;
 import com.platform.utils.Query;
 import com.platform.utils.R;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * 发送短信日志Controller
@@ -119,4 +126,19 @@ public class SysSmsLogController {
         SysSmsLogEntity sysSmsLogEntity = smsLogService.sendSms(smsLog);
         return R.ok().put("result", sysSmsLogEntity);
     }
+    
+    
+    @RequestMapping("/sendSmsCheckCode")
+    public R sendSmsCheckCode(@RequestBody SysSmsLogEntity smsLog) {
+    	System.out.println("111111111111");
+    	smsLog.setStime(new Date());
+    	smsLog.setType("checkcode");
+    	Random random = new Random();    
+    	int checkcode = random.nextInt(899999);    
+    	checkcode = checkcode+100000; 
+    	smsLog.setContent("验证码:"+checkcode);
+       smsLogService.sendSms(smsLog);
+        return R.ok().put("checkcode", checkcode);
+    }
+    
 }
