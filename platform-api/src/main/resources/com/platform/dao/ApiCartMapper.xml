@@ -26,6 +26,13 @@
     <select id="queryObject" resultMap="cartMap">
 		select * from nideshop_cart where id = #{value}
 	</select>
+	
+	<select id="queryCartsByCartId" resultMap="cartMap">
+		select * from nideshop_cart where id in
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</select>
 
     <select id="queryList" resultMap="cartMap">
         select a.*,

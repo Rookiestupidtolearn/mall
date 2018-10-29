@@ -1,26 +1,33 @@
 package com.platform.service.impl;
 
-import com.platform.annotation.DataFilter;
-import com.platform.dao.GoodsAttributeDao;
-import com.platform.dao.GoodsDao;
-import com.platform.dao.GoodsGalleryDao;
-import com.platform.dao.ProductDao;
-import com.platform.entity.GoodsGalleryEntity;
-import com.platform.entity.GoodsAttributeEntity;
-import com.platform.entity.GoodsEntity;
-import com.platform.entity.ProductEntity;
-import com.platform.entity.SysUserEntity;
-import com.platform.service.GoodsService;
-import com.platform.utils.RRException;
-import com.platform.utils.ShiroUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.platform.annotation.DataFilter;
+import com.platform.dao.CartDao;
+import com.platform.dao.GoodsAttributeDao;
+import com.platform.dao.GoodsDao;
+import com.platform.dao.GoodsGalleryDao;
+import com.platform.dao.ProductDao;
+import com.platform.entity.CartEntity;
+import com.platform.entity.GoodsAttributeEntity;
+import com.platform.entity.GoodsEntity;
+import com.platform.entity.GoodsGalleryEntity;
+import com.platform.entity.ProductEntity;
+import com.platform.entity.SysUserEntity;
+import com.platform.service.ApiCartService;
+import com.platform.service.GoodsService;
+import com.platform.utils.RRException;
+import com.platform.utils.ShiroUtils;
+
+import jline.internal.Log;
 
 /**
  * Service实现类
@@ -39,6 +46,10 @@ public class GoodsServiceImpl implements GoodsService {
 	private ProductDao productDao;
 	@Autowired
 	private GoodsGalleryDao goodsGalleryDao;
+	@Autowired
+	private CartDao cartDao;
+	@Autowired
+	private ApiCartService apiCartService;
 
 	@Override
 	public GoodsEntity queryObject(Integer id) {
@@ -207,6 +218,25 @@ public class GoodsServiceImpl implements GoodsService {
 		GoodsEntity goodsEntity = queryObject(id);
 		if (0 == goodsEntity.getIsOnSale()) {
 			throw new RRException("此商品已处于下架状态！");
+		}
+		//商品下架,删除购物车中对应的商品信息。并且回滚平台币和删除优惠券
+		//查询购物车中对应的商品信息。
+		List<CartEntity> cartList = cartDao.queryCartListByGoodsId(goodsEntity.getId());
+		if(CollectionUtils.isNotEmpty(cartList)){
+			Integer[] CartEntityIds = new Integer[cartList.size()];
+			for(int i = 0;i<cartList.size();i++){
+				CartEntityIds[i] = cartList.get(i).getId();
+			}
+			Boolean boo = apiCartService.roolbackAllCartsCoupons(CartEntityIds); //请求退回平台币并删除优惠券
+			if(boo){
+				//开始清除购物车中的商品信息
+				int delNum = cartDao.deleteBatch(CartEntityIds);
+				Log.info("【商品下架】删除购物车中对应商品id为"+goodsEntity.getId()+"的商品共"+delNum+"条");
+			}else{
+				Log.info("【商品下架】退回平台币并删除优惠券失败");
+			}
+		}else{
+			Log.info("【商品下架】购物车中没有查找到商品id为"+goodsEntity.getId()+"的商品");
 		}
 		goodsEntity.setIsOnSale(0);
 		goodsEntity.setUpdateUserId(user.getUserId());

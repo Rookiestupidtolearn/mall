@@ -228,7 +228,7 @@
 		select a.*,b.coupon_number,b.user_id,b.coupon_status,b.id user_coupon_id,b.coupon_price
         from nideshop_coupon a
         left join nideshop_user_coupon b on a.id = b.coupon_id
-        where 1 = 1 and b.coupon_status in (1,2,3)
+        where 1 = 1 and b.coupon_status in (1,2,3,4)
         <if test="user_id != null">
             and b.`user_id` = #{user_id}
         </if>
