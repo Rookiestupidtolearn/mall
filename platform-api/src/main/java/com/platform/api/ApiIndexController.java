@@ -168,6 +168,12 @@ public class ApiIndexController extends ApiBaseAction {
         param.put("fields", "nideshop_goods.id as id, nideshop_goods.name as name, nideshop_goods.list_pic_url as list_pic_url, nideshop_goods.market_price as market_price,case when min(nideshop_product.market_price) != '' then min(nideshop_product.market_price) else 0 end product_market_price");
         PageHelper.startPage(0, 4, false);
         List<GoodsVo> newGoods = goodsService.queryList(param);
+        for(GoodsVo goodsVo : newGoods){
+        	//如果商品有规格，则展示最低规格价
+    		if(goodsVo.getProduct_market_price().compareTo(BigDecimal.ZERO) > 0 ){
+    			goodsVo.setMarket_price(goodsVo.getProduct_market_price());
+    		}
+        }
         resultObj.put("newGoodsList", newGoods);
         resultObj.put("newGoodsList", null);
         //
