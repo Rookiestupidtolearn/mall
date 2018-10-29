@@ -189,7 +189,7 @@ public class ApiOrderController extends ApiBaseAction {
     }
 
     /**
-     * 获取订单列表
+     * 取消订单
      */
     @ApiOperation(value = "取消订单")
     @PostMapping("cancelOrder")

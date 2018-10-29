@@ -64,7 +64,7 @@ public class ApiCouponController extends ApiBaseAction {
         if(!CollectionUtils.isEmpty(cartList)){
         	for (CartVo cartItem : cartList) {
         		if (null != cartItem.getChecked() && 1 == cartItem.getChecked()) {
-        			goodsTotalPrice = goodsTotalPrice.add(cartItem.getRetail_price().multiply(new BigDecimal(cartItem.getNumber())));
+        			goodsTotalPrice = goodsTotalPrice.add(cartItem.getMarket_price().multiply(new BigDecimal(cartItem.getNumber())));
         		}
         	}
         }
@@ -72,18 +72,26 @@ public class ApiCouponController extends ApiBaseAction {
         List<CouponVo> notUseCoupons = new ArrayList<>();
         if(!CollectionUtils.isEmpty(coupons)){
         	for (CouponVo couponVo : coupons) {
+        		if(couponVo.getCoupon_status() == 4){//订单未支付 优惠券使用中
+    				couponVo.setEnabled(1);
+        			notUseCoupons.add(couponVo);
+        			continue;
+    			}
         		if (goodsTotalPrice.compareTo(couponVo.getCoupon_price()) >= 0 && "平台抵扣券".equals(couponVo.getName())) { // 可用优惠券
-        			if(couponVo.getCoupon_status() == 1){
+        			if(couponVo.getCoupon_status() == 1){//可用
         				couponVo.setEnabled(1);
         				useCoupons.add(couponVo);
+        				continue;
         			}
-        			if(couponVo.getCoupon_status() == 2){
+        			if(couponVo.getCoupon_status() == 2){//已用
         				couponVo.setEnabled(0);
             			notUseCoupons.add(couponVo);
+            			continue;
         			}
         		} else {
-        			couponVo.setEnabled(0);
-        			notUseCoupons.add(couponVo);
+    				couponVo.setEnabled(0);
+    				notUseCoupons.add(couponVo);
+    				continue;
         		}
         	}
         }
@@ -106,7 +114,7 @@ public class ApiCouponController extends ApiBaseAction {
             //获取购物车统计信息
             for (CartVo cartItem : cartList) {
                 if (null != cartItem.getChecked() && 1 == cartItem.getChecked()) {
-                    goodsTotalPrice = goodsTotalPrice.add(cartItem.getRetail_price().multiply(new BigDecimal(cartItem.getNumber())));
+                    goodsTotalPrice = goodsTotalPrice.add(cartItem.getMarket_price().multiply(new BigDecimal(cartItem.getNumber())));
                 }
             }
         } else { // 是直接购买的
@@ -114,7 +122,7 @@ public class ApiCouponController extends ApiBaseAction {
             if(goodsVo != null){
             	ProductVo productInfo = apiProductService.queryObject(goodsVo.getProductId());
             	//商品总价
-            	goodsTotalPrice = productInfo.getRetail_price().multiply(new BigDecimal(goodsVo.getNumber()));
+            	goodsTotalPrice = productInfo.getMarket_price().multiply(new BigDecimal(goodsVo.getNumber()));
             }
         }
 
