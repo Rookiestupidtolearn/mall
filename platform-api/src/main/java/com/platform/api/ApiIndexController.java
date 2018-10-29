@@ -7,11 +7,14 @@ import com.platform.service.*;
 import com.platform.util.ApiBaseAction;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -162,7 +165,7 @@ public class ApiIndexController extends ApiBaseAction {
         param.put("is_new", 1);
         param.put("is_on_sale", 1);
         param.put("is_delete", 0);
-        param.put("fields", "id, name, list_pic_url, retail_price");
+        param.put("fields", "nideshop_goods.id as id, nideshop_goods.name as name, nideshop_goods.list_pic_url as list_pic_url, nideshop_goods.market_price as market_price,case when min(nideshop_product.market_price) != '' then min(nideshop_product.market_price) else 0 end product_market_price");
         PageHelper.startPage(0, 4, false);
         List<GoodsVo> newGoods = goodsService.queryList(param);
         resultObj.put("newGoodsList", newGoods);
@@ -184,6 +187,14 @@ public class ApiIndexController extends ApiBaseAction {
         param.put("is_delete", 0);
         PageHelper.startPage(0, 3, false);
         List<GoodsVo> hotGoods = goodsService.queryHotGoodsList(param);
+        if(CollectionUtils.isNotEmpty(hotGoods)){
+        	for(GoodsVo goodsVo : hotGoods){
+        		//如果商品有规格，则展示最低规格价
+        		if(goodsVo.getProduct_market_price().compareTo(BigDecimal.ZERO) > 0 ){
+        			goodsVo.setMarket_price(goodsVo.getProduct_market_price());
+        		}
+        	}
+        }
         resultObj.put("hotGoodsList", hotGoods);
         //
 
@@ -252,9 +263,15 @@ public class ApiIndexController extends ApiBaseAction {
             //
             param = new HashMap<String, Object>();
             param.put("categoryIds", childCategoryIds);
-            param.put("fields", "id as id, name as name, list_pic_url as list_pic_url, retail_price as retail_price");
+            param.put("fields", "nideshop_goods.id as id, nideshop_goods.name as name, nideshop_goods.list_pic_url as list_pic_url, nideshop_goods.market_price as market_price,case when min(nideshop_product.market_price) != '' then min(nideshop_product.market_price) else 0 end product_market_price");
             PageHelper.startPage(0, 7, false);
             List<GoodsVo> categoryGoods = goodsService.queryList(param);
+            for(GoodsVo goodsVo : categoryGoods){
+            	//如果商品有规格，则展示最低规格价
+        		if(goodsVo.getProduct_market_price().compareTo(BigDecimal.ZERO) > 0 ){
+        			goodsVo.setMarket_price(goodsVo.getProduct_market_price());
+        		}
+            }
             Map<String, Object> newCategory = new HashMap<String, Object>();
             newCategory.put("id", categoryItem.getId());
             newCategory.put("name", categoryItem.getName());

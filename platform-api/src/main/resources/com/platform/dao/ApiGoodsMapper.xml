@@ -37,6 +37,7 @@
         <result property="is_limited" column="is_limited"/>
         <result property="is_hot" column="is_hot"/>
         <result property="product_id" column="product_id"/>
+        <result property="product_market_price" column="product_market_price"/>
     </resultMap>
 
     <select id="queryObject" resultMap="goodsMap">
@@ -51,8 +52,8 @@
         <if test="fields == null or fields == ''">
             *
         </if>
-        from nideshop_goods
-        where 1 = 1
+        from nideshop_goods left join nideshop_product on nideshop_goods.id = nideshop_product.goods_id
+        where 1 = 1 and nideshop_goods.is_delete != 1
         <if test="is_new != null and is_new != ''">
             and is_new = #{is_new}
         </if>
@@ -89,22 +90,23 @@
                 #{item}
             </foreach>
         </if>
+        GROUP BY nideshop_goods.id
         <choose>
             <when test="sidx != null and sidx.trim() != ''">
                 order by ${sidx} ${order}
             </when>
             <otherwise>
-                order by id desc
+                order by nideshop_goods.id desc
             </otherwise>
         </choose>
     </select>
 
     <select id="queryHotGoodsList" resultMap="goodsMap">
-        select a.*,b.id as product_id
+        select a.*,b.id as product_id,
+        case when min(b.market_price) != '' then min(b.market_price) else 0 end product_market_price
         from nideshop_goods a
         left join nideshop_product b on a.id = b.goods_id
-        left join nideshop_product c on a.id = c.goods_id and c.retail_price > b.retail_price and b.id != c.id
-        where 1 = 1 and b.id is not null and c.id is null and a.is_delete != 1
+        where 1 = 1 and b.id is not null and a.is_delete != 1
         <if test="is_new != null and is_new != ''">
             and a.is_new = #{is_new}
         </if>
@@ -138,6 +140,7 @@
                 #{item}
             </foreach>
         </if>
+        GROUP BY a.id
         <choose>
             <when test="sidx != null and sidx.trim() != ''">
                 order by ${sidx} ${order}
