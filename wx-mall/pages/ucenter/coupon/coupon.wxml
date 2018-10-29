@@ -10,7 +10,7 @@
   <show-empty-data wx:if="{{couponList.length<=0}}" showType="NO_COUPON"></show-empty-data>
   <view wx:else class="coupon-list">
     <block wx:for="{{couponList}}" wx:for-index="index" wx:for-item="item" wx:key="{{item.id}}">
-      <view class="item" style="background: {{item.coupon_status==1?'linear-gradient(to right,#cfa568,#e3bf79)':'linear-gradient(to right,#999,#DDDDDD)'}}">
+      <view class="item" style="background: {{item.coupon_status==1 || item.coupon_status==4 ?'linear-gradient(to right,#cfa568,#e3bf79)':'linear-gradient(to right,#999,#DDDDDD)'}}">
          <!-- <view class="tag">新人专享</view>  -->
         <view class="content">
           <view class="left">
@@ -20,8 +20,9 @@
           </view>
           <view class="right">
             <image wx:if="{{item.coupon_status==1}}" class='mid-img' src='../../../static/images/coupon_ksy.png'></image>
-    <image wx:if="{{item.coupon_status==2}}" class='mid-img' src='../../../static/images/coupon_ysy.png'></image>
-    <image wx:if="{{item.coupon_status==3}}" class='mid-img' src='../../../static/images/coupon_gq.png'></image>
+            <image wx:if="{{item.coupon_status==2}}" class='mid-img' src='../../../static/images/coupon_ysy.png'></image>
+            <image wx:if="{{item.coupon_status==3}}" class='mid-img' src='../../../static/images/coupon_gq.png'></image>
+            <image wx:if="{{item.coupon_status==4}}" class='mid-img' src='../../../static/images/coupon_zfz.png'></image>
           </view>
         </view>
         <view class="condition">

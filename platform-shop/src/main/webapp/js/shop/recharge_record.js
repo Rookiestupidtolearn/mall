@@ -7,7 +7,9 @@ $(function() {
 			index : 'id',
 			key : true,
 			hidden : true
-		},{
+		},
+
+		{
 			label : '会员名称',
 			name : 'shopUserName',
 			index : 'shop_user_name',
@@ -75,7 +77,8 @@ $(function() {
 			name : 'memo',
 			index : 'memo',
 			width : 80
-		}]
+		}],
+		 multiselect: false
 	});
 });
 

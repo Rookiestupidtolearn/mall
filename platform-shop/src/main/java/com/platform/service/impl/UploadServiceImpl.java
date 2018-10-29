@@ -16,6 +16,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -27,8 +29,9 @@ import com.platform.service.UserService;
 
 @Service("uploadService")
 public class UploadServiceImpl implements UploadService {
-
-	@Autowired
+	private static final Logger log = LoggerFactory.getLogger(UploadServiceImpl.class);
+	
+   @Autowired
 	private QzRechargeRecordService qzRechargeRecordService;
 	@Autowired
 	private UserService userService;
@@ -135,6 +138,7 @@ public class UploadServiceImpl implements UploadService {
 					map.put("mobiles", mobile);
 					map.put("amount", amount);
 					map.put("memo", "uploadRechargeExcel");
+					log.info("Excel上传开始执行充值操作，手机号:"+mobile+",充值金额："+amount);
 					qzRechargeRecordService.rechargeBatch(map);
 
 				}

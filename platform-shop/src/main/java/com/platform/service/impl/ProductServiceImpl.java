@@ -1,22 +1,22 @@
 package com.platform.service.impl;
 
-import com.platform.dao.GoodsSpecificationDao;
-import com.platform.entity.GoodsSpecificationEntity;
-import com.platform.utils.BeanUtils;
-import com.platform.utils.ShiroUtils;
-import com.platform.utils.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.platform.dao.GoodsSpecificationDao;
 import com.platform.dao.ProductDao;
+import com.platform.entity.GoodsSpecificationEntity;
 import com.platform.entity.ProductEntity;
 import com.platform.entity.SysUserEntity;
 import com.platform.service.ProductService;
-import org.springframework.transaction.annotation.Transactional;
+import com.platform.utils.ShiroUtils;
+import com.platform.utils.StringUtils;
 
 /**
  * Service实现类
@@ -89,29 +89,13 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public int save(ProductEntity product) {
-       /* int result = 0;
-        String goodsSpecificationIds = product.getGoodsSpecificationIds();
-        if (!StringUtils.isNullOrEmpty(goodsSpecificationIds)) {
-            String[] goodsSpecificationIdArr = goodsSpecificationIds.split("_");
-            for (int i = 0; i < goodsSpecificationIdArr.length - 1; i++) {
-                String[] oneId = goodsSpecificationIdArr[i].split(",");
-                String[] twoId = goodsSpecificationIdArr[i + 1].split(",");
-                for (int j = 0; j < oneId.length; j++) {
-                    for (int k = 0; k < twoId.length; k++) {
-                        String strGoodsSpecificationIds = null;
-                        if (StringUtils.isNullOrEmpty(oneId[j]) || StringUtils.isNullOrEmpty(twoId[k])){
-                            continue;
-                        }
-                        strGoodsSpecificationIds = oneId[j] + "_" + twoId[k];
-                        product.setGoodsSpecificationIds(strGoodsSpecificationIds);
-                        ProductEntity entity = new ProductEntity();
-                        BeanUtils.copyProperties(product, entity);
-                        result += productDao.save(entity);
-                    }
-                }
-            }
-        }
-        return result;*/
+    	//校验此规格是否存在
+    	Map paramMap = new HashMap();
+    	paramMap.put("goods_specification_ids", product.getGoodsSpecificationIds());
+    	int i = productDao.findProductIsHave(paramMap);
+    	if(i>0){
+    		return -1;
+    	}
     	return productDao.save(product);
     	
     }

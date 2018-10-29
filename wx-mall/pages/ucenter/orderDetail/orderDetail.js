@@ -28,7 +28,8 @@ Page({
           handleOption: res.data.handleOption
         });
         //that.payTimer();
-      if (res.data.orderInfo.order_status == '101' || res.data.orderInfo.order_status == '301') {
+        //101取消订单   301已完成订单   103订单失效
+        if (res.data.orderInfo.order_status == '101' || res.data.orderInfo.order_status == '301' || res.data.orderInfo.order_status == '103') {
         that.setData({
           cancelBtnShow: true
         })
