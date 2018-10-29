@@ -48,25 +48,27 @@ let vm = new Vue({
 		
 		isdisabledFn:false,
 		intervalId : null,
-		
+		checkcode:""
 	},
 	methods: {
 		getCheckCode:function(){
 				
-		/*	 Ajax.request({
-				    url: "../sys/smslog/sendSmsCheckCode",
-	           
-	                type: "POST",
-				    contentType: "application/json",
-	                successCallback: function (r) {
-	                    alert('操作成功', function (index) {
-	                        vm.reload();
-	                    });
-	                }
-				});*/
+				 Ajax.request({
+					    url: "../sysuserauth/getChecCode",
+		                type: "GET",
+		                params: {"mobile":vm.sysUserAuth.phone},
+		                contentType: "application/json",
+		                successCallback: function (r) {
+		                	console.log(r);
+		                	vm.checkcode = r.checkcode;
+		                }
+					});
 			
 				var  count = 60;
 				vm.intervalId = setInterval(function(){
+					if(!intervalId!=null){
+						return ;
+					}
 					if(count>0&&count<=60){
 						vm.isdisabledFn=true
 						count--;	
@@ -75,6 +77,7 @@ let vm = new Vue({
 						vm.btntxt="获取验证码";
 						clearInterval(vm.intervalId);
 						vm.isdisabledFn=false;
+						vm.intervalId=null;
 					}
 				},1000);
 		},
@@ -97,6 +100,12 @@ let vm = new Vue({
             vm.getInfo(id)
 		},
 		saveOrUpdate: function (event) {
+		
+			if(checkcode=!vm.sysUserAuth.checkCode){
+				alert("验证码有误!")
+				return ;
+			}
+				
             let url = vm.sysUserAuth.id == null ? "../sysuserauth/save" : "../sysuserauth/update";
             Ajax.request({
 			    url: url,

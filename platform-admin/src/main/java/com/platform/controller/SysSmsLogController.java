@@ -128,17 +128,5 @@ public class SysSmsLogController {
     }
     
     
-    @RequestMapping("/sendSmsCheckCode")
-    public R sendSmsCheckCode(@RequestBody SysSmsLogEntity smsLog) {
-    	System.out.println("111111111111");
-    	smsLog.setStime(new Date());
-    	smsLog.setType("checkcode");
-    	Random random = new Random();    
-    	int checkcode = random.nextInt(899999);    
-    	checkcode = checkcode+100000; 
-    	smsLog.setContent("验证码:"+checkcode);
-       smsLogService.sendSms(smsLog);
-        return R.ok().put("checkcode", checkcode);
-    }
-    
+
 }

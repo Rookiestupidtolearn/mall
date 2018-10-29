@@ -1,7 +1,9 @@
 package com.platform.controller;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +13,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.platform.entity.SysSmsLogEntity;
 import com.platform.entity.SysUserAuthEntity;
+import com.platform.entity.SysUserEntity;
 import com.platform.service.SysSmsLogService;
 import com.platform.service.SysUserAuthService;
 import com.platform.utils.PageUtils;
 import com.platform.utils.Query;
 import com.platform.utils.R;
+import com.platform.utils.ShiroUtils;
 
 /**
  * 用户信息认证Controller
@@ -105,4 +110,35 @@ public class SysUserAuthController {
 
         return R.ok().put("list", list);
     }
+    
+    /**
+     * 查看所有列表
+     */
+    @RequestMapping("/getChecCode")
+    public R getChecCode(@RequestParam Map<String, Object> params) {
+    	String mobile  = (String) params.get("mobile");
+        SysUserEntity sysUserEntity = ShiroUtils.getUserEntity();
+        String username = "";
+        Long userId = null;
+        if (null != sysUserEntity) {
+            username = sysUserEntity.getUsername();
+            userId   = sysUserEntity.getUserId();
+        }
+    	Random  random = new Random();
+    	int checkCode = random.nextInt(899999);
+    	checkCode+=100000;
+    	SysSmsLogEntity sys = new SysSmsLogEntity();
+        sys.setUserId(userId);
+        sys.setUserName(username);
+        sys.setMobile(mobile);
+    	sys.setContent("验证码:"+checkCode);
+    	sys.setStime(new Date());
+    	sys.setType("cc");
+    	smsLogService.sendSms(sys);
+        return R.ok().put("checkcode", checkCode);
+   
+    }
+    
+
+    
 }
