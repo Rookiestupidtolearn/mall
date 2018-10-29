@@ -41,7 +41,12 @@
     </resultMap>
 
     <select id="queryObject" resultMap="goodsMap">
-		select * from nideshop_goods where id = #{value}
+		select 
+			nideshop_goods.*,
+			case when min(nideshop_product.market_price) != '' then min(nideshop_product.market_price) else 0 end product_market_price
+		from nideshop_goods left join nideshop_product on nideshop_goods.id = nideshop_product.goods_id
+		where nideshop_goods.id = #{value} 
+		GROUP BY nideshop_goods.id
 	</select>
 
     <select id="queryList" resultMap="goodsMap">
