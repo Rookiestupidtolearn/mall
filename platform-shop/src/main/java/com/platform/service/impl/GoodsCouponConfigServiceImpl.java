@@ -74,7 +74,7 @@ public class GoodsCouponConfigServiceImpl implements GoodsCouponConfigService {
 		}
 		
 		//新增商品配配比，删除购物车中对应的商品，以及回滚余额、删除优惠券
-		List<CartEntity> cartList = cartDao.queryCartListByGoodsId(goodsCouponConfigEntity.getGoodsId());
+		List<CartEntity> cartList = cartDao.queryCartListByGoodsId(goodsCouponConfigEntity.getGoodsId(),1);
 		if(CollectionUtils.isNotEmpty(cartList)){
 			Integer[] CartEntityIds = new Integer[cartList.size()];
 			for(int i = 0;i<cartList.size();i++){
@@ -108,7 +108,7 @@ public class GoodsCouponConfigServiceImpl implements GoodsCouponConfigService {
 			throw new RRException("商品配比值为大于0且小于等于1");
 		}
     	//新增商品配配比，删除购物车中对应的商品，以及回滚余额、删除优惠券
-			List<CartEntity> cartList = cartDao.queryCartListByGoodsId(goodsCouponConfig.getGoodsId());
+			List<CartEntity> cartList = cartDao.queryCartListByGoodsId(goodsCouponConfig.getGoodsId(),1);
 			if(CollectionUtils.isNotEmpty(cartList)){
 				Integer[] CartEntityIds = new Integer[cartList.size()];
 				for(int i = 0;i<cartList.size();i++){

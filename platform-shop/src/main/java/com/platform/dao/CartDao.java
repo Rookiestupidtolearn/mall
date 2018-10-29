@@ -18,6 +18,6 @@ public interface CartDao extends BaseDao<CartEntity> {
 	 * @param goodsId
 	 * @return
 	 */
-	List<CartEntity> queryCartListByGoodsId(Integer goodsId);
+	List<CartEntity> queryCartListByGoodsId(Integer goodsId,Integer checked);
 	
 }
