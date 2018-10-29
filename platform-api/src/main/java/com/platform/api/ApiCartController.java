@@ -102,10 +102,10 @@ public class ApiCartController extends ApiBaseAction {
         BigDecimal checkedGoodsAmount = new BigDecimal(0.00);
         for (CartVo cartItem : cartList) {
             goodsCount += cartItem.getNumber();
-            goodsAmount = goodsAmount.add(cartItem.getRetail_price().multiply(new BigDecimal(cartItem.getNumber())));
+            goodsAmount = goodsAmount.add(cartItem.getMarket_price().multiply(new BigDecimal(cartItem.getNumber())));
             if (null != cartItem.getChecked() && 1 == cartItem.getChecked()) {
                 checkedGoodsCount += cartItem.getNumber();
-                checkedGoodsAmount = checkedGoodsAmount.add(cartItem.getRetail_price().multiply(new BigDecimal(cartItem.getNumber())));
+                checkedGoodsAmount = checkedGoodsAmount.add(cartItem.getMarket_price().multiply(new BigDecimal(cartItem.getNumber())));
             }
             cartItem.setGood_url("/pages/goods/goods?id=" + cartItem.getGoods_id());
         }
@@ -347,7 +347,7 @@ public class ApiCartController extends ApiBaseAction {
             cartInfo.setGoods_sn(productInfo.getGoods_sn());
             cartInfo.setNumber(number);
             cartInfo.setRetail_price(productInfo.getRetail_price());
-            cartInfo.setMarket_price(productInfo.getRetail_price());
+            cartInfo.setMarket_price(productInfo.getMarket_price());
             if (null != goodsSepcifitionValue) {
                 cartInfo.setGoods_specifition_name_value(StringUtils.join(goodsSepcifitionValue, ";"));
             }
@@ -380,7 +380,7 @@ public class ApiCartController extends ApiBaseAction {
             cartInfo.setGoods_sn(productInfo.getGoods_sn());
             cartInfo.setNumber(number);
             cartInfo.setRetail_price(productInfo.getRetail_price());
-            cartInfo.setMarket_price(productInfo.getRetail_price());
+            cartInfo.setMarket_price(productInfo.getMarket_price());
             if (null != goodsSepcifitionValue) {
                 cartInfo.setGoods_specifition_name_value(StringUtils.join(goodsSepcifitionValue, ";"));
             }
@@ -495,12 +495,13 @@ public class ApiCartController extends ApiBaseAction {
             	ProductVo productInfo = productService.queryObject(goodsVO.getProductId());
             	//计算订单的费用
             	//商品总价
-            	goodsTotalPrice = productInfo.getRetail_price().multiply(new BigDecimal(goodsVO.getNumber()));
+            	goodsTotalPrice = productInfo.getMarket_price().multiply(new BigDecimal(goodsVO.getNumber()));
             	
             	CartVo cartVo = new CartVo();
             	cartVo.setGoods_name(productInfo.getGoods_name());
             	cartVo.setNumber(goodsVO.getNumber());
             	cartVo.setRetail_price(productInfo.getRetail_price());
+            	cartVo.setMarket_price(productInfo.getMarket_price());
             	cartVo.setList_pic_url(productInfo.getList_pic_url());
             	checkedGoodsList.add(cartVo);
             }
@@ -651,7 +652,7 @@ public class ApiCartController extends ApiBaseAction {
         			BigDecimal couponlPrice = BigDecimal.ZERO;//优惠券临时总价值
         			//计算该产品优惠券总和
         			if(goodsCoupon != null){
-        				couponlPrice = productInfo.getRetail_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(cart.getNumber()));
+        				couponlPrice = productInfo.getMarket_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(cart.getNumber()));
         			}
         			couponTotalPrice = couponTotalPrice.add(couponlPrice);
         		}
