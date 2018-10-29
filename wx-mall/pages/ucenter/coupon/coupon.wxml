@@ -20,8 +20,9 @@
           </view>
           <view class="right">
             <image wx:if="{{item.coupon_status==1}}" class='mid-img' src='../../../static/images/coupon_ksy.png'></image>
-    <image wx:if="{{item.coupon_status==2}}" class='mid-img' src='../../../static/images/coupon_ysy.png'></image>
-    <image wx:if="{{item.coupon_status==3}}" class='mid-img' src='../../../static/images/coupon_gq.png'></image>
+            <image wx:if="{{item.coupon_status==2}}" class='mid-img' src='../../../static/images/coupon_ysy.png'></image>
+            <image wx:if="{{item.coupon_status==3}}" class='mid-img' src='../../../static/images/coupon_gq.png'></image>
+            <image wx:if="{{item.coupon_status==4}}" class='mid-img' src='../../../static/images/coupon_syz.png'></image>
           </view>
         </view>
         <view class="condition">

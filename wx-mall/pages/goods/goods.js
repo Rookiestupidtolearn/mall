@@ -252,7 +252,9 @@ Page({
 
   },
   onShow: function () {
-    // 页面显示
+    // 页面显示  默认价格最小的参数集合
+    // var goodsSpec = this.data.productList;
+
 
   },
   onHide: function () {
