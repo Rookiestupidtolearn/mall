@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -119,6 +120,9 @@ public class ApiGoodsController extends ApiBaseAction {
         //
         Long userId = getUserId();
         GoodsVo info = goodsService.queryObject(id);
+        if(info.getProduct_market_price().compareTo(BigDecimal.ZERO) > 0){
+        	info.setMarket_price(info.getProduct_market_price());
+        }
         Map<String,Object> param = new HashMap<>();
         param.put("goods_id", id);
         //
@@ -223,6 +227,16 @@ public class ApiGoodsController extends ApiBaseAction {
             footprintEntity.setReferrer(0L);
         }
         footprintService.save(footprintEntity);
+        
+        //根据商品id查询对应最低价位的规格（前端默认选中此规格）
+        Map paramMap = new HashMap();
+        paramMap.put("goods_id",id);
+        paramMap.put("sidx","a.market_price");
+        paramMap.put("order","asc");
+        paramMap.put("offset",0);
+        paramMap.put("limit",1);
+        List<ProductVo> minPriceList =  productService.queryList(paramMap);
+        
         //
         resultObj.put("info", info);
         resultObj.put("gallery", gallery);
@@ -233,6 +247,7 @@ public class ApiGoodsController extends ApiBaseAction {
         resultObj.put("brand", brand);
         resultObj.put("specificationList", specificationList);
         resultObj.put("productList", productEntityList);
+        resultObj.put("minPriceList", minPriceList);
         // 记录推荐人是否可以领取红包，用户登录时校验
         try {
             // 是否已经有可用的转发红包
@@ -326,7 +341,7 @@ public class ApiGoodsController extends ApiBaseAction {
             params.put("sidx", "retail_price");
             params.put("order", order);
         } else {
-            params.put("sidx", "id");
+            params.put("sidx", "nideshop_goods.id");
             params.put("order", "desc");
         }
         //添加到搜索历史
@@ -392,10 +407,16 @@ public class ApiGoodsController extends ApiBaseAction {
             params.put("categoryIds", categoryIds);
         }
         //查询列表数据
-        params.put("fields", "id, name, list_pic_url, market_price, retail_price, goods_brief");
+        params.put("fields", "nideshop_goods.id as id,nideshop_goods.name as name, nideshop_goods.list_pic_url as list_pic_url, nideshop_goods.market_price as market_price, nideshop_goods.retail_price, nideshop_goods.goods_brief,case when min(nideshop_product.market_price) != '' then min(nideshop_product.market_price) else 0 end product_market_price");
         Query query = new Query(params);
         PageHelper.startPage(query.getPage(), query.getLimit());
         List<GoodsVo> goodsList = goodsService.queryList(query);
+        for(GoodsVo goodsVo : goodsList){
+        	//如果商品有规格，则展示最低规格价
+    		if(goodsVo.getProduct_market_price().compareTo(BigDecimal.ZERO) > 0 ){
+    			goodsVo.setMarket_price(goodsVo.getProduct_market_price());
+    		}
+        }
         ApiPageUtils goodsData = new ApiPageUtils(new PageInfo(goodsList));
         //搜索到的商品
         for (CategoryVo categoryEntity : filterCategory) {
@@ -522,7 +543,7 @@ public class ApiGoodsController extends ApiBaseAction {
             //查找同分类下的商品
             GoodsVo goodsCategory = goodsService.queryObject(id);
             Map paramRelated = new HashMap();
-            paramRelated.put("fields", "id, name, list_pic_url, retail_price");
+            paramRelated.put("fields", "nideshop_goods.id, name, list_pic_url, nideshop_goods.retail_price");
             paramRelated.put("category_id", goodsCategory.getCategory_id());
             relatedGoods = goodsService.queryList(paramRelated);
         } else {
