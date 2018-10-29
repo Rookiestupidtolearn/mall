@@ -77,4 +77,10 @@ public interface GoodsSpecificationService {
      * @return
      */
     List<GoodsSpecificationEntity> querySpecificationByGoodId(Integer goodId);
+    
+    /**
+     * 查询商品对应的规格id
+     * @param String[] goodsSpecificationIdsArray
+     * */
+	List<GoodsSpecificationEntity> findgoodsSpecification(String[] goodsSpecificationIdsArray);
 }
