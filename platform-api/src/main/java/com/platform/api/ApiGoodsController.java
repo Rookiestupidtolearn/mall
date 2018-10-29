@@ -120,6 +120,9 @@ public class ApiGoodsController extends ApiBaseAction {
         //
         Long userId = getUserId();
         GoodsVo info = goodsService.queryObject(id);
+        if(info.getProduct_market_price().compareTo(BigDecimal.ZERO) > 0){
+        	info.setMarket_price(info.getProduct_market_price());
+        }
         Map<String,Object> param = new HashMap<>();
         param.put("goods_id", id);
         //
