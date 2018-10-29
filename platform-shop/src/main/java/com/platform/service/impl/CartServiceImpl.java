@@ -53,8 +53,8 @@ public class CartServiceImpl implements CartService {
 
 	
 	@Override
-	public List<CartEntity> queryCartListByGoodsId(Integer goodsId) {
-		return cartDao.queryCartListByGoodsId(goodsId);
+	public List<CartEntity> queryCartListByGoodsId(Integer goodsId,Integer checked) {
+		return cartDao.queryCartListByGoodsId(goodsId,checked);
 	}
 	
 }
