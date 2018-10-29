@@ -225,8 +225,14 @@ public class ApiGoodsController extends ApiBaseAction {
         }
         footprintService.save(footprintEntity);
         
-        //根据商品id查询对应最低价位的规格
-        
+        //根据商品id查询对应最低价位的规格（前端默认选中此规格）
+        Map paramMap = new HashMap();
+        paramMap.put("goods_id",id);
+        paramMap.put("sidx","a.market_price");
+        paramMap.put("order","asc");
+        paramMap.put("offset",0);
+        paramMap.put("limit",1);
+        List<ProductVo> minPriceList =  productService.queryList(paramMap);
         
         //
         resultObj.put("info", info);
@@ -238,6 +244,7 @@ public class ApiGoodsController extends ApiBaseAction {
         resultObj.put("brand", brand);
         resultObj.put("specificationList", specificationList);
         resultObj.put("productList", productEntityList);
+        resultObj.put("minPriceList", minPriceList);
         // 记录推荐人是否可以领取红包，用户登录时校验
         try {
             // 是否已经有可用的转发红包
