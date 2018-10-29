@@ -85,4 +85,10 @@ public class GoodsSpecificationServiceImpl implements GoodsSpecificationService 
 		
 		return goodsSpecificationDao.querySpecificationByGoodId(goodId);
 	}
+
+	@Override
+	public List<GoodsSpecificationEntity> findgoodsSpecification(String[] goodsSpecificationIdsArray) {
+
+		return goodsSpecificationDao.findgoodsSpecification(goodsSpecificationIdsArray);
+	}
 }

@@ -153,6 +153,7 @@ public class GoodsSpecificationController {
 					if(id!=null&&flag){
 						mapValue.put("id", id);
 						mapValue.put("name", specification.getName());
+						mapValue.put("model12","");
 						mapValue.put("values", values);
 					}
 					

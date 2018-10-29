@@ -76,6 +76,14 @@
             AND nideshop_goods.create_user_dept_id = #{deptId}
  		</if>
     </select>
+    
+    <select id="findProductIsHave" resultType="int">
+        select count(*) from nideshop_product
+        WHERE 1=1
+        <if test="goods_specification_ids != null">
+            AND nideshop_product.goods_specification_ids = #{goods_specification_ids}
+        </if>
+    </select>
 
     <insert id="save" parameterType="com.platform.entity.ProductEntity" useGeneratedKeys="true" keyProperty="id">
 		insert into nideshop_product(

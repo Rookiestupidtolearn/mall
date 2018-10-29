@@ -35,30 +35,35 @@
 	</select>
 
 	<select id="queryList" resultType="com.platform.entity.QzRechargeRecordEntity">
-		select
-    		`id`,
-    		`shop_user_id`,
-    		`state`,
-    		`operate_id`,
-    		`operate_time`,
-    		`amount`,
-    		`memo`,
-    		`create_time`,
-    		`update_time`,
-    		`trade_no`,
-    		`audit_id`
-		from qz_recharge_record
+		SELECT
+    		a.`id`,
+    		a.`shop_user_id`,
+    		a.`state`,
+    		a.`operate_id`,
+    		a.`operate_time`,
+    		a.`amount`,
+    		a.`memo`,
+    		a.`create_time`,
+    		a.`update_time`,
+    		a.`trade_no`,
+    		a.`audit_id`,
+    		b.`username` as shopUserName,
+    		b.`mobile` as UserPhone,
+    		c.`username` AS operate
+		FROM qz_recharge_record  a 
+		LEFT JOIN `nideshop_user` b  ON a.`shop_user_id` = b.`id`
+		LEFT JOIN `sys_user` c ON a.`audit_id` = c.`user_id`
 		WHERE 1=1
 		<if test="name != null and name.trim() != ''">
-			AND name LIKE concat('%',#{name},'%')
+			AND b.username LIKE concat('%',#{name},'%')
 		</if>
-		<if test="state != null">and `state` = #{state} </if>
+	<if test="state != null">and a.`state` = #{state} </if>
         <choose>
             <when test="sidx != null and sidx.trim() != ''">
                 order by ${sidx} ${order}
             </when>
 			<otherwise>
-                order by id desc
+                order by a.id desc
 			</otherwise>
         </choose>
 		<if test="offset != null and limit != null">
@@ -67,34 +72,42 @@
 	</select>
 	
  	<select id="queryTotal" resultType="int">
-		select count(*) from qz_recharge_record
+		select count(*) 
+		FROM qz_recharge_record  a 
+		LEFT JOIN `nideshop_user` b  ON a.`shop_user_id` = b.`id`
+		LEFT JOIN `sys_user` c ON a.`audit_id` = c.`user_id`
 		WHERE 1=1
-        <if test="name != null and name.trim() != ''">
-            AND name LIKE concat('%',#{name},'%')
-        </if>
-        <if test="state != null">and `state` = #{state} </if>
+		<if test="name != null and name.trim() != ''">
+			AND b.username LIKE concat('%',#{name},'%')
+		</if>
+		<if test="state != null">and a.`state` = #{state} </if>
 	</select>
 	 
 	 	<select id="queryAuditList" resultType="com.platform.entity.QzRechargeRecordEntity">
-		select
-    		`id`,
-    		`shop_user_id`,
-    		`state`,
-    		`operate_id`,
-    		`operate_time`,
-    		`amount`,
-    		`memo`,
-    		`create_time`,
-    		`update_time`,
-    		`trade_no`,
-    		`audit_id`
-		from qz_recharge_record
+		SELECT
+    		a.`id`,
+    		a.`shop_user_id`,
+    		a.`state`,
+    		a.`operate_id`,
+    		a.`operate_time`,
+    		a.`amount`,
+    		a.`memo`,
+    		a.`create_time`,
+    		a.`update_time`,
+    		a.`trade_no`,
+    		a.`audit_id`,
+    		b.`username` as shopUserName,
+    		b.`mobile` as UserPhone,
+    		c.`username` AS operate
+		FROM qz_recharge_record  a 
+		LEFT JOIN `nideshop_user` b  ON a.`shop_user_id` = b.`id`
+		LEFT JOIN `sys_user` c ON a.`audit_id` = c.`user_id`
 		WHERE 1=1
-		and  state !=0
+		and  a.state !=0
 		<if test="name != null and name.trim() != ''">
-			AND name LIKE concat('%',#{name},'%')
+			AND b.username LIKE concat('%',#{name},'%')
 		</if>
-		<if test="state != null">and `state` = #{state} </if>
+		<if test="state != null">and a.`state` = #{state} </if>
         <choose>
             <when test="sidx != null and sidx.trim() != ''">
                 order by ${sidx} ${order}
@@ -109,13 +122,16 @@
 	</select>
 	
  	<select id="queryAuditTotal" resultType="int">
-		select count(*) from qz_recharge_record
+		select count(*) 
+		FROM qz_recharge_record  a 
+		LEFT JOIN `nideshop_user` b  ON a.`shop_user_id` = b.`id`
+		LEFT JOIN `sys_user` c ON a.`audit_id` = c.`user_id`
 		WHERE 1=1
-		and  state !=0
-        <if test="name != null and name.trim() != ''">
-            AND name LIKE concat('%',#{name},'%')
-        </if>
-        <if test="state != null">and `state` = #{state} </if>
+		and  a.state !=0
+		<if test="name != null and name.trim() != ''">
+			AND b.username LIKE concat('%',#{name},'%')
+		</if>
+		<if test="state != null">and a.`state` = #{state} </if>
 	</select>
 	 
 	<insert id="save" parameterType="com.platform.entity.QzRechargeRecordEntity" useGeneratedKeys="true" keyProperty="id">
