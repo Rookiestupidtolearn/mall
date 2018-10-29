@@ -153,6 +153,7 @@ public class QzRechargeRecordServiceImpl implements QzRechargeRecordService {
 		}
 		QzRechargeRecordEntity qzRechargeRecordEntity = qzRechargeRecordDao.queryObject(id);
 		if (qzRechargeRecordEntity == null) {
+			log.error("充值记录不存在,充值记录id是"+id);
 			return R.error(400, "充值记录不存在");
 		}
 		if (state.equals("1")) {// 通过
@@ -172,7 +173,7 @@ public class QzRechargeRecordServiceImpl implements QzRechargeRecordService {
 			}
 
 			moneyRecordEntity.setTradeNo(qzRechargeRecordEntity.getTradeNo());
-
+			log.info("充值资金流水信息"+JSON.toJSONString(moneyRecordEntity));
 			qzMoneyRecordService.save(moneyRecordEntity);
 
 			// 操作用户余额
@@ -181,10 +182,12 @@ public class QzRechargeRecordServiceImpl implements QzRechargeRecordService {
 				accountEntity.setShopUserId(qzRechargeRecordEntity.getShopUserId());
 				accountEntity.setAmount(qzRechargeRecordEntity.getAmount());
 				accountEntity.setLastUpdateTime(new Date());
+				log.info("初次创建用户账户余额信息"+JSON.toJSONString(accountEntity));
 				qzUserAccountService.save(accountEntity);
 			} else {
 				account.setLastUpdateTime(new Date());
 				account.setAmount(qzRechargeRecordEntity.getAmount().add(account.getAmount()));
+				log.info("用户账户余额信息"+JSON.toJSONString(account));
 				qzUserAccountService.update(account);
 			}
 
@@ -193,6 +196,7 @@ public class QzRechargeRecordServiceImpl implements QzRechargeRecordService {
 		  //审核状态
 			qzRechargeRecordEntity.setState(state);
 			qzRechargeRecordEntity.setAuditId(user.getUserId());
+			log.info("修改充值记录的审核状态为："+state+"，充值记录id是："+qzRechargeRecordEntity.getId());
 			qzRechargeRecordDao.update(qzRechargeRecordEntity);
 		
 
