@@ -54,6 +54,11 @@ Page({
     if (that.data.mobile == '') {
       util.showErrorToast('请输入手机号码');
       return false;
+    }else{
+      if(that.data.mobile.length != 11){
+        util.showErrorToast('手机号格式有误');
+        return false;
+      }
     }
     wx.showLoading({
       title: '提交中...',
