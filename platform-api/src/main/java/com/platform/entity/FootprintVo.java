@@ -1,10 +1,10 @@
 package com.platform.entity;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.platform.utils.JsonDateSerializer;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.platform.utils.JsonDateSerializer;
 
 
 /**
@@ -32,6 +32,8 @@ public class FootprintVo implements Serializable {
     private String goods_brief;
     //
     private BigDecimal retail_price;
+    private BigDecimal market_price;
+    private BigDecimal product_market_price;
     // 会员
     private String nickname;
     private String avatar;
@@ -125,4 +127,22 @@ public class FootprintVo implements Serializable {
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
+
+	public BigDecimal getMarket_price() {
+		return market_price;
+	}
+
+	public void setMarket_price(BigDecimal market_price) {
+		this.market_price = market_price;
+	}
+
+	public BigDecimal getProduct_market_price() {
+		return product_market_price;
+	}
+
+	public void setProduct_market_price(BigDecimal product_market_price) {
+		this.product_market_price = product_market_price;
+	}
+    
+    
 }
