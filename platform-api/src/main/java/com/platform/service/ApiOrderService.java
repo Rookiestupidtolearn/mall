@@ -281,7 +281,7 @@ public class ApiOrderService {
 								userCouponVo.getCoupon_price(), "订单失效，原优惠券作废");
 						amount = amount.add(userCouponVo.getCoupon_price());
 					}
-					if(userAmountVo != null){
+					if(userAmountVo != null && userCouponVo != null){
 						userAmountVo.setAmount(amount);
 						qzUserAccountMapper.updateUserAccount(userAmountVo);
 						saveTranInfoRecord(order.getUser_id(), "2", "1", userCouponVo.getCoupon_price(), userAmountVo.getAmount(),
