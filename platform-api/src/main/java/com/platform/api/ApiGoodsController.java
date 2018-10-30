@@ -17,6 +17,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -543,14 +545,22 @@ public class ApiGoodsController extends ApiBaseAction {
             //查找同分类下的商品
             GoodsVo goodsCategory = goodsService.queryObject(id);
             Map paramRelated = new HashMap();
-            paramRelated.put("fields", "nideshop_goods.id, name, list_pic_url, nideshop_goods.retail_price");
+            paramRelated.put("fields", "nideshop_goods.id, name, list_pic_url, nideshop_goods.retail_price,nideshop_goods.market_price,case when min(nideshop_product.market_price) != '' then min(nideshop_product.market_price) else 0 end product_market_price");
             paramRelated.put("category_id", goodsCategory.getCategory_id());
             relatedGoods = goodsService.queryList(paramRelated);
         } else {
             Map paramRelated = new HashMap();
             paramRelated.put("goods_ids", relatedGoodsIds);
-            paramRelated.put("fields", "id, name, list_pic_url, retail_price");
+            paramRelated.put("fields", "nideshop_goods.id, name, list_pic_url, nideshop_goods.retail_price,nideshop_goods.market_price,case when min(nideshop_product.market_price) != '' then min(nideshop_product.market_price) else 0 end product_market_price");
             relatedGoods = goodsService.queryList(paramRelated);
+        }
+        //设置默认展示最低价格的商品规格
+        if(CollectionUtils.isNotEmpty(relatedGoods)){
+        	for(GoodsVo GoodsVo : relatedGoods){
+        		if(GoodsVo.getProduct_market_price().compareTo(BigDecimal.ZERO) > 0){
+        			GoodsVo.setMarket_price(GoodsVo.getProduct_market_price());
+                }
+            }
         }
         resultObj.put("goodsList", relatedGoods);
         return toResponsSuccess(resultObj);
