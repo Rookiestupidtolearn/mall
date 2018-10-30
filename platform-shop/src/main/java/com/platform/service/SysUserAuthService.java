@@ -69,4 +69,15 @@ public interface SysUserAuthService {
      * @return 删除条数
      */
     int deleteBatch(Integer[] ids);
+    
+    
+    /**
+     * 根据用户ID 获取
+     * @param id 主键
+     * @return 实体
+     */
+    SysUserAuthEntity queryObjectByUserId(Integer userId);
+    
+    
+    
 }

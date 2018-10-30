@@ -139,6 +139,58 @@ public class SysUserAuthController {
    
     }
     
+    
+    /**
+     * 获取登录人信息
+     */
+    @RequestMapping("/getLoginUserInfo")
+    public R getLoginUserInfo() {
+        SysUserAuthEntity sysUserAuth =  new SysUserAuthEntity();
+        String username = "";
+        Long userId = null;
+        SysUserEntity sysUserEntity = ShiroUtils.getUserEntity();
+        Long deptId = null;
+        if (null != sysUserEntity) {
+            username = sysUserEntity.getUsername();
+            userId   = sysUserEntity.getUserId();
+            deptId  =   sysUserEntity.getDeptId();
+        }
+        if(userId!=null){
+        	sysUserAuth.setUserId(Integer.parseInt(Long.toString(userId)));
+        }
+        sysUserAuth.setUseraccount(username);
+        if(deptId!=null){
+        	sysUserAuth.setDeptId(Integer.parseInt(Long.toString(deptId)));	
+        }
+        sysUserAuth.setDelflag("0");
+        return R.ok().put("sysUserAuth", sysUserAuth);
+    }
 
+    
+    /**
+     * 查看信息
+     */
+    @RequestMapping("/queryObjectByUserId")
+    public R queryObjectByUserId() {
+    	  Long userId = null;
+    	  SysUserAuthEntity sysUserAuth =null;
+    	  SysUserEntity sysUserEntity = ShiroUtils.getUserEntity();
+          if (null != sysUserEntity) {
+              userId   = sysUserEntity.getUserId();
+          }
+    	
+	        if(userId!=null){
+	             sysUserAuth = sysUserAuthService.queryObjectByUserId(Integer.parseInt(Long.toString(userId)));
+	        }
+	     R returR  =   R.ok();
+	     returR.put("sysUserAuth",sysUserAuth);
+	     
+	     if(sysUserAuth!=null){
+	    	 returR.put("userId",sysUserAuth.getUserId());	 
+	     }else{
+	    	 returR.put("userId",null);	 
+	     }
+	     return returR;
+    }
     
 }

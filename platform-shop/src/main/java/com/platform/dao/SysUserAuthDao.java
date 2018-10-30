@@ -10,5 +10,7 @@ import com.platform.entity.SysUserAuthEntity;
  * @date 2018-10-26 11:03:04
  */
 public interface SysUserAuthDao extends BaseDao<SysUserAuthEntity> {
+	
+	SysUserAuthEntity queryObjectByUserId(Integer userId);
 
 }

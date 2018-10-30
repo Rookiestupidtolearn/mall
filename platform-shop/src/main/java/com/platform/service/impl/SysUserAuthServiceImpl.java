@@ -1,5 +1,6 @@
 package com.platform.service.impl;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,11 +54,18 @@ public class SysUserAuthServiceImpl implements SysUserAuthService {
             username = sysUserEntity.getUsername();
             userId = sysUserEntity.getUserId();
             deptId = sysUserEntity.getDeptId();
+            
         }
         sysUserAuth.setCreateTime(new Date());
         sysUserAuth.setCreateUserId(userId);
         if(deptId!=null){
-        	sysUserAuth.setDeptId(Integer.parseInt(deptId+""));        	
+        	sysUserAuth.setDeptId(Integer.parseInt(Long.toString(deptId)));
+        }
+        if(userId!=null){
+        	sysUserAuth.setUserId(Integer.parseInt(Long.toString(userId)));
+        }
+        if(StringUtils.isNotEmpty(username)){
+        	sysUserAuth.setUseraccount(username);
         }
         sysUserAuth.setDelflag("0");
         return sysUserAuthDao.save(sysUserAuth);
@@ -77,4 +85,10 @@ public class SysUserAuthServiceImpl implements SysUserAuthService {
     public int deleteBatch(Integer[] ids) {
         return sysUserAuthDao.deleteBatch(ids);
     }
+
+	@Override
+	public SysUserAuthEntity queryObjectByUserId(Integer userId) {
+		// TODO Auto-generated method stub
+		return sysUserAuthDao.queryObjectByUserId(userId);
+	}
 }

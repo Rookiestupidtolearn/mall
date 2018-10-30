@@ -143,4 +143,27 @@
 		</foreach>
 	</delete>
 
+
+	<select id="queryObjectByUserId" resultType="com.platform.entity.SysUserAuthEntity">
+		select
+		    sys_user_auth.`id`,
+		    sys_user_auth.`user_id`,
+		    sys_user_auth.`dept_id`,
+		    sys_user_auth.`name`,
+		    sys_user_auth.`sex`,
+		    sys_user_auth.`card_id`,
+		    sys_user_auth.`address_compony`,
+		    sys_user_auth.`phone`,
+		    sys_user_auth.`create_user_id`,
+		    sys_user_auth.`create_time`,
+		    sys_user_auth.`update_user_id`,
+		    sys_user_auth.`delflag`,
+		    sys_user_auth.`updte_time`,
+		    sys_user.username useraccount
+		from sys_user_auth  left join  sys_user  on sys_user_auth.user_id  =  sys_user.user_id
+
+		where  sys_user_auth.`user_id` = #{userId}
+	
+	</select>
+
 </mapper>

@@ -45,37 +45,36 @@ let vm = new Vue({
 		    name: ''
 		},
 		btntxt:"获取验证码",
-		
 		isdisabledFn:false,
-		intervalId : null,
+		intervalId:null,
 		checkcode:""
 	},
+	
 	methods: {
 		getCheckCode:function(){
-				
+				if(vm.intervalId!=null){
+					return ;
+				}
 				 Ajax.request({
 					    url: "../sysuserauth/getChecCode",
 		                type: "GET",
 		                params: {"mobile":vm.sysUserAuth.phone},
 		                contentType: "application/json",
 		                successCallback: function (r) {
-		                	console.log(r);
 		                	vm.checkcode = r.checkcode;
 		                }
 					});
 			
 				var  count = 60;
 				vm.intervalId = setInterval(function(){
-					if(!intervalId!=null){
-						return ;
-					}
+					
 					if(count>0&&count<=60){
 						vm.isdisabledFn=true
 						count--;	
 						vm.btntxt="获取验证码("+count+")";
 					}else{
 						vm.btntxt="获取验证码";
-						clearInterval(vm.intervalId);
+						clearInterval(this.intervalId);
 						vm.isdisabledFn=false;
 						vm.intervalId=null;
 					}
@@ -85,9 +84,21 @@ let vm = new Vue({
 			vm.reload();
 		},
 		add: function () {
-			vm.showList = false;
-			vm.title = "新增";
-			vm.sysUserAuth = {};
+	/*	    Ajax.request({
+		    	url: "../sysuserauth/getLoginUserInfo",
+		    	type: "POST",
+		    	contentType: "application/json",
+                successCallback: function (r) {
+                	debugger;
+                    this.sysUserAuth = r.sysUserAuth;
+                }
+            });*/
+			
+			
+			this.showList = false;
+			this.title = "新增";
+			this.sysUserAuth = {};
+			
 		},
 		update: function (event) {
             let id = getSelectedRow("#jqGrid");
@@ -171,5 +182,6 @@ let vm = new Vue({
         handleReset: function (name) {
             handleResetForm(this, name);
         }
-	}
+	},
+
 });
