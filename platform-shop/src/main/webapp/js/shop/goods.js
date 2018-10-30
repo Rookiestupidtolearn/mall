@@ -27,7 +27,7 @@ $(function () {
                     return transIsNot(value);
                 }
             },
-            {label: '配比值', name: 'value', index: 'good_value', width: 80},
+            {label: '配比值', name: 'value', index: 'good_value', width: 80, hidden: true},
             {label: '排序', name: 'sortOrder', index: 'sort_order', width: 80}
             ]
     });
