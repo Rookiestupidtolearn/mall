@@ -28,7 +28,7 @@
                     <text class="name">{{item.goods_name}}</text>
                   </view>
                   <view class="attr">{{ isEditCart ? '已选择:' : ''}}{{item.goods_specifition_name_value||''}}</view>
-                  <text class="price">￥{{item.retail_price}}</text>
+                  <text class="price">￥{{item.market_price}}</text>
                 </navigator>
                 <view class="t">
                   <text class="num">x{{item.number}}</text>

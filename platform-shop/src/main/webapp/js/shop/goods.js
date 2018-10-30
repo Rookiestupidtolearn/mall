@@ -9,7 +9,7 @@ $(function () {
             {
                 label: '上架', name: 'isOnSale', index: 'is_on_sale', width: 50,
                 formatter: function (value) {
-                    return goodsTransIsNot(value);
+                    return goodsTransIsNot(value);	
                 }
             },
             {

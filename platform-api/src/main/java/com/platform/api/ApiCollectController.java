@@ -1,21 +1,25 @@
 package com.platform.api;
 
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.alibaba.fastjson.JSONObject;
 import com.platform.annotation.LoginUser;
 import com.platform.entity.CollectVo;
 import com.platform.entity.UserVo;
 import com.platform.service.ApiCollectService;
 import com.platform.util.ApiBaseAction;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 作者: @author Harmon <br>
@@ -40,7 +44,13 @@ public class ApiCollectController extends ApiBaseAction {
         param.put("user_id", loginUser.getUserId());
         param.put("type_id", typeId);
         List<CollectVo> collectEntities = collectService.queryList(param);
-
+        if(CollectionUtils.isNotEmpty(collectEntities)){
+        	for(CollectVo collectVo : collectEntities){
+        		if(collectVo.getProduct_market_price().compareTo(BigDecimal.ZERO) > 0){
+        			collectVo.setMarket_price(collectVo.getProduct_market_price());
+        		}
+        	}
+        }
 //        Query query = new Query(param);
 //        int total = collectService.queryTotal(query);
 //        ApiPageUtils pageUtil = new ApiPageUtils(collectEntities, total, query.getLimit(), query.getPage());
