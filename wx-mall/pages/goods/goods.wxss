@@ -589,7 +589,21 @@
     flex: 1;
     text-align: center;
     color: #fff;
+    border-radius:0;
 }
+
+.bottom-btn .disabled{
+    border:none;
+    background: #959191;
+    float: left;
+    height: 100rpx;
+    line-height: 96rpx;
+    flex: 1;
+    text-align: center;
+    color: #fff;
+    border-radius:0;
+}
+
 @import "../../lib/wxParse/wxParse.wxss";
 
 .attr-pop{
@@ -624,8 +638,6 @@
 .attr-pop .p{
     font-size: 33rpx;
     color: #333;
-    height: 33rpx;
-    line-height: 33rpx;
     margin-bottom: 10rpx;
 }
 

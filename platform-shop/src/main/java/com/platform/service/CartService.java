@@ -33,5 +33,5 @@ public interface CartService {
 	 * @param goodsId
 	 * @return
 	 */
-	List<CartEntity> queryCartListByGoodsId(Integer goodsId);
+	List<CartEntity> queryCartListByGoodsId(Integer goodsId,Integer checked);
 }

@@ -73,7 +73,7 @@
                     <text class="number">x{{item.number}}</text>
                 </view>
                 <view class="m">{{item.goods_specifition_name_value||''}}</view>
-                <view class="b">￥{{item.retail_price}}</view>
+                <view class="b">￥{{item.market_price}}</view>
             </view>
         </view>
     </view>

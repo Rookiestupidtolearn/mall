@@ -221,22 +221,37 @@ public class GoodsServiceImpl implements GoodsService {
 		}
 		//商品下架,删除购物车中对应的商品信息。并且回滚平台币和删除优惠券
 		//查询购物车中对应的商品信息。
-		List<CartEntity> cartList = cartDao.queryCartListByGoodsId(goodsEntity.getId());
-		if(CollectionUtils.isNotEmpty(cartList)){
-			Integer[] CartEntityIds = new Integer[cartList.size()];
-			for(int i = 0;i<cartList.size();i++){
-				CartEntityIds[i] = cartList.get(i).getId();
+		List<CartEntity> checkedCartList = cartDao.queryCartListByGoodsId(goodsEntity.getId(),1); //购物车中是选中状态的商品数据
+		List<CartEntity> noCheckedCartList = cartDao.queryCartListByGoodsId(goodsEntity.getId(),0); //购物车中非选中状态的商品数据
+		if(CollectionUtils.isNotEmpty(checkedCartList)){
+			//遍历集合，当购物车的商品为勾选状态则请求 接口，否则直接下架不给予退回平台币
+			Integer[] CartEntityIds = new Integer[checkedCartList.size()];
+			for(int i = 0;i<checkedCartList.size();i++){
+				CartEntityIds[i] = checkedCartList.get(i).getId();
 			}
 			Boolean boo = apiCartService.roolbackAllCartsCoupons(CartEntityIds); //请求退回平台币并删除优惠券
 			if(boo){
 				//开始清除购物车中的商品信息
 				int delNum = cartDao.deleteBatch(CartEntityIds);
-				Log.info("【商品下架】删除购物车中对应商品id为"+goodsEntity.getId()+"的商品共"+delNum+"条");
+				Log.info("【商品下架】回滚平台币并删除购物车中对应商品id为"+goodsEntity.getId()+"的商品共"+delNum+"条");
 			}else{
 				Log.info("【商品下架】退回平台币并删除优惠券失败");
 			}
 		}else{
-			Log.info("【商品下架】购物车中没有查找到商品id为"+goodsEntity.getId()+"的商品");
+			Log.info("【商品下架】购物车中没有查找到选中转态商品id为"+goodsEntity.getId()+"的商品");
+		}
+		
+		//非选中商品不回滚平台币，直接清除购物车并下架
+		if(CollectionUtils.isNotEmpty(noCheckedCartList)){
+			Integer[] CartEntityIds = new Integer[noCheckedCartList.size()];
+			for(int i = 0;i<noCheckedCartList.size();i++){
+				CartEntityIds[i] = noCheckedCartList.get(i).getId();
+			}
+			//开始清除购物车中的商品信息
+			int delNum = cartDao.deleteBatch(CartEntityIds);
+			Log.info("【商品下架】删除购物车中未选中商品-对应商品id为"+goodsEntity.getId()+"的商品共"+delNum+"条");
+		}else{
+			Log.info("【商品下架】购物车中没有查找到未选中状态商品id为"+goodsEntity.getId()+"的商品");
 		}
 		goodsEntity.setIsOnSale(0);
 		goodsEntity.setUpdateUserId(user.getUserId());

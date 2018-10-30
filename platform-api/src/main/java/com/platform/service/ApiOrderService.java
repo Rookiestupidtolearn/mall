@@ -125,8 +125,6 @@ public class ApiOrderService {
       if(!CollectionUtils.isEmpty(coupons)){
     	  userCoupon = coupons.get(0);
       }
-      
-      
         if (type.equals("cart")) {
             Map<String, Object> param = new HashMap<String, Object>();
             param.put("user_id", loginUser.getUserId());
@@ -141,7 +139,7 @@ public class ApiOrderService {
             //统计商品总价
             goodsTotalPrice = new BigDecimal(0.00);
             for (CartVo cartItem : checkedGoodsList) {
-                goodsTotalPrice = goodsTotalPrice.add(cartItem.getRetail_price().multiply(new BigDecimal(cartItem.getNumber())));
+                goodsTotalPrice = goodsTotalPrice.add(cartItem.getMarket_price().multiply(new BigDecimal(cartItem.getNumber())));
             }
         } else {
             BuyGoodsVo goodsVo = (BuyGoodsVo) J2CacheUtils.get(J2CacheUtils.SHOP_CACHE_NAME, "goods" + loginUser.getUserId());
@@ -149,7 +147,7 @@ public class ApiOrderService {
             	ProductVo productInfo = productService.queryObject(goodsVo.getProductId());
             	//计算订单的费用
             	//商品总价
-            	goodsTotalPrice = productInfo.getRetail_price().multiply(new BigDecimal(goodsVo.getNumber()));
+            	goodsTotalPrice = productInfo.getMarket_price().multiply(new BigDecimal(goodsVo.getNumber()));
             	
             	CartVo cartVo = new CartVo();
             	BeanUtils.copyProperties(productInfo, cartVo);

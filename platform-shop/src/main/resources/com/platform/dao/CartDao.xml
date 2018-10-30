@@ -29,7 +29,7 @@
 	
 	
 	<select id="queryCartListByGoodsId" resultType="com.platform.entity.CartEntity">
-		select * from nideshop_cart where goods_id = #{goodsId}
+		select * from nideshop_cart where goods_id = #{0} and checked = #{1}
 	</select>
 	
 

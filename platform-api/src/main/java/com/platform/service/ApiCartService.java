@@ -237,7 +237,7 @@ public class ApiCartService {
          			BigDecimal couponlPrice = BigDecimal.ZERO;//优惠券临时总价值
          			//计算该产品优惠券总和
          			if(goodsCoupon != null){
-         				couponlPrice = productInfo.getRetail_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(cart.getNumber()));
+         				couponlPrice = productInfo.getMarket_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(cart.getNumber()));
          			}
          			couponTotalPrice = couponTotalPrice.add(couponlPrice);
          		}
@@ -332,7 +332,7 @@ public class ApiCartService {
        			//计算该产品优惠券总和
        			BigDecimal couponlPrice = BigDecimal.ZERO;//优惠券临时总价值
        			if(goodsCoupon != null){
-       				couponlPrice = productInfo.getRetail_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(cart.getNumber()));
+       				couponlPrice = productInfo.getMarket_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(cart.getNumber()));
        			}
        			couponTotalPrice = couponTotalPrice.add(couponlPrice);
        		}
@@ -436,7 +436,7 @@ public class ApiCartService {
           			BigDecimal couponlPrice = BigDecimal.ZERO;//优惠券临时总价值
           			//计算该产品优惠券总和
           			if(goodsCoupon != null){
-          				couponlPrice = productInfo.getRetail_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(cart.getNumber()));
+          				couponlPrice = productInfo.getMarket_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(cart.getNumber()));
           			}
           			couponTotalPrice = couponTotalPrice.add(couponlPrice);
           		}
@@ -487,7 +487,7 @@ public class ApiCartService {
     					BigDecimal couponlPrice = BigDecimal.ZERO;//优惠券临时总价值
     					//计算该产品优惠券总和
     					if(goodsCoupon != null){
-    						couponlPrice = productInfo.getRetail_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(cart.getNumber()));
+    						couponlPrice = productInfo.getMarket_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(cart.getNumber()));
     					}
     					//购物车发生修改  原有优惠券作废，重新生成优惠券
     					userCouponVo.setCoupon_status(1);

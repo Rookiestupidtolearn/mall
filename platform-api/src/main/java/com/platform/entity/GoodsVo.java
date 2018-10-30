@@ -80,6 +80,8 @@ public class GoodsVo implements Serializable {
     // 冗余
     // 产品Id
     private Integer product_id;
+    //有规格时最低市场价格
+    private BigDecimal product_market_price;
 
     public Integer getId() {
         return id;
@@ -89,7 +91,15 @@ public class GoodsVo implements Serializable {
         this.id = id;
     }
 
-    public Integer getCategory_id() {
+    public BigDecimal getProduct_market_price() {
+		return product_market_price;
+	}
+
+	public void setProduct_market_price(BigDecimal product_market_price) {
+		this.product_market_price = product_market_price;
+	}
+
+	public Integer getCategory_id() {
         return category_id;
     }
 
