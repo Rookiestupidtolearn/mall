@@ -1,7 +1,7 @@
 package com.platform.entity;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.math.BigDecimal;
 
 
 /**
@@ -29,6 +29,10 @@ public class CollectVo implements Serializable {
     private String list_pic_url;
     private String goods_brief;
     private String retail_price;
+    
+    //冗余字段
+    private BigDecimal market_price;
+    private BigDecimal product_market_price;	
 
     public Integer getId() {
         return id;
@@ -109,4 +113,22 @@ public class CollectVo implements Serializable {
     public void setRetail_price(String retail_price) {
         this.retail_price = retail_price;
     }
+
+	public BigDecimal getMarket_price() {
+		return market_price;
+	}
+
+	public void setMarket_price(BigDecimal market_price) {
+		this.market_price = market_price;
+	}
+
+	public BigDecimal getProduct_market_price() {
+		return product_market_price;
+	}
+
+	public void setProduct_market_price(BigDecimal product_market_price) {
+		this.product_market_price = product_market_price;
+	}
+    
+    
 }

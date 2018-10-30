@@ -368,8 +368,6 @@
                 });
             },
             love: function () {
-            	debugger;
-            	console.log(this.userdId);
             	if(this.userdId!=null){
             		return ;
             	}
@@ -379,7 +377,7 @@
                         title: '商品信息录入',
                         width:220,
                         height:200,
-                        closeBtn: 2,
+                        closeBtn: 0,
 //	                        content: ['https://cloud.tencent.com/redirect.php?redirect=1005&cps_key=30280f92fc381dfc9e1d9e0e23d25a18']
                     	content:['shop/addsysuserauth.html']
                     });
@@ -387,17 +385,14 @@
             },
             getsysauth:function(){
             	var that = this; //ajax请求改变了this指向作用域
-           			  Ajax.request({
-           			 
-						url: "sysuserauth/queryObjectByUserId",
-						type: "POST",
-						contentType: "application/json",
-						successCallback: function (r) {
-							debugger;
-							that.userdId = r.userId;
-							console.log(that.userdId);
-						}
-						}); 
+         		Ajax.request({
+					url: "sysuserauth/queryObjectByUserId",
+					type: "POST",
+					contentType: "application/json",
+					successCallback: function (r) {
+						that.userdId = r.userId;
+					}
+				}); 
             }
         },
         created: function () {

@@ -1,5 +1,19 @@
 package com.platform.api;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.github.pagehelper.PageHelper;
 import com.platform.annotation.LoginUser;
 import com.platform.entity.FootprintVo;
@@ -8,14 +22,11 @@ import com.platform.service.ApiFootprintService;
 import com.platform.util.ApiBaseAction;
 import com.platform.util.ApiPageUtils;
 import com.platform.utils.DateUtils;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.*;
 
 /**
  * 作者: @author Harmon <br>
@@ -95,6 +106,11 @@ public class ApiFootprintController extends ApiBaseAction {
             }
             List<List<FootprintVo>> footprintVoList = new ArrayList<List<FootprintVo>>();
             for (Map.Entry<String, List<FootprintVo>> entry : footPrintMap.entrySet()) {
+            	for(int i = 0;i<entry.getValue().size();i++){
+            		if(entry.getValue().get(i).getProduct_market_price().compareTo(BigDecimal.ZERO) > 0){
+            			entry.getValue().get(i).setMarket_price(entry.getValue().get(i).getProduct_market_price());
+            		}
+            	}
                 footprintVoList.add(entry.getValue());
             }
             resultObj.put("count", pageUtil.getCount());

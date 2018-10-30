@@ -104,7 +104,9 @@ let vm = new Vue({
         },
         handleSubmit: function (name) {
             handleSubmitValidate(this, name, function () {
-                vm.saveOrUpdate()
+                vm.saveOrUpdate();
+                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引 (layui)
+            	parent.layer.close(index); //再执行关闭   
             });
         },
         handleReset: function (name) {
