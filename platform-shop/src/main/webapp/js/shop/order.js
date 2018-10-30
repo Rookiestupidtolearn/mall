@@ -53,6 +53,8 @@ $(function () {
                         return '用户确认收货';
                     } else if (value == '401') {
                         return '退款';
+                    } else if (value == '103') {
+                        return '订单失效';
                     } else if (value == '402') {
                         return '完成';
                     }

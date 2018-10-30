@@ -11,6 +11,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -187,6 +188,7 @@ public class ApiCartController extends ApiBaseAction {
      */
     @ApiOperation(value = "添加商品到购物车")
     @PostMapping("add")
+    @Transactional
     public Object add(@LoginUser UserVo loginUser) {
         JSONObject jsonParam = getJsonRequest();
         Integer goodsId = jsonParam.getInteger("goodsId");
@@ -263,6 +265,7 @@ public class ApiCartController extends ApiBaseAction {
      */
     @ApiOperation(value = "减少商品到购物车")
     @PostMapping("minus")
+    @Transactional
     public Object minus(@LoginUser UserVo loginUser) {
         JSONObject jsonParam = getJsonRequest();
         Integer goodsId = jsonParam.getInteger("goodsId");
@@ -300,6 +303,7 @@ public class ApiCartController extends ApiBaseAction {
      */
     @ApiOperation(value = "更新指定的购物车信息")
     @PostMapping("update")
+    @Transactional
     public Object update(@LoginUser UserVo loginUser) {
         JSONObject jsonParam = getJsonRequest();
         Integer goodsId = jsonParam.getInteger("goodsId");

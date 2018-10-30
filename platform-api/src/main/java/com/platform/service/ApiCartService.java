@@ -117,6 +117,7 @@ public class ApiCartService {
         cartDao.deleteBatch(ids);
     }
 
+    @Transactional
     public void updateCheck(String[] productIds, Integer isChecked, Long userId) {
         cartDao.updateCheck(productIds, isChecked, userId);
 
@@ -173,7 +174,7 @@ public class ApiCartService {
     public void deleteByProductIds(String[] productIds) {
         cartDao.deleteByProductIds(productIds);
     }
-
+    @Transactional
     public void deleteByUserAndProductIds(Long userId, String[] productIds) {
     	logger.info("【购物车删除商品开始】用户id" + userId);
     	 List<UserCouponVo> userCouponVos = apiUserCouponMapper.queryUserCouponTotalPrice(userId);//查询用户优惠券信息

@@ -9,6 +9,7 @@ import java.util.Map;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -193,6 +194,7 @@ public class ApiOrderController extends ApiBaseAction {
      */
     @ApiOperation(value = "取消订单")
     @PostMapping("cancelOrder")
+    @Transactional
     public Object cancelOrder(Integer orderId) {
         try {
             OrderVo orderVo = orderService.queryObject(orderId);

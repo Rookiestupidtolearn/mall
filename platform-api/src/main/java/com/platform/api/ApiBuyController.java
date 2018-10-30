@@ -30,6 +30,7 @@ import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -54,6 +55,7 @@ public class ApiBuyController extends ApiBaseAction {
     
     @ApiOperation(value = "商品添加")
     @PostMapping("/add")
+    @Transactional
     public Object addBuy(@LoginUser UserVo loginUser) {
         JSONObject jsonParam = getJsonRequest();
         Integer goodsId = jsonParam.getInteger("goodsId");
@@ -192,7 +194,7 @@ public class ApiBuyController extends ApiBaseAction {
   	return this.toResponsObject(0, "优惠券发送成功", "");
   }
    
-    
+    @Transactional
     public Object updateBuyUserCouponPrice(Integer goodsId,Integer productId,Integer number,Long userId){
     	BigDecimal couponTotalPrice = BigDecimal.ZERO;//立即购买优惠券总价值
     	BigDecimal couponCartTotalPrice = BigDecimal.ZERO;//购物车优惠券总价值
