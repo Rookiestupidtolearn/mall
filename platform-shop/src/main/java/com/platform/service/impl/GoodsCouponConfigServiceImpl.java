@@ -11,8 +11,10 @@ import org.springframework.stereotype.Service;
 
 import com.platform.dao.CartDao;
 import com.platform.dao.GoodsCouponConfigDao;
+import com.platform.dao.GoodsDao;
 import com.platform.entity.CartEntity;
 import com.platform.entity.GoodsCouponConfigEntity;
+import com.platform.entity.GoodsEntity;
 import com.platform.entity.SysUserEntity;
 import com.platform.service.ApiCartService;
 import com.platform.service.GoodsCouponConfigService;
@@ -33,10 +35,6 @@ Service实现类
 public class GoodsCouponConfigServiceImpl implements GoodsCouponConfigService {
     @Autowired
     private GoodsCouponConfigDao goodsCouponConfigDao;
-    @Autowired
-    private CartDao cartDao;
-    @Autowired
-	private ApiCartService apiCartService;
 
     @Override
     public GoodsCouponConfigEntity queryObject(Integer id) {
@@ -56,42 +54,16 @@ public class GoodsCouponConfigServiceImpl implements GoodsCouponConfigService {
     @Override
     	
     public int save(GoodsCouponConfigEntity goodsCouponConfig) {
-    	
     	SysUserEntity user = ShiroUtils.getUserEntity();
-    	
-		Map<String, Object> map = new HashMap<>();
 //		map.put("id",goodsCouponConfig.getId());
 //		List<GoodsCouponConfigEntity> list = queryList(map);
-		
 		GoodsCouponConfigEntity  goodsCouponConfigEntity = goodsCouponConfigDao.queryObject(goodsCouponConfig.getId());
-		
 		if (null != goodsCouponConfigEntity) {
 			throw new RRException("商品配比已存在！");
 		}
-		
 		if(goodsCouponConfig.getGoodValue()<0||goodsCouponConfig.getGoodValue()>1){
 			throw new RRException("商品配比值为大于0且小于等于1");
 		}
-		
-		//新增商品配配比，删除购物车中对应的商品，以及回滚余额、删除优惠券
-		List<CartEntity> cartList = cartDao.queryCartListByGoodsId(goodsCouponConfigEntity.getGoodsId(),1);
-		if(CollectionUtils.isNotEmpty(cartList)){
-			Integer[] CartEntityIds = new Integer[cartList.size()];
-			for(int i = 0;i<cartList.size();i++){
-				CartEntityIds[i] = cartList.get(i).getId();
-			}
-			Boolean boo = apiCartService.roolbackAllCartsCoupons(CartEntityIds); //请求退回平台币并删除优惠券
-			if(boo){
-				//开始清除购物车中的商品信息
-				int delNum = cartDao.deleteBatch(CartEntityIds);
-				Log.info("【新增商品配比】删除购物车中对应商品id为"+goodsCouponConfigEntity.getGoodsId()+"的商品共"+delNum+"条");
-			}else{
-				Log.info("【新增商品配比】退回平台币并删除优惠券失败");
-			}
-		}else{
-			Log.info("【新增商品配比】购物车中没有查找到商品id为"+goodsCouponConfigEntity.getGoodsId()+"的商品");
-		}
-		
     	goodsCouponConfig.setDelFlag("0");
     	goodsCouponConfig.setCreateUserDeptId(user.getDeptId());
     	goodsCouponConfig.setCreateUserId(user.getUserId());
@@ -107,24 +79,6 @@ public class GoodsCouponConfigServiceImpl implements GoodsCouponConfigService {
     	if(goodsCouponConfig.getGoodValue()<0||goodsCouponConfig.getGoodValue()>1){
 			throw new RRException("商品配比值为大于0且小于等于1");
 		}
-    	//新增商品配配比，删除购物车中对应的商品，以及回滚余额、删除优惠券
-			List<CartEntity> cartList = cartDao.queryCartListByGoodsId(goodsCouponConfig.getGoodsId(),1);
-			if(CollectionUtils.isNotEmpty(cartList)){
-				Integer[] CartEntityIds = new Integer[cartList.size()];
-				for(int i = 0;i<cartList.size();i++){
-					CartEntityIds[i] = cartList.get(i).getId();
-				}
-				Boolean boo = apiCartService.roolbackAllCartsCoupons(CartEntityIds); //请求退回平台币并删除优惠券
-				if(boo){
-					//开始清除购物车中的商品信息
-					int delNum = cartDao.deleteBatch(CartEntityIds);
-					Log.info("【修改商品配比】删除购物车中对应商品id为"+goodsCouponConfig.getGoodsId()+"的商品共"+delNum+"条");
-				}else{
-					Log.info("【修改商品配比】退回平台币并删除优惠券失败");
-				}
-			}else{
-				Log.info("【修改商品配比】购物车中没有查找到商品id为"+goodsCouponConfig.getGoodsId()+"的商品");
-			}
         return goodsCouponConfigDao.update(goodsCouponConfig);
     }
 
@@ -137,4 +91,9 @@ public class GoodsCouponConfigServiceImpl implements GoodsCouponConfigService {
     public int deleteBatch(Integer[] ids) {
         return goodsCouponConfigDao.deleteBatch(ids);
     }
+
+	@Override
+	public Integer[] selectGoodsIdsById(Integer[] ids) {
+		return goodsCouponConfigDao.selectGoodsIdsById(ids);
+	}
 }
