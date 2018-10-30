@@ -1,5 +1,7 @@
 package com.platform.dao;
 
+import java.util.Map;
+
 import com.platform.entity.ProductEntity;
 
 /**
@@ -10,5 +12,8 @@ import com.platform.entity.ProductEntity;
  * @date 2017-08-30 14:31:21
  */
 public interface ProductDao extends BaseDao<ProductEntity> {
+	
+	//校验商品规格是否存在
+	int findProductIsHave(Map paramMap);
 
 }

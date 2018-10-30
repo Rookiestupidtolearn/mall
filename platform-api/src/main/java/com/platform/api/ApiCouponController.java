@@ -10,6 +10,8 @@ import com.platform.utils.CharUtil;
 import com.platform.utils.StringUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,9 +47,57 @@ public class ApiCouponController extends ApiBaseAction {
     @PostMapping("/list")
     public Object list(@LoginUser UserVo loginUser) {
         Map param = new HashMap();
+        BigDecimal goodsTotalPrice = BigDecimal.ZERO;
         param.put("user_id", loginUser.getUserId());
-        List<CouponVo> couponVos = apiCouponService.queryUserCoupons(param);
-        return toResponsSuccess(couponVos);
+        List<CouponVo> coupons = new ArrayList<>();
+        List<CouponVo> couponVos = apiCouponService.queryUsernewCoupons(param);
+        if(!CollectionUtils.isEmpty(couponVos)){
+        	for(CouponVo coupon : couponVos){
+        		if(coupon.getCoupon_price().compareTo(BigDecimal.ZERO) > 0){
+        			coupons.add(coupon);
+        			continue;
+        		}
+        	}
+        }
+        List<CartVo> cartList = apiCartService.queryList(param);
+        //获取购物车统计信息
+        if(!CollectionUtils.isEmpty(cartList)){
+        	for (CartVo cartItem : cartList) {
+        		if (null != cartItem.getChecked() && 1 == cartItem.getChecked()) {
+        			goodsTotalPrice = goodsTotalPrice.add(cartItem.getMarket_price().multiply(new BigDecimal(cartItem.getNumber())));
+        		}
+        	}
+        }
+        List<CouponVo> useCoupons = new ArrayList<>();
+        List<CouponVo> notUseCoupons = new ArrayList<>();
+        if(!CollectionUtils.isEmpty(coupons)){
+        	for (CouponVo couponVo : coupons) {
+        		if(couponVo.getCoupon_status() == 4){//订单未支付 优惠券使用中
+    				couponVo.setEnabled(1);
+        			notUseCoupons.add(couponVo);
+        			continue;
+    			}
+        		if (goodsTotalPrice.compareTo(couponVo.getCoupon_price()) >= 0 && "平台抵扣券".equals(couponVo.getName())) { // 可用优惠券
+        			if(couponVo.getCoupon_status() == 1){//可用
+        				couponVo.setEnabled(1);
+        				useCoupons.add(couponVo);
+        				continue;
+        			}
+        			if(couponVo.getCoupon_status() == 2){//已用
+        				couponVo.setEnabled(0);
+            			notUseCoupons.add(couponVo);
+            			continue;
+        			}
+        		} else {
+    				couponVo.setEnabled(0);
+    				notUseCoupons.add(couponVo);
+    				continue;
+        		}
+        	}
+        }
+        useCoupons.addAll(notUseCoupons);
+        
+        return toResponsSuccess(coupons);
     }
 
     /**
@@ -64,31 +114,45 @@ public class ApiCouponController extends ApiBaseAction {
             //获取购物车统计信息
             for (CartVo cartItem : cartList) {
                 if (null != cartItem.getChecked() && 1 == cartItem.getChecked()) {
-                    goodsTotalPrice = goodsTotalPrice.add(cartItem.getRetail_price().multiply(new BigDecimal(cartItem.getNumber())));
+                    goodsTotalPrice = goodsTotalPrice.add(cartItem.getMarket_price().multiply(new BigDecimal(cartItem.getNumber())));
                 }
             }
         } else { // 是直接购买的
             BuyGoodsVo goodsVo = (BuyGoodsVo) J2CacheUtils.get(J2CacheUtils.SHOP_CACHE_NAME, "goods" + loginUser.getUserId() + "");
-            ProductVo productInfo = apiProductService.queryObject(goodsVo.getProductId());
-            //商品总价
-            goodsTotalPrice = productInfo.getRetail_price().multiply(new BigDecimal(goodsVo.getNumber()));
+            if(goodsVo != null){
+            	ProductVo productInfo = apiProductService.queryObject(goodsVo.getProductId());
+            	//商品总价
+            	goodsTotalPrice = productInfo.getMarket_price().multiply(new BigDecimal(goodsVo.getNumber()));
+            }
         }
 
         // 获取可用优惠券
         Map param = new HashMap();
         param.put("user_id", loginUser.getUserId());
         param.put("coupon_status", 1);
+        List<CouponVo> usecouponVos = new ArrayList<>();
         List<CouponVo> couponVos = apiCouponService.queryUserCoupons(param);
+        if(!CollectionUtils.isEmpty(couponVos)){
+        	for(CouponVo coupon : couponVos){
+        		if(coupon.getCoupon_price().compareTo(BigDecimal.ZERO) > 0){
+        			usecouponVos.add(coupon);
+        			continue;
+        		}
+        	}
+        }
+        
         List<CouponVo> useCoupons = new ArrayList<>();
         List<CouponVo> notUseCoupons = new ArrayList<>();
-        for (CouponVo couponVo : couponVos) {
-            if (goodsTotalPrice.compareTo(couponVo.getMin_goods_amount()) >= 0) { // 可用优惠券
-                couponVo.setEnabled(1);
-                useCoupons.add(couponVo);
-            } else {
-                couponVo.setEnabled(0);
-                notUseCoupons.add(couponVo);
-            }
+        if(!CollectionUtils.isEmpty(usecouponVos)){
+        	for (CouponVo couponVo : usecouponVos) {
+        		if (goodsTotalPrice.compareTo(couponVo.getCoupon_price()) >= 0 && "平台抵扣券".equals(couponVo.getName())) { // 可用优惠券
+        			couponVo.setEnabled(1);
+        			useCoupons.add(couponVo);
+        		} else {
+        			couponVo.setEnabled(0);
+        			notUseCoupons.add(couponVo);
+        		}
+        	}
         }
         useCoupons.addAll(notUseCoupons);
         return toResponsSuccess(useCoupons);

@@ -46,6 +46,8 @@ public class CartVo implements Serializable {
 
     //商品图片
     private String list_pic_url;
+    //商品地址
+    private String good_url;
 
     public Integer getId() {
         return id;
@@ -177,4 +179,12 @@ public class CartVo implements Serializable {
     public void setCrash_save_price(BigDecimal crash_save_price) {
         this.crash_save_price = crash_save_price;
     }
+
+	public String getGood_url() {
+		return good_url;
+	}
+
+	public void setGood_url(String good_url) {
+		this.good_url = good_url;
+	}
 }

@@ -20,13 +20,17 @@ Page({
     isBuy: false,
     couponDesc: '',
     couponCode: '',
-    buyType: ''
+    buyType: '',
+    isBuyType:''
   },
   onLoad: function (options) {
 
     console.log(options.isBuy)
+    this.setData({
+      isBuyType: options.isBuy
+    })
     // 页面初始化 options为页面跳转所带来的参数
-    if (options.isBuy!=null) {
+    if (options.isBuy!="false") {
       this.data.isBuy = options.isBuy
     }
     this.data.buyType = this.data.isBuy?'buy':'cart'
@@ -71,6 +75,12 @@ Page({
                 }
             })
         }
+      }else{
+        wx.showToast({
+          image: '/static/images/icon_error.png',
+          title: res.msg,
+          mask: true
+        });
       }
       wx.hideLoading();
     });
@@ -90,7 +100,8 @@ Page({
 
   },
   onShow: function () {
-    this.getCouponData()
+    this.getCouponData();
+
     // 页面显示
     wx.showLoading({
       title: '加载中...',
@@ -120,7 +131,7 @@ Page({
       })
     } else if (app.globalData.userCoupon == 'NO_USE_COUPON') {
       this.setData({
-        couponDesc: "不使用优惠券",
+        couponDesc: "平台抵扣券",
         couponId: '',
       })
     }
@@ -132,7 +143,7 @@ Page({
   },
   onUnload: function () {
     // 页面关闭
-
+    util.request(api.CancelAddBuyCoupons, { isBuy: this.data.isBuyType}, 'post', 'application/json').then(res => {})
   },
 
   /**

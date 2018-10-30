@@ -27,4 +27,11 @@ public interface CartService {
 	void delete(Integer id);
 	
 	void deleteBatch(Integer[] ids);
+	
+	/**
+	 * 根据商品id查询购物车中对应信息
+	 * @param goodsId
+	 * @return
+	 */
+	List<CartEntity> queryCartListByGoodsId(Integer goodsId,Integer checked);
 }

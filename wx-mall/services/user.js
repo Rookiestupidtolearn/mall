@@ -19,7 +19,7 @@ function loginByWeixin(userInfo) {
     }).then((userInfo) => {
       //登录远程服务器
       util.request(api.AuthLoginByWeixin, { code: code, userInfo: userInfo }, 'POST', 'application/json').then(res => {
-        if (res.errno === 0) {
+        if (res.errno === 0 || res.errno === 1) {
           //存储用户信息
           wx.setStorageSync('userInfo', res.data.userInfo);
           wx.setStorageSync('token', res.data.token);

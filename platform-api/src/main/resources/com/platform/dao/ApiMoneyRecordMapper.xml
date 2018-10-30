@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.platform.dao.ApiMoneyRecordMapper">
+	 <!-- 可根据自己的需求，是否要使用 -->
+    	<resultMap type="com.platform.entity.QzMoneyRecordVo" id="qzMoneyRecordMap">
+        <result property="id" column="id"/>
+        <result property="shop_user_id" column="shop_user_id"/>
+        <result property="tran_type" column="tran_type"/>
+        <result property="tran_flag" column="tran_flag"/>
+        <result property="tarn_amount" column="tarn_amount"/>
+        <result property="current_amount" column="current_amount"/>
+        <result property="create_time" column="create_time"/>
+        <result property="trade_no" column="trade_no"/>
+    </resultMap>
+    	<insert id="save" parameterType="com.platform.entity.QzMoneyRecordVo" useGeneratedKeys="true" keyProperty="id">
+			insert into qz_money_record(
+				`shop_user_id`,
+				`tran_type`,
+				`tran_flag`,
+				`tarn_amount`,
+				`current_amount`,
+				`create_time`,
+				`trade_no`)
+			values(
+				#{shopUserId},
+				#{tranType},
+				#{tranFlag},
+				#{tarnAmount},
+				#{currentAmount},
+				#{createTime},
+				#{tradeNo})
+	</insert>
+    
+ </mapper>

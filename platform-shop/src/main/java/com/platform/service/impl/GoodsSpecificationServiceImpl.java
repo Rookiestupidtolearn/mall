@@ -41,7 +41,7 @@ public class GoodsSpecificationServiceImpl implements GoodsSpecificationService 
     	
     	Long  deptId  =null;
     	
-    	if(sysUserEntity!=null){
+    	if(sysUserEntity!=null && sysUserEntity.getUserId() != 1){
     		
     		  deptId = sysUserEntity.getDeptId();
     		  if(deptId!=null){
@@ -79,4 +79,16 @@ public class GoodsSpecificationServiceImpl implements GoodsSpecificationService 
     public int deleteBatch(Integer[]ids) {
         return goodsSpecificationDao.deleteBatch(ids);
     }
+
+	@Override
+	public List<GoodsSpecificationEntity> querySpecificationByGoodId(Integer goodId) {
+		
+		return goodsSpecificationDao.querySpecificationByGoodId(goodId);
+	}
+
+	@Override
+	public List<GoodsSpecificationEntity> findgoodsSpecification(String[] goodsSpecificationIdsArray) {
+
+		return goodsSpecificationDao.findgoodsSpecification(goodsSpecificationIdsArray);
+	}
 }

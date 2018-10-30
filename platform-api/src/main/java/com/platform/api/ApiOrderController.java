@@ -1,10 +1,31 @@
 package com.platform.api;
 
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.alibaba.fastjson.JSONObject;
 import com.platform.annotation.IgnoreAuth;
 import com.platform.annotation.LoginUser;
+import com.platform.dao.ApiOrderMapper;
+import com.platform.dao.ApiTranInfoRecordMapper;
+import com.platform.dao.ApiUserCouponMapper;
+import com.platform.dao.QzUserAccountMapper;
+import com.platform.entity.ApiTranInfoRecordVo;
 import com.platform.entity.OrderGoodsVo;
 import com.platform.entity.OrderVo;
+import com.platform.entity.QzUserAccountVo;
+import com.platform.entity.UserCouponVo;
 import com.platform.entity.UserVo;
 import com.platform.service.ApiKdniaoService;
 import com.platform.service.ApiOrderGoodsService;
@@ -14,17 +35,9 @@ import com.platform.util.ApiPageUtils;
 import com.platform.util.wechat.WechatRefundApiResult;
 import com.platform.util.wechat.WechatUtil;
 import com.platform.utils.Query;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 作者: @author Harmon <br>
@@ -41,6 +54,14 @@ public class ApiOrderController extends ApiBaseAction {
     private ApiOrderGoodsService orderGoodsService;
     @Autowired
     private ApiKdniaoService apiKdniaoService;
+    @Autowired
+    private QzUserAccountMapper qzUserAccountMapper;
+    @Autowired
+    private ApiUserCouponMapper apiUserCouponMapper;
+    @Autowired
+    private ApiOrderMapper apiOrderMapper;
+    @Autowired
+    private ApiTranInfoRecordMapper apiTranInfoRecordMapper;
 
     /**
      */
@@ -69,7 +90,7 @@ public class ApiOrderController extends ApiBaseAction {
         params.put("order", "asc");
         //查询列表数据
         Query query = new Query(params);
-        List<OrderVo> orderEntityList = orderService.queryList(query);
+        List<OrderVo> orderEntityList = apiOrderMapper.queryList(query);
         int total = orderService.queryTotal(query);
         ApiPageUtils pageUtil = new ApiPageUtils(orderEntityList, total, query.getLimit(), query.getPage());
         //
@@ -168,37 +189,60 @@ public class ApiOrderController extends ApiBaseAction {
     }
 
     /**
-     * 获取订单列表
+     * 取消订单
      */
     @ApiOperation(value = "取消订单")
     @PostMapping("cancelOrder")
     public Object cancelOrder(Integer orderId) {
         try {
             OrderVo orderVo = orderService.queryObject(orderId);
+            QzUserAccountVo userAmountVo =qzUserAccountMapper.queruUserAccountInfo(orderVo.getUser_id());
             if (orderVo.getOrder_status() == 300) {
                 return toResponsFail("已发货，不能取消");
             } else if (orderVo.getOrder_status() == 301) {
                 return toResponsFail("已收货，不能取消");
             }
+            
+            /*
+             * 0 订单创建成功等待付款，　101订单已取消，　102订单已删除
+             * 201订单已付款，等待发货
+             * 300订单已发货， 301用户确认收货
+             * 401 没有发货，退款　402 已收货，退款退货
+             */
             // 需要退款
             if (orderVo.getPay_status() == 2) {
                 WechatRefundApiResult result = WechatUtil.wxRefund(orderVo.getId().toString(),
                         0.01, 0.01);
                 if (result.getResult_code().equals("SUCCESS")) {
-                    if (orderVo.getOrder_status() == 201) {
-                        orderVo.setOrder_status(401);
-                    } else if (orderVo.getOrder_status() == 300) {
-                        orderVo.setOrder_status(402);
+                    if (orderVo.getOrder_status() == 201) {//已付款等待发货
+                        orderVo.setOrder_status(401);//退款
+                    } else if (orderVo.getOrder_status() == 300) {//已发货
+                        orderVo.setOrder_status(402);//已收货，退款退货
                     }
                     orderVo.setPay_status(4);
                     orderService.update(orderVo);
+                    UserCouponVo userCoupon=  apiUserCouponMapper.queryObject(orderVo.getCoupon_id());
+                    userCoupon.setCoupon_status(3);
+                    apiUserCouponMapper.update(userCoupon);
+                    saveTranInfoRecord(orderVo.getUser_id(), "1", "2", userCoupon.getCoupon_price(), BigDecimal.ZERO, "取消订单，原优惠券作废");
+                    userAmountVo.setAmount(userAmountVo.getAmount().add(userCoupon.getCoupon_price()));
+                    qzUserAccountMapper.update(userAmountVo);
+                    saveTranInfoRecord(orderVo.getUser_id(), "2", "1", userCoupon.getCoupon_price(), userAmountVo.getAmount(), "取消订单，原优惠券回滚到平台币");
                     return toResponsMsgSuccess("取消成功");
+                    
                 } else {
                     return toResponsObject(400, "取消成失败", "");
                 }
             } else {
                 orderVo.setOrder_status(101);
                 orderService.update(orderVo);
+                UserCouponVo userCoupon=  apiUserCouponMapper.queryObject(orderVo.getCoupon_id());
+                userCoupon.setCoupon_status(3);
+                apiUserCouponMapper.update(userCoupon);
+                saveTranInfoRecord(orderVo.getUser_id(), "1", "2", userCoupon.getCoupon_price(), userCoupon.getCoupon_price(), "取消订单，原优惠券作废");
+                userAmountVo.setAmount(userAmountVo.getAmount().add(userCoupon.getCoupon_price()));
+                qzUserAccountMapper.updateUserAccount(userAmountVo);
+                saveTranInfoRecord(orderVo.getUser_id(), "2", "1", userCoupon.getCoupon_price(), userAmountVo.getAmount(), "取消订单，原优惠券回滚到平台币");
                 return toResponsSuccess("取消成功");
             }
         } catch (Exception e) {
@@ -225,19 +269,26 @@ public class ApiOrderController extends ApiBaseAction {
         }
         return toResponsFail("提交失败");
     }
-    @ApiOperation(value = "判断订单有效性") 
-    @PostMapping("checkOrderValid")
-    public JSONObject checkOrderValid(Integer orderId) {
-    	JSONObject obj = new JSONObject();
-        try {
-            JSONObject orderVo = orderService.checkOrderValid(28,29);
-            obj.put("statuc", "success");
-            return obj;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-		return obj;
+    /**
+     * 生成平台币、优惠券流水
+     * @param userId
+     * @param tranType
+     * @param TranFlag
+     * @param tranAmount
+     * @param currentAmount
+     * @param remark
+     */
+    public void saveTranInfoRecord(Long userId,String tranType,String TranFlag,BigDecimal tranAmount,BigDecimal currentAmount
+    		,String remark){
+    	 ApiTranInfoRecordVo tranInfo = new ApiTranInfoRecordVo();
+    	 tranInfo.setUser_id(userId);
+    	 tranInfo.setTran_type(tranType);//1优惠券 2 平台币
+    	 tranInfo.setTran_flag(TranFlag);//1收入 2支出
+    	 tranInfo.setTran_amount(tranAmount);
+    	 tranInfo.setCurrent_amount(currentAmount);
+    	 tranInfo.setCreate_time(new Date());
+    	 tranInfo.setRemark(remark);
+    	 apiTranInfoRecordMapper.save(tranInfo);
     }
-    
     
 }

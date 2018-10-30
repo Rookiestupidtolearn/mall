@@ -50,5 +50,11 @@ public class CartServiceImpl implements CartService {
 	public void deleteBatch(Integer[] ids){
 		cartDao.deleteBatch(ids);
 	}
+
+	
+	@Override
+	public List<CartEntity> queryCartListByGoodsId(Integer goodsId,Integer checked) {
+		return cartDao.queryCartListByGoodsId(goodsId,checked);
+	}
 	
 }

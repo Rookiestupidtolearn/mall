@@ -6,10 +6,7 @@ const user = require('../../services/user.js');
 const app = getApp()
 Page({
   data: {
-    newGoods: [],
     hotGoods: [],
-    topics: [],
-    brands: [],
     floorGoods: [],
     banner: [],
     channel: []
@@ -20,29 +17,13 @@ Page({
       desc: '仿网易严选微信小程序商城',
       path: '/pages/index/index'
     }
-  },onPullDownRefresh(){
-	  	// 增加下拉刷新数据的功能
-	    var self = this;
-	    this.getIndexData();
- },
+  },
   getIndexData: function () {
     let that = this;
     var data = new Object();
-    util.request(api.IndexUrlNewGoods).then(function (res) {
-      if (res.errno === 0) {
-        data.newGoods= res.data.newGoodsList
-      that.setData(data);
-      }
-    });
     util.request(api.IndexUrlHotGoods).then(function (res) {
       if (res.errno === 0) {
         data.hotGoods = res.data.hotGoodsList
-      that.setData(data);
-      }
-    });
-    util.request(api.IndexUrlTopic).then(function (res) {
-      if (res.errno === 0) {
-        data.topics = res.data.topicList
       that.setData(data);
       }
     });
@@ -67,14 +48,15 @@ Page({
     });
 
   },
-  onLoad: function (options) {
-    this.getIndexData();
+  onLoad: function () {
+
   },
   onReady: function () {
     // 页面渲染完成
   },
   onShow: function () {
     // 页面显示
+    this.getIndexData();
   },
   onHide: function () {
     // 页面隐藏

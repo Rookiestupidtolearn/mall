@@ -5,6 +5,9 @@ var api = require('../../config/api.js');
 
 Page({
   data: {
+    undercarriage:'',
+    undercarriName:'加入购物车',
+    market_price:'',
     winHeight: "",
     id: 0,
     goods: {},
@@ -30,6 +33,8 @@ Page({
     util.request(api.GoodsDetail, { id: that.data.id }).then(function (res) {
       if (res.errno === 0) {
         that.setData({
+          undercarriage:res.data.info.is_on_sale, //上下架按钮显示状态
+          market_price: res.data.info.market_price, //商品默认价格
           goods: res.data.info,
           gallery: res.data.gallery,
           attribute: res.data.attribute,
@@ -40,8 +45,20 @@ Page({
           productList: res.data.productList,
           userHasCollect: res.data.userHasCollect
         });
-          //设置默认值
-          that.setDefSpecInfo(that.data.specificationList);
+        //购物车下架至灰
+        if (that.data.undercarriage == '0'){
+          that.setData({
+            undercarriage:true,
+            undercarriName: '商品已下架'
+          })
+        }else{
+          that.setData({
+            undercarriage:false,
+            undercarriName: '加入购物车'
+          })
+        }
+        //设置默认值
+        that.setDefSpecInfo(that.data.specificationList);
         if (res.data.userHasCollect == 1) {
           that.setData({
             'collectBackImage': that.data.hasCollectImage
@@ -167,6 +184,27 @@ Page({
         'checkedSpecText': '请选择规格数量'
       });
     }
+    //提示选择完整规格
+    if (!this.isCheckedAllSpec()) {
+      return false;
+    }
+    //根据选中的规格，判断是否有对应的sku信息
+    let checkedProduct = this.getCheckedProductItem(this.getCheckedSpecKey());
+    if (!checkedProduct || checkedProduct.length <= 0) {
+      //找不到对应的product信息，提示没有库存
+      util.showErrorToast("商品无库存")
+      return false;
+    }
+
+    //验证库存
+    if (checkedProduct.goods_number < this.data.number) {
+      //找不到对应的product信息，提示没有库存
+      util.showErrorToast("商品无库存")
+      return false;
+    }
+    this.setData({
+      market_price: checkedProduct[0].market_price
+    })
 
   },
   getCheckedProductItem: function (key) {
@@ -214,7 +252,9 @@ Page({
 
   },
   onShow: function () {
-    // 页面显示
+    // 页面显示  默认价格最小的参数集合
+    // var goodsSpec = this.data.productList;
+
 
   },
   onHide: function () {
@@ -397,7 +437,7 @@ Page({
           } else {
             wx.showToast({
               image: '/static/images/icon_error.png',
-              title: _res.errmsg,
+              title: _res.msg,
               mask: true
             });
           }

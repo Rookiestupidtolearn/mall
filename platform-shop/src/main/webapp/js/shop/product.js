@@ -39,19 +39,77 @@ let vm = new Vue({
         q: {
             goodsName: ''
         },
+        goodsspecificationIds:{
+        	
+       
+        },
         goodss: [],
         attribute: [],
-        color: [], guige: [], weight: [],
-        colors: [],
-        guiges: [],
-        weights: [],
-        type: ''
+      //  color: [], guige: [], weight: [],
+        specification:[],
+     //   colors: [],
+       // guiges: [],
+      //  weights: [],
+        specificationList:[],
+        specificationGoodsList:[],
+        specificationValueList:[],
+        valuesaaa:[],
+        type: '',
+        editProductId:'',
+        pecificationCheck:[],
+        	        	
     },
     methods: {
+    	
+    
         query: function () {
             vm.reload();
         },
+        
+      
+      querySpecificationByGoodId:function(goodId){
+      	
+          Ajax.request({
+              type: "POST",
+              url: "../goodsspecification/querySpecificationByGoodId?goodId="+goodId,
+              contentType: "application/json",
+              successCallback: function (r) {
+            	vm.specificationGoodsList=r.list;	
+            	vm.specificationList=r.specificationList;
+            	vm.specificationValueList=r.specificationValueList;
+              }
+          });
+      },
+      
+      checkALl:function(id){
+    	  
+    	  if(vm.valuesaaa.indexOf(id) == -1){
+    		  vm.valuesaaa.push(id);
+    	  }else{
+    		  var a  =this.valuesaaa.indexOf(id)
+    		  vm.valuesaaa.splice(a,1);
+    		  delete vm.goodsspecificationIds.id;
+    	      delete vm.goodsspecificationIds[id]; 		
+    	  }
+	     },
+	  selectChange:function(e){
+	  var id,specificationId;
+		for(var i=0; i<e.values.length; i++){
+			if(e.values[i].value == e.model12){
+				id = e.values[i].id ;
+				specificationId =  e.values[i].specificationId;
+			}
+		}
+		vm.goodsspecificationIds[specificationId]=id;
+	  },
+	      
         add: function () {
+        	vm.specificationGoodsList=[];	
+        	vm.specificationList=[];
+        	vm.specificationValueList=[];
+        	vm.pecificationCheck=[];
+        	vm.valuesaaa=[];
+        	vm.editProductId="";
             vm.showList = false;
             vm.title = "新增";
             vm.product = {};
@@ -63,57 +121,70 @@ let vm = new Vue({
             if (id == null) {
                 return;
             }
+            vm.specificationGoodsList=[];	
+        	vm.specificationList=[];
+        	vm.specificationValueList=[];
+        	vm.pecificationCheck=[];
+        	vm.valuesaaa=[];
+            vm.editProductId="";
             vm.showList = false;
             vm.title = "修改";
             vm.type = 'update';
-
+            //存储productId,方便修改时使用
+            vm.editProductId = id; 
             vm.getInfo(id)
         },
         changeGoods: function (opt) {
             let goodsId = opt.value;
             if(!goodsId)return;
-
-            Ajax.request({
-                url: "../goods/info/" + goodsId,
-                async: true,
-                successCallback: function (r) {
-                    if (vm.type == 'add') {
-                        vm.product.goodsSn = r.goods.goodsSn;
-                        vm.product.goodsNumber = r.goods.goodsNumber;
-                        vm.product.retailPrice = r.goods.retailPrice;
-                        vm.product.marketPrice = r.goods.marketPrice;
-                    }
-                    Ajax.request({
-                        url: "../goodsspecification/queryAll?goodsId=" + goodsId + "&specificationId=1",
-                        async: true,
-                        successCallback: function (r) {
-                            vm.colors = r.list;
-                        }
-                    });
-                    Ajax.request({
-                        url: "../goodsspecification/queryAll?goodsId=" + goodsId + "&specificationId=2",
-                        async: true,
-                        successCallback: function (r) {
-                            vm.guiges = r.list;
-                        }
-                    });
-                    Ajax.request({
-                        url: "../goodsspecification/queryAll?goodsId=" + goodsId + "&specificationId=4",
-                        async: true,
-                        successCallback: function (r) {
-                            vm.weights = r.list;
-                        }
-                    });
-                }
-            });
+            vm.querySpecificationByGoodId(goodsId);
+            
+	        if(vm.type == 'add'){
+	        	//查询商品信息，给商品序列号赋值
+	        	Ajax.request({
+	                url: "../goods/info/" + goodsId,
+	                async: true,
+	                successCallback: function (r) {
+	                    vm.product.goodsSn = r.goods.goodsSn;
+	                }
+	            });
+	        }
+	        if(vm.type == 'update'){
+	        	Ajax.request({
+	                url: "../product/info/" + vm.editProductId,
+	                async: true,
+	                successCallback: function (r) {
+                    	 vm.product.goodsSn = r.product.goodsSn;
+                         vm.product.goodsNumber = r.product.goodsNumber;
+                         vm.product.retailPrice = r.product.retailPrice;
+                         vm.product.marketPrice = r.product.marketPrice;
+                         for(var i = 0;i<vm.specificationValueList.length;i++){
+                        	 vm.specificationValueList[i].model12 = r.specificationIdList[i].value;
+                         }
+	                }
+	            });
+	        }
+            
         },
         saveOrUpdate: function (event) {
             let url = vm.product.id == null ? "../product/save" : "../product/update";
-
-            if(vm.attribute.indexOf(1) == -1)vm.color = [];
-            if(vm.attribute.indexOf(2) == -1)vm.guige = [];
-            if(vm.attribute.indexOf(4) == -1)vm.weight = [];
-            vm.product.goodsSpecificationIds = vm.color + '_' + vm.guige + '_' + vm.weight;
+            var  goodsspecificationIdsStr = "";
+            //冒泡排序，防止商品规格数据错乱
+            for(var i = 0;i<vm.valuesaaa.length-1;i++){
+            	for(var j =0;j<vm.valuesaaa.length-i-1;j++){
+            		if(vm.valuesaaa[j]>vm.valuesaaa[j+1]){
+            			var temp = vm.valuesaaa[j];
+            			vm.valuesaaa[j]=vm.valuesaaa[j+1];
+            			vm.valuesaaa[j+1]=temp;
+            		}
+            	}
+            }
+            for(var i = 0; i< vm.valuesaaa.length;i++){
+            	var jValue=vm.goodsspecificationIds[vm.valuesaaa[i]];//key所对应的value 
+                goodsspecificationIdsStr=goodsspecificationIdsStr+jValue+"_"
+            }
+            goodsspecificationIdsStr =  goodsspecificationIdsStr.substring(0,goodsspecificationIdsStr.length-1);
+            vm.product.goodsSpecificationIds =goodsspecificationIdsStr;
 
             Ajax.request({
                 type: "POST",
@@ -126,15 +197,12 @@ let vm = new Vue({
                     });
                 }
             });
-
-
         },
         del: function (event) {
             let ids = getSelectedRows("#jqGrid");
             if (ids == null) {
                 return;
             }
-
             confirm('确定要删除选中的记录？', function () {
                 Ajax.request({
                     type: "POST",
@@ -153,12 +221,21 @@ let vm = new Vue({
         },
         getInfo: function (id) {
             vm.attribute = [];
+            vm.valuesaaa=[];
+            
             Ajax.request({
-                url: "../product/info/" + id,
+                url: "../product/editProductInfo/" + id,
                 async: true,
                 successCallback: function (r) {
                     vm.product = r.product;
-                    let goodsSpecificationIds = vm.product.goodsSpecificationIds.split("_");
+                    let specificationIdList =  r.specificationIdList;
+                    for(var i = 0;i<specificationIdList.length;i++){
+                    	vm.pecificationCheck.push(specificationIdList[i].specificationId);
+                    	vm.valuesaaa.push(specificationIdList[i].specificationId);
+                    }
+                    
+                    
+                  /*  let goodsSpecificationIds = vm.product.goodsSpecificationIds.split("_");
                     goodsSpecificationIds.forEach((goodsSpecificationId, index) => {
                         let specificationIds = goodsSpecificationId.split(",").filter(id => !!id).map(id => Number(id));
 
@@ -178,7 +255,7 @@ let vm = new Vue({
                                 vm.attribute.push(4);
                             }
                         }
-                    });
+                    });*/
 
                     vm.getGoodss();
                 }
@@ -212,3 +289,5 @@ let vm = new Vue({
         }
     }
 });
+
+

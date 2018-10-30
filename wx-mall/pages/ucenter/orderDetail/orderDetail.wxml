@@ -14,7 +14,7 @@
                   <view class="btn active" bindtap="confirmOrder">确认收货</view>
                 </view>
                 <view wx:else>
-                  <view class="btn active" bindtap="cancelOrder">取消订单</view>
+                  <view class="btn active" bindtap="cancelOrder" hidden='{{cancelBtnShow}}'>取消订单</view>
                 </view>
             </view>
         </view>
@@ -36,7 +36,7 @@
                         <text class="number">x{{item.number}}</text>
                     </view>
                     <view class="attr">{{item.goods_specifition_name_value||''}}</view>
-                    <view class="price">￥{{item.retail_price}}</view>
+                    <view class="price">￥{{item.market_price}}</view>
                 </view>
             </view>
         </view>
@@ -54,6 +54,10 @@
             <view class="t">
                 <text class="label">商品合计：</text>
                 <text class="txt">￥{{orderInfo.goods_price}}</text>
+            </view>
+            <view class="t">
+                <text class="label">优惠券：</text>
+                <text class="txt2">-{{orderInfo.coupon_price}}</text>
             </view>
             <view class="t">
                 <text class="label">运费：</text>

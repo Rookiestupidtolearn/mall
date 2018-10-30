@@ -69,4 +69,18 @@ public interface GoodsSpecificationService {
      * @return 删除条数
      */
     int deleteBatch(Integer[] ids);
+    
+    
+    /**
+     *  根据商品ID获取产品规格
+     * @param goodId
+     * @return
+     */
+    List<GoodsSpecificationEntity> querySpecificationByGoodId(Integer goodId);
+    
+    /**
+     * 查询商品对应的规格id
+     * @param String[] goodsSpecificationIdsArray
+     * */
+	List<GoodsSpecificationEntity> findgoodsSpecification(String[] goodsSpecificationIdsArray);
 }

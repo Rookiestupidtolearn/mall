@@ -56,7 +56,7 @@ Page({
   isCheckedAll: function () {
     //判断购物车商品已全选
     return this.data.cartGoods.every(function (element, index, array) {
-      if (element.checked             = true) {
+      if (element.checked == true) {
         return true;
       } else {
         return false;
@@ -115,13 +115,15 @@ Page({
       var productIds = this.data.cartGoods.map(function (v) {
         return v.product_id;
       });
-      util.request(api.CartChecked, { productIds: productIds.join(','), isChecked: that.isCheckedAll() ? 0 : 1 }).then(function (res) {
+      util.request(api.CartChecked, { productIds: productIds.join(','), isChecked: that.isCheckedAll() ? 0 : 1 }, 'post', 'application/json').then(function (res) {
         if (res.errno === 0) {
           console.log(res.data);
           that.setData({
             cartGoods: res.data.cartList,
             cartTotal: res.data.cartTotal
           });
+        }else{
+          util.showErrorToast(res.msg);
         }
 
         that.setData({
@@ -235,7 +237,7 @@ Page({
 
 
     wx.navigateTo({
-      url: '../shopping/checkout/checkout'
+      url: '../shopping/checkout/checkout?isBuy=false'
     })
   },
   deleteCart: function () {
@@ -275,6 +277,12 @@ Page({
         that.setData({
           cartGoods: cartList,
           cartTotal: res.data.cartTotal
+        });
+      }else{
+        wx.showToast({
+          image: '/static/images/icon_error.png',
+          title: res.msg,
+          mask: true
         });
       }
 

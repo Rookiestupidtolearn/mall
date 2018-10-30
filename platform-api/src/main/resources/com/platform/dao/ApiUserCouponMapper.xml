@@ -16,10 +16,11 @@
         <result property="referrer" column="referrer"/>
          <result property="coupon_price" column="coupon_price"/>
         <result property="good_id" column="good_id"/>
+        <result property="coupon_status" column="coupon_status"/>
     </resultMap>
 
     <select id="queryObject" resultMap="userCouponMap">
-		select * from nideshop_user_coupon where id = #{value}
+		select * from nideshop_user_coupon where id = #{id}
 	</select>
 
     <select id="queryByCouponNumber" resultMap="userCouponMap">
@@ -51,6 +52,11 @@
          <if test="good_id != null">
             and a.good_id = #{good_id}
         </if>
+        
+         <if test="coupon_status != null">
+            and a.coupon_status = #{coupon_status}
+        </if>
+        
         <choose>
             <when test="sidx != null and sidx.trim() != ''">
                 order by ${sidx} ${order}
@@ -80,7 +86,8 @@
 			`source_key`,
 			`referrer`,
 			`coupon_price`,
-			`good_id`
+			`good_id`,
+			`coupon_status`
 		)
 		values
 		(
@@ -93,7 +100,8 @@
 			#{source_key},
 			#{referrer},
 			#{coupon_price},
-			#{good_id}
+			#{good_id},
+			#{coupon_status}
 		)
 	</insert>
 
@@ -159,4 +167,21 @@
 	<delete id="deleteUserCouponPrice">
 		delete from nideshop_user_coupon where user_id = #{user_id} and coupon_status = 1
 	</delete>
+	<select id="queryUserUsedCouponTotalPrice" resultMap = "userCouponMap">
+		select uc.*
+		from nideshop_user_coupon uc where uc.user_id = #{userId} and coupon_status = 2
+	</select>
+	<select id="queryUserCoupon" resultMap = "userCouponMap">
+		select uc.*,b.name
+		from nideshop_user_coupon uc left join nideshop_coupon b on b.id = uc.coupon_id where uc.user_id = #{userId}
+	</select>
+	
+	    <update id="updateUserOrderCoupon" parameterType="com.platform.entity.UserCouponVo">
+        update nideshop_user_coupon
+        <set>
+            <if test="coupon_status != null">`coupon_status` = #{coupon_status}</if>
+        </set>
+        where  id = #{id}
+    </update>
+    
 </mapper>

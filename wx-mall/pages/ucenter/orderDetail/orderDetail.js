@@ -6,14 +6,14 @@ Page({
     orderId: 0,
     orderInfo: {},
     orderGoods: [],
-    handleOption: {}
+    handleOption: {},
+    cancelBtnShow:false
   },
   onLoad: function (options) {
     // 页面初始化 options为页面跳转所带来的参数
     this.setData({
       orderId: options.id
     });
-    this.getOrderDetail();
   },
   getOrderDetail() {
     let that = this;
@@ -28,6 +28,12 @@ Page({
           handleOption: res.data.handleOption
         });
         //that.payTimer();
+        //101取消订单   301已完成订单   103订单失效
+        if (res.data.orderInfo.order_status == '101' || res.data.orderInfo.order_status == '301' || res.data.orderInfo.order_status == '103') {
+        that.setData({
+          cancelBtnShow: true
+        })
+      }
       }
     });
   },
@@ -51,6 +57,7 @@ Page({
 
     var order_status = orderInfo.order_status;
     console.log(order_status);
+  
 
     var errorMessage = '';
     switch (order_status){
@@ -237,6 +244,7 @@ Page({
   },
   onShow: function () {
     // 页面显示
+    this.getOrderDetail();
   },
   onHide: function () {
     // 页面隐藏

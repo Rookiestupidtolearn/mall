@@ -1,28 +1,50 @@
 package com.platform.api;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.platform.annotation.LoginUser;
 import com.platform.cache.J2CacheUtils;
+import com.platform.dao.ApiMoneyRecordMapper;
+import com.platform.dao.ApiUserCouponMapper;
+import com.platform.dao.QzUserAccountMapper;
 import com.platform.entity.OrderGoodsVo;
 import com.platform.entity.OrderVo;
+import com.platform.entity.QzMoneyRecordVo;
+import com.platform.entity.QzUserAccountVo;
+import com.platform.entity.UserCouponVo;
 import com.platform.entity.UserVo;
 import com.platform.service.ApiOrderGoodsService;
 import com.platform.service.ApiOrderService;
 import com.platform.util.ApiBaseAction;
 import com.platform.util.wechat.WechatRefundApiResult;
 import com.platform.util.wechat.WechatUtil;
-import com.platform.utils.*;
+import com.platform.utils.CharUtil;
+import com.platform.utils.DateUtils;
+import com.platform.utils.MapUtils;
+import com.platform.utils.ResourceUtil;
+import com.platform.utils.XmlUtil;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.util.*;
 
 /**
  * 作者: @author Harmon <br>
@@ -38,6 +60,13 @@ public class ApiPayController extends ApiBaseAction {
     private ApiOrderService orderService;
     @Autowired
     private ApiOrderGoodsService orderGoodsService;
+    @Autowired
+    private  ApiUserCouponMapper apiUserCouponMapper;
+    @Autowired
+    private QzUserAccountMapper qzUserAccountMapper;
+    @Autowired
+    private ApiMoneyRecordMapper apiMoneyRecordMapper;
+
 
     /**
      */
@@ -55,6 +84,7 @@ public class ApiPayController extends ApiBaseAction {
     @PostMapping("prepay")
     public Object payPrepay(@LoginUser UserVo loginUser, Integer orderId) {
         //
+    	
         OrderVo orderInfo = orderService.queryObject(orderId);
 
         if (null == orderInfo) {
@@ -117,12 +147,14 @@ public class ApiPayController extends ApiBaseAction {
             String return_msg = MapUtils.getString("return_msg", resultUn);
             //
             if (return_code.equalsIgnoreCase("FAIL")) {
+            	saveMoneyRecord(loginUser.getUserId(),0,orderInfo.getOrder_sn());
                 return toResponsFail("支付失败," + return_msg);
             } else if (return_code.equalsIgnoreCase("SUCCESS")) {
                 // 返回数据
                 String result_code = MapUtils.getString("result_code", resultUn);
                 String err_code_des = MapUtils.getString("err_code_des", resultUn);
                 if (result_code.equalsIgnoreCase("FAIL")) {
+                	saveMoneyRecord(loginUser.getUserId(),0,orderInfo.getOrder_sn());
                     return toResponsFail("支付失败," + err_code_des);
                 } else if (result_code.equalsIgnoreCase("SUCCESS")) {
                     String prepay_id = MapUtils.getString("prepay_id", resultUn);
@@ -139,6 +171,7 @@ public class ApiPayController extends ApiBaseAction {
                     // 付款中
                     orderInfo.setPay_status(1);
                     orderService.update(orderInfo);
+                    saveMoneyRecord(loginUser.getUserId(),1,orderInfo.getOrder_sn());
                     return toResponsObject(0, "微信统一订单下单成功", resultObj);
                 }
             }
@@ -158,7 +191,7 @@ public class ApiPayController extends ApiBaseAction {
         if (orderId == null) {
             return toResponsFail("订单不存在");
         }
-
+        
         Map<Object, Object> parame = new TreeMap<Object, Object>();
         parame.put("appid", ResourceUtil.getConfigByName("wx.appId"));
         // 商家账号。
@@ -201,6 +234,8 @@ public class ApiPayController extends ApiBaseAction {
             orderInfo.setShipping_status(0);
             orderInfo.setPay_time(new Date());
             orderService.update(orderInfo);
+       
+            
             return toResponsMsgSuccess("支付成功");
         } else if ("USERPAYING".equals(trade_state)) {
             // 重新查询 正在支付中
@@ -322,5 +357,25 @@ public class ApiPayController extends ApiBaseAction {
     //模拟微信回调接口
     public static String callbakcXml(String orderNum) {
         return "<xml><appid><![CDATA[wx2421b1c4370ec43b]]></appid><attach><![CDATA[支付测试]]></attach><bank_type><![CDATA[CFT]]></bank_type><fee_type><![CDATA[CNY]]></fee_type> <is_subscribe><![CDATA[Y]]></is_subscribe><mch_id><![CDATA[10000100]]></mch_id><nonce_str><![CDATA[5d2b6c2a8db53831f7eda20af46e531c]]></nonce_str><openid><![CDATA[oUpF8uMEb4qRXf22hE3X68TekukE]]></openid> <out_trade_no><![CDATA[" + orderNum + "]]></out_trade_no>  <result_code><![CDATA[SUCCESS]]></result_code> <return_code><![CDATA[SUCCESS]]></return_code><sign><![CDATA[B552ED6B279343CB493C5DD0D78AB241]]></sign><sub_mch_id><![CDATA[10000100]]></sub_mch_id> <time_end><![CDATA[20140903131540]]></time_end><total_fee>1</total_fee><trade_type><![CDATA[JSAPI]]></trade_type><transaction_id><![CDATA[1004400740201409030005092168]]></transaction_id></xml>";
+    }
+    
+    
+
+    public void saveMoneyRecord(Long userId,Integer type,String order_sn){
+    	UserCouponVo userCouponVo = apiUserCouponMapper.queryUserUsedCouponTotalPrice(userId);
+		QzUserAccountVo userAmountVo =qzUserAccountMapper.queruUserAccountInfo(Long.parseLong(userId.toString()));
+        if(userCouponVo != null){
+        	QzMoneyRecordVo moneyRecord  = new QzMoneyRecordVo();
+        	moneyRecord.setShopUserId(userId.intValue());
+        	moneyRecord.setTranType("2");//使用优惠券
+        	moneyRecord.setTranFlag(type == 1 ? 0 : 1);//0-支出 1-收入
+        	moneyRecord.setTarnAmount(userCouponVo.getCoupon_price());
+        	moneyRecord.setCreateTime(new Date());
+        	moneyRecord.setTradeNo(order_sn);
+        	if(userAmountVo != null){
+        		moneyRecord.setCurrentAmount(userAmountVo.getAmount());
+        	}
+        	apiMoneyRecordMapper.save(moneyRecord);
+        }
     }
 }

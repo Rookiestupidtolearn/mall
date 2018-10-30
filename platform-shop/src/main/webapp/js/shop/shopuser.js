@@ -73,7 +73,11 @@ $(function() {
 			name : 'registerIp',
 			index : 'register_ip',
 			hidden : true
-		}, {
+		},{
+            label: '会员账户金额',
+            name: 'amount',
+            width: 40
+        }, {
 			label : '头像',
 			name : 'avatar',
 			index : 'avatar',
@@ -97,12 +101,14 @@ var vm = new Vue({
 		showList : true,
 		addList : false,
 		rechargeList : false,
+		uploadList : false,
 		title : null,
 		mobiles : null,
 		amount : null,
 		memo : null,
 		upath : '',
 		result : '',
+		file : '',
 		user : {
 			gender : 1
 		},
@@ -122,9 +128,19 @@ var vm = new Vue({
 		query : function() {
 			vm.reload();
 		},
+		rechargeBench : function() {
+
+			vm.showList = false;
+			vm.rechargeList = false;
+			vm.uploadList = true;
+			vm.result = '';
+			vm.file = '';
+			document.getElementById('result').innerHTML="";
+		},
 		recharge : function() {
 			var ids = $("#jqGrid").getGridParam("selarrrow");
 			var mobiles = [];
+			
 			var iday = [];
 			for (i = 0; i < ids.length; i++) {
 				var rowData = $("#jqGrid").jqGrid("getRowData", ids[i]);//根据上面的id获得本行的所有数据
@@ -137,9 +153,11 @@ var vm = new Vue({
 			}
 			vm.showList = false;
 			vm.rechargeList = true;
+			vm.uploadList = false;
 			vm.title = "充值";
 			vm.mobiles = mobiles.join(",");
-
+			 vm.amount = '';
+			 vm.memo = '';
 		},
 		rechargeSubmit : function() {
 			var url = "../qzrechargerecord/recharge";
@@ -175,11 +193,11 @@ var vm = new Vue({
 			        dataType:"json",
 			        mimeType:"multipart/form-data",
 			        success : function(res) {
-                         if(res.code=='400'){
-                        	   iview.Message.error(res.msg);
-                         }else{
-                        	 vm.result = '上传成功';
-                         }
+			        	 var  haha = ''; 
+			        	for(i=0;i<res.length;i++){
+			        		haha += res[i]+"<br>";
+			        	}
+			        	document.getElementById('result').innerHTML = haha;
 			        }
 			    });
 
@@ -189,8 +207,11 @@ var vm = new Vue({
 			this.upath = event.target.files[0];
 		},
 		add : function() {
-			vm.addList = true, vm.showList = false;
-			vm.rechargeList = false, vm.title = "新增";
+			vm.addList = true,
+			vm.showList = false;
+			vm.rechargeList = false, 
+			vm.uploadList = false,
+			vm.title = "新增";
 			vm.user = {
 				gender : '1'
 			};
@@ -204,7 +225,9 @@ var vm = new Vue({
 				return;
 			}
 			vm.addList = true, vm.showList = false;
-			vm.rechargeList = false, vm.title = "修改";
+			vm.rechargeList = false,
+			vm.uploadList = false,
+			vm.title = "修改";
 
 			vm.getInfo(id)
 			this.getUserLevels();
@@ -308,6 +331,7 @@ var vm = new Vue({
 			vm.showList = true;
 			vm.addList = false;
 			vm.rechargeList = false;
+			vm.uploadList = false;
 			var page = $("#jqGrid").jqGrid('getGridParam', 'page');
 			$("#jqGrid").jqGrid('setGridParam', {
 				postData : {
