@@ -27,6 +27,15 @@
 		from goods_coupon_config
 		where id = #{id}
 	</select>
+	
+	<select id="selectGoodsIdsById" resultType="java.lang.Integer">
+		select goods_id from goods_coupon_config where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+		group by goods_coupon_config.goods_id
+	</select>
+	
 
 	<select id="queryList" resultType="com.platform.entity.GoodsCouponConfigEntity">
 		SELECT  

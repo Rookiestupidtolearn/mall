@@ -70,4 +70,11 @@ public interface GoodsCouponConfigService {
      * @return 删除条数
      */
     int deleteBatch(Integer[] ids);
+
+	/**
+	 *	根据ids查询对应的商品id
+	 * @param ids
+	 * @return
+	 */
+	Integer[] selectGoodsIdsById(Integer[] ids);
 }
