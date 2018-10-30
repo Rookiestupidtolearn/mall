@@ -71,7 +71,7 @@ public class SysUserAuthController {
      * 保存
      */
     @RequestMapping("/save")
-    @RequiresPermissions("sysuserauth:save")
+   /* @RequiresPermissions("sysuserauth:save")*/
     public R save(@RequestBody SysUserAuthEntity sysUserAuth) {
         sysUserAuthService.save(sysUserAuth);
 
