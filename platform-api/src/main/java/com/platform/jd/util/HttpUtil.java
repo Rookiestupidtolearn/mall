@@ -20,6 +20,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSession;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import com.alibaba.fastjson.JSONObject;
 
@@ -56,8 +57,7 @@ public class HttpUtil {
         httpConnection.setConnectTimeout(TIMEOUT);
         // 设置 header
         if (headerParameters != null) {
-            Iterator<String> iteratorHeader = headerParameters.keySet()
-                    .iterator();
+            Iterator<String> iteratorHeader = headerParameters.keySet().iterator();
             while (iteratorHeader.hasNext()) {
                 String key = iteratorHeader.next();
                 httpConnection.setRequestProperty(key,
@@ -104,11 +104,9 @@ public class HttpUtil {
      * @return
      * @throws Exception
      */
-    public static String post(String address,
-            Map<String, String> headerParameters) throws Exception {
+    public static String post(String address,String param) throws Exception {
 
-        return proxyHttpRequest(address, "POST", null,
-                getRequestBody(headerParameters));
+        return proxyHttpRequest(address, "POST", null,getRequestBody(param));
     }
 
     /**
@@ -119,11 +117,9 @@ public class HttpUtil {
      * @return
      * @throws Exception
      */
-    public static String get(String address,
-            Map<String, String> headerParameters) throws Exception {
+    public static String get(String address,String param) throws Exception {
 
-        return proxyHttpRequest(address + "?"
-                + getRequestBody(headerParameters), "GET", null, null);
+        return proxyHttpRequest(address + "?"+ getRequestBody(param), "GET", null, null);
     }
 
     /**
@@ -136,13 +132,13 @@ public class HttpUtil {
      * @throws Exception
      */
     public static String getFile(String address,
-            Map<String, String> headerParameters, File file) throws Exception {
+            String param, File file) throws Exception {
         String result = "fail";
 
         HttpURLConnection httpConnection = null;
         try {
             httpConnection = createConnection(address, "POST", null,
-                    getRequestBody(headerParameters));
+                    getRequestBody(param));
             result = readInputStream(httpConnection.getInputStream(), file);
 
         } catch (Exception e) {
@@ -158,13 +154,13 @@ public class HttpUtil {
     }
 
     public static byte[] getFileByte(String address,
-            Map<String, String> headerParameters) throws Exception {
+            String  param) throws Exception {
         byte[] result = null;
 
         HttpURLConnection httpConnection = null;
         try {
             httpConnection = createConnection(address, "POST", null,
-                    getRequestBody(headerParameters));
+                    getRequestBody(param));
             result = readInputStreamToByte(httpConnection.getInputStream());
 
         } catch (Exception e) {
@@ -293,19 +289,20 @@ public class HttpUtil {
      * @param params
      * @return
      */
-    public static String getRequestBody(Map<String, String> params) {
-        return getRequestBody(params, true);
+    public static String getRequestBody(String param) {
+        return getRequestBody(param, true);
     }
 
     /**
      * 将参数化为 body
      * @param params
      * @return
+     * @throws UnsupportedEncodingException 
      */
-    public static String getRequestBody(Map<String, String> params,
-            boolean urlEncode) {
+    public static String getRequestBody(String param,
+            boolean urlEncode){
         StringBuilder body = new StringBuilder();
-
+/*
         Iterator<String> iteratorHeader = params.keySet().iterator();
         while (iteratorHeader.hasNext()) {
             String key = iteratorHeader.next();
@@ -321,13 +318,19 @@ public class HttpUtil {
             } else {
                 body.append(key + "=" + value + "&");
             }
+        }*/
+        if(StringUtils.isNotBlank(param)){
+        	try {
+				body.append("param=" + URLEncoder.encode(param, ENCODING));
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
-
         if (body.length() == 0) {
             return "";
         }
-        String param = body.substring(0, body.length() - 1);
-        return param;
+        return body.toString();
     }
 
     /**
@@ -415,11 +418,11 @@ public class HttpUtil {
                 //请求地址
                 String address = "http://www.liguanjia.com/index.php/api";
                 //请求参数
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("param", "{param: [{func: GetSku,token: afsdfa5sd2faa,page: 10}]}");//这是该接口需要的参数
+                
+                String param = "{param: [{func:GetSku,token: afsdfa5sd2faa,page: 10}]}";//这是该接口需要的参数
 
                 // 调用 post 请求
-                String res = post(address, params);
+                String res = post(address, param);
                 System.out.println("返回参数"+res);//打印返回参数
 
                 res = res.substring(res.indexOf("{"));//截取

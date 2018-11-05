@@ -8,4 +8,18 @@ public class JdRequestBaseEntity {
 	public static String token;
 	
 	
+	public static String getFunc() {
+		return func;
+	}
+	public static void setFunc(String func) {
+		JdRequestBaseEntity.func = func;
+	}
+	public static String getToken() {
+		return token;
+	}
+	public static void setToken(String token) {
+		JdRequestBaseEntity.token = token;
+	}
+	
+	
 }
