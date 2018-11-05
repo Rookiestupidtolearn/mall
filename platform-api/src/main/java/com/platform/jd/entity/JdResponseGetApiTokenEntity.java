@@ -6,7 +6,7 @@ import java.util.Date;
  * 获取token响应实体
  *
  */
-public class GetApiTokenResponseEntity extends JdResponseBaseEntity {
+public class JdResponseGetApiTokenEntity extends JdResponseBaseEntity {
 	
 	private String token;//token
 	private Date time; //	当前时间

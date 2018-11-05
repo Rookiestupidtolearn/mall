@@ -4,15 +4,15 @@ package com.platform.jd.entity;
  * 获取安全码响应实体
  *
  */
-public class GetTokenSafeCodeResponseEntity extends JdResponseBaseEntity {
+public class JdResponseGetTokenSafeCodeEntity extends JdResponseBaseEntity {
 	
 	private String safecode; //安全加密码
 	
-	public GetTokenSafeCodeResponseEntity() {
+	public JdResponseGetTokenSafeCodeEntity() {
 		super();
 	}
 
-	public GetTokenSafeCodeResponseEntity(String safecode) {
+	public JdResponseGetTokenSafeCodeEntity(String safecode) {
 		this.safecode = safecode;
 	}
 
