@@ -155,5 +155,4 @@ public class SysDeptController extends AbstractController {
 
         return R.ok();
     }
-
 }
