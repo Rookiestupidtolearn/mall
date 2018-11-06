@@ -12,7 +12,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -31,7 +30,7 @@ public class HttpUtil {
 	//设置编码
     public static final String ENCODING = "UTF-8";
     
-    protected Logger logger = Logger.getLogger(getClass());
+    protected static final Logger logger = Logger.getLogger(HttpUtil.class);
     /**
      * 创建HTTP连接
      * 
@@ -46,13 +45,11 @@ public class HttpUtil {
      * @return
      * @throws Exception
      */
-    private static HttpURLConnection createConnection(String url,
-            String method, Map<String, String> headerParameters, String body)
+    private static HttpURLConnection createConnection(String url,String method, Map<String, String> headerParameters, String body)
             throws Exception {
         URL Url = new URL(url);
         trustAllHttpsCertificates();
-        HttpURLConnection httpConnection = (HttpURLConnection) Url
-                .openConnection();
+        HttpURLConnection httpConnection = (HttpURLConnection) Url.openConnection();
         // 设置请求时间
         httpConnection.setConnectTimeout(TIMEOUT);
         // 设置 header
@@ -60,12 +57,10 @@ public class HttpUtil {
             Iterator<String> iteratorHeader = headerParameters.keySet().iterator();
             while (iteratorHeader.hasNext()) {
                 String key = iteratorHeader.next();
-                httpConnection.setRequestProperty(key,
-                        headerParameters.get(key));
+                httpConnection.setRequestProperty(key,headerParameters.get(key));
             }
         }
-        httpConnection.setRequestProperty("Content-Type",
-                "application/x-www-form-urlencoded;charset=" + ENCODING);
+        httpConnection.setRequestProperty("Content-Type","application/x-www-form-urlencoded;charset=" + ENCODING);
 
         // 设置请求方法
         httpConnection.setRequestMethod(method);
@@ -87,12 +82,8 @@ public class HttpUtil {
         // 请求结果
         int responseCode = httpConnection.getResponseCode();
         if (responseCode != 200) {
-            throw new Exception(responseCode
-                    + ":"
-                    + inputStream2String(httpConnection.getErrorStream(),
-                            ENCODING));
+            throw new Exception(responseCode +":"+ inputStream2String(httpConnection.getErrorStream(),ENCODING));
         }
-
         return httpConnection;
     }
 
@@ -105,7 +96,6 @@ public class HttpUtil {
      * @throws Exception
      */
     public static String post(String address,String param) throws Exception {
-
         return proxyHttpRequest(address, "POST", null,getRequestBody(param));
     }
 
@@ -118,7 +108,6 @@ public class HttpUtil {
      * @throws Exception
      */
     public static String get(String address,String param) throws Exception {
-
         return proxyHttpRequest(address + "?"+ getRequestBody(param), "GET", null, null);
     }
 
@@ -131,16 +120,12 @@ public class HttpUtil {
      * @return
      * @throws Exception
      */
-    public static String getFile(String address,
-            String param, File file) throws Exception {
+    public static String getFile(String address,String param, File file) throws Exception {
         String result = "fail";
-
         HttpURLConnection httpConnection = null;
         try {
-            httpConnection = createConnection(address, "POST", null,
-                    getRequestBody(param));
+            httpConnection = createConnection(address, "POST", null,getRequestBody(param));
             result = readInputStream(httpConnection.getInputStream(), file);
-
         } catch (Exception e) {
             throw e;
         } finally {
@@ -153,25 +138,19 @@ public class HttpUtil {
         return result;
     }
 
-    public static byte[] getFileByte(String address,
-            String  param) throws Exception {
+    public static byte[] getFileByte(String address,String  param) throws Exception {
         byte[] result = null;
-
         HttpURLConnection httpConnection = null;
         try {
-            httpConnection = createConnection(address, "POST", null,
-                    getRequestBody(param));
+            httpConnection = createConnection(address, "POST", null,getRequestBody(param));
             result = readInputStreamToByte(httpConnection.getInputStream());
-
         } catch (Exception e) {
             throw e;
         } finally {
             if (httpConnection != null) {
                 httpConnection.disconnect();
             }
-
         }
-
         return result;
     }
 
@@ -181,11 +160,9 @@ public class HttpUtil {
      * @return
      * @throws Exception
      */
-    public static String readInputStream(InputStream in, File file)
-            throws Exception {
+    public static String readInputStream(InputStream in, File file)throws Exception {
         FileOutputStream out = null;
         ByteArrayOutputStream output = null;
-
         try {
             output = new ByteArrayOutputStream();
             byte[] buffer = new byte[1024];
@@ -193,10 +170,8 @@ public class HttpUtil {
             while ((len = in.read(buffer)) != -1) {
                 output.write(buffer, 0, len);
             }
-
             out = new FileOutputStream(file);
             out.write(output.toByteArray());
-
         } catch (Exception e) {
             throw e;
         } finally {
@@ -251,28 +226,18 @@ public class HttpUtil {
      * @return
      * @throws Exception
      */
-    public static String proxyHttpRequest(String address, String method,
-            Map<String, String> headerParameters, String body) throws Exception {
+    public static String proxyHttpRequest(String address, String method,Map<String, String> headerParameters, String body) throws Exception {
         String result = null;
         HttpURLConnection httpConnection = null;
-
         try {
-            httpConnection = createConnection(address, method,
-                    headerParameters, body);
-
+            httpConnection = createConnection(address, method,headerParameters, body);
             String encoding = "UTF-8";
-            if (httpConnection.getContentType() != null
-                    && httpConnection.getContentType().indexOf("charset=") >= 0) {
-                encoding = httpConnection.getContentType()
-                        .substring(
-                                httpConnection.getContentType().indexOf(
-                                        "charset=") + 8);
+            if (httpConnection.getContentType() != null && httpConnection.getContentType().indexOf("charset=") >= 0) {
+                encoding = httpConnection.getContentType().substring(httpConnection.getContentType().indexOf("charset=") + 8);
             }
-            result = inputStream2String(httpConnection.getInputStream(),
-                    encoding);
+            result = inputStream2String(httpConnection.getInputStream(),encoding);
             // logger.info("HTTPproxy response: {},{}", address,
             // result.toString());
-
         } catch (Exception e) {
             // logger.info("HTTPproxy error: {}", e.getMessage());
             throw e;
@@ -299,11 +264,9 @@ public class HttpUtil {
      * @return
      * @throws UnsupportedEncodingException 
      */
-    public static String getRequestBody(String param,
-            boolean urlEncode){
+    public static String getRequestBody(String param,boolean urlEncode){
         StringBuilder body = new StringBuilder();
-/*
-        Iterator<String> iteratorHeader = params.keySet().iterator();
+        /*Iterator<String> iteratorHeader = params.keySet().iterator();
         while (iteratorHeader.hasNext()) {
             String key = iteratorHeader.next();
             String value = params.get(key);
@@ -321,6 +284,7 @@ public class HttpUtil {
         }*/
         if(StringUtils.isNotBlank(param)){
         	try {
+        		//此处param因调用jd接口故写死
 				body.append("param=" + URLEncoder.encode(param, ENCODING));
 			} catch (UnsupportedEncodingException e) {
 				// TODO Auto-generated catch block
@@ -340,18 +304,14 @@ public class HttpUtil {
      * @return
      * @throws IOException
      */
-    private static String inputStream2String(InputStream input, String encoding)
-            throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(input,
-                encoding));
+    private static String inputStream2String(InputStream input, String encoding)throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(input,encoding));
         StringBuilder result = new StringBuilder();
         String temp = null;
         while ((temp = reader.readLine()) != null) {
             result.append(temp);
         }
-
         return result.toString();
-
     }
 
 
@@ -368,11 +328,9 @@ public class HttpUtil {
         javax.net.ssl.TrustManager[] trustAllCerts = new javax.net.ssl.TrustManager[1];
         javax.net.ssl.TrustManager tm = new miTM();
         trustAllCerts[0] = tm;
-        javax.net.ssl.SSLContext sc = javax.net.ssl.SSLContext
-                .getInstance("SSL");
+        javax.net.ssl.SSLContext sc = javax.net.ssl.SSLContext.getInstance("SSL");
         sc.init(null, trustAllCerts, null);
-        javax.net.ssl.HttpsURLConnection.setDefaultSSLSocketFactory(sc
-                .getSocketFactory());
+        javax.net.ssl.HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
     }
 
 
