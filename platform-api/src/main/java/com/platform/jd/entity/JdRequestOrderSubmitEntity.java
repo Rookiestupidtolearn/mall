@@ -14,7 +14,7 @@ public class JdRequestOrderSubmitEntity extends JdRequestBaseEntity {
 	private BigDecimal order_amount; //	订单金额 （协议价总额）
 	private String name; //	收货人姓名
 	private String mobile; //	收货人联系电话
-	private String aprovince;//	一级地址
+	private String province;//	一级地址
 	private String city; //	二级地址
 	private String county; //	三级地址
 	private String town;// 非必须	四级地址(如果该地区有四级地址，则必须传递四级地址)
@@ -55,11 +55,11 @@ public class JdRequestOrderSubmitEntity extends JdRequestBaseEntity {
 	public void setMobile(String mobile) {
 		this.mobile = mobile;
 	}
-	public String getAprovince() {
-		return aprovince;
+	public String getProvince() {
+		return province;
 	}
-	public void setAprovince(String aprovince) {
-		this.aprovince = aprovince;
+	public void setProvince(String aprovince) {
+		this.province = aprovince;
 	}
 	public String getCity() {
 		return city;

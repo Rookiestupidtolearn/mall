@@ -6,5 +6,15 @@ package com.platform.jd.entity;
  */
 public class JdRequestSkuDetailEntity extends JdRequestBaseEntity{
 	
-	private Integer sku; //商品编号，只支持单个查询
+	private String sku; //商品编号，只支持单个查询
+
+	public String getSku() {
+		return sku;
+	}
+
+	public void setSku(String sku) {
+		this.sku = sku;
+	}
+	
+	
 }
