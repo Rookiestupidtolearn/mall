@@ -1,24 +1,25 @@
 package com.platform.jd.entity;
 
-public class JdRequestBaseEntity {
+
+public class JdRequestBaseEntity{
 	
 	//方法名
-	public static String func;
+	public String func;
 	//token
-	public static String token;
+	public String token;
 	
 	
-	public static String getFunc() {
+	public String getFunc() {
 		return func;
 	}
-	public static void setFunc(String func) {
-		JdRequestBaseEntity.func = func;
+	public void setFunc(String func) {
+		this.func = func;
 	}
-	public static String getToken() {
+	public String getToken() {
 		return token;
 	}
-	public static void setToken(String token) {
-		JdRequestBaseEntity.token = token;
+	public void setToken(String token) {
+		this.token = token;
 	}
 	
 	
