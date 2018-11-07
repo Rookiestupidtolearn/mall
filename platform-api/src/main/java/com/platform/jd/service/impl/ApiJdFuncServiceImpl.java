@@ -3,6 +3,8 @@ package com.platform.jd.service.impl;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.platform.jd.entity.JdRequestCheckAreaLimitEntity;
@@ -49,6 +51,7 @@ import com.platform.jd.entity.JdResponseSkuStateEntity;
 import com.platform.jd.service.ApiJdFuncService;
 import com.platform.jd.util.HttpUtil;
 
+@Service
 public class ApiJdFuncServiceImpl implements ApiJdFuncService {
     
 	public static String url = "http://www.liguanjia.com/index.php/api";

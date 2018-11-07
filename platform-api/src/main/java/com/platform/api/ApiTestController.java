@@ -3,6 +3,7 @@ package com.platform.api;
 import com.platform.annotation.IgnoreAuth;
 import com.platform.annotation.LoginUser;
 import com.platform.entity.UserVo;
+import com.platform.jd.util.PropertiesUtil;
 import com.platform.service.ApiUserService;
 import com.platform.utils.R;
 import io.swagger.annotations.Api;
@@ -43,6 +44,18 @@ public class ApiTestController {
         return R.ok().put("msg", "无需token也能访问。。。");
     }
 
+
+    /**
+     * 测试
+     */
+    @IgnoreAuth
+    @PostMapping(value = "propter")
+    public Object test() {
+    	String ss = PropertiesUtil.getValue("jd.properties", "jd_url");
+    	
+        return R.ok().put("propter", "可以了");
+    }
+    
     /**
      * 根据手机号查询用户信息接口测试方法
      *
