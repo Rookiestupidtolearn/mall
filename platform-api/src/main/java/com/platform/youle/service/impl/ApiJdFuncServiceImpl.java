@@ -3,6 +3,7 @@ package com.platform.youle.service.impl;
 import java.util.Calendar;
 import java.util.Map;
 
+import com.platform.youle.entity.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -12,14 +13,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.platform.youle.constant.Constants;
 import com.platform.youle.constant.Constants.Urls;
-import com.platform.youle.entity.GoodsImagePathVo;
-import com.platform.youle.entity.JdGoodsVo;
-import com.platform.youle.entity.RequestBaseEntity;
-import com.platform.youle.entity.RequestProductEntity;
-import com.platform.youle.entity.ResponseBaseEntity;
-import com.platform.youle.entity.ResponseProductEntity;
-import com.platform.youle.entity.ResponseSaleStatusEntity;
-import com.platform.youle.entity.ResponseSkuDetailEntity;
 import com.platform.youle.service.AbsApiFuncServicein;
 import com.platform.youle.util.HttpUtil;
 import com.platform.youle.util.TokenUtil;
@@ -57,9 +50,8 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
 		ResponseBaseEntity<?>  reponse=null;
         RequestBaseEntity entity = new RequestBaseEntity();
 	    initRequestParam(entity);
-        entity.setTimestamp(getTimestamp());
 		try {
-			  logger.info("[1.1获取所有商品ID]入参："+JSONObject.toJSONString(entity));
+		    logger.info("[1.1获取所有商品ID]入参："+JSONObject.toJSONString(entity));
 			String result = HttpUtil.post(Urls.base_test_url+Urls.getAllProductIdsUrl, objectToMap(entity));
 			reponse = JSON.parseObject(result,new TypeReference<ResponseBaseEntity>(){});
 		} catch (Exception e) {
@@ -68,52 +60,7 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
 		return reponse;
 	}
 
-	public static void main(String[] args) {
-		String str = " { "
-				 +" 	'RESPONSE_STATUS': 'true', "
-				 +" 	'RESULT_DATA': { "
-				 +" 		'PRODUCT_DATA': { "
-				 +" 			'productId': 1101, "
-				 +" 			'name': 'API接口测试产品', "
-				 +" 			'type': 'system', "
-				 +" 			'thumbnailImage': 'http://img.fygift.com/thumbnail/2016/6/4447263056278594047.jpg', "
-				 +" 			'brand': '九阳', "
-				 +" 			'productCate': 896, "
-				 +" 			'productCode': 'GALAXY29', "
-				 +" 			'status': 'selling', "
-				 +" 			'marketPrice': 2427.0, "
-				 +" 			'retailPrice': 29.0, "
-				 +" 			'productPlace': '深圳', "
-				 +" 			'features': '这是一个测试产品, 勿拍', "
-				 +" 			'hot': false, "
-				 +" 			'createTime': '2016-03-18 13:41:28', "
-				 +" 			'is7ToReturn': false "
-				 +" 		}, "
-				 +" 		'PRODUCT_IMAGE': [{ "
-				 +" 				'imageUrl': 'http://img.fygift.com//2016/6/4447263056278594047.jpg', "
-				 +" 				'orderSort': 0 "
-				 +" 			}, "
-				 +" 			{ "
-				 +" 				'imageUrl': 'http://img.fygift.com//2016/6/845661839931297772.jpg', "
-				 +" 				'orderSort': 1 "
-				 +" 			} "
-				 +" 		], "
-				 +" 		'PRODUCT_DESCRIPTION': '产品名称：空气净化器</br >产品型号：RSD-JC66R</br>外箱尺寸 540*278*680mm <p > < img src = ’http: //img.fygift.com/attach/2014/10/8624759654857092274.jpg’ style=’height:634px; width:725px’/></p> ', "
-				 +" 		'MOBILE_PRODUCT_DESCRIPTION': '' "
-				 +" 	} "
-				 +" } ";
-//		JSONObject obj = JSONObject.parseObject(str);
-//		String date = obj.get("RESULT_DATA").toString();
-//		if(StringUtils){
-//			
-//		}
-//		System.out.println(JSONObject.parseObject().get("PRODUCT_DESCRIPTION"));
-//		JdGoodsVo good = new JdGoodsVo();
-//		good.setMobileProductDecription(obj.get("RESULT_DATA"));
-//		good.setProductDecription(obj.get("RESULT_DATA").toString());
-//		GoodsImagePathVo imagePath = new GoodsImagePathVo();
 
-	}
 	@Override
 	public ResponseProductEntity getProductIdsByPage(Integer page) {
 		
@@ -163,12 +110,68 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
 
     @Override
     public ResponseSaleStatusEntity getsaleStatus(Integer pid) {
+        ResponseSaleStatusEntity reponse = null;
+        RequstSaleStatusEntity entity = new RequstSaleStatusEntity();
+        initRequestParam(entity);
+        entity.setPid(pid);
+        try {
+            logger.info("[1.6查询商品可售状态]入参："+JSONObject.toJSONString(entity));
+            String result = HttpUtil.post(Urls.base_test_url+Urls.saleStatus, objectToMap(entity));
+            reponse = JSON.parseObject(result,ResponseSaleStatusEntity.class);
+        } catch (Exception e) {
+            logger.error("[1.6查询商品可售状态]异常",e);
+        }
+        return reponse;
+    }
 
+    @Override
+    protected ResponseGetPriceEntity getPrice(Integer pid) {
+        ResponseGetPriceEntity reponse = null;
+        RequstSaleStatusEntity entity = new RequstSaleStatusEntity();
+        initRequestParam(entity);
+        entity.setPid(pid);
+        try {
+            logger.info("[1.7查询商品协议价]入参："+JSONObject.toJSONString(entity));
+            String result = HttpUtil.post(Urls.base_test_url+Urls.getPrice, objectToMap(entity));
+            reponse = JSON.parseObject(result,ResponseGetPriceEntity.class);
+        } catch (Exception e) {
+            logger.error("[1.7查询商品协议价]异常",e);
+        }
+        return reponse;
+    }
 
+    @Override
+    protected ResponseBaseEntity<?> batchSaleStatus(String pids) {
 
+        ResponseBaseEntity reponse =null;
+        RequsetBatchSaleStatusEntity entity = new RequsetBatchSaleStatusEntity();
+        initRequestParam(entity);
+        entity.setPids(pids);
+        try {
+            logger.info("[1.8批量查询商品可售状态]入参："+JSONObject.toJSONString(entity));
+            String result = HttpUtil.post(Urls.base_test_url+Urls.batchSaleStatus, objectToMap(entity));
+            reponse = JSON.parseObject(result,ResponseBaseEntity.class);
+        } catch (Exception e) {
+            logger.error("[1.8批量查询商品可售状态]异常",e);
+        }
+        return reponse;
+    }
 
-
-
-        return null;
+    @Override
+    protected ResponseBaseEntity<?> batchGetPrice(String pids) {
+        ResponseBaseEntity reponse =null;
+        RequsetBatchSaleStatusEntity entity = new RequsetBatchSaleStatusEntity();
+        initRequestParam(entity);
+        entity.setPids(pids);
+        try {
+            logger.info("[1.9批量查询商品协议价]入参："+JSONObject.toJSONString(entity));
+            String result = HttpUtil.post(Urls.base_test_url+Urls.batchSaleStatus, objectToMap(entity));
+            reponse = JSON.parseObject(result,ResponseBaseEntity.class);
+        } catch (Exception e) {
+            logger.error("[1.9批量查询商品协议价]异常",e);
+        }
+        return reponse;
     }
 }
+
+

@@ -82,7 +82,29 @@ public abstract  class AbsApiFuncServicein implements IApiFuncServicein{
      */
     protected abstract ResponseSaleStatusEntity getsaleStatus(Integer pid);
 
+    /**
+     * 1.7查询商品协议价
+     * @param pid
+     * @return
+     */
+    protected abstract ResponseGetPriceEntity getPrice(Integer pid);
+
+
+    /**
+     * 1.8批量查询商品可售状态
+     * @param pids
+     * @return
+     */
+
+    protected abstract ResponseBaseEntity<?> batchSaleStatus(String pids);
 
 
 
+    /**
+     * 1.9批量查询商品协议价
+     * @param pids
+     * @return
+     */
+
+    protected abstract ResponseBaseEntity<?> batchGetPrice(String pids);
 }
