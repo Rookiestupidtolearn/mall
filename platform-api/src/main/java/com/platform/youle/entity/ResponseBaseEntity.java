@@ -1,12 +1,14 @@
 package com.platform.youle.entity;
 
+import java.util.List;
+
 public class ResponseBaseEntity {
 	
 	private String RESPONSE_STATUS;
 	private String ERROR_CODE;
 	private String ERROR_MESSAGE;
 	private String TOTAL_AMOUNT;
-	private String RESULT_DATA;
+	private List<String> RESULT_DATA;
 	public String getRESPONSE_STATUS() {
 		return RESPONSE_STATUS;
 	}
@@ -31,10 +33,10 @@ public class ResponseBaseEntity {
 	public void setTOTAL_AMOUNT(String tOTAL_AMOUNT) {
 		TOTAL_AMOUNT = tOTAL_AMOUNT;
 	}
-	public String getRESULT_DATA() {
+	public List<String> getRESULT_DATA() {
 		return RESULT_DATA;
 	}
-	public void setRESULT_DATA(String rESULT_DATA) {
+	public void setRESULT_DATA(List<String> rESULT_DATA) {
 		RESULT_DATA = rESULT_DATA;
 	}
 	
