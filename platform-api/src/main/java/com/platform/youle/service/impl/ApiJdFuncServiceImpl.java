@@ -85,9 +85,8 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
             String result = HttpUtil.post(Urls.base_test_url+Urls.detial, objectToMap(entity));
             logger.info("[1.3获取单个商品详情]出参："+result);
             reponse = JSON.parseObject(result,new TypeReference<ResponseSkuDetailEntity>(){});
-            return reponse;
         } catch (Exception e) {
-            logger.info("[1.3获取单个商品详情]异常：", e);
+            logger.error("[1.3获取单个商品详情]异常：", e);
         }
         return reponse;
     }
@@ -131,8 +130,6 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
         }
         return reponse;
     }
-
-
 	
     @Override
     public ResponseSaleStatusEntity getsaleStatus(Integer pid) {
@@ -228,7 +225,7 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
 			logger.info("[2.4订单物流信息接口-根据己方订单号获取]出参："+result);
 			reponse = JSON.parseObject(result,ResponseOrderTrackEntity.class);
 		} catch (Exception e) {
-			logger.info("[2.4订单物流信息接口-根据己方订单号获取]异常：", e);
+			logger.error("[2.4订单物流信息接口-根据己方订单号获取]异常：", e);
 		}
 		return reponse;
 	}
