@@ -45,8 +45,8 @@ import com.platform.service.ApiGoodsService;
 import com.platform.service.ApiGoodsSpecificationService;
 import com.platform.service.ApiProductService;
 import com.platform.util.ApiBaseAction;
-import com.platform.youle.entity.RequestBaseEntity;
-import com.platform.youle.entity.ResponseBaseEntity;
+import com.platform.youle.entity.RequestSkuDetailEntity;
+import com.platform.youle.entity.ResponseSkuDetailEntity;
 import com.platform.youle.service.ApiFuncService;
 import com.platform.youle.util.TokenUtil;
 import com.qiniu.util.StringUtils;
@@ -703,14 +703,15 @@ public class ApiCartController extends ApiBaseAction {
     }
   
     @ApiOperation(value = "获取商品详情")
-    @PostMapping("getSkuDetail")
-    public Object  getSkuDetail(Long productId) {
-    	RequestBaseEntity entity = new RequestBaseEntity();
+    @PostMapping("detail")
+    public Object detail(Long productId) {
+    	RequestSkuDetailEntity entity = new RequestSkuDetailEntity();
 		entity.setWid("1322");
 		entity.setToken(TokenUtil.token);
 		Long currentTime = System.currentTimeMillis();
 		entity.setTimestamp(currentTime.toString());
-		ResponseBaseEntity response = apiFuncService.getSkuDetail(entity,productId);
+		entity.setPid(productId);
+		ResponseSkuDetailEntity response = apiFuncService.getSkuDetail(entity);
 		return response;
 	}
 

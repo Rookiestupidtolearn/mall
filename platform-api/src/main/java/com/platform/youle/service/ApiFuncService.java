@@ -1,7 +1,7 @@
 package com.platform.youle.service;
 
-import com.platform.youle.entity.RequestBaseEntity;
-import com.platform.youle.entity.ResponseBaseEntity;
+import com.platform.youle.entity.RequestSkuDetailEntity;
+import com.platform.youle.entity.ResponseSkuDetailEntity;
 
 public interface ApiFuncService {
 	
@@ -9,9 +9,8 @@ public interface ApiFuncService {
 	/**
 	 * 获取单个商品详情
 	 * @param entity
-	 * @param pid
 	 * @return
 	 */
-	public ResponseBaseEntity getSkuDetail(RequestBaseEntity entity,Long pid);
+	public ResponseSkuDetailEntity getSkuDetail(RequestSkuDetailEntity entity);
 		
 }
