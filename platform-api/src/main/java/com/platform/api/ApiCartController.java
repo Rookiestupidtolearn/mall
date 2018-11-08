@@ -719,6 +719,7 @@ public class ApiCartController extends ApiBaseAction {
 //		entity.setPid(productId);
 //		ResponseSkuDetailEntity response = IApiFuncServicein.getSkuDetail(params);
 		return response;
+		return null;
 	}
 
 }

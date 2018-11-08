@@ -1,6 +1,8 @@
 package com.platform.youle.service.impl;
 
 import java.util.Calendar;
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.Map;
 
 import com.platform.youle.entity.*;
@@ -13,9 +15,20 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.platform.youle.constant.Constants;
 import com.platform.youle.constant.Constants.Urls;
+import com.platform.youle.entity.GoodsImagePathVo;
+import com.platform.youle.entity.JdGoodsVo;
+import com.platform.youle.entity.RequestBaseEntity;
+import com.platform.youle.entity.RequestProductEntity;
+import com.platform.youle.entity.RequestProductStockBatchEntity;
+import com.platform.youle.entity.RequestProductStockEntity;
+import com.platform.youle.entity.ResponseBaseEntity;
+import com.platform.youle.entity.ResponseProductEntity;
+import com.platform.youle.entity.ResponseProductStockBatchEntity;
+import com.platform.youle.entity.ResponseProductStockEntity;
+import com.platform.youle.entity.ResponseSaleStatusEntity;
+import com.platform.youle.entity.ResponseSkuDetailEntity;
 import com.platform.youle.service.AbsApiFuncServicein;
 import com.platform.youle.util.HttpUtil;
-import com.platform.youle.util.TokenUtil;
 
 @Service
 public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
@@ -33,9 +46,7 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
 				if(reponse.isRESPONSE_STATUS()){
 					JdGoodsVo good = new JdGoodsVo();
 					GoodsImagePathVo imagePath = new GoodsImagePathVo();
-					
-					
-					
+
 				}
 			}
 			return reponse;
@@ -53,6 +64,7 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
 		try {
 		    logger.info("[1.1获取所有商品ID]入参："+JSONObject.toJSONString(entity));
 			String result = HttpUtil.post(Urls.base_test_url+Urls.getAllProductIdsUrl, objectToMap(entity));
+			logger.info("[1.1获取所有商品ID]出参："+result);
 			reponse = JSON.parseObject(result,new TypeReference<ResponseBaseEntity>(){});
 		} catch (Exception e) {
 			logger.error("[1.1获取所有商品ID]异常",e);
@@ -63,51 +75,60 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
 
 	@Override
 	public ResponseProductEntity getProductIdsByPage(Integer page) {
-		
+		ResponseBaseEntity<?>  reponse=null;
 		RequestProductEntity entity = new RequestProductEntity();
-		  Long timestamp = Calendar.getInstance().getTimeInMillis() ;
-			entity.setTimestamp(timestamp.toString());
-			entity.setToken(TokenUtil.token);
-			entity.setWid(TokenUtil.wid);
-		    entity.setPage(page);
-			String str = JSON.toJSONString(entity);
-			System.out.println("请求参数:"+str);
+		  initRequestParam(entity);
+		  entity.setTimestamp(getTimestamp());
 			try {
-				  Map<String,Object> map1 = (Map<String,Object>) JSON.parse(str);
-				String result = HttpUtil.post("http://open.fygift.com/api/product/getAllProductIds.php", map1);
-				System.out.println("结果:"+result);
-				ResponseProductEntity reponse = JSON.parseObject(result,new TypeReference<ResponseProductEntity>(){});
-				return reponse;
+				  logger.info("[1.2分页获取当前页商品ID, 每页数据100条]入参："+JSONObject.toJSONString(entity));
+				String result = HttpUtil.post(Urls.base_test_url+Urls.getProductIdsByPage, objectToMap(entity));
+				logger.info("[1.2分页获取当前页商品ID, 每页数据100条："+result);
+				reponse = JSON.parseObject(result,new TypeReference<ResponseBaseEntity>(){});
 			} catch (Exception e) {
-				
-				e.printStackTrace();
+				logger.error("[1.2分页获取当前页商品ID, 每页数据100条]异常",e);
 			}
+			
 		return null;
 	}
 
 	@Override
-	public ResponseProductEntity stock(String pid, String num, String address) {
-		RequestProductEntity entity = new RequestProductEntity();
-		  Long timestamp = Calendar.getInstance().getTimeInMillis() ;
-			entity.setTimestamp(timestamp.toString());
-			entity.setToken(TokenUtil.token);
-			entity.setWid(TokenUtil.wid);
-		
-			String str = JSON.toJSONString(entity);
-			System.out.println("请求参数:"+str);
+	public ResponseProductEntity stock(String pid, Integer num, String address) {
+		ResponseProductStockEntity  reponse=null;
+		RequestProductStockEntity entity = new RequestProductStockEntity();
+		initRequestParam(entity);
+		  entity.setPid(pid);
+		  entity.setNum(num);
+		  entity.setAddress(address);
 			try {
-				  Map<String,Object> map1 = (Map<String,Object>) JSON.parse(str);
-				String result = HttpUtil.post("http://open.fygift.com/api/product/getAllProductIds.php", map1);
-				System.out.println("结果:"+result);
-				ResponseProductEntity reponse = JSON.parseObject(result,new TypeReference<ResponseProductEntity>(){});
-				return reponse;
+				  logger.info("[1.4单个查询商品库存]入参："+JSONObject.toJSONString(entity));
+				String result = HttpUtil.post(Urls.base_test_url+Urls.stock, objectToMap(entity));
+				logger.info("[1.4单个查询商品库存"+result);
+				reponse = JSON.parseObject(result,new TypeReference<ResponseProductStockEntity>(){});
 			} catch (Exception e) {
-				
-				e.printStackTrace();
+				logger.error("[1.4单个查询商品库存]异常",e);
 			}
+			
 		return null;
 	}
 
+	@Override
+	protected ResponseProductStockBatchEntity stockBatch(String pid_nums, String address) {
+		ResponseProductStockBatchEntity  reponse=null;
+		RequestProductStockBatchEntity entity = new RequestProductStockBatchEntity();
+		initRequestParam(entity);
+		  entity.setPid_nums(pid_nums);
+		  entity.setAddress(address);
+			try {
+				  logger.info("[1.5批量查询商品库存]："+JSONObject.toJSONString(entity));
+				String result = HttpUtil.post(Urls.base_test_url+Urls.stock, objectToMap(entity));
+				logger.info("[1.5批量查询商品库存"+result);
+				reponse = JSON.parseObject(result,new TypeReference<ResponseProductStockBatchEntity>(){});
+			} catch (Exception e) {
+				logger.error("[1.5批量查询商品库存",e);
+			}
+		return null;
+	}
+	
     @Override
     public ResponseSaleStatusEntity getsaleStatus(Integer pid) {
         ResponseSaleStatusEntity reponse = null;
@@ -172,6 +193,8 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
         }
         return reponse;
     }
+
+
 }
 
 
