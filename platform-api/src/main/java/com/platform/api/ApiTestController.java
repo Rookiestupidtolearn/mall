@@ -56,7 +56,7 @@ public class ApiTestController {
     @IgnoreAuth
     @PostMapping(value = "propter")
     public Object test() {
-    	IApiFuncServicein.getAllProductIds();
+    	
         return R.ok().put("propter", "可以了");
     }
     

@@ -1,12 +1,16 @@
 package com.platform.youle.service;
 
-import com.alibaba.fastjson.JSON;
-import com.platform.youle.entity.*;
-import com.platform.youle.util.HttpUtil;
-import com.platform.youle.util.TokenUtil;
-
 import java.util.Calendar;
 import java.util.Map;
+
+import com.alibaba.fastjson.JSON;
+import com.platform.youle.entity.RequestBaseEntity;
+import com.platform.youle.entity.ResponseBaseEntity;
+import com.platform.youle.entity.ResponseProductEntity;
+import com.platform.youle.entity.ResponseProductStockBatchEntity;
+import com.platform.youle.entity.ResponseSaleStatusEntity;
+import com.platform.youle.entity.ResponseSkuDetailEntity;
+import com.platform.youle.util.TokenUtil;
 
 /**
  * 抽象类
@@ -72,9 +76,10 @@ public abstract  class AbsApiFuncServicein implements IApiFuncServicein{
 	 * @param address
 	 * @return
 	 */
-    protected abstract ResponseProductEntity stock(String pid, String num, String address);
+    protected abstract ResponseProductEntity stock(String pid, Integer num, String address);
 
-
+    protected abstract ResponseProductStockBatchEntity stockBatch(String pid_nums,String address);
+    
     /**
      * 1.6查询商品可售状态
      * @param 商品ID
