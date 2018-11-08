@@ -76,9 +76,8 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
             String result = HttpUtil.post(Urls.base_test_url+Urls.detial, objectToMap(entity));
             logger.info("[1.3获取单个商品详情]出参："+result);
             reponse = JSON.parseObject(result,new TypeReference<ResponseSkuDetailEntity>(){});
-            return reponse;
         } catch (Exception e) {
-            logger.info("[1.3获取单个商品详情]异常：", e);
+            logger.error("[1.3获取单个商品详情]异常：", e);
         }
         return reponse;
     }
@@ -123,8 +122,6 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
         return reponse;
     }
 
-
-	
     @Override
     public ResponseSaleStatusEntity getsaleStatus(Integer pid) {
         ResponseSaleStatusEntity reponse = null;
@@ -189,7 +186,38 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
         }
         return reponse;
     }
+    
+	/*@Override
+	protected ResponseOrderSubmitEntity submit(RequestOrderSubmitEntity entity) {
+		ResponseOrderSubmitEntity reponse =null;
+        initRequestParam(entity);
+        try {
+            logger.info("[2.1创建订单接口]入参："+JSONObject.toJSONString(entity));
+            String result = HttpUtil.post(Urls.base_test_url+Urls.submit, objectToMap(entity));
+            logger.info("[2.1创建订单接口] 返回结果："+JSONObject.toJSONString(entity));
+            reponse = JSON.parseObject(result,ResponseOrderSubmitEntity.class);
+        } catch (Exception e) {
+            logger.error("[2.1创建订单接口]异常",e);
+        }
+        return reponse;
+	}*/
 
+	/*@Override
+	protected ReponseOrderDetailEntity detail(String orderKey) {
+		ReponseOrderDetailEntity reponse =null;
+		 RequestOrderDetailEntity entity = new RequestOrderDetailEntity(); 
+        initRequestParam(entity);
+        entity.setOrderKey(orderKey);
+        try {
+            logger.info("[2.2查询订单详情接口]入参："+JSONObject.toJSONString(entity));
+            String result = HttpUtil.post(Urls.base_test_url+Urls.detail, objectToMap(entity));
+            logger.info("[2.2查询订单详情接口] 返回结果："+JSONObject.toJSONString(entity));
+            reponse = JSON.parseObject(result,ReponseOrderDetailEntity.class);
+        } catch (Exception e) {
+            logger.error("[2.2查询订单详情接口]异常",e);
+        }
+        return reponse;
+	}*/
 	@Override
 	protected ResponseBaseEntity<?> thirdOrder(String thirdOrder) {
 		ResponseBaseEntity  reponse=null;
@@ -219,11 +247,28 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
 			logger.info("[2.4订单物流信息接口-根据己方订单号获取]出参："+result);
 			reponse = JSON.parseObject(result,ResponseOrderTrackEntity.class);
 		} catch (Exception e) {
-			logger.info("[2.4订单物流信息接口-根据己方订单号获取]异常：", e);
+			logger.error("[2.4订单物流信息接口-根据己方订单号获取]异常：", e);
 		}
 		return reponse;
 	}
 
+    /*@Override
+    protected ResponseSystemOrderTrackEntity systemOrderTrack(String orderKey) {
+        ResponseSystemOrderTrackEntity   reponse=null;
+        RequestOrderTrackEntity  entity = new RequestOrderTrackEntity();
+        initRequestParam(entity);
+        entity.setThirdOrder(orderKey);
+
+        try {
+            logger.info("2.5订单物流信息接口]入参："+JSONObject.toJSONString(entity));
+            String result = HttpUtil.post(Urls.base_test_url+Urls.systemOrderTrack, objectToMap(entity));
+            logger.info("[2.5订单物流信息接口]出参："+result);
+            reponse = JSON.parseObject(result,ResponseSystemOrderTrackEntity.class);
+        } catch (Exception e) {
+            logger.error("[2.5订单物流信息接口]异常：", e);
+        }
+        return reponse;
+    }*/
 
 	@Override
 	protected ResponseCancelEntity cancel(String thirdOrder) {
