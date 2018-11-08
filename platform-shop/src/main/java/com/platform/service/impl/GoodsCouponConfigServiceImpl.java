@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +34,7 @@ Service实现类
  */
 @Service("goodsCouponConfigService")
 public class GoodsCouponConfigServiceImpl implements GoodsCouponConfigService {
+	
     @Autowired
     private GoodsCouponConfigDao goodsCouponConfigDao;
 
@@ -61,9 +63,9 @@ public class GoodsCouponConfigServiceImpl implements GoodsCouponConfigService {
 		if (null != goodsCouponConfigEntity) {
 			throw new RRException("商品配比已存在！");
 		}
-		if(goodsCouponConfig.getGoodValue()<0||goodsCouponConfig.getGoodValue()>1){
+		/*if(goodsCouponConfig.getGoodValue()<0||goodsCouponConfig.getGoodValue()>1){
 			throw new RRException("商品配比值为大于0且小于等于1");
-		}
+		}*/
     	goodsCouponConfig.setDelFlag("0");
     	goodsCouponConfig.setCreateUserDeptId(user.getDeptId());
     	goodsCouponConfig.setCreateUserId(user.getUserId());
@@ -76,9 +78,9 @@ public class GoodsCouponConfigServiceImpl implements GoodsCouponConfigService {
     @Override
     public int update(GoodsCouponConfigEntity goodsCouponConfig) {
     	
-    	if(goodsCouponConfig.getGoodValue()<0||goodsCouponConfig.getGoodValue()>1){
+    	/*if(goodsCouponConfig.getGoodValue()<0||goodsCouponConfig.getGoodValue()>1){
 			throw new RRException("商品配比值为大于0且小于等于1");
-		}
+		}*/
         return goodsCouponConfigDao.update(goodsCouponConfig);
     }
 
@@ -93,7 +95,41 @@ public class GoodsCouponConfigServiceImpl implements GoodsCouponConfigService {
     }
 
 	@Override
-	public Integer[] selectGoodsIdsById(Integer[] ids) {
+	public List<GoodsCouponConfigEntity> selectGoodsIdsById(Integer[] ids) {
 		return goodsCouponConfigDao.selectGoodsIdsById(ids);
+	}
+
+	@Override
+	public String save(String normalMatching, String activityMatching, Integer[] goodsIds) {
+		try{
+			SysUserEntity user = ShiroUtils.getUserEntity();
+			//校验商品是否存在规格参数
+			List<GoodsCouponConfigEntity>  goodsCouponConfigEntity = goodsCouponConfigDao.selectGoodsIdsById(goodsIds);
+			if (CollectionUtils.isNotEmpty(goodsCouponConfigEntity)) {
+				StringBuffer sb = new StringBuffer();
+				for(GoodsCouponConfigEntity goodsCouponConfig : goodsCouponConfigEntity){
+					sb.append(goodsCouponConfig.getGoodsId()+",");
+				}
+				return sb.toString().substring(0,sb.toString().length()-1); //返回存在配比的商品id
+			//	throw new RRException("有商品配比已存在！");
+			}
+			//保存配比信息
+			for(int i =0;i<goodsIds.length;i++){
+				GoodsCouponConfigEntity gccf = new GoodsCouponConfigEntity();
+				gccf.setGoodsId(goodsIds[i]);
+				gccf.setNormalMatching(Double.parseDouble(normalMatching));
+				gccf.setActivityMatching(Double.parseDouble(activityMatching));
+				gccf.setDelFlag("0");
+				gccf.setCreateUserDeptId(user.getDeptId());
+				gccf.setCreateUserId(user.getUserId());
+				gccf.setUpdateUserId(user.getUserId());
+				gccf.setUpdateTime(new Date());
+				goodsCouponConfigDao.save(gccf);
+			}
+			return ""; //返回空字符串表示成功
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return "";
 	}
 }

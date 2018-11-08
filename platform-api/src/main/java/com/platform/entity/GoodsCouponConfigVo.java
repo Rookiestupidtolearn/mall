@@ -10,8 +10,10 @@ public class GoodsCouponConfigVo implements Serializable{
 	 private Integer id;
 	 //产品id
 	 private Integer goods_id;
-	 //商品配比值
-	 private double good_value;
+	 //正常配比值
+	 private double normalMatching;
+     //活动配比值
+     private double activityMatching;
 	 //创建者id
 	 private BigDecimal create_user_id;
 	 //更新者id
@@ -39,12 +41,20 @@ public class GoodsCouponConfigVo implements Serializable{
 		this.goods_id = goods_id;
 	}
 
-	public double getGood_value() {
-		return good_value;
+	public double getNormalMatching() {
+		return normalMatching;
 	}
 
-	public void setGood_value(double good_value) {
-		this.good_value = good_value;
+	public void setNormalMatching(double normalMatching) {
+		this.normalMatching = normalMatching;
+	}
+
+	public double getActivityMatching() {
+		return activityMatching;
+	}
+
+	public void setActivityMatching(double activityMatching) {
+		this.activityMatching = activityMatching;
 	}
 
 	public BigDecimal getCreate_user_id() {

@@ -1,5 +1,7 @@
 package com.platform.dao;
 
+import java.util.List;
+
 import com.platform.entity.GoodsEntity;
 
 /**
@@ -11,4 +13,6 @@ import com.platform.entity.GoodsEntity;
  */
 public interface GoodsDao extends BaseDao<GoodsEntity> {
     Integer queryMaxId();
+
+	List<GoodsEntity> queryGoodsList(Integer[] ids);
 }

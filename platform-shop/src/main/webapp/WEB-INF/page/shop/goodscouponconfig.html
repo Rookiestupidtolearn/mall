@@ -44,9 +44,11 @@
                     <i-option v-for="goods in goodss" :value="goods.id" :key="goods.id">{{goods.name}}</i-option>
                 </i-select>
             </Form-item>
-        
-            <Form-item label="配比值" prop="goodValue">
-                <i-input v-model="goodsCouponConfig.goodValue" placeholder="配比值"/>
+            <Form-item label="正常配比" prop="normalMatching">
+                <i-input v-model="goodsCouponConfig.normalMatching" placeholder="正常配比"/>
+            </Form-item>
+            <Form-item label="活动配比" prop="activityMatching">
+                <i-input v-model="goodsCouponConfig.activityMatching" placeholder="活动配比"/>
             </Form-item>
 
             <Form-item>

@@ -656,7 +656,7 @@ public class ApiCartController extends ApiBaseAction {
         			BigDecimal couponlPrice = BigDecimal.ZERO;//优惠券临时总价值
         			//计算该产品优惠券总和
         			if(goodsCoupon != null){
-        				couponlPrice = productInfo.getMarket_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(cart.getNumber()));
+        				//couponlPrice = productInfo.getMarket_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(cart.getNumber()));
         			}
         			couponTotalPrice = couponTotalPrice.add(couponlPrice);
         		}

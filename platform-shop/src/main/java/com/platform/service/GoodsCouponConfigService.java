@@ -46,6 +46,11 @@ public interface GoodsCouponConfigService {
      * @return 保存条数
      */
     int save(GoodsCouponConfigEntity goodsCouponConfig);
+    
+    /**
+     * 保存配比
+     * */
+    String save(String normalMatching,String activityMatching,Integer[] goodsIds);
 
     /**
      * 根据主键更新实体
@@ -76,5 +81,5 @@ public interface GoodsCouponConfigService {
 	 * @param ids
 	 * @return
 	 */
-	Integer[] selectGoodsIdsById(Integer[] ids);
+	List<GoodsCouponConfigEntity> selectGoodsIdsById(Integer[] ids);
 }
