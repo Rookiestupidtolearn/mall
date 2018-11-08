@@ -45,6 +45,10 @@ import com.platform.service.ApiGoodsService;
 import com.platform.service.ApiGoodsSpecificationService;
 import com.platform.service.ApiProductService;
 import com.platform.util.ApiBaseAction;
+import com.platform.youle.entity.RequestBaseEntity;
+import com.platform.youle.entity.ResponseBaseEntity;
+import com.platform.youle.service.ApiFuncService;
+import com.platform.youle.util.TokenUtil;
 import com.qiniu.util.StringUtils;
 
 import io.swagger.annotations.Api;
@@ -81,6 +85,9 @@ public class ApiCartController extends ApiBaseAction {
     private ApiCartMapper apiCartMapper;
     @Autowired
     private ApiTranInfoRecordMapper apiTranInfoRecordMapper;
+    @Autowired
+    private  ApiFuncService apiFuncService;
+
 
     
 	private Logger logger = LoggerFactory.getLogger(getClass());
@@ -695,6 +702,16 @@ public class ApiCartController extends ApiBaseAction {
     	 apiTranInfoRecordMapper.save(tranInfo);
     }
   
-    
+    @ApiOperation(value = "获取商品详情")
+    @PostMapping("getSkuDetail")
+    public Object  getSkuDetail(Long productId) {
+    	RequestBaseEntity entity = new RequestBaseEntity();
+		entity.setWid("1322");
+		entity.setToken(TokenUtil.token);
+		Long currentTime = System.currentTimeMillis();
+		entity.setTimestamp(currentTime.toString());
+		ResponseBaseEntity response = apiFuncService.getSkuDetail(entity,productId);
+		return response;
+	}
 
 }
