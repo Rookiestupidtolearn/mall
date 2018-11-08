@@ -1,22 +1,26 @@
 package com.platform.youle.service.impl;
 
+import java.util.Calendar;
 import java.util.Map;
 
-import com.platform.youle.service.AbsApiFuncServicein;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.Calendar;
-
-import com.platform.youle.entity.*;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.platform.youle.constant.Constants;
+import com.platform.youle.constant.Constants.Urls;
 import com.platform.youle.entity.GoodsImagePathVo;
 import com.platform.youle.entity.JdGoodsVo;
+import com.platform.youle.entity.RequestBaseEntity;
+import com.platform.youle.entity.RequestProductEntity;
+import com.platform.youle.entity.ResponseBaseEntity;
+import com.platform.youle.entity.ResponseProductEntity;
+import com.platform.youle.entity.ResponseSaleStatusEntity;
 import com.platform.youle.entity.ResponseSkuDetailEntity;
-import com.alibaba.fastjson.JSON;
+import com.platform.youle.service.AbsApiFuncServicein;
 import com.platform.youle.util.HttpUtil;
 import com.platform.youle.util.TokenUtil;
 
@@ -49,25 +53,19 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
 	}
 	
 	@Override
-	public  ResponseBaseEntity  getAllProductIds(){
+	public  ResponseBaseEntity<?>  getAllProductIds(){
+		ResponseBaseEntity<?>  reponse=null;
         RequestBaseEntity entity = new RequestBaseEntity();
 	    initRequestParam(entity);
-        entity.setTimestamp(String.valueOf(Calendar.getInstance().getTimeInMillis()));
-		String str = JSON.toJSONString(entity);
-		System.out.println("请求参数:"+str);
-        logger.info("");
+        entity.setTimestamp(getTimestamp());
 		try {
-            Map<String,Object> map1 = (Map<String,Object>) JSON.parse(str);
-			String result = HttpUtil.post("http://open.fygift.com/api/product/getAllProductIds.php", map1);
-			System.out.println("结果:"+result);
-			ResponseBaseEntity reponse = JSON.parseObject(result,new TypeReference<ResponseBaseEntity>(){});
-			return reponse;
+			  logger.info("[1.1获取所有商品ID]入参："+JSONObject.toJSONString(entity));
+			String result = HttpUtil.post(Urls.base_test_url+Urls.getAllProductIdsUrl, objectToMap(entity));
+			reponse = JSON.parseObject(result,new TypeReference<ResponseBaseEntity>(){});
 		} catch (Exception e) {
-			
-			e.printStackTrace();
+			logger.error("[1.1获取所有商品ID]异常",e);
 		}
-	    
-		return null;
+		return reponse;
 	}
 
 	public static void main(String[] args) {

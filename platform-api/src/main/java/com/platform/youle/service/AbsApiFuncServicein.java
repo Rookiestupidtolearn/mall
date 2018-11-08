@@ -37,13 +37,19 @@ public abstract  class AbsApiFuncServicein implements IApiFuncServicein{
             return map;
     }
 
-
+    /**
+     * 获取时间戳
+     * @return
+     */
+  public String getTimestamp (){
+	  return String.valueOf(Calendar.getInstance().getTimeInMillis());
+  }
 
     /**
      * 1.1获取所有商品ID
      * @return
      */
-    protected abstract ResponseBaseEntity getAllProductIds();
+    protected abstract 	ResponseBaseEntity<?>   getAllProductIds();
 
     /**
      * 1.2分页获取当前页商品ID, 每页数据100条
@@ -59,7 +65,13 @@ public abstract  class AbsApiFuncServicein implements IApiFuncServicein{
      */
     protected abstract ResponseSkuDetailEntity getSkuDetail(Map<String,Object> params);
 
-
+	/**
+	 * 1.4单个查询商品库存
+	 * @param pid
+	 * @param num
+	 * @param address
+	 * @return
+	 */
     protected abstract ResponseProductEntity stock(String pid, String num, String address);
 
 
