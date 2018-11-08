@@ -4,14 +4,7 @@ import java.util.Calendar;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
-import com.platform.youle.entity.RequestBaseEntity;
-import com.platform.youle.entity.ResponseBaseEntity;
-import com.platform.youle.entity.ResponseGetPriceEntity;
-import com.platform.youle.entity.ResponseOrderTrackEntity;
-import com.platform.youle.entity.ResponseProductEntity;
-import com.platform.youle.entity.ResponseProductStockBatchEntity;
-import com.platform.youle.entity.ResponseSaleStatusEntity;
-import com.platform.youle.entity.ResponseSkuDetailEntity;
+import com.platform.youle.entity.*;
 import com.platform.youle.util.TokenUtil;
 
 /**
@@ -124,4 +117,11 @@ public abstract  class AbsApiFuncServicein implements IApiFuncServicein{
      * @return
      */
     protected abstract ResponseOrderTrackEntity orderTrack(String thirdOrder);
+
+    /**
+     * 2.5订单物流信息接口-根据我方订单号获取
+     * @param thirdOrder
+     * @return
+     */
+    protected abstract ResponseSystemOrderTrackEntity systemOrderTrack(String orderKey);
 }

@@ -133,7 +133,8 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
     }
 
 
-	
+
+
     @Override
     public ResponseSaleStatusEntity getsaleStatus(Integer pid) {
         ResponseSaleStatusEntity reponse = null;
@@ -228,12 +229,28 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
 			logger.info("[2.4订单物流信息接口-根据己方订单号获取]出参："+result);
 			reponse = JSON.parseObject(result,ResponseOrderTrackEntity.class);
 		} catch (Exception e) {
-			logger.info("[2.4订单物流信息接口-根据己方订单号获取]异常：", e);
+			logger.error("[2.4订单物流信息接口-根据己方订单号获取]异常：", e);
 		}
 		return reponse;
 	}
 
+    @Override
+    protected ResponseSystemOrderTrackEntity systemOrderTrack(String orderKey) {
+        ResponseSystemOrderTrackEntity   reponse=null;
+        RequestOrderTrackEntity  entity = new RequestOrderTrackEntity();
+        initRequestParam(entity);
+        entity.setThirdOrder(orderKey);
 
+        try {
+            logger.info("2.5订单物流信息接口]入参："+JSONObject.toJSONString(entity));
+            String result = HttpUtil.post(Urls.base_test_url+Urls.orderTrack, objectToMap(entity));
+            logger.info("[2.5订单物流信息接口]出参："+result);
+            reponse = JSON.parseObject(result,ResponseSystemOrderTrackEntity.class);
+        } catch (Exception e) {
+            logger.error("[2.5订单物流信息接口]异常：", e);
+        }
+        return reponse;
+    }
 }
 
 
