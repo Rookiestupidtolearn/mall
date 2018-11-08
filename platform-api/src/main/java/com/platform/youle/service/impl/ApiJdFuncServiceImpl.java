@@ -1,26 +1,21 @@
 package com.platform.youle.service.impl;
 
-<<<<<<< HEAD
-=======
 import java.util.Calendar;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Map;
 
+import com.platform.youle.constant.Constants;
 import com.platform.youle.entity.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
->>>>>>> 39171c51b693a33bb359b987fc8f085c6964950c
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.platform.youle.constant.Constants.Urls;
-<<<<<<< HEAD
-import com.platform.youle.entity.*;
-=======
 import com.platform.youle.entity.RequestBaseEntity;
 import com.platform.youle.entity.RequestProductEntity;
 import com.platform.youle.entity.RequestProductStockBatchEntity;
@@ -30,7 +25,6 @@ import com.platform.youle.entity.ResponseProductEntity;
 import com.platform.youle.entity.ResponseProductStockBatchEntity;
 import com.platform.youle.entity.ResponseProductStockEntity;
 import com.platform.youle.entity.ResponseSaleStatusEntity;
->>>>>>> 39171c51b693a33bb359b987fc8f085c6964950c
 import com.platform.youle.service.AbsApiFuncServicein;
 import com.platform.youle.util.HttpUtil;
 import org.slf4j.Logger;
@@ -44,7 +38,6 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
 
     private static final Logger logger = LoggerFactory.getLogger(ApiJdFuncServiceImpl.class);
 
-<<<<<<< HEAD
     @Override
     public ResponseSkuDetailEntity getSkuDetail(Map<String, Object> params) {
         logger.info("【获取单个商品详情请求参数】:" + params);
@@ -87,7 +80,7 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
 
     @Override
     public ResponseProductEntity getProductIdsByPage(Integer page) {
-        ResponseBaseEntity<?> reponse = null;
+        ResponseProductEntity<?> reponse = null;
         RequestProductEntity entity = new RequestProductEntity();
         initRequestParam(entity);
         entity.setTimestamp(getTimestamp());
@@ -95,13 +88,13 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
             logger.info("[1.2分页获取当前页商品ID, 每页数据100条]入参：" + JSONObject.toJSONString(entity));
             String result = HttpUtil.post(Urls.base_test_url + Urls.getProductIdsByPage, objectToMap(entity));
             logger.info("[1.2分页获取当前页商品ID, 每页数据100条：" + result);
-            reponse = JSON.parseObject(result, new TypeReference<ResponseBaseEntity>() {
+            reponse = JSON.parseObject(result, new TypeReference<ResponseProductEntity>() {
             });
         } catch (Exception e) {
             logger.error("[1.2分页获取当前页商品ID, 每页数据100条]异常", e);
         }
 
-        return null;
+        return reponse;
     }
 
     @Override
@@ -116,7 +109,7 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
             logger.info("[1.4单个查询商品库存]入参：" + JSONObject.toJSONString(entity));
             String result = HttpUtil.post(Urls.base_test_url + Urls.stock, objectToMap(entity));
             logger.info("[1.4单个查询商品库存" + result);
-            reponse = JSON.parseObject(result, new TypeReference<ResponseProductStockEntity>() {
+            reponse = JSON.parseObject(result, new TypeReference<ResponseProductEntity>() {
             });
         } catch (Exception e) {
             logger.error("[1.4单个查询商品库存]异常", e);
@@ -144,7 +137,6 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
         return null;
     }
 
-=======
 	@Override
 	public ResponseSkuDetailEntity getSkuDetail(Long productId) {
 		ResponseSkuDetailEntity  reponse=null;
@@ -236,7 +228,6 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
 		return null;
 	}
 	
->>>>>>> 39171c51b693a33bb359b987fc8f085c6964950c
     @Override
     public ResponseSaleStatusEntity getsaleStatus(Integer pid) {
         ResponseSaleStatusEntity reponse = null;
