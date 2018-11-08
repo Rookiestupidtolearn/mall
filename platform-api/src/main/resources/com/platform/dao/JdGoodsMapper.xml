@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.platform.dao.JdGoodsMapper">
+
+    <resultMap type="com.platform.youle.entity.JdGoodsVo" id="jdShopGoodsMap">
+        <result property="id" column="id"/>
+        <result property="goodsSn" column="goods_sn"/>
+        <result property="name" column="name"/>
+        <result property="type" column="type"/>
+        <result property="thumbnailImage" column="thumbnail_image"/>
+        <result property="brand" column="brand"/>
+        <result property="productCate" column="product_cate"/>
+        <result property="productCode" column="product_code"/>
+        <result property="status" column="status"/>
+        <result property="marketPrice" column="market_price"/>
+        <result property="retailPrice" column="retail_price"/>
+        <result property="productPlace" column="product_place"/>
+        <result property="features" column="features"/>
+        <result property="hot" column="hot"/>
+        <result property="is7Toreturn" column="is_7_toReturn"/>
+        <result property="productDecription" column="product_decription"/>
+        <result property="mobileProductDecription" column="mobile_product_decription"/>
+        <result property="goodsCommentsId" column="goods_comments_id"/>
+        <result property="goodsCategoryId" column="goods_category_id"/>
+        <result property="keywords" column="keywords"/>
+        <result property="deleteFlag" column="delete_flag"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+	<select id="queryObject" resultMap="jdShopGoodsMap">
+		select
+			`id`,
+			`goods_sn`,
+			`name`,
+			`type`,
+			`thumbnail_image`,
+			`brand`,
+			`product_cate`,
+			`product_code`,
+			`status`,
+			`market_price`,
+			`retail_price`,
+			`product_place`,
+			`features`,
+			`hot`,
+			`is_7_toReturn`,
+			`product_decription`,
+			`mobile_product_decription`,
+			`goods_comments_id`,
+			`goods_category_id`,
+			`keywords`,
+			`delete_flag`,
+			`create_time`,
+			`create_by`,
+			`update_time`
+		from jd_shop_goods
+		where id = #{id}
+	</select>
+
+	<select id="queryList" resultMap="jdShopGoodsMap">
+		select
+    		`id`,
+    		`goods_sn`,
+    		`name`,
+    		`type`,
+    		`thumbnail_image`,
+    		`brand`,
+    		`product_cate`,
+    		`product_code`,
+    		`status`,
+    		`market_price`,
+    		`retail_price`,
+    		`product_place`,
+    		`features`,
+    		`hot`,
+    		`is_7_toReturn`,
+    		`product_decription`,
+    		`mobile_product_decription`,
+    		`goods_comments_id`,
+    		`goods_category_id`,
+    		`keywords`,
+    		`delete_flag`,
+    		`create_time`,
+    		`create_by`,
+    		`update_time`
+		from jd_shop_goods
+		WHERE 1=1
+		<if test="name != null and name.trim() != ''">
+			AND name LIKE concat('%',#{name},'%')
+		</if>
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from jd_shop_goods
+		WHERE 1=1
+        <if test="name != null and name.trim() != ''">
+            AND name LIKE concat('%',#{name},'%')
+        </if>
+	</select>
+	 
+	<insert id="save" parameterType="com.platform.youle.entity.JdGoodsVo">
+		insert into jd_shop_goods(
+			`id`,
+			`goods_sn`,
+			`name`,
+			`type`,
+			`thumbnail_image`,
+			`brand`,
+			`product_cate`,
+			`product_code`,
+			`status`,
+			`market_price`,
+			`retail_price`,
+			`product_place`,
+			`features`,
+			`hot`,
+			`is_7_toReturn`,
+			`product_decription`,
+			`mobile_product_decription`,
+			`goods_comments_id`,
+			`goods_category_id`,
+			`keywords`,
+			`delete_flag`,
+			`create_time`,
+			`create_by`,
+			`update_time`)
+		values(
+			#{id},
+			#{goodsSn},
+			#{name},
+			#{type},
+			#{thumbnailImage},
+			#{brand},
+			#{productCate},
+			#{productCode},
+			#{status},
+			#{marketPrice},
+			#{retailPrice},
+			#{productPlace},
+			#{features},
+			#{hot},
+			#{is7Toreturn},
+			#{productDecription},
+			#{mobileProductDecription},
+			#{goodsCommentsId},
+			#{goodsCategoryId},
+			#{keywords},
+			#{deleteFlag},
+			#{createTime},
+			#{createBy},
+			#{updateTime})
+	</insert>
+	 
+	<update id="update" parameterType="com.platform.youle.entity.JdGoodsVo">
+		update jd_shop_goods 
+		<set>
+			<if test="goodsSn != null">`goods_sn` = #{goodsSn}, </if>
+			<if test="name != null">`name` = #{name}, </if>
+			<if test="type != null">`type` = #{type}, </if>
+			<if test="thumbnailImage != null">`thumbnail_image` = #{thumbnailImage}, </if>
+			<if test="brand != null">`brand` = #{brand}, </if>
+			<if test="productCate != null">`product_cate` = #{productCate}, </if>
+			<if test="productCode != null">`product_code` = #{productCode}, </if>
+			<if test="status != null">`status` = #{status}, </if>
+			<if test="marketPrice != null">`market_price` = #{marketPrice}, </if>
+			<if test="retailPrice != null">`retail_price` = #{retailPrice}, </if>
+			<if test="productPlace != null">`product_place` = #{productPlace}, </if>
+			<if test="features != null">`features` = #{features}, </if>
+			<if test="hot != null">`hot` = #{hot}, </if>
+			<if test="is7Toreturn != null">`is_7_toReturn` = #{is7Toreturn}, </if>
+			<if test="productDecription != null">`product_decription` = #{productDecription}, </if>
+			<if test="mobileProductDecription != null">`mobile_product_decription` = #{mobileProductDecription}, </if>
+			<if test="goodsCommentsId != null">`goods_comments_id` = #{goodsCommentsId}, </if>
+			<if test="goodsCategoryId != null">`goods_category_id` = #{goodsCategoryId}, </if>
+			<if test="keywords != null">`keywords` = #{keywords}, </if>
+			<if test="deleteFlag != null">`delete_flag` = #{deleteFlag}, </if>
+			<if test="createTime != null">`create_time` = #{createTime}, </if>
+			<if test="createBy != null">`create_by` = #{createBy}, </if>
+			<if test="updateTime != null">`update_time` = #{updateTime}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from jd_shop_goods where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from jd_shop_goods where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>
