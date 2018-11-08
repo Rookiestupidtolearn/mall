@@ -706,12 +706,18 @@ public class ApiCartController extends ApiBaseAction {
     @PostMapping("detail")
     public Object detail(Long productId) {
     	RequestSkuDetailEntity entity = new RequestSkuDetailEntity();
-		entity.setWid("1322");
-		entity.setToken(TokenUtil.token);
-		Long currentTime = System.currentTimeMillis();
-		entity.setTimestamp(currentTime.toString());
-		entity.setPid(productId);
-		ResponseSkuDetailEntity response = apiFuncService.getSkuDetail(entity);
+    	Map<String,Object> params = new HashMap<>();
+    	params.put("wid", 1322);
+    	params.put("token", TokenUtil.token);
+    	params.put("pid", productId);
+    	//params.put("mobile", "");
+    	params.put("timestamp", System.currentTimeMillis());
+//		entity.setWid("1322");
+//		entity.setToken(TokenUtil.token);
+//		Long currentTime = System.currentTimeMillis();
+//		entity.setTimestamp(currentTime.toString());
+//		entity.setPid(productId);
+		ResponseSkuDetailEntity response = apiFuncService.getSkuDetail(params);
 		return response;
 	}
 
