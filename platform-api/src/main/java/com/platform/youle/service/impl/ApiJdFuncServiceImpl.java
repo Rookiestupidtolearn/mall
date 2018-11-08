@@ -1,13 +1,5 @@
 package com.platform.youle.service.impl;
 
-import java.util.Calendar;
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.Map;
-
-import com.platform.youle.constant.Constants;
-import com.platform.youle.entity.*;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -20,21 +12,27 @@ import com.platform.youle.entity.RequestBaseEntity;
 import com.platform.youle.entity.RequestProductEntity;
 import com.platform.youle.entity.RequestProductStockBatchEntity;
 import com.platform.youle.entity.RequestProductStockEntity;
+import com.platform.youle.entity.RequestSkuDetailEntity;
+import com.platform.youle.entity.RequsetBatchSaleStatusEntity;
+import com.platform.youle.entity.RequstSaleStatusEntity;
 import com.platform.youle.entity.ResponseBaseEntity;
+import com.platform.youle.entity.ResponseGetPriceEntity;
 import com.platform.youle.entity.ResponseProductEntity;
 import com.platform.youle.entity.ResponseProductStockBatchEntity;
-import com.platform.youle.entity.ResponseProductStockEntity;
 import com.platform.youle.entity.ResponseSaleStatusEntity;
-import com.platform.youle.service.AbsApiFuncServicein;
+import com.platform.youle.entity.ResponseSkuDetailEntity;
+import com.platform.youle.service.AbsApiGoodsService;
 import com.platform.youle.util.HttpUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 
-import java.util.Map;
-
+/**
+ * 
+ * 
+ * 商品服务
+ * @author Administrator
+ *
+ */
 @Service
-public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
+public class ApiJdFuncServiceImpl extends AbsApiGoodsService {
 
     private static final Logger logger = LoggerFactory.getLogger(ApiJdFuncServiceImpl.class);
 
@@ -195,90 +193,7 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
         }
         return reponse;
     }
-    
-	@Override
-	protected ResponseOrderSubmitEntity submit(RequestOrderSubmitEntity entity) {
-		ResponseOrderSubmitEntity reponse =null;
-        initRequestParam(entity);
-        try {
-            logger.info("[2.1创建订单接口]入参："+JSONObject.toJSONString(entity));
-            String result = HttpUtil.post(Urls.base_test_url+Urls.submit, objectToMap(entity));
-            logger.info("[2.1创建订单接口] 返回结果："+JSONObject.toJSONString(entity));
-            reponse = JSON.parseObject(result,ResponseOrderSubmitEntity.class);
-        } catch (Exception e) {
-            logger.error("[2.1创建订单接口]异常",e);
-        }
-        return reponse;
-	}
-
-	@Override
-	protected ReponseOrderDetailEntity detail(String orderKey) {
-		ReponseOrderDetailEntity reponse =null;
-		 RequestOrderDetailEntity entity = new RequestOrderDetailEntity(); 
-        initRequestParam(entity);
-        entity.setOrderKey(orderKey);
-        try {
-            logger.info("[2.2查询订单详情接口]入参："+JSONObject.toJSONString(entity));
-            String result = HttpUtil.post(Urls.base_test_url+Urls.detail, objectToMap(entity));
-            logger.info("[2.2查询订单详情接口] 返回结果："+JSONObject.toJSONString(entity));
-            reponse = JSON.parseObject(result,ReponseOrderDetailEntity.class);
-        } catch (Exception e) {
-            logger.error("[2.2查询订单详情接口]异常",e);
-        }
-        return reponse;
-	}
-	@Override
-	protected ResponseBaseEntity<?> thirdOrder(String thirdOrder) {
-		ResponseBaseEntity  reponse=null;
-		RequestThirdOrderEntity entity = new RequestThirdOrderEntity();
-	    initRequestParam(entity);
-	    entity.setThirdOrder(thirdOrder);
-		try {
-			logger.info("[2.3订单反查询接口, 用于确认订单是否创建成功]入参："+JSONObject.toJSONString(entity));
-			String result = HttpUtil.post(Urls.base_test_url+Urls.thirdOrder, objectToMap(entity));
-			logger.info("[2.3订单反查询接口, 用于确认订单是否创建成功]出参："+result);
-			reponse = JSON.parseObject(result,ResponseBaseEntity.class);
-		} catch (Exception e) {
-			logger.error("[2.3订单反查询接口, 用于确认订单是否创建成功]异常：", e);
-		}
-		return reponse;
-	}
-
-	@Override
-	protected ResponseOrderTrackEntity orderTrack(String thirdOrder) {
-		ResponseOrderTrackEntity  reponse=null;
-		RequestOrderTrackEntity entity = new RequestOrderTrackEntity();
-	    initRequestParam(entity);
-	    entity.setThirdOrder(thirdOrder);
-		try {
-			logger.info("2.4订单物流信息接口-根据己方订单号获取]入参："+JSONObject.toJSONString(entity));
-			String result = HttpUtil.post(Urls.base_test_url+Urls.orderTrack, objectToMap(entity));
-			logger.info("[2.4订单物流信息接口-根据己方订单号获取]出参："+result);
-			reponse = JSON.parseObject(result,ResponseOrderTrackEntity.class);
-		} catch (Exception e) {
-			logger.error("[2.4订单物流信息接口-根据己方订单号获取]异常：", e);
-		}
-		return reponse;
-	}
-
-    @Override
-    protected ResponseSystemOrderTrackEntity systemOrderTrack(String orderKey) {
-        ResponseSystemOrderTrackEntity   reponse=null;
-        RequestOrderTrackEntity  entity = new RequestOrderTrackEntity();
-        initRequestParam(entity);
-        entity.setThirdOrder(orderKey);
-
-        try {
-            logger.info("2.5订单物流信息接口]入参："+JSONObject.toJSONString(entity));
-            String result = HttpUtil.post(Urls.base_test_url+Urls.systemOrderTrack, objectToMap(entity));
-            logger.info("[2.5订单物流信息接口]出参："+result);
-            reponse = JSON.parseObject(result,ResponseSystemOrderTrackEntity.class);
-        } catch (Exception e) {
-            logger.error("[2.5订单物流信息接口]异常：", e);
-        }
-        return reponse;
-    }
-
+  
 }
 
 
