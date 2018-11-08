@@ -5,7 +5,7 @@ public class RequestBaseEntity {
 	public String  wid;
 	public String  token;
 	public String timestamp;
-	public Integer page;
+
 	public String getWid() {
 		return wid;
 	}
@@ -24,13 +24,6 @@ public class RequestBaseEntity {
 	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
 	}
-	public Integer getPage() {
-		return page;
-	}
-	public void setPage(Integer page) {
-		this.page = page;
-	}
-	
-	
+
 
 }

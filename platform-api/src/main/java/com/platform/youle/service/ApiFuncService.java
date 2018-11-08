@@ -22,6 +22,11 @@ public interface ApiFuncService {
 			String pid,
 			String num,
 			String address
-
 			);
+
+
+
+    public
+
+
 }
