@@ -10,7 +10,7 @@ public class TokenUtil {
 
     private static String accessToken ;
 
-    private static String token ;
+    public static String token ;
 
     static {
 
