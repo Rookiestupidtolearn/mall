@@ -1,6 +1,6 @@
 package com.platform.youle.entity;
 
-public class RequestProductStockEntity {
+public class RequestProductStockEntity extends RequestBaseEntity {
 	private  String pid;
 	private Integer num;
 	private  String address;
