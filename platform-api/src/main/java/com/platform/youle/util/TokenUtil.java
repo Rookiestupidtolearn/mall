@@ -14,7 +14,7 @@ public class TokenUtil {
 	 * 获取token
 	 */
 	public static String getToken(){
-		String[] jdParam =  PropertiesUtil.getValues("jd.properties", new String[]{"wid","accessToken"});
+		String[] jdParam =  PropertiesUtil.getValues("youle.properties", new String[]{"wid","accessToken"});
 		if(jdParam.length == 2){ //获取到value值
 			String token = jdParam[0]+jdParam [1]+new Date().getTime();
 			//调用MD5加密
