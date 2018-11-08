@@ -6,9 +6,9 @@ import com.platform.utils.StringUtils;
 
 public class TokenUtil {
 
-    private static String wid ;
+    public static String wid ;
 
-    private static String accessToken ;
+    public static String accessToken ;
 
     public static String token ;
 
@@ -20,7 +20,7 @@ public class TokenUtil {
     }
 
 	public static void main(String[] args) {
-		System.out.println(token);
+		System.out.println(wid);
 	}
 	
 	/**

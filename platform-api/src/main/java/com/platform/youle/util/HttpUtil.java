@@ -231,10 +231,13 @@ public class HttpUtil {
         HttpURLConnection httpConnection = null;
         try {
             httpConnection = createConnection(address, method,headerParameters, body);
+            connection.setRequestProperty("ContentType","application/x-www-form-urlencoded");
             String encoding = "UTF-8";
             if (httpConnection.getContentType() != null && httpConnection.getContentType().indexOf("charset=") >= 0) {
                 encoding = httpConnection.getContentType().substring(httpConnection.getContentType().indexOf("charset=") + 8);
             }
+
+
             result = inputStream2String(httpConnection.getInputStream(),encoding);
             // logger.info("HTTPproxy response: {},{}", address,
             // result.toString());
