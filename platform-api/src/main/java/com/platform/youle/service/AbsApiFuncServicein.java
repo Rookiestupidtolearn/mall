@@ -106,6 +106,18 @@ public abstract  class AbsApiFuncServicein implements IApiFuncServicein{
 
     protected abstract ResponseBaseEntity<?> batchGetPrice(String pids);
     /**
+     *2.1创建订单接口
+     * @param entity
+     * @return
+     */
+    protected abstract ResponseOrderSubmitEntity submit(RequestOrderSubmitEntity entity);
+    /**
+     * 2.2查询订单详情接口
+     * @param orderKey
+     * @return
+     */
+    protected abstract ReponseOrderDetailEntity detail(String orderKey);
+    /**
      * 2.3订单反查询接口, 用于确认订单是否创建成功
      * @param thirdOrder
      * @return
@@ -124,4 +136,6 @@ public abstract  class AbsApiFuncServicein implements IApiFuncServicein{
      * @return
      */
     protected abstract ResponseSystemOrderTrackEntity systemOrderTrack(String orderKey);
+    
+
 }

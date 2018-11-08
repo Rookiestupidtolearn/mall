@@ -247,6 +247,38 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
         }
         return reponse;
     }
+    
+	@Override
+	protected ResponseOrderSubmitEntity submit(RequestOrderSubmitEntity entity) {
+		ResponseOrderSubmitEntity reponse =null;
+        initRequestParam(entity);
+        try {
+            logger.info("[2.1创建订单接口]入参："+JSONObject.toJSONString(entity));
+            String result = HttpUtil.post(Urls.base_test_url+Urls.submit, objectToMap(entity));
+            logger.info("[2.1创建订单接口] 返回结果："+JSONObject.toJSONString(entity));
+            reponse = JSON.parseObject(result,ResponseOrderSubmitEntity.class);
+        } catch (Exception e) {
+            logger.error("[2.1创建订单接口]异常",e);
+        }
+        return reponse;
+	}
+
+	@Override
+	protected ReponseOrderDetailEntity detail(String orderKey) {
+		ReponseOrderDetailEntity reponse =null;
+		 RequestOrderDetailEntity entity = new RequestOrderDetailEntity(); 
+        initRequestParam(entity);
+        entity.setOrderKey(orderKey);
+        try {
+            logger.info("[2.2查询订单详情接口]入参："+JSONObject.toJSONString(entity));
+            String result = HttpUtil.post(Urls.base_test_url+Urls.detail, objectToMap(entity));
+            logger.info("[2.2查询订单详情接口] 返回结果："+JSONObject.toJSONString(entity));
+            reponse = JSON.parseObject(result,ReponseOrderDetailEntity.class);
+        } catch (Exception e) {
+            logger.error("[2.2查询订单详情接口]异常",e);
+        }
+        return reponse;
+	}
 }
 
 
