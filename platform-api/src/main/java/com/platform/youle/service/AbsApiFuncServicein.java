@@ -4,7 +4,14 @@ import java.util.Calendar;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
-import com.platform.youle.entity.*;
+import com.platform.youle.entity.RequestBaseEntity;
+import com.platform.youle.entity.ResponseBaseEntity;
+import com.platform.youle.entity.ResponseGetPriceEntity;
+import com.platform.youle.entity.ResponseOrderTrackEntity;
+import com.platform.youle.entity.ResponseProductEntity;
+import com.platform.youle.entity.ResponseProductStockBatchEntity;
+import com.platform.youle.entity.ResponseSaleStatusEntity;
+import com.platform.youle.entity.ResponseSkuDetailEntity;
 import com.platform.youle.util.TokenUtil;
 
 /**
@@ -98,8 +105,6 @@ public abstract  class AbsApiFuncServicein implements IApiFuncServicein{
 
     protected abstract ResponseBaseEntity<?> batchSaleStatus(String pids);
 
-
-
     /**
      * 1.9批量查询商品协议价
      * @param pids
@@ -107,4 +112,16 @@ public abstract  class AbsApiFuncServicein implements IApiFuncServicein{
      */
 
     protected abstract ResponseBaseEntity<?> batchGetPrice(String pids);
+    /**
+     * 2.3订单反查询接口, 用于确认订单是否创建成功
+     * @param thirdOrder
+     * @return
+     */
+    protected abstract ResponseBaseEntity<?> thirdOrder(String thirdOrder);
+    /**
+     * 2.4订单物流信息接口-根据己方订单号获取
+     * @param thirdOrder
+     * @return
+     */
+    protected abstract ResponseOrderTrackEntity orderTrack(String thirdOrder);
 }

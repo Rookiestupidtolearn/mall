@@ -15,15 +15,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.platform.youle.constant.Constants.Urls;
-import com.platform.youle.entity.RequestBaseEntity;
-import com.platform.youle.entity.RequestProductEntity;
-import com.platform.youle.entity.RequestProductStockBatchEntity;
-import com.platform.youle.entity.RequestProductStockEntity;
-import com.platform.youle.entity.ResponseBaseEntity;
-import com.platform.youle.entity.ResponseProductEntity;
-import com.platform.youle.entity.ResponseProductStockBatchEntity;
-import com.platform.youle.entity.ResponseProductStockEntity;
-import com.platform.youle.entity.ResponseSaleStatusEntity;
 import com.platform.youle.service.AbsApiFuncServicein;
 import com.platform.youle.util.HttpUtil;
 
@@ -39,7 +30,7 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
 	    initRequestParam(entity);
 	    entity.setPid(productId);
 		try {
-			logger.info("[[1.3获取单个商品详情]入参："+JSONObject.toJSONString(entity));
+			logger.info("[1.3获取单个商品详情]入参："+JSONObject.toJSONString(entity));
 			String result = HttpUtil.post(Urls.base_test_url+Urls.detial, objectToMap(entity));
 			logger.info("[1.3获取单个商品详情]出参："+result);
 			reponse = JSON.parseObject(result,new TypeReference<ResponseSkuDetailEntity>(){});
@@ -187,6 +178,44 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
         }
         return reponse;
     }
+
+	@Override
+	protected ResponseBaseEntity<?> thirdOrder(String thirdOrder) {
+		ResponseBaseEntity  reponse=null;
+		RequestThirdOrderEntity entity = new RequestThirdOrderEntity();
+	    initRequestParam(entity);
+	    entity.setThirdOrder(thirdOrder);
+		try {
+			logger.info("[2.3订单反查询接口, 用于确认订单是否创建成功]入参："+JSONObject.toJSONString(entity));
+			String result = HttpUtil.post(Urls.base_test_url+Urls.thirdOrder, objectToMap(entity));
+			logger.info("[2.3订单反查询接口, 用于确认订单是否创建成功]出参："+result);
+			reponse = JSON.parseObject(result,ResponseBaseEntity.class);
+			return reponse;
+		} catch (Exception e) {
+			logger.info("[2.3订单反查询接口, 用于确认订单是否创建成功]异常：", e);
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	protected ResponseOrderTrackEntity orderTrack(String thirdOrder) {
+		ResponseOrderTrackEntity  reponse=null;
+		RequestOrderTrackEntity entity = new RequestOrderTrackEntity();
+	    initRequestParam(entity);
+	    entity.setThirdOrder(thirdOrder);
+		try {
+			logger.info("2.4订单物流信息接口-根据己方订单号获取]入参："+JSONObject.toJSONString(entity));
+			String result = HttpUtil.post(Urls.base_test_url+Urls.orderTrack, objectToMap(entity));
+			logger.info("[2.4订单物流信息接口-根据己方订单号获取]出参："+result);
+			reponse = JSON.parseObject(result,ResponseOrderTrackEntity.class);
+			return reponse;
+		} catch (Exception e) {
+			logger.info("[2.4订单物流信息接口-根据己方订单号获取]异常：", e);
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 
 }

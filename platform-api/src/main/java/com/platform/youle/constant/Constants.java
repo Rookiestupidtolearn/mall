@@ -42,6 +42,12 @@ public class Constants {
 
         //1.9批量查询商品协议价
         public static String batchGetPrice = "/api/product/batchGetPrice.php";
+        
+        //2.3订单反查询接口, 用于确认订单是否创建成功
+        public static String thirdOrder = "/api/order/thirdOrder.php";
+        
+        //2.4订单反查询接口, 用于确认订单是否创建成功
+        public static String orderTrack = "/api/order/orderTrack.php";
     }
 
 
