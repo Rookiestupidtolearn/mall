@@ -239,7 +239,7 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
 
         try {
             logger.info("2.5订单物流信息接口]入参："+JSONObject.toJSONString(entity));
-            String result = HttpUtil.post(Urls.base_test_url+Urls.orderTrack, objectToMap(entity));
+            String result = HttpUtil.post(Urls.base_test_url+Urls.systemOrderTrack, objectToMap(entity));
             logger.info("[2.5订单物流信息接口]出参："+result);
             reponse = JSON.parseObject(result,ResponseSystemOrderTrackEntity.class);
         } catch (Exception e) {
