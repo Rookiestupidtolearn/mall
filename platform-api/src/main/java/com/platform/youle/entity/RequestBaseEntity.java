@@ -5,6 +5,7 @@ public class RequestBaseEntity {
 	public String  wid;
 	public String  token;
 	public String timestamp;
+
 	public String getWid() {
 		return wid;
 	}
@@ -23,7 +24,6 @@ public class RequestBaseEntity {
 	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
 	}
-	
-	
+
 
 }
