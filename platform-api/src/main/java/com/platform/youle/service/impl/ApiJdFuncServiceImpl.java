@@ -17,11 +17,17 @@ import com.alibaba.fastjson.TypeReference;
 import com.platform.youle.constant.Constants.Urls;
 import com.platform.youle.service.AbsApiFuncServicein;
 import com.platform.youle.util.HttpUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 @Service
 public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
 
     private static final Logger logger = LoggerFactory.getLogger(ApiJdFuncServiceImpl.class);
+
 
 	@Override
 	public ResponseSkuDetailEntity getSkuDetail(Long productId) {
@@ -121,11 +127,11 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
         initRequestParam(entity);
         entity.setPid(pid);
         try {
-            logger.info("[1.6查询商品可售状态]入参："+JSONObject.toJSONString(entity));
-            String result = HttpUtil.post(Urls.base_test_url+Urls.saleStatus, objectToMap(entity));
-            reponse = JSON.parseObject(result,ResponseSaleStatusEntity.class);
+            logger.info("[1.6查询商品可售状态]入参：" + JSONObject.toJSONString(entity));
+            String result = HttpUtil.post(Urls.base_test_url + Urls.saleStatus, objectToMap(entity));
+            reponse = JSON.parseObject(result, ResponseSaleStatusEntity.class);
         } catch (Exception e) {
-            logger.error("[1.6查询商品可售状态]异常",e);
+            logger.error("[1.6查询商品可售状态]异常", e);
         }
         return reponse;
     }
@@ -137,11 +143,11 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
         initRequestParam(entity);
         entity.setPid(pid);
         try {
-            logger.info("[1.7查询商品协议价]入参："+JSONObject.toJSONString(entity));
-            String result = HttpUtil.post(Urls.base_test_url+Urls.getPrice, objectToMap(entity));
-            reponse = JSON.parseObject(result,ResponseGetPriceEntity.class);
+            logger.info("[1.7查询商品协议价]入参：" + JSONObject.toJSONString(entity));
+            String result = HttpUtil.post(Urls.base_test_url + Urls.getPrice, objectToMap(entity));
+            reponse = JSON.parseObject(result, ResponseGetPriceEntity.class);
         } catch (Exception e) {
-            logger.error("[1.7查询商品协议价]异常",e);
+            logger.error("[1.7查询商品协议价]异常", e);
         }
         return reponse;
     }
@@ -149,32 +155,32 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
     @Override
     protected ResponseBaseEntity<?> batchSaleStatus(String pids) {
 
-        ResponseBaseEntity reponse =null;
+        ResponseBaseEntity reponse = null;
         RequsetBatchSaleStatusEntity entity = new RequsetBatchSaleStatusEntity();
         initRequestParam(entity);
         entity.setPids(pids);
         try {
-            logger.info("[1.8批量查询商品可售状态]入参："+JSONObject.toJSONString(entity));
-            String result = HttpUtil.post(Urls.base_test_url+Urls.batchSaleStatus, objectToMap(entity));
-            reponse = JSON.parseObject(result,ResponseBaseEntity.class);
+            logger.info("[1.8批量查询商品可售状态]入参：" + JSONObject.toJSONString(entity));
+            String result = HttpUtil.post(Urls.base_test_url + Urls.batchSaleStatus, objectToMap(entity));
+            reponse = JSON.parseObject(result, ResponseBaseEntity.class);
         } catch (Exception e) {
-            logger.error("[1.8批量查询商品可售状态]异常",e);
+            logger.error("[1.8批量查询商品可售状态]异常", e);
         }
         return reponse;
     }
 
     @Override
     protected ResponseBaseEntity<?> batchGetPrice(String pids) {
-        ResponseBaseEntity reponse =null;
+        ResponseBaseEntity reponse = null;
         RequsetBatchSaleStatusEntity entity = new RequsetBatchSaleStatusEntity();
         initRequestParam(entity);
         entity.setPids(pids);
         try {
-            logger.info("[1.9批量查询商品协议价]入参："+JSONObject.toJSONString(entity));
-            String result = HttpUtil.post(Urls.base_test_url+Urls.batchSaleStatus, objectToMap(entity));
-            reponse = JSON.parseObject(result,ResponseBaseEntity.class);
+            logger.info("[1.9批量查询商品协议价]入参：" + JSONObject.toJSONString(entity));
+            String result = HttpUtil.post(Urls.base_test_url + Urls.batchSaleStatus, objectToMap(entity));
+            reponse = JSON.parseObject(result, ResponseBaseEntity.class);
         } catch (Exception e) {
-            logger.error("[1.9批量查询商品协议价]异常",e);
+            logger.error("[1.9批量查询商品协议价]异常", e);
         }
         return reponse;
     }

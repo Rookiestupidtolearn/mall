@@ -28,4 +28,5 @@ public class ResponseSaleStatusEntity extends  ResponseBaseEntity<Map<String,Str
     public void setStatus(Boolean status) {
         this.status = status;
     }
+
 }
