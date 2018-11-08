@@ -47,7 +47,7 @@ import com.platform.service.ApiProductService;
 import com.platform.util.ApiBaseAction;
 import com.platform.youle.entity.RequestSkuDetailEntity;
 import com.platform.youle.entity.ResponseSkuDetailEntity;
-import com.platform.youle.service.ApiFuncService;
+import com.platform.youle.service.IApiFuncServicein;
 import com.platform.youle.util.TokenUtil;
 import com.qiniu.util.StringUtils;
 
@@ -86,7 +86,7 @@ public class ApiCartController extends ApiBaseAction {
     @Autowired
     private ApiTranInfoRecordMapper apiTranInfoRecordMapper;
     @Autowired
-    private  ApiFuncService apiFuncService;
+    private IApiFuncServicein IApiFuncServicein;
 
 
     
@@ -717,7 +717,7 @@ public class ApiCartController extends ApiBaseAction {
 //		Long currentTime = System.currentTimeMillis();
 //		entity.setTimestamp(currentTime.toString());
 //		entity.setPid(productId);
-		ResponseSkuDetailEntity response = apiFuncService.getSkuDetail(params);
+		ResponseSkuDetailEntity response = IApiFuncServicein.getSkuDetail(params);
 		return response;
 	}
 

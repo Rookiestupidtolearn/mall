@@ -3,6 +3,7 @@ package com.platform.youle.service.impl;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Calendar;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -16,6 +17,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.platform.youle.constant.Constants;
+import com.platform.youle.constant.Constants.Urls;
 import com.platform.youle.entity.GoodsImagePathVo;
 import com.platform.youle.entity.JdGoodsVo;
 import com.platform.youle.entity.RequestBaseEntity;
@@ -23,14 +25,16 @@ import com.platform.youle.entity.RequestProductEntity;
 import com.platform.youle.entity.ResponseBaseEntity;
 import com.platform.youle.entity.ResponseProductEntity;
 import com.platform.youle.entity.ResponseSkuDetailEntity;
-import com.platform.youle.service.ApiFuncService;
+import com.platform.youle.entity.ResponseSaleStatusEntity;
+import com.platform.youle.entity.ResponseSkuDetailEntity;
+import com.platform.youle.service.AbsApiFuncServicein;
 import com.platform.youle.util.HttpUtil;
 import com.platform.youle.util.TokenUtil;
 
 @Service
-public class ApiJdFuncServiceImpl implements ApiFuncService {
-  
-	private Logger logger = LoggerFactory.getLogger(getClass());
+public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
+
+    private static final Logger logger = LoggerFactory.getLogger(ApiJdFuncServiceImpl.class);
 
 	@Override
 	public ResponseSkuDetailEntity getSkuDetail(Map<String,Object> params) {
@@ -56,28 +60,19 @@ public class ApiJdFuncServiceImpl implements ApiFuncService {
 	}
 	
 	@Override
-	public  ResponseBaseEntity  getAllProductIds(){
-	  
-	    RequestBaseEntity entity = new RequestBaseEntity();
-	    Long timestamp = Calendar.getInstance().getTimeInMillis() ;
-		entity.setTimestamp(timestamp.toString());
-		entity.setToken(TokenUtil.token);
-		entity.setWid(TokenUtil.wid);
-	   
-		String str = JSON.toJSONString(entity);
-		System.out.println("请求参数:"+str);
+	public  ResponseBaseEntity<?>  getAllProductIds(){
+		ResponseBaseEntity<?>  reponse=null;
+        RequestBaseEntity entity = new RequestBaseEntity();
+	    initRequestParam(entity);
+        entity.setTimestamp(getTimestamp());
 		try {
-			  Map<String,Object> map1 = (Map<String,Object>) JSON.parse(str);
-			String result = HttpUtil.post("http://open.fygift.com/api/product/getAllProductIds.php", map1);
-			System.out.println("结果:"+result);
-			ResponseBaseEntity reponse = JSON.parseObject(result,new TypeReference<ResponseBaseEntity>(){});
-			return reponse;
+			  logger.info("[1.1获取所有商品ID]入参："+JSONObject.toJSONString(entity));
+			String result = HttpUtil.post(Urls.base_test_url+Urls.getAllProductIdsUrl, objectToMap(entity));
+			reponse = JSON.parseObject(result,new TypeReference<ResponseBaseEntity>(){});
 		} catch (Exception e) {
-			
-			e.printStackTrace();
+			logger.error("[1.1获取所有商品ID]异常",e);
 		}
-	    
-		return null;
+		return reponse;
 	}
 
 	public static void main(String[] args) {
@@ -176,7 +171,7 @@ public class ApiJdFuncServiceImpl implements ApiFuncService {
 			entity.setTimestamp(timestamp.toString());
 			entity.setToken(TokenUtil.token);
 			entity.setWid(TokenUtil.wid);
-		   entity.setPage(page);
+		    entity.setPage(page);
 			String str = JSON.toJSONString(entity);
 			System.out.println("请求参数:"+str);
 			try {
@@ -215,5 +210,14 @@ public class ApiJdFuncServiceImpl implements ApiFuncService {
 		return null;
 	}
 
+    @Override
+    public ResponseSaleStatusEntity getsaleStatus(Integer pid) {
 
+
+
+
+
+
+        return null;
+    }
 }
