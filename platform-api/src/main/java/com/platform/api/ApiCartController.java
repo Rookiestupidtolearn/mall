@@ -717,7 +717,7 @@ public class ApiCartController extends ApiBaseAction {
 //		Long currentTime = System.currentTimeMillis();
 //		entity.setTimestamp(currentTime.toString());
 //		entity.setPid(productId);
-		ResponseSkuDetailEntity response = IApiFuncServicein.getSkuDetail(params);
+//		ResponseSkuDetailEntity response = IApiFuncServicein.getSkuDetail(params);
 		return response;
 	}
 
