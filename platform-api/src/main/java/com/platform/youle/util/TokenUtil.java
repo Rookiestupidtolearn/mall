@@ -35,7 +35,6 @@ public class TokenUtil {
             tokenStr.append(Calendar.getInstance().getTimeInMillis());
             token = MD5util.encodeByMD5(tokenStr.toString()).toUpperCase();
         }
-
 		return token;
 	}
 

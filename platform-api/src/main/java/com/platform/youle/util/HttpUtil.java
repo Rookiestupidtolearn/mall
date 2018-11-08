@@ -12,6 +12,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -19,9 +20,12 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSession;
 
-import org.apache.commons.lang.StringUtils;
+import com.alibaba.fastjson.JSON;
+import com.platform.youle.entity.RequestProductEntity;
+
 import org.apache.log4j.Logger;
 import com.alibaba.fastjson.JSONObject;
+import springfox.documentation.service.ApiListing;
 
 public class HttpUtil {
 	
@@ -60,8 +64,8 @@ public class HttpUtil {
                 httpConnection.setRequestProperty(key,headerParameters.get(key));
             }
         }
-        httpConnection.setRequestProperty("Content-Type","application/x-www-form-urlencoded;charset=" + ENCODING);
-
+        httpConnection.setRequestProperty("ContentType","application/x-www-form-urlencoded");
+        httpConnection.setRequestProperty("Accept-Charset", "UTF-8");
         // 设置请求方法
         httpConnection.setRequestMethod(method);
         httpConnection.setDoOutput(true);
@@ -95,8 +99,8 @@ public class HttpUtil {
      * @return
      * @throws Exception
      */
-    public static String post(String address,String param) throws Exception {
-        return proxyHttpRequest(address, "POST", null,getRequestBody(param));
+    public static String post(String address,Map<String,Object> params) throws Exception {
+        return proxyHttpRequest(address, "POST", null,getRequestBody(params));
     }
 
     /**
@@ -107,7 +111,7 @@ public class HttpUtil {
      * @return
      * @throws Exception
      */
-    public static String get(String address,String param) throws Exception {
+    public static String get(String address,Map<String,Object> param) throws Exception {
         return proxyHttpRequest(address + "?"+ getRequestBody(param), "GET", null, null);
     }
 
@@ -120,7 +124,7 @@ public class HttpUtil {
      * @return
      * @throws Exception
      */
-    public static String getFile(String address,String param, File file) throws Exception {
+    public static String getFile(String address,Map<String,Object> param, File file) throws Exception {
         String result = "fail";
         HttpURLConnection httpConnection = null;
         try {
@@ -138,7 +142,8 @@ public class HttpUtil {
         return result;
     }
 
-    public static byte[] getFileByte(String address,String  param) throws Exception {
+
+    public static byte[] getFileByte(String address,Map<String,Object>  param) throws Exception {
         byte[] result = null;
         HttpURLConnection httpConnection = null;
         try {
@@ -231,7 +236,7 @@ public class HttpUtil {
         HttpURLConnection httpConnection = null;
         try {
             httpConnection = createConnection(address, method,headerParameters, body);
-            connection.setRequestProperty("ContentType","application/x-www-form-urlencoded");
+
             String encoding = "UTF-8";
             if (httpConnection.getContentType() != null && httpConnection.getContentType().indexOf("charset=") >= 0) {
                 encoding = httpConnection.getContentType().substring(httpConnection.getContentType().indexOf("charset=") + 8);
@@ -257,7 +262,7 @@ public class HttpUtil {
      * @param params
      * @return
      */
-    public static String getRequestBody(String param) {
+    public static String getRequestBody(Map<String,Object> param) {
         return getRequestBody(param, true);
     }
 
@@ -267,16 +272,16 @@ public class HttpUtil {
      * @return
      * @throws UnsupportedEncodingException 
      */
-    public static String getRequestBody(String param,boolean urlEncode){
+    public static String getRequestBody(Map<String,Object> params,boolean urlEncode){
         StringBuilder body = new StringBuilder();
-        /*Iterator<String> iteratorHeader = params.keySet().iterator();
+        Iterator<String> iteratorHeader = params.keySet().iterator();
         while (iteratorHeader.hasNext()) {
             String key = iteratorHeader.next();
-            String value = params.get(key);
+            Object value = params.get(key);
 
             if (urlEncode) {
                 try {
-                    body.append(key + "=" + URLEncoder.encode(value, ENCODING)
+                    body.append(key + "=" + URLEncoder.encode(value.toString(), ENCODING)
                             + "&");
                 } catch (UnsupportedEncodingException e) {
                     // e.printStackTrace();
@@ -284,19 +289,8 @@ public class HttpUtil {
             } else {
                 body.append(key + "=" + value + "&");
             }
-        }*/
-        if(StringUtils.isNotBlank(param)){
-        	try {
-        		//此处param因调用jd接口故写死
-				body.append("param=" + URLEncoder.encode(param, ENCODING));
-			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
         }
-        if (body.length() == 0) {
-            return "";
-        }
+
         return body.toString();
     }
 
@@ -375,21 +369,22 @@ public class HttpUtil {
     public static void main(String[] args) {
 
             try {
-
+                String  wid = TokenUtil.wid ;
+                String  token = TokenUtil.token;
+                Long timestamp = Calendar.getInstance().getTimeInMillis();
+                RequestProductEntity RequestProductEntity = new RequestProductEntity();
+                RequestProductEntity.setPage(1);
+                RequestProductEntity.setTimestamp(timestamp.toString());
+                RequestProductEntity.setToken(token);
+                RequestProductEntity.setWid(wid);
+                String jsonString  =  JSONObject.toJSONString(RequestProductEntity);
+                Map<String,Object> map1 = (Map<String,Object>) JSON.parse(jsonString);
                 //请求地址
-                String address = "http://www.liguanjia.com/index.php/api";
+                String address = "http://open.fygift.com/api/product/getAllProductIds.php";
                 //请求参数
-                
-                String param = "{param: [{func:GetSku,token: afsdfa5sd2faa,page: 10}]}";//这是该接口需要的参数
-
                 // 调用 post 请求
-                String res = post(address, param);
+                String res = post(address, map1);
                 System.out.println("返回参数"+res);//打印返回参数
-
-                res = res.substring(res.indexOf("{"));//截取
-                JSONObject result = JSONObject.parseObject(res);//转JSON
-
-                System.out.println(result.toString());//打印
 
             } catch (Exception e) {
                 // TODO 异常
