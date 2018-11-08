@@ -1,4 +1,4 @@
-package com.platform.jd.util;
+package com.platform.youle.util;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;

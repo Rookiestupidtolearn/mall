@@ -1,16 +1,18 @@
 package com.platform.api;
 
-import com.platform.annotation.IgnoreAuth;
-import com.platform.annotation.LoginUser;
-import com.platform.entity.UserVo;
-import com.platform.jd.util.PropertiesUtil;
-import com.platform.service.ApiUserService;
-import com.platform.utils.R;
-import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.platform.annotation.IgnoreAuth;
+import com.platform.annotation.LoginUser;
+import com.platform.entity.UserVo;
+import com.platform.service.ApiUserService;
+import com.platform.utils.R;
+import com.platform.youle.util.PropertiesUtil;
+
+import io.swagger.annotations.Api;
 
 /**
  * API测试接口
@@ -51,7 +53,7 @@ public class ApiTestController {
     @IgnoreAuth
     @PostMapping(value = "propter")
     public Object test() {
-    	String ss = PropertiesUtil.getValue("jd.properties", "jd_url");
+    	String ss = PropertiesUtil.getValue("ypule.properties", "jd_url");
     	
         return R.ok().put("propter", "可以了");
     }

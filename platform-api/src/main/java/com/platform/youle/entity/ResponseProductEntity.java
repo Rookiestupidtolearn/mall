@@ -1,12 +1,15 @@
 package com.platform.youle.entity;
 
-public class ResponseBaseEntity {
-	
+import java.util.List;
+
+public class ResponseProductEntity {
+
 	private String RESPONSE_STATUS;
-	private String ERROR_CODE;
+	private String  ERROR_CODE;
 	private String ERROR_MESSAGE;
-	private String TOTAL_AMOUNT;
-	private String RESULT_DATA;
+	private Integer  TOTAL_PAGE;
+	private Integer PAGE;
+	private List<Integer> RESULT_DATA;
 	public String getRESPONSE_STATUS() {
 		return RESPONSE_STATUS;
 	}
@@ -25,19 +28,24 @@ public class ResponseBaseEntity {
 	public void setERROR_MESSAGE(String eRROR_MESSAGE) {
 		ERROR_MESSAGE = eRROR_MESSAGE;
 	}
-	public String getTOTAL_AMOUNT() {
-		return TOTAL_AMOUNT;
+	public Integer getTOTAL_PAGE() {
+		return TOTAL_PAGE;
 	}
-	public void setTOTAL_AMOUNT(String tOTAL_AMOUNT) {
-		TOTAL_AMOUNT = tOTAL_AMOUNT;
+	public void setTOTAL_PAGE(Integer tOTAL_PAGE) {
+		TOTAL_PAGE = tOTAL_PAGE;
 	}
-	public String getRESULT_DATA() {
+	public Integer getPAGE() {
+		return PAGE;
+	}
+	public void setPAGE(Integer pAGE) {
+		PAGE = pAGE;
+	}
+	public List<Integer> getRESULT_DATA() {
 		return RESULT_DATA;
 	}
-	public void setRESULT_DATA(String rESULT_DATA) {
+	public void setRESULT_DATA(List<Integer> rESULT_DATA) {
 		RESULT_DATA = rESULT_DATA;
 	}
-	
-	
 
+	
 }
