@@ -45,6 +45,10 @@ import com.platform.service.ApiGoodsService;
 import com.platform.service.ApiGoodsSpecificationService;
 import com.platform.service.ApiProductService;
 import com.platform.util.ApiBaseAction;
+import com.platform.youle.entity.RequestSkuDetailEntity;
+import com.platform.youle.entity.ResponseSkuDetailEntity;
+import com.platform.youle.service.IApiFuncServicein;
+import com.platform.youle.util.TokenUtil;
 import com.qiniu.util.StringUtils;
 
 import io.swagger.annotations.Api;
@@ -81,6 +85,9 @@ public class ApiCartController extends ApiBaseAction {
     private ApiCartMapper apiCartMapper;
     @Autowired
     private ApiTranInfoRecordMapper apiTranInfoRecordMapper;
+    @Autowired
+    private IApiFuncServicein IApiFuncServicein;
+
 
     
 	private Logger logger = LoggerFactory.getLogger(getClass());
@@ -695,6 +702,23 @@ public class ApiCartController extends ApiBaseAction {
     	 apiTranInfoRecordMapper.save(tranInfo);
     }
   
-    
+    @ApiOperation(value = "获取商品详情")
+    @PostMapping("detail")
+    public Object detail(Long productId) {
+    	RequestSkuDetailEntity entity = new RequestSkuDetailEntity();
+    	Map<String,Object> params = new HashMap<>();
+    	params.put("wid", 1322);
+    	params.put("token", TokenUtil.token);
+    	params.put("pid", productId);
+    	//params.put("mobile", "");
+    	params.put("timestamp", System.currentTimeMillis());
+//		entity.setWid("1322");
+//		entity.setToken(TokenUtil.token);
+//		Long currentTime = System.currentTimeMillis();
+//		entity.setTimestamp(currentTime.toString());
+//		entity.setPid(productId);
+		ResponseSkuDetailEntity response = IApiFuncServicein.getSkuDetail(params);
+		return response;
+	}
 
 }

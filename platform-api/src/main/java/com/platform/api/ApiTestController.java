@@ -10,8 +10,7 @@ import com.platform.annotation.LoginUser;
 import com.platform.entity.UserVo;
 import com.platform.service.ApiUserService;
 import com.platform.utils.R;
-import com.platform.youle.service.ApiFuncService;
-import com.platform.youle.util.PropertiesUtil;
+import com.platform.youle.service.IApiFuncServicein;
 
 import io.swagger.annotations.Api;
 
@@ -31,7 +30,7 @@ public class ApiTestController {
     private ApiUserService userService;
     
     @Autowired
-    private ApiFuncService apiFuncService;
+    private IApiFuncServicein IApiFuncServicein;
     
     /**
      * 获取用户信息
@@ -57,7 +56,7 @@ public class ApiTestController {
     @IgnoreAuth
     @PostMapping(value = "propter")
     public Object test() {
-    	apiFuncService.getAllProductIds();
+    	IApiFuncServicein.getAllProductIds();
         return R.ok().put("propter", "可以了");
     }
     
