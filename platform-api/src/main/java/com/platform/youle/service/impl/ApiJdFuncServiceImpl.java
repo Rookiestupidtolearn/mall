@@ -38,41 +38,19 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
 
     private static final Logger logger = LoggerFactory.getLogger(ApiJdFuncServiceImpl.class);
 
-    @Override
-    public ResponseSkuDetailEntity getSkuDetail(Map<String, Object> params) {
-        logger.info("【获取单个商品详情请求参数】:" + params);
-        try {
-            String result = HttpUtil.post(Constants.Urls.base_test_url.concat(Constants.Urls.detial), params);
-            logger.info("【获取单个商品详情响应参数】:" + result);
-            ResponseSkuDetailEntity reponse = JSONObject.parseObject(result, new TypeReference<ResponseSkuDetailEntity>() {
-            });
-            if (reponse != null) {
-                if (reponse.isRESPONSE_STATUS()) {
-                    JdGoodsVo good = new JdGoodsVo();
-                    GoodsImagePathVo imagePath = new GoodsImagePathVo();
-
-                }
-            }
-            return reponse;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
     @Override
-    public ResponseBaseEntity<?> getAllProductIds() {
-        ResponseBaseEntity<?> reponse = null;
+    public  ResponseBaseEntity<?>  getAllProductIds(){
+        ResponseBaseEntity<?>  reponse=null;
         RequestBaseEntity entity = new RequestBaseEntity();
         initRequestParam(entity);
         try {
-            logger.info("[1.1获取所有商品ID]入参：" + JSONObject.toJSONString(entity));
-            String result = HttpUtil.post(Urls.base_test_url + Urls.getAllProductIdsUrl, objectToMap(entity));
-            logger.info("[1.1获取所有商品ID]出参：" + result);
-            reponse = JSON.parseObject(result, new TypeReference<ResponseBaseEntity>() {
-            });
+            logger.info("[1.1获取所有商品ID]入参："+JSONObject.toJSONString(entity));
+            String result = HttpUtil.post(Urls.base_test_url+Urls.getAllProductIdsUrl, objectToMap(entity));
+            logger.info("[1.1获取所有商品ID]出参："+result);
+            reponse = JSON.parseObject(result,new TypeReference<ResponseBaseEntity>(){});
         } catch (Exception e) {
-            logger.error("[1.1获取所有商品ID]异常", e);
+            logger.error("[1.1获取所有商品ID]异常",e);
         }
         return reponse;
     }
@@ -80,7 +58,7 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
 
     @Override
     public ResponseProductEntity getProductIdsByPage(Integer page) {
-        ResponseProductEntity<?> reponse = null;
+        ResponseProductEntity  reponse = null;
         RequestProductEntity entity = new RequestProductEntity();
         initRequestParam(entity);
         entity.setTimestamp(getTimestamp());
@@ -88,8 +66,7 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
             logger.info("[1.2分页获取当前页商品ID, 每页数据100条]入参：" + JSONObject.toJSONString(entity));
             String result = HttpUtil.post(Urls.base_test_url + Urls.getProductIdsByPage, objectToMap(entity));
             logger.info("[1.2分页获取当前页商品ID, 每页数据100条：" + result);
-            reponse = JSON.parseObject(result, new TypeReference<ResponseProductEntity>() {
-            });
+            reponse = JSON.parseObject(result,ResponseProductEntity.class);
         } catch (Exception e) {
             logger.error("[1.2分页获取当前页商品ID, 每页数据100条]异常", e);
         }
@@ -98,8 +75,28 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
     }
 
     @Override
+    public ResponseSkuDetailEntity getSkuDetail(Long productId) {
+        ResponseSkuDetailEntity  reponse=null;
+        RequestSkuDetailEntity entity = new RequestSkuDetailEntity();
+        initRequestParam(entity);
+        entity.setPid(productId);
+        try {
+            logger.info("[1.3获取单个商品详情]入参："+JSONObject.toJSONString(entity));
+            String result = HttpUtil.post(Urls.base_test_url+Urls.detial, objectToMap(entity));
+            logger.info("[1.3获取单个商品详情]出参："+result);
+            reponse = JSON.parseObject(result,new TypeReference<ResponseSkuDetailEntity>(){});
+            return reponse;
+        } catch (Exception e) {
+            logger.info("[1.3获取单个商品详情]异常：", e);
+        }
+        return reponse;
+    }
+
+
+
+    @Override
     public ResponseProductEntity stock(String pid, Integer num, String address) {
-        ResponseProductStockEntity reponse = null;
+        ResponseProductEntity reponse = null;
         RequestProductStockEntity entity = new RequestProductStockEntity();
         initRequestParam(entity);
         entity.setPid(pid);
@@ -109,13 +106,12 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
             logger.info("[1.4单个查询商品库存]入参：" + JSONObject.toJSONString(entity));
             String result = HttpUtil.post(Urls.base_test_url + Urls.stock, objectToMap(entity));
             logger.info("[1.4单个查询商品库存" + result);
-            reponse = JSON.parseObject(result, new TypeReference<ResponseProductEntity>() {
-            });
+            reponse = JSON.parseObject(result, ResponseProductEntity.class);
         } catch (Exception e) {
             logger.error("[1.4单个查询商品库存]异常", e);
         }
 
-        return null;
+        return reponse;
     }
 
     @Override
@@ -129,104 +125,14 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
             logger.info("[1.5批量查询商品库存]：" + JSONObject.toJSONString(entity));
             String result = HttpUtil.post(Urls.base_test_url + Urls.stock, objectToMap(entity));
             logger.info("[1.5批量查询商品库存" + result);
-            reponse = JSON.parseObject(result, new TypeReference<ResponseProductStockBatchEntity>() {
-            });
+            reponse = JSON.parseObject(result, ResponseProductStockBatchEntity.class);
         } catch (Exception e) {
             logger.error("[1.5批量查询商品库存", e);
         }
-        return null;
+        return reponse;
     }
 
-	@Override
-	public ResponseSkuDetailEntity getSkuDetail(Long productId) {
-		ResponseSkuDetailEntity  reponse=null;
-		RequestSkuDetailEntity entity = new RequestSkuDetailEntity();
-	    initRequestParam(entity);
-	    entity.setPid(productId);
-		try {
-			logger.info("[[1.3获取单个商品详情]入参："+JSONObject.toJSONString(entity));
-			String result = HttpUtil.post(Urls.base_test_url+Urls.detial, objectToMap(entity));
-			logger.info("[1.3获取单个商品详情]出参："+result);
-			reponse = JSON.parseObject(result,new TypeReference<ResponseSkuDetailEntity>(){});
-			return reponse;
-		} catch (Exception e) {
-			logger.info("[1.3获取单个商品详情]异常：", e);
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	@Override
-	public  ResponseBaseEntity<?>  getAllProductIds(){
-		ResponseBaseEntity<?>  reponse=null;
-        RequestBaseEntity entity = new RequestBaseEntity();
-	    initRequestParam(entity);
-		try {
-		    logger.info("[1.1获取所有商品ID]入参："+JSONObject.toJSONString(entity));
-			String result = HttpUtil.post(Urls.base_test_url+Urls.getAllProductIdsUrl, objectToMap(entity));
-			logger.info("[1.1获取所有商品ID]出参："+result);
-			reponse = JSON.parseObject(result,new TypeReference<ResponseBaseEntity>(){});
-		} catch (Exception e) {
-			logger.error("[1.1获取所有商品ID]异常",e);
-		}
-		return reponse;
-	}
 
-	@Override
-	public ResponseProductEntity getProductIdsByPage(Integer page) {
-		ResponseBaseEntity<?>  reponse=null;
-		RequestProductEntity entity = new RequestProductEntity();
-		initRequestParam(entity);
-		  entity.setTimestamp(getTimestamp());
-			try {
-				  logger.info("[1.2分页获取当前页商品ID, 每页数据100条]入参："+JSONObject.toJSONString(entity));
-				String result = HttpUtil.post(Urls.base_test_url+Urls.getProductIdsByPage, objectToMap(entity));
-				logger.info("[1.2分页获取当前页商品ID, 每页数据100条："+result);
-				reponse = JSON.parseObject(result,new TypeReference<ResponseBaseEntity>(){});
-			} catch (Exception e) {
-				logger.error("[1.2分页获取当前页商品ID, 每页数据100条]异常",e);
-			}
-			
-		return null;
-	}
-
-	@Override
-	public ResponseProductEntity stock(String pid, Integer num, String address) {
-		ResponseProductStockEntity  reponse=null;
-		RequestProductStockEntity entity = new RequestProductStockEntity();
-		initRequestParam(entity);
-		  entity.setPid(pid);
-		  entity.setNum(num);
-		  entity.setAddress(address);
-			try {
-				  logger.info("[1.4单个查询商品库存]入参："+JSONObject.toJSONString(entity));
-				String result = HttpUtil.post(Urls.base_test_url+Urls.stock, objectToMap(entity));
-				logger.info("[1.4单个查询商品库存"+result);
-				reponse = JSON.parseObject(result,new TypeReference<ResponseProductStockEntity>(){});
-			} catch (Exception e) {
-				logger.error("[1.4单个查询商品库存]异常",e);
-			}
-			
-		return null;
-	}
-
-	@Override
-	protected ResponseProductStockBatchEntity stockBatch(String pid_nums, String address) {
-		ResponseProductStockBatchEntity  reponse=null;
-		RequestProductStockBatchEntity entity = new RequestProductStockBatchEntity();
-		initRequestParam(entity);
-		  entity.setPid_nums(pid_nums);
-		  entity.setAddress(address);
-			try {
-				  logger.info("[1.5批量查询商品库存]："+JSONObject.toJSONString(entity));
-				String result = HttpUtil.post(Urls.base_test_url+Urls.stock, objectToMap(entity));
-				logger.info("[1.5批量查询商品库存"+result);
-				reponse = JSON.parseObject(result,new TypeReference<ResponseProductStockBatchEntity>(){});
-			} catch (Exception e) {
-				logger.error("[1.5批量查询商品库存",e);
-			}
-		return null;
-	}
 	
     @Override
     public ResponseSaleStatusEntity getsaleStatus(Integer pid) {
@@ -292,6 +198,41 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
         }
         return reponse;
     }
+
+	@Override
+	protected ResponseBaseEntity<?> thirdOrder(String thirdOrder) {
+		ResponseBaseEntity  reponse=null;
+		RequestThirdOrderEntity entity = new RequestThirdOrderEntity();
+	    initRequestParam(entity);
+	    entity.setThirdOrder(thirdOrder);
+		try {
+			logger.info("[2.3订单反查询接口, 用于确认订单是否创建成功]入参："+JSONObject.toJSONString(entity));
+			String result = HttpUtil.post(Urls.base_test_url+Urls.thirdOrder, objectToMap(entity));
+			logger.info("[2.3订单反查询接口, 用于确认订单是否创建成功]出参："+result);
+			reponse = JSON.parseObject(result,ResponseBaseEntity.class);
+		} catch (Exception e) {
+			logger.error("[2.3订单反查询接口, 用于确认订单是否创建成功]异常：", e);
+		}
+		return reponse;
+	}
+
+	@Override
+	protected ResponseOrderTrackEntity orderTrack(String thirdOrder) {
+		ResponseOrderTrackEntity  reponse=null;
+		RequestOrderTrackEntity entity = new RequestOrderTrackEntity();
+	    initRequestParam(entity);
+	    entity.setThirdOrder(thirdOrder);
+		try {
+			logger.info("2.4订单物流信息接口-根据己方订单号获取]入参："+JSONObject.toJSONString(entity));
+			String result = HttpUtil.post(Urls.base_test_url+Urls.orderTrack, objectToMap(entity));
+			logger.info("[2.4订单物流信息接口-根据己方订单号获取]出参："+result);
+			reponse = JSON.parseObject(result,ResponseOrderTrackEntity.class);
+		} catch (Exception e) {
+			logger.info("[2.4订单物流信息接口-根据己方订单号获取]异常：", e);
+		}
+		return reponse;
+	}
+
 
 }
 
