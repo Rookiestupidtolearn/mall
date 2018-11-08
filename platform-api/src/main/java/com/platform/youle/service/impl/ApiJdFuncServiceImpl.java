@@ -3,14 +3,11 @@ package com.platform.youle.service.impl;
 import java.util.Calendar;
 import java.util.Map;
 
+import com.platform.youle.entity.*;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
-import com.platform.youle.entity.RequestBaseEntity;
-import com.platform.youle.entity.RequestProductEntity;
-import com.platform.youle.entity.ResponseBaseEntity;
-import com.platform.youle.entity.ResponseProductEntity;
 import com.platform.youle.service.ApiFuncService;
 import com.platform.youle.util.HttpUtil;
 import com.platform.youle.util.TokenUtil;
@@ -53,7 +50,7 @@ public class ApiJdFuncServiceImpl implements ApiFuncService {
 			entity.setTimestamp(timestamp.toString());
 			entity.setToken(TokenUtil.token);
 			entity.setWid(TokenUtil.wid);
-		   entity.setPage(page);
+		    entity.setPage(page);
 			String str = JSON.toJSONString(entity);
 			System.out.println("请求参数:"+str);
 			try {
@@ -75,5 +72,14 @@ public class ApiJdFuncServiceImpl implements ApiFuncService {
 		return null;
 	}
 
+    @Override
+    public ResponseSaleStatusEntity getsaleStatus(Integer pid) {
 
+
+
+
+
+
+        return null;
+    }
 }

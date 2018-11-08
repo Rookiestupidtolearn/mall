@@ -12,6 +12,8 @@ public class TokenUtil {
 
     public static String token ;
 
+
+
     static {
 
         wid = PropertiesUtil.getValue("youle.properties","wid");

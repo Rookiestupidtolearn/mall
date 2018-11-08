@@ -2,6 +2,7 @@ package com.platform.youle.service;
 
 import com.platform.youle.entity.ResponseBaseEntity;
 import com.platform.youle.entity.ResponseProductEntity;
+import com.platform.youle.entity.ResponseSaleStatusEntity;
 
 public interface ApiFuncService {
    
@@ -25,8 +26,12 @@ public interface ApiFuncService {
 			);
 
 
-
-    public
+    /**
+     * 1.6查询商品可售状态
+     * @param 商品ID
+     * @return
+     */
+    public ResponseSaleStatusEntity  getsaleStatus(Integer pid);
 
 
 }
