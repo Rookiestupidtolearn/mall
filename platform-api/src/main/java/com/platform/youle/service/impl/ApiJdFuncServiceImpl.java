@@ -1,26 +1,28 @@
 package com.platform.youle.service.impl;
 
+import java.math.BigDecimal;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.Calendar;
-import java.util.Map;
-
 import org.springframework.stereotype.Service;
 
+import com.alibaba.druid.util.StringUtils;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.platform.youle.constant.Constants;
 import com.platform.youle.entity.GoodsImagePathVo;
 import com.platform.youle.entity.JdGoodsVo;
-import com.platform.youle.entity.ResponseSkuDetailEntity;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
 import com.platform.youle.entity.RequestBaseEntity;
 import com.platform.youle.entity.RequestProductEntity;
 import com.platform.youle.entity.ResponseBaseEntity;
 import com.platform.youle.entity.ResponseProductEntity;
+import com.platform.youle.entity.ResponseSkuDetailEntity;
 import com.platform.youle.service.ApiFuncService;
 import com.platform.youle.util.HttpUtil;
 import com.platform.youle.util.TokenUtil;
@@ -112,16 +114,58 @@ public class ApiJdFuncServiceImpl implements ApiFuncService {
 				 +" 		'MOBILE_PRODUCT_DESCRIPTION': '' "
 				 +" 	} "
 				 +" } ";
-//		JSONObject obj = JSONObject.parseObject(str);
-//		String date = obj.get("RESULT_DATA").toString();
-//		if(StringUtils){
-//			
-//		}
-//		System.out.println(JSONObject.parseObject().get("PRODUCT_DESCRIPTION"));
-//		JdGoodsVo good = new JdGoodsVo();
-//		good.setMobileProductDecription(obj.get("RESULT_DATA"));
-//		good.setProductDecription(obj.get("RESULT_DATA").toString());
-//		GoodsImagePathVo imagePath = new GoodsImagePathVo();
+		JSONObject dateObj = JSONObject.parseObject(str);
+		String resultObj = dateObj.get("RESULT_DATA").toString();
+		if(!StringUtils.isEmpty(resultObj)){
+			JSONObject resultDate = JSONObject.parseObject(resultObj);
+			JdGoodsVo good = new JdGoodsVo();
+			
+			if(resultDate.getString("PRODUCT_IMAGE") != null){
+				JSONArray imgArrays = JSONArray.parseArray(resultDate.getString("PRODUCT_IMAGE").toString());
+				if(!CollectionUtils.isEmpty(imgArrays)){
+					for(int i = 0;i<imgArrays.size();i++){
+						JSONObject obj = JSONObject.parseObject(imgArrays.get(i).toString());
+						GoodsImagePathVo imagePath = new GoodsImagePathVo();
+						imagePath.setImageUrl(obj.get("imageUrl").toString());
+						imagePath.setOrderSort(Integer.parseInt(obj.get("orderSort").toString()));
+						imagePath.setCreateTime(new Date());
+						imagePath.setUpdateTime(new Date());
+					}
+				}
+			}
+			
+			
+			
+			good.setMobileProductDecription(resultDate.get("MOBILE_PRODUCT_DESCRIPTION") == null ? "" : resultDate.get("MOBILE_PRODUCT_DESCRIPTION").toString());
+			good.setProductDecription(resultDate.get("PRODUCT_DESCRIPTION") == null ? "" : resultDate.get("PRODUCT_DESCRIPTION").toString());
+			
+			if(resultDate.getString("PRODUCT_DATA") != null){
+				String productDate = resultDate.getString("PRODUCT_DATA").toString();
+				JSONObject productObj = JSONObject.parseObject(productDate);
+				good.setGoodsSn(productObj.get("productId") == null ? null : Long.parseLong(productObj.get("productId").toString()));
+				good.setName(productObj.get("name") == null ? "" : productObj.get("name").toString());
+				good.setType(productObj.get("type") == null ? "" : productObj.get("type").toString());
+				good.setThumbnailImage(productObj.get("thumbnailImage") == null ? "" : productObj.get("thumbnailImage").toString());
+				good.setBrand(productObj.get("brand") == null ? "" : productObj.get("brand").toString());
+				good.setProductCate(productObj.get("productCate") == null ? null : Integer.parseInt(productObj.get("productCate").toString()));
+				good.setProductCode(productObj.get("productCode") == null ? "" : productObj.get("productCode").toString());
+				good.setStatus(productObj.get("status") == null ? "" : productObj.get("status").toString());
+				good.setMarketPrice(productObj.get("marketPrice") == null ? null : new BigDecimal(productObj.get("marketPrice").toString()));
+				good.setRetailPrice(productObj.get("retailPrice") == null ? null : new BigDecimal(productObj.get("retailPrice").toString()));
+				good.setProductPlace(productObj.get("productPlace") == null ? "" : productObj.get("productPlace").toString());
+				good.setFeatures(productObj.get("features") == null ? "" : productObj.get("features").toString());
+				if(productObj.get("hot") != null){
+					good.setHot("true".equals(productObj.get("hot").toString()) ? 1: 0);
+					
+				}
+				if(productObj.get("is7ToReturn") != null){
+					good.setIs7Toreturn("true".equals(productObj.get("is7ToReturn").toString()) ? 1: 0);
+					
+				}
+				good.setCreateTime(new Date());
+			}
+			
+		}
 
 	}
 	@Override
