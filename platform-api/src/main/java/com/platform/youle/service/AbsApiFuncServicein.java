@@ -59,10 +59,10 @@ public abstract  class AbsApiFuncServicein implements IApiFuncServicein{
 
     /**
      *1.3获取单个商品详情
-     * @param entity
+     * @param productId
      * @return
      */
-    protected abstract ResponseSkuDetailEntity getSkuDetail(Map<String,Object> params);
+    protected abstract ResponseSkuDetailEntity getSkuDetail(Long productId);
 
 	/**
 	 * 1.4单个查询商品库存

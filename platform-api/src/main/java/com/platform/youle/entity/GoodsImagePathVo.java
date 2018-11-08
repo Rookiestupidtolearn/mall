@@ -21,7 +21,7 @@ public class GoodsImagePathVo implements Serializable {
     //图片顺序
     private Integer orderSort;
     //商品id 唯一标识
-    private Long goodsSn;
+    private Long goodsId;
     //创建时间
     private Date createTime;
     //创建者
@@ -72,14 +72,14 @@ public class GoodsImagePathVo implements Serializable {
      * 设置：商品id 唯一标识
      */
     public void setGoodsSn(Long goodsSn) {
-        this.goodsSn = goodsSn;
+        this.goodsId = goodsSn;
     }
 
     /**
      * 获取：商品id 唯一标识
      */
     public Long getGoodsSn() {
-        return goodsSn;
+        return goodsId;
     }
     /**
      * 设置：创建时间

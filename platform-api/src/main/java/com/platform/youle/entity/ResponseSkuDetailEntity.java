@@ -10,7 +10,7 @@ public class ResponseSkuDetailEntity {
 	//错误提示信息(当RESPONSE_STATUS为false时有值)
 	private String ERROR_MESSAGE;
 	//基础数据
-	private List<String> RESULT_DATA;
+	private String RESULT_DATA;
 	//产品数据
 	private List<String> PRODUCT_DATA;
 	public boolean isRESPONSE_STATUS() {
@@ -31,17 +31,18 @@ public class ResponseSkuDetailEntity {
 	public void setERROR_MESSAGE(String eRROR_MESSAGE) {
 		ERROR_MESSAGE = eRROR_MESSAGE;
 	}
-	public List<String> getRESULT_DATA() {
-		return RESULT_DATA;
-	}
-	public void setRESULT_DATA(List<String> rESULT_DATA) {
-		RESULT_DATA = rESULT_DATA;
-	}
+	
 	public List<String> getPRODUCT_DATA() {
 		return PRODUCT_DATA;
 	}
 	public void setPRODUCT_DATA(List<String> pRODUCT_DATA) {
 		PRODUCT_DATA = pRODUCT_DATA;
+	}
+	public String getRESULT_DATA() {
+		return RESULT_DATA;
+	}
+	public void setRESULT_DATA(String rESULT_DATA) {
+		RESULT_DATA = rESULT_DATA;
 	}
 	
 	
