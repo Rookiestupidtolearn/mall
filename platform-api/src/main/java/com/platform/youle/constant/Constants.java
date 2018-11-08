@@ -48,6 +48,14 @@ public class Constants {
         
         //2.4订单反查询接口, 用于确认订单是否创建成功
         public static String orderTrack = "/api/order/orderTrack.php";
+        
+        //2.6 取消订单接口（不支持京东及严选产品）
+        public static String orderCancel = "/api/order/cancel.php";
+        
+        //2.7 取消订单接口（子订单取消）
+        public static String orderCancelByOrderKey = "api/order/cancelByOrderKey.php";
+        
+        
     }
 
 

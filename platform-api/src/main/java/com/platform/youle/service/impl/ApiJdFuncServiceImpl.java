@@ -16,15 +16,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.platform.youle.constant.Constants.Urls;
-import com.platform.youle.entity.RequestBaseEntity;
-import com.platform.youle.entity.RequestProductEntity;
-import com.platform.youle.entity.RequestProductStockBatchEntity;
-import com.platform.youle.entity.RequestProductStockEntity;
-import com.platform.youle.entity.ResponseBaseEntity;
-import com.platform.youle.entity.ResponseProductEntity;
-import com.platform.youle.entity.ResponseProductStockBatchEntity;
-import com.platform.youle.entity.ResponseProductStockEntity;
-import com.platform.youle.entity.ResponseSaleStatusEntity;
 import com.platform.youle.service.AbsApiFuncServicein;
 import com.platform.youle.util.HttpUtil;
 import org.slf4j.Logger;
@@ -223,7 +214,7 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
 	    initRequestParam(entity);
 	    entity.setThirdOrder(thirdOrder);
 		try {
-			logger.info("2.4订单物流信息接口-根据己方订单号获取]入参："+JSONObject.toJSONString(entity));
+			logger.info("[2.4订单物流信息接口-根据己方订单号获取]入参："+JSONObject.toJSONString(entity));
 			String result = HttpUtil.post(Urls.base_test_url+Urls.orderTrack, objectToMap(entity));
 			logger.info("[2.4订单物流信息接口-根据己方订单号获取]出参："+result);
 			reponse = JSON.parseObject(result,ResponseOrderTrackEntity.class);
@@ -232,6 +223,46 @@ public class ApiJdFuncServiceImpl extends AbsApiFuncServicein {
 		}
 		return reponse;
 	}
+
+
+	@Override
+	protected ResponseCancelEntity cancel(String thirdOrder) {
+		ResponseCancelEntity response = null;
+		RequestOrderTrackEntity entity = new RequestOrderTrackEntity();
+		initRequestParam(entity);
+		entity.setThirdOrder(thirdOrder);
+		try{
+			logger.info("[2.6取消订单接口-不支持京东及严选产品]入参："+JSONObject.toJSONString(entity));
+			String result = HttpUtil.post(Urls.base_test_url+Urls.orderCancel, objectToMap(entity));
+			logger.info("[2.6取消订单接口-不支持京东及严选产品]出参："+result);
+			response = JSON.parseObject(result,ResponseCancelEntity.class);
+		}catch(Exception e ){
+			logger.info("[2.6取消订单接口-不支持京东及严选产品]异常",e);
+		}
+		return response;
+	}
+
+
+	@Override
+	protected ResponseBaseEntity cancelByOrderKey(String thirdOrder, String orderKey) {
+		ResponseBaseEntity  response=null;
+		RequestCancelByOrderKeyEntity entity = new RequestCancelByOrderKeyEntity();
+		initRequestParam(entity);
+		entity.setThirdOrder(thirdOrder);
+		entity.setOrderKey(orderKey);
+		try{
+			logger.info("[2.7取消订单接口-子订单取消]入参："+JSONObject.toJSONString(entity));
+			String result = HttpUtil.post(Urls.base_test_url+Urls.orderCancelByOrderKey, objectToMap(entity));
+			logger.info("[2.7取消订单接口-子订单取消]出参："+result);
+			response = JSON.parseObject(result,ResponseCancelEntity.class);
+		}catch(Exception e ){
+			logger.info("[2.7取消订单接口-子订单取消]异常",e);
+		}
+		return response;
+	}
+
+
+	
 
 
 }
