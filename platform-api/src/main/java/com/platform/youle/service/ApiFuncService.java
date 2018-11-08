@@ -26,7 +26,7 @@ public interface ApiFuncService {
 
 
 
-    public
+
 
 
 }

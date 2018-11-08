@@ -71,7 +71,24 @@ public class ApiJdFuncServiceImpl implements ApiFuncService {
 
 	@Override
 	public ResponseProductEntity stock(String pid, String num, String address) {
-		// TODO Auto-generated method stub
+		RequestProductEntity entity = new RequestProductEntity();
+		  Long timestamp = Calendar.getInstance().getTimeInMillis() ;
+			entity.setTimestamp(timestamp.toString());
+			entity.setToken(TokenUtil.token);
+			entity.setWid(TokenUtil.wid);
+		
+			String str = JSON.toJSONString(entity);
+			System.out.println("请求参数:"+str);
+			try {
+				  Map<String,Object> map1 = (Map<String,Object>) JSON.parse(str);
+				String result = HttpUtil.post("http://open.fygift.com/api/product/getAllProductIds.php", map1);
+				System.out.println("结果:"+result);
+				ResponseProductEntity reponse = JSON.parseObject(result,new TypeReference<ResponseProductEntity>(){});
+				return reponse;
+			} catch (Exception e) {
+				
+				e.printStackTrace();
+			}
 		return null;
 	}
 
