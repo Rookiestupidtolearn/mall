@@ -23,9 +23,9 @@ public abstract class AbsApiOrderService implements IApiFuncServicein{
 	     */
 		@Override
 	    public void initRequestParam(RequestBaseEntity  entity){
-	        entity.setWid(TokenUtil.wid);
-	        entity.setTimestamp(String.valueOf(Calendar.getInstance().getTimeInMillis()));
-	        entity.setToken(TokenUtil.token);
+			entity.setWid(TokenUtil.wid);
+			entity.setToken(TokenUtil.token);
+			entity.setTimestamp(TokenUtil.currentTime.toString());
 	    }
 	
 	    /**
