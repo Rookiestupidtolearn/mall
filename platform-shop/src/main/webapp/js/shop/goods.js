@@ -87,6 +87,7 @@ var vm = new Vue({
     data: {
         showList: true,
         showData: false,
+        isTrue:false,
         normalMatching:0,
         activityMatching:0,
         showMatching:true,
@@ -140,12 +141,32 @@ var vm = new Vue({
         		alert("请选择需要设置配比的商品");
         		return;
         	}
+        	//校验选中的商品是否可以设置配比
+        	vm.verify();
+        	if(!vm.isTrue){
+        		return;
+        	}
+        	vm.isTrue = false;
         	vm.normalMatching=0;
             vm.activityMatching=0;
             vm.showList=false;
             vm.showData=false;
         	vm.showMatching = false;
         	vm.title = "配比设置";
+        },
+        verify:function(){
+        	var ids = $("#jqGrid").getGridParam("selarrrow");
+        	if(ids.length<=0){
+        		alert("未获取到需要设置配比的商品信息");
+        		return;
+        	}
+        	Ajax.request({
+                url: "../goodscouponconfig/verify/"+ids,
+                async: true,
+                successCallback: function (r) {
+                	vm.isTrue = true;
+                }
+            });
         },
         add: function () {
         	vm.showList=false;
@@ -258,8 +279,6 @@ var vm = new Vue({
             });
         },
         saveGoodsCouponConfig: function () {
-        	//alert("正常配比:"+vm.normalMatching);
-            //alert("活动配比:"+vm.activityMatching);
             var url = "../goodscouponconfig/save";
         	var ids = $("#jqGrid").getGridParam("selarrrow");
         	if(ids.length<=0){
@@ -421,9 +440,17 @@ var vm = new Vue({
         reload: function (event) {
             vm.showList = true;
             vm.showMatching = true;
-            if(vm.q.min_retail_price > vm.q.max_retail_price || vm.q.min_pure_interest_rate > vm.q.max_pure_interest_rate){
-            	alert("请设置正确查询条件");
-            	return;
+            if(vm.q.min_retail_price != '' && vm.q.max_retail_price != ''){
+            	if(vm.q.min_retail_price > vm.q.max_retail_price){
+            		alert("请设置正确查询条件");
+            		return;
+            	}
+            }
+            if(vm.q.min_pure_interest_rate != '' && vm.q.max_pure_interest_rate != ''){
+            	if(vm.q.min_pure_interest_rate > vm.q.max_pure_interest_rate){
+            		alert("请设置正确查询条件");
+                	return;
+            	}
             }
             var page = $("#jqGrid").jqGrid('getGridParam', 'page');
             $("#jqGrid").jqGrid('setGridParam', {
