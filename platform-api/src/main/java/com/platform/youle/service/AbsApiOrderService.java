@@ -8,6 +8,7 @@ import com.platform.youle.entity.ReponseOrderDetailEntity;
 import com.platform.youle.entity.RequestBaseEntity;
 import com.platform.youle.entity.RequestOrderSubmitEntity;
 import com.platform.youle.entity.ResponseBaseEntity;
+import com.platform.youle.entity.ResponseCancelEntity;
 import com.platform.youle.entity.ResponseOrderSubmitEntity;
 import com.platform.youle.entity.ResponseOrderTrackEntity;
 import com.platform.youle.entity.ResponseSystemOrderTrackEntity;
@@ -83,4 +84,16 @@ public abstract class AbsApiOrderService implements IApiFuncServicein{
 	     */
 	    protected abstract ResponseSystemOrderTrackEntity systemOrderTrack(String orderKey);
 	    	
+	    /**
+	     * 2.6取消订单接口（不支持京东及严选产品）
+	     * @param cancel
+	     */
+	    protected abstract ResponseCancelEntity cancel(String thirdOrder);
+	    
+	    /**
+	     * 2.7取消订单接口（子订单取消）
+	     * @param cancelByOrderKey
+	     * @return
+	     */
+	    protected abstract ResponseBaseEntity cancelByOrderKey(String thirdOrder,String orderKey);
 }

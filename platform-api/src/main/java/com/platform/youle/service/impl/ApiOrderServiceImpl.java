@@ -7,11 +7,13 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.platform.youle.constant.Constants.Urls;
 import com.platform.youle.entity.ReponseOrderDetailEntity;
+import com.platform.youle.entity.RequestCancelByOrderKeyEntity;
 import com.platform.youle.entity.RequestOrderDetailEntity;
 import com.platform.youle.entity.RequestOrderSubmitEntity;
 import com.platform.youle.entity.RequestOrderTrackEntity;
 import com.platform.youle.entity.RequestThirdOrderEntity;
 import com.platform.youle.entity.ResponseBaseEntity;
+import com.platform.youle.entity.ResponseCancelEntity;
 import com.platform.youle.entity.ResponseOrderSubmitEntity;
 import com.platform.youle.entity.ResponseOrderTrackEntity;
 import com.platform.youle.entity.ResponseSystemOrderTrackEntity;
@@ -109,4 +111,39 @@ public class ApiOrderServiceImpl  extends AbsApiOrderService{
 	        return reponse;
 	    }
 
+	    @Override
+		protected ResponseCancelEntity cancel(String thirdOrder) {
+			ResponseCancelEntity response = null;
+			RequestOrderTrackEntity entity = new RequestOrderTrackEntity();
+			initRequestParam(entity);
+			entity.setThirdOrder(thirdOrder);
+			try{
+				logger.info("[2.6取消订单接口-不支持京东及严选产品]入参："+JSONObject.toJSONString(entity));
+				String result = HttpUtil.post(Urls.base_test_url+Urls.cancel, objectToMap(entity));
+				logger.info("[2.6取消订单接口-不支持京东及严选产品]出参："+result);
+				response = JSON.parseObject(result,ResponseCancelEntity.class);
+			}catch(Exception e ){
+				logger.info("[2.6取消订单接口-不支持京东及严选产品]异常",e);
+			}
+			return response;
+		}
+
+
+		@Override
+		protected ResponseBaseEntity cancelByOrderKey(String thirdOrder, String orderKey) {
+			ResponseBaseEntity  response=null;
+			RequestCancelByOrderKeyEntity entity = new RequestCancelByOrderKeyEntity();
+			initRequestParam(entity);
+			entity.setThirdOrder(thirdOrder);
+			entity.setOrderKey(orderKey);
+			try{
+				logger.info("[2.7取消订单接口-子订单取消]入参："+JSONObject.toJSONString(entity));
+				String result = HttpUtil.post(Urls.base_test_url+Urls.cancelByOrderKey, objectToMap(entity));
+				logger.info("[2.7取消订单接口-子订单取消]出参："+result);
+				response = JSON.parseObject(result,ResponseCancelEntity.class);
+			}catch(Exception e ){
+				logger.info("[2.7取消订单接口-子订单取消]异常",e);
+			}
+			return response;
+		}
 }

@@ -137,5 +137,5 @@ public abstract  class AbsApiFuncServicein implements IApiFuncServicein{
      * @param cancelByOrderKey
      * @return
      */
-    protected abstract ResponseBaseEntity cancelByOrderKey(String thirdOrder,String orderKey);
+    protected abstract ResponseBaseEntity<?> cancelByOrderKey(String thirdOrder,String orderKey);
 }
