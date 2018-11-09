@@ -66,6 +66,23 @@ public class Constants {
         //2.7 取消订单接口（子订单取消）
         public static String cancelByOrderKey = "/api/order/cancelByOrderKey.php";
 
-
+        //---------------------------预存款URL----------------------------------------
+        //3.1查询预存款余额
+        public static String remain = "/api/finance/remain.php";
+        
+        
+        //----------------------------系统产品分类接口-----------------------------------
+        //5.1获取一级产品分类
+        public static String rootCate = "/api/cate/rootCate.php";
+        
+        //5.2获取下级产品分类
+        public static String childs = "/api/cate/childs.php";
+        
+        //5.3获取单个分类详情
+        public static String cateDetial = "/api/cate/detial.php";
+        
+        
+        
+        
     }
 }
