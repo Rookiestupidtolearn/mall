@@ -45,11 +45,8 @@ import com.platform.service.ApiGoodsService;
 import com.platform.service.ApiGoodsSpecificationService;
 import com.platform.service.ApiProductService;
 import com.platform.util.ApiBaseAction;
-import com.platform.youle.entity.RequestSkuDetailEntity;
-import com.platform.youle.entity.ResponseSkuDetailEntity;
-import com.platform.youle.service.AbsApiFuncServicein;
-import com.platform.youle.service.IApiFuncServicein;
-import com.platform.youle.util.TokenUtil;
+import com.platform.youle.entity.ResponseBaseEntity;
+import com.platform.youle.service.AbsApiGoodsService;
 import com.qiniu.util.StringUtils;
 
 import io.swagger.annotations.Api;
@@ -86,6 +83,8 @@ public class ApiCartController extends ApiBaseAction {
     private ApiCartMapper apiCartMapper;
     @Autowired
     private ApiTranInfoRecordMapper apiTranInfoRecordMapper;
+    @Autowired
+    private AbsApiGoodsService absApiGoodsService;
 
 
 
@@ -701,5 +700,14 @@ public class ApiCartController extends ApiBaseAction {
     	 tranInfo.setRemark(remark);
     	 apiTranInfoRecordMapper.save(tranInfo);
     }
+    
+    @ApiOperation(value = "获取商品详情")
+    @PostMapping("detail")
+    public Object detail() {
+    	
+    	ResponseBaseEntity<?> response = absApiGoodsService.getAllProductIds();
+		return response;
+	}
+
 
 }

@@ -21,7 +21,7 @@ public abstract class AbsApiGoodsService implements IApiFuncServicein {
 	@Override
 	public void initRequestParam(RequestBaseEntity entity) {
 		entity.setWid(TokenUtil.wid);
-		entity.setTimestamp(String.valueOf(Calendar.getInstance().getTimeInMillis()));
+		entity.setTimestamp(TokenUtil.currentTime.toString());
 		entity.setToken(TokenUtil.token);
 	}
 
@@ -54,7 +54,7 @@ public abstract class AbsApiGoodsService implements IApiFuncServicein {
 	 * 
 	 * @return
 	 */
-	protected abstract ResponseBaseEntity<?> getAllProductIds();
+	public abstract ResponseBaseEntity<?> getAllProductIds();
 
 	/**
 	 * 1.2分页获取当前页商品ID, 每页数据100条
