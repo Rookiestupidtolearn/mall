@@ -70,7 +70,12 @@ public class GoodsController {
         	paramMap.put("min_pure_interest_rate", StringUtil.isEmpty(min_pure_interest_rate) ? "":min_pure_interest_rate);
         	paramMap.put("max_pure_interest_rate", StringUtil.isEmpty(max_pure_interest_rate) ? "":max_pure_interest_rate);
         	Integer[] goodsIds = goodsPureInterestRateService.queryGoodsIdsByPrice(paramMap);
-        	params.put("goodss", goodsIds);
+        	if(goodsIds.length == 0){
+        		params.put("goodss", new Integer[]{0} );
+        	}else{
+        		params.put("goodss", goodsIds);
+        	}
+        	
         	query = new Query(params);
         	query.put("isDelete", 0);
         	goodsList = goodsService.queryList(query);

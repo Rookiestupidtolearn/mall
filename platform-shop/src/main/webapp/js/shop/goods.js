@@ -440,14 +440,15 @@ var vm = new Vue({
         reload: function (event) {
             vm.showList = true;
             vm.showMatching = true;
-            if(vm.q.min_retail_price != '' && vm.q.max_retail_price != ''){
-            	if(vm.q.min_retail_price > vm.q.max_retail_price){
+            console.log(vm.q.min_retail_price+","+vm.q.max_retail_price+","+vm.q.min_pure_interest_rate+","+vm.q.max_pure_interest_rate);
+            if(vm.q.min_retail_price !== '' && vm.q.max_retail_price !== ''){
+            	if(parseInt(vm.q.min_retail_price) > parseInt(vm.q.max_retail_price)){
             		alert("请设置正确查询条件");
             		return;
             	}
             }
-            if(vm.q.min_pure_interest_rate != '' && vm.q.max_pure_interest_rate != ''){
-            	if(vm.q.min_pure_interest_rate > vm.q.max_pure_interest_rate){
+            if(vm.q.min_pure_interest_rate !== '' && vm.q.max_pure_interest_rate !== ''){
+            	if(parseInt(vm.q.min_pure_interest_rate) > parseInt(vm.q.max_pure_interest_rate)){
             		alert("请设置正确查询条件");
                 	return;
             	}
