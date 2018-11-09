@@ -140,7 +140,7 @@ public class ApiOrderServiceImpl  extends AbsApiOrderService{
 				logger.info("[2.7取消订单接口-子订单取消]入参："+JSONObject.toJSONString(entity));
 				String result = HttpUtil.post(Urls.base_test_url+Urls.cancelByOrderKey, objectToMap(entity));
 				logger.info("[2.7取消订单接口-子订单取消]出参："+result);
-				response = JSON.parseObject(result,ResponseCancelEntity.class);
+				response = JSON.parseObject(result,ResponseBaseEntity.class);
 			}catch(Exception e ){
 				logger.info("[2.7取消订单接口-子订单取消]异常",e);
 			}
