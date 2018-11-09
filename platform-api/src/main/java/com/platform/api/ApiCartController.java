@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
+import com.platform.annotation.IgnoreAuth;
 import com.platform.annotation.LoginUser;
 import com.platform.cache.J2CacheUtils;
 import com.platform.dao.ApiCartMapper;
@@ -45,11 +46,8 @@ import com.platform.service.ApiGoodsService;
 import com.platform.service.ApiGoodsSpecificationService;
 import com.platform.service.ApiProductService;
 import com.platform.util.ApiBaseAction;
-import com.platform.youle.entity.RequestSkuDetailEntity;
 import com.platform.youle.entity.ResponseSkuDetailEntity;
-import com.platform.youle.service.AbsApiFuncServicein;
-import com.platform.youle.service.IApiFuncServicein;
-import com.platform.youle.util.TokenUtil;
+import com.platform.youle.service.AbsApiGoodsService;
 import com.qiniu.util.StringUtils;
 
 import io.swagger.annotations.Api;
@@ -86,6 +84,8 @@ public class ApiCartController extends ApiBaseAction {
     private ApiCartMapper apiCartMapper;
     @Autowired
     private ApiTranInfoRecordMapper apiTranInfoRecordMapper;
+    @Autowired
+    private AbsApiGoodsService absApiGoodsService;
 
 
 
@@ -701,5 +701,4 @@ public class ApiCartController extends ApiBaseAction {
     	 tranInfo.setRemark(remark);
     	 apiTranInfoRecordMapper.save(tranInfo);
     }
-
 }

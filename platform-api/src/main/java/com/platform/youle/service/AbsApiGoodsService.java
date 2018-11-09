@@ -21,7 +21,7 @@ public abstract class AbsApiGoodsService implements IApiFuncServicein {
 	@Override
 	public void initRequestParam(RequestBaseEntity entity) {
 		entity.setWid(TokenUtil.wid);
-		entity.setTimestamp(String.valueOf(Calendar.getInstance().getTimeInMillis()));
+		entity.setTimestamp(TokenUtil.currentTime.toString());
 		entity.setToken(TokenUtil.token);
 	}
 
@@ -70,7 +70,7 @@ public abstract class AbsApiGoodsService implements IApiFuncServicein {
 	 * @param productId
 	 * @return
 	 */
-	protected abstract ResponseSkuDetailEntity getSkuDetail(Long productId);
+	public abstract ResponseSkuDetailEntity getSkuDetail(Long productId);
 
 	/**
 	 * 1.4单个查询商品库存
