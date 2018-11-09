@@ -9,10 +9,14 @@ import com.platform.annotation.IgnoreAuth;
 import com.platform.annotation.LoginUser;
 import com.platform.entity.UserVo;
 import com.platform.service.ApiUserService;
+import com.platform.utils.GenerateCodeUtil;
 import com.platform.utils.R;
+import com.platform.youle.entity.RequestOrderSubmitEntity;
 import com.platform.youle.entity.ResponseBaseEntity;
+import com.platform.youle.entity.ResponseOrderSubmitEntity;
 import com.platform.youle.entity.ResponseRegionEntity;
 import com.platform.youle.service.AbsApiGoodsService;
+import com.platform.youle.service.AbsApiOrderService;
 import com.platform.youle.service.AbsApiRegionService;
 
 import io.swagger.annotations.Api;
@@ -36,8 +40,8 @@ public class ApiTestController {
     @Autowired
     private AbsApiGoodsService absApiGoodsService;
     
-  /*  @Autowired
-    private AbsApiOrderService  orderService;*/
+  @Autowired
+    private AbsApiOrderService  orderService;
     @Autowired
     private AbsApiRegionService  absApiRegionService;
     
@@ -92,29 +96,24 @@ public class ApiTestController {
 		return response;
 	}
     
-/*    @IgnoreAuth
-    @ApiOperation(value = "创建订单接口")
+    @IgnoreAuth
+    @ApiOperation(value = "2.1创建订单接口")
     @PostMapping("orderSubmit")
     public Object  orderSubmit(){
     	
     	RequestOrderSubmitEntity entity = new RequestOrderSubmitEntity();
-    	
-    	
+    	entity.setThirdOrder(GenerateCodeUtil.buildJDBizNo());
+    	entity.setPid_nums("81390_1");
+    	entity.setReceiverName("冯老师");
+    	entity.setMobile("13391506299");
+    	entity.setAddress("北京");
+    	entity.setProvince(1221);
+    	entity.setCity(123);
+    	entity.setCounty(1233);
     	ResponseOrderSubmitEntity response  = orderService.submit(entity);
-    	
     	
     	return response;
     }
-    */
-    @IgnoreAuth
-    @ApiOperation(value = "创建订单接口")
-    @PostMapping("response")
-    public Object response(){
-    	ResponseBaseEntity<ResponseRegionEntity>  res = absApiRegionService.province();
-    	return res;
-    }
-    
-    
     
     
 }

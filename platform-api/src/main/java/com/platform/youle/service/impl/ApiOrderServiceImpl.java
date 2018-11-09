@@ -2,6 +2,7 @@ package com.platform.youle.service.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -25,6 +26,7 @@ import com.platform.youle.util.HttpUtil;
  * @author Administrator
  *
  */
+@Service
 public class ApiOrderServiceImpl  extends AbsApiOrderService{
 
     	private static final Logger logger = LoggerFactory.getLogger(ApiOrderServiceImpl.class);
@@ -35,7 +37,7 @@ public class ApiOrderServiceImpl  extends AbsApiOrderService{
 	        try {
 	            logger.info("[2.1创建订单接口]入参："+JSONObject.toJSONString(entity));
 	            String result = HttpUtil.post(Urls.base_test_url+Urls.submit, objectToMap(entity));
-	            logger.info("[2.1创建订单接口] 返回结果："+JSONObject.toJSONString(entity));
+	            logger.info("[2.1创建订单接口] 返回结果："+JSONObject.toJSONString(result));
 	            reponse = JSON.parseObject(result,ResponseOrderSubmitEntity.class);
 	        } catch (Exception e) {
 	            logger.error("[2.1创建订单接口]异常",e);
@@ -52,7 +54,7 @@ public class ApiOrderServiceImpl  extends AbsApiOrderService{
 	        try {
 	            logger.info("[2.2查询订单详情接口]入参："+JSONObject.toJSONString(entity));
 	            String result = HttpUtil.post(Urls.base_test_url+Urls.detail, objectToMap(entity));
-	            logger.info("[2.2查询订单详情接口] 返回结果："+JSONObject.toJSONString(entity));
+	            logger.info("[2.2查询订单详情接口] 返回结果："+JSONObject.toJSONString(result));
 	            reponse = JSON.parseObject(result,ReponseOrderDetailEntity.class);
 	        } catch (Exception e) {
 	            logger.error("[2.2查询订单详情接口]异常",e);
