@@ -66,6 +66,19 @@ public class Constants {
         //2.7 取消订单接口（子订单取消）
         public static String cancelByOrderKey = "/api/order/cancelByOrderKey.php";
 
+        
+        //------------------------------系统地址接口URL--------------------------------------
+        
+        //4.1获取一级地址(省份)
+        public static String province = "/api/area/province.php";
 
+        //4.2获取二地址(城市)
+        public static String city = "/api/area/city.php";
+
+        //4.3获取三级地址(县/区)
+        public static String county = "/api/area/county.php";
+
+        //4.4获取四级地址(镇/街道)
+        public static String town = "/api/area/town.php";
     }
 }
