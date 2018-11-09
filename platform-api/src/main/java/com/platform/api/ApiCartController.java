@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
+import com.platform.annotation.IgnoreAuth;
 import com.platform.annotation.LoginUser;
 import com.platform.cache.J2CacheUtils;
 import com.platform.dao.ApiCartMapper;
@@ -45,7 +46,7 @@ import com.platform.service.ApiGoodsService;
 import com.platform.service.ApiGoodsSpecificationService;
 import com.platform.service.ApiProductService;
 import com.platform.util.ApiBaseAction;
-import com.platform.youle.entity.ResponseBaseEntity;
+import com.platform.youle.entity.ResponseSkuDetailEntity;
 import com.platform.youle.service.AbsApiGoodsService;
 import com.qiniu.util.StringUtils;
 
@@ -700,14 +701,4 @@ public class ApiCartController extends ApiBaseAction {
     	 tranInfo.setRemark(remark);
     	 apiTranInfoRecordMapper.save(tranInfo);
     }
-    
-    @ApiOperation(value = "获取商品详情")
-    @PostMapping("detail")
-    public Object detail() {
-    	
-    	ResponseBaseEntity<?> response = absApiGoodsService.getAllProductIds();
-		return response;
-	}
-
-
 }
