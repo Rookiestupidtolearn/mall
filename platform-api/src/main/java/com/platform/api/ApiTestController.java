@@ -10,12 +10,10 @@ import com.platform.annotation.LoginUser;
 import com.platform.entity.UserVo;
 import com.platform.service.ApiUserService;
 import com.platform.utils.R;
-import com.platform.youle.entity.RequestOrderSubmitEntity;
 import com.platform.youle.entity.ResponseBaseEntity;
-import com.platform.youle.entity.ResponseOrderSubmitEntity;
+import com.platform.youle.entity.ResponseRegionEntity;
 import com.platform.youle.service.AbsApiGoodsService;
-import com.platform.youle.service.AbsApiOrderService;
-import com.platform.youle.service.IApiFuncServicein;
+import com.platform.youle.service.AbsApiRegionService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -38,8 +36,10 @@ public class ApiTestController {
     @Autowired
     private AbsApiGoodsService absApiGoodsService;
     
+  /*  @Autowired
+    private AbsApiOrderService  orderService;*/
     @Autowired
-    private AbsApiOrderService  orderService;
+    private AbsApiRegionService  absApiRegionService;
     
     /**
      * 获取用户信息
@@ -92,7 +92,7 @@ public class ApiTestController {
 		return response;
 	}
     
-    @IgnoreAuth
+/*    @IgnoreAuth
     @ApiOperation(value = "创建订单接口")
     @PostMapping("orderSubmit")
     public Object  orderSubmit(){
@@ -105,4 +105,16 @@ public class ApiTestController {
     	
     	return response;
     }
+    */
+    @IgnoreAuth
+    @ApiOperation(value = "创建订单接口")
+    @PostMapping("response")
+    public Object response(){
+    	ResponseBaseEntity<ResponseRegionEntity>  res = absApiRegionService.province();
+    	return res;
+    }
+    
+    
+    
+    
 }

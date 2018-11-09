@@ -20,8 +20,7 @@ public class TokenUtil {
 
         wid = PropertiesUtil.getValue("youle.properties","wid");
         accessToken = PropertiesUtil.getValue("youle.properties","accessToken");
-        currentTime = Calendar.getInstance().getTimeInMillis();
-        token = getToken(currentTime);
+        token = getToken();
     }
 
 	public static void main(String[] args) {
@@ -31,8 +30,8 @@ public class TokenUtil {
 	/**
 	 * 获取token
 	 */
-	private static String getToken(Long currentTime){
-
+	private static String getToken(){
+		currentTime = Calendar.getInstance().getTimeInMillis();
 	    if(StringUtils.isNullOrEmpty(token)){
             StringBuffer  tokenStr = new StringBuffer("");
             tokenStr.append(wid);

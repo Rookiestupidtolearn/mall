@@ -20,8 +20,8 @@ public abstract class AbsApiRegionService implements IApiFuncServicein {
 	@Override
 	public void initRequestParam(RequestBaseEntity entity) {
 		entity.setWid(TokenUtil.wid);
-		entity.setTimestamp(String.valueOf(Calendar.getInstance().getTimeInMillis()));
 		entity.setToken(TokenUtil.token);
+		entity.setTimestamp(TokenUtil.currentTime.toString());
 	}
 
 	/**
@@ -52,21 +52,21 @@ public abstract class AbsApiRegionService implements IApiFuncServicein {
 	 * 4.1获取一级地址(省份)
 	 * @return
 	 */
-	protected abstract ResponseBaseEntity<ResponseRegionEntity> province();
+	public abstract ResponseBaseEntity<ResponseRegionEntity> province();
 	/**
 	 * 4.2获取二地址(城市)
 	 * @return
 	 */
-	protected abstract ResponseBaseEntity<ResponseRegionEntity> city(int province);
+	public abstract ResponseBaseEntity<ResponseRegionEntity> city(int province);
 	/**
 	 * 4.3获取三级地址(县/区)
 	 * @return
 	 */
-	protected abstract ResponseBaseEntity<ResponseRegionEntity> county(int city);
+	public abstract ResponseBaseEntity<ResponseRegionEntity> county(int city);
 	/**
 	 * 4.4获取四级地址(镇/街道)
 	 * @return
 	 */
-	protected abstract ResponseBaseEntity<ResponseRegionEntity> town(int county);
+	public abstract ResponseBaseEntity<ResponseRegionEntity> town(int county);
 
 }

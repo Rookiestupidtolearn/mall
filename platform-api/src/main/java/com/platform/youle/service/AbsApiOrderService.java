@@ -88,12 +88,12 @@ public abstract class AbsApiOrderService implements IApiFuncServicein{
 	     * 2.6取消订单接口（不支持京东及严选产品）
 	     * @param cancel
 	     */
-	    protected abstract ResponseCancelEntity cancel(String thirdOrder);
+		public abstract ResponseCancelEntity cancel(String thirdOrder);
 	    
 	    /**
 	     * 2.7取消订单接口（子订单取消）
 	     * @param cancelByOrderKey
 	     * @return
 	     */
-	    protected abstract ResponseBaseEntity cancelByOrderKey(String thirdOrder,String orderKey);
+		public abstract ResponseBaseEntity cancelByOrderKey(String thirdOrder,String orderKey);
 }
