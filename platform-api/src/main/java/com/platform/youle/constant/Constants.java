@@ -81,8 +81,16 @@ public class Constants {
         //5.3获取单个分类详情
         public static String cateDetial = "/api/cate/detial.php";
         
-        
-        
-        
+        //-----------------------------售后服务接口---------------------------------------
+        //6.1 查询商品是否可以申请售后服务
+        public static String sale_after_check = "/api/afterSale/v2/check.php" ;
+        //6.2 提交订单售后申请
+        public static String sale_after_submit = "/api/afterSale/v2/submit.php";
+        //6.3 查询售后订单详情	
+        public static String sale_after_detail="/api/afterSale/v2/detail.php";
+       // 6.4 提交京东商品订单售后服务申请
+        public static String sale_after_jd_submit = "/api/afterSale/jd/submit.php"	;
+       // 6.5 获取京东商品订单售后单概要信息
+        public static String sale_after_basis= "/api/afterSale/jd/basis.php"	;
     }
 }
