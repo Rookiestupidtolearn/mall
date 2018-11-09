@@ -10,9 +10,15 @@ import com.platform.annotation.LoginUser;
 import com.platform.entity.UserVo;
 import com.platform.service.ApiUserService;
 import com.platform.utils.R;
+import com.platform.youle.entity.RequestOrderSubmitEntity;
+import com.platform.youle.entity.ResponseBaseEntity;
+import com.platform.youle.entity.ResponseOrderSubmitEntity;
+import com.platform.youle.service.AbsApiGoodsService;
+import com.platform.youle.service.AbsApiOrderService;
 import com.platform.youle.service.IApiFuncServicein;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * API测试接口
@@ -30,7 +36,10 @@ public class ApiTestController {
     private ApiUserService userService;
     
     @Autowired
-    private IApiFuncServicein IApiFuncServicein;
+    private AbsApiGoodsService absApiGoodsService;
+    
+    @Autowired
+    private AbsApiOrderService  orderService;
     
     /**
      * 获取用户信息
@@ -71,5 +80,29 @@ public class ApiTestController {
     public R userList(String mobile) {
         UserVo userEntity = userService.queryByMobile(mobile);
         return R.ok().put("dto", userEntity);
+    }
+    
+
+    @IgnoreAuth
+    @ApiOperation(value = "获取所有商品ID")
+    @PostMapping("getAllProductIds")
+    public Object detail() {
+    	
+    	ResponseBaseEntity<?> response = absApiGoodsService.getAllProductIds();
+		return response;
+	}
+    
+    @IgnoreAuth
+    @ApiOperation(value = "创建订单接口")
+    @PostMapping("orderSubmit")
+    public Object  orderSubmit(){
+    	
+    	RequestOrderSubmitEntity entity = new RequestOrderSubmitEntity();
+    	
+    	
+    	ResponseOrderSubmitEntity response  = orderService.submit(entity);
+    	
+    	
+    	return response;
     }
 }

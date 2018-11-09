@@ -8,7 +8,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.platform.youle.constant.Constants.Urls;
-import com.platform.youle.service.AbsApiFuncServicein;
 import com.platform.youle.entity.RequestBaseEntity;
 import com.platform.youle.entity.RequestProductEntity;
 import com.platform.youle.entity.RequestProductStockBatchEntity;

@@ -57,32 +57,32 @@ public abstract class AbsApiOrderService implements IApiFuncServicein{
 	     * @param entity
 	     * @return
 	     */
-	    protected abstract ResponseOrderSubmitEntity submit(RequestOrderSubmitEntity entity);
+		public abstract ResponseOrderSubmitEntity submit(RequestOrderSubmitEntity entity);
 	    /**
 	     * 2.2查询订单详情接口
 	     * @param orderKey
 	     * @return
 	     */
-	    protected abstract ReponseOrderDetailEntity detail(String orderKey);
+		public abstract ReponseOrderDetailEntity detail(String orderKey);
 	    /**
 	     * 2.3订单反查询接口, 用于确认订单是否创建成功
 	     * @param thirdOrder
 	     * @return
 	     */
-	    protected abstract ResponseBaseEntity<?> thirdOrder(String thirdOrder);
+		public abstract ResponseBaseEntity<?> thirdOrder(String thirdOrder);
 	    /**
 	     * 2.4订单物流信息接口-根据己方订单号获取
 	     * @param thirdOrder
 	     * @return
 	     */
-	    protected abstract ResponseOrderTrackEntity orderTrack(String thirdOrder);
+		public abstract ResponseOrderTrackEntity orderTrack(String thirdOrder);
 
 	    /**
 	     * 2.5订单物流信息接口-根据我方订单号获取
 	     * @param thirdOrder
 	     * @return
 	     */
-	    protected abstract ResponseSystemOrderTrackEntity systemOrderTrack(String orderKey);
+		public abstract ResponseSystemOrderTrackEntity systemOrderTrack(String orderKey);
 	    	
 	    /**
 	     * 2.6取消订单接口（不支持京东及严选产品）
