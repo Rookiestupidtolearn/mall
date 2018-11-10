@@ -22,6 +22,8 @@ public class GoodsCouponConfigVo implements Serializable{
 	 private BigDecimal create_user_dept_id;
 	 //删除标识
 	 private String del_flag;
+	 private Double activity_matching; 
+	 private Double normal_matching;
 
 	public Integer getId() {
 		return id;
@@ -85,6 +87,22 @@ public class GoodsCouponConfigVo implements Serializable{
 
 	public void setDel_flag(String del_flag) {
 		this.del_flag = del_flag;
+	}
+
+	public Double getActivity_matching() {
+		return activity_matching;
+	}
+
+	public void setActivity_matching(Double activity_matching) {
+		this.activity_matching = activity_matching;
+	}
+
+	public Double getNormal_matching() {
+		return normal_matching;
+	}
+
+	public void setNormal_matching(Double normal_matching) {
+		this.normal_matching = normal_matching;
 	}
 	 
 }
