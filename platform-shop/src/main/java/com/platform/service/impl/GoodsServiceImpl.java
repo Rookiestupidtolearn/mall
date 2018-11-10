@@ -1,5 +1,6 @@
 package com.platform.service.impl;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -20,9 +21,11 @@ import com.platform.entity.CartEntity;
 import com.platform.entity.GoodsAttributeEntity;
 import com.platform.entity.GoodsEntity;
 import com.platform.entity.GoodsGalleryEntity;
+import com.platform.entity.GoodsPureInterestRateEntity;
 import com.platform.entity.ProductEntity;
 import com.platform.entity.SysUserEntity;
 import com.platform.service.ApiCartService;
+import com.platform.service.GoodsPureInterestRateService;
 import com.platform.service.GoodsService;
 import com.platform.utils.RRException;
 import com.platform.utils.ShiroUtils;
@@ -50,6 +53,8 @@ public class GoodsServiceImpl implements GoodsService {
 	private CartDao cartDao;
 	@Autowired
 	private ApiCartService apiCartService;
+	@Autowired
+	private GoodsPureInterestRateService goodsPureInterestRateService;
 
 	@Override
 	public GoodsEntity queryObject(Integer id) {
@@ -118,6 +123,21 @@ public class GoodsServiceImpl implements GoodsService {
 			goods.setIsOnSale(-1);
 		}
 		
+		//保存商品毛利率表
+		GoodsPureInterestRateEntity goodsPureInterestRateEntity = new GoodsPureInterestRateEntity();
+		goodsPureInterestRateEntity.setGoodsId(goods.getId());
+		goodsPureInterestRateEntity.setProductId(0); //无规格id
+		goodsPureInterestRateEntity.setMarketPrice(goods.getMarketPrice());
+		goodsPureInterestRateEntity.setRetailPrice(goods.getRetailPrice());
+		goodsPureInterestRateEntity.setCreateUserId(user.getUserId());
+		goodsPureInterestRateEntity.setCreateTime(new Date());
+		goodsPureInterestRateEntity.setMemo("");
+		//计算毛利息
+		double PureInterestRate = goods.getMarketPrice().subtract(goods.getRetailPrice()).divide(goods.getRetailPrice(),2,BigDecimal.ROUND_HALF_UP).doubleValue();
+		goodsPureInterestRateEntity.setPureInterestRate(PureInterestRate);
+		goodsPureInterestRateService.save(goodsPureInterestRateEntity);
+		
+		
 		goods.setIsDelete(0);
 		goods.setCreateUserDeptId(user.getDeptId());
 		goods.setCreateUserId(user.getUserId());
@@ -129,8 +149,6 @@ public class GoodsServiceImpl implements GoodsService {
 	@Override
 	@Transactional
 	public int update(GoodsEntity goods) {
-		
-		
 		if(1==goods.getIsOnSale()){
 			throw new RRException("此商品已处于上架状态！,不能修改");
 		}
@@ -159,6 +177,24 @@ public class GoodsServiceImpl implements GoodsService {
 				goodsGalleryDao.save(galleryEntity);
 			}
 		}
+		//校验如果修改了商品价格，则需更新商品毛利率
+		GoodsEntity goodsEntity = goodsDao.queryObject(goods.getId());
+		if(!goodsEntity.getMarketPrice().toString().equals(goods.getMarketPrice().toString()) || !goodsEntity.getRetailPrice().toString().equals(goods.getRetailPrice().toBigInteger())){
+			//查出商品规格对应的毛利率
+        	HashMap<String, Object> paramMap = new HashMap<>();
+        	paramMap.put("goodsId", goods.getId());
+        	List<GoodsPureInterestRateEntity> GoodsPureInterestRateList = goodsPureInterestRateService.queryAll(paramMap);
+        	if(CollectionUtils.isNotEmpty(GoodsPureInterestRateList)){
+        		GoodsPureInterestRateEntity goodsPureInterestRateEntity = GoodsPureInterestRateList.get(0);
+        		goodsPureInterestRateEntity.setMarketPrice(goods.getMarketPrice());
+        		goodsPureInterestRateEntity.setRetailPrice(goods.getRetailPrice());
+        		double PureInterestRate = goods.getMarketPrice().subtract(goods.getRetailPrice()).divide(goods.getRetailPrice(),2,BigDecimal.ROUND_HALF_UP).doubleValue();
+        		goodsPureInterestRateEntity.setPureInterestRate(PureInterestRate);
+        		goodsPureInterestRateService.update(goodsPureInterestRateEntity);
+        	}else{
+        		throw new RuntimeException("【修改商品价格】获取商品毛利率异常");
+        	}
+		}
 		return goodsDao.update(goods);
 	}
 
@@ -176,6 +212,8 @@ public class GoodsServiceImpl implements GoodsService {
 	@Override
 	@Transactional
 	public int deleteBatch(Integer[] ids) {
+		//删除商品对应的毛利率信息
+		goodsPureInterestRateService.delBygoodsIds(ids);
 		int result = 0;
 		for (Integer id : ids) {
 			result += delete(id);
@@ -300,5 +338,9 @@ public class GoodsServiceImpl implements GoodsService {
 		goodsEntity.setUpdateUserId(user.getUserId());
 		goodsEntity.setUpdateTime(new Date());
 		return goodsDao.update(goodsEntity);
+	}
+	@Override
+	public List<GoodsEntity> queryGoodsList(Integer[] ids) {
+		return goodsDao.queryGoodsList(ids);
 	}
 }

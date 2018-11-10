@@ -110,5 +110,10 @@ public interface GoodsService {
      */
     int applyUnSale(Integer id);
     
-    
+    /**
+     * 根据商品id查询商品信息
+     * @param ids
+     * @return
+     */
+    List<GoodsEntity> queryGoodsList(Integer[] ids);
 }

@@ -6,7 +6,9 @@
     <resultMap type="com.platform.entity.GoodsCouponConfigVo" id="goodsCouponConfigMap">
         <result property="id" column="id"/>
         <result property="goods_id" column="goods_id"/>
-        <result property="good_value" column="good_value"/>
+        <result property="normal_matching" column="normal_matching"/>
+        <result property="activity_matching" column="activity_matching"/>
+        <result property="pay_matching" column="pay_matching"/>
         <result property="create_user_id" column="create_user_id"/>
         <result property="update_user_id" column="update_user_id"/>
         <result property="update_time" column="update_time"/>

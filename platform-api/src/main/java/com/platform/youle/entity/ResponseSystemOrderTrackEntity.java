@@ -5,5 +5,5 @@ package com.platform.youle.entity;
  */
 public class ResponseSystemOrderTrackEntity extends  ResponseBaseEntity{
 
-    //TODO
+
 }
