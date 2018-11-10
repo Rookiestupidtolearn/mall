@@ -14,6 +14,7 @@ import com.platform.utils.R;
 import com.platform.youle.entity.ReponseOrderDetailEntity;
 import com.platform.youle.entity.RequestOrderSubmitEntity;
 import com.platform.youle.entity.ResponseBaseEntity;
+import com.platform.youle.entity.ResponseCancelEntity;
 import com.platform.youle.entity.ResponseOrderSubmitEntity;
 import com.platform.youle.entity.ResponseOrderTrackEntity;
 import com.platform.youle.entity.ResponseSystemOrderTrackEntity;
@@ -156,4 +157,24 @@ public class ApiTestController {
     	
     	return response;
     }
+    
+    @IgnoreAuth
+    @ApiOperation(value = "2.6 取消订单接口（不支持京东及严选产品）")
+    @PostMapping("orderCancel")
+    public Object  orderCancel(){
+    	
+    	ResponseCancelEntity  response  = orderService.cancel("jd201811091752324423052");
+    	
+    	return response;
+    }
+    @IgnoreAuth
+    @ApiOperation(value = "2.7取消订单接口（子订单取消）")
+    @PostMapping("cancelByOrderKey")
+    public Object  cancelByOrderKey(){
+    	
+    	ResponseBaseEntity  response  = orderService.cancelByOrderKey("jd201811091752324423052","3409468966");
+    	
+    	return response;
+    }
+    
 }
