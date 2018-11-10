@@ -100,7 +100,7 @@ public class ApiOrderServiceImpl  extends AbsApiOrderService{
 	        ResponseSystemOrderTrackEntity   reponse=null;
 	        RequestOrderTrackEntity  entity = new RequestOrderTrackEntity();
 	        initRequestParam(entity);
-	        entity.setThirdOrder(orderKey);
+	        entity.setOrderKey(orderKey);
 
 	        try {
 	            logger.info("2.5订单物流信息接口]入参："+JSONObject.toJSONString(entity));
