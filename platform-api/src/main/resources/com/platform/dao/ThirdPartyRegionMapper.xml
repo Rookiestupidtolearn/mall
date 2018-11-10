@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.platform.dao.ThirdPartyRegionMapper">
+
+	 <resultMap type="com.platform.entity.ThirdPartyRegionEntity" id="ThirdPartyRegionMap">
+        <result property="id" column="id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="name" column="name"/>
+        <result property="type" column="type"/>
+        <result property="thirdType" column="third_type"/>
+        <result property="thirdParty" column="third_party"/>
+        <result property="sysRegionId" column="sys_region_id"/>
+    </resultMap>
+
+	<select id="queryAllByType" resultType="com.platform.entity.ThirdPartyRegionEntity">
+		select * from third_party_region where type = #{type}
+	</select>
+
+	<insert id="insertBatch">
+   	    INSERT INTO third_party_region
+   	          (id, parent_id, name,type,third_type,third_party,sys_region_id)
+   	    VALUES
+   	    <foreach collection ="list" item="thirdPartyRegion" separator =",">
+   	         (#{thirdPartyRegion.id}, #{thirdPartyRegion.parentId}, #{thirdPartyRegion.name}, #{thirdPartyRegion.type},#{thirdPartyRegion.thirdType}, #{thirdPartyRegion.thirdParty}, #{thirdPartyRegion.sysRegionId})
+   	    </foreach >
+	</insert>
+	
+	
+
+</mapper>

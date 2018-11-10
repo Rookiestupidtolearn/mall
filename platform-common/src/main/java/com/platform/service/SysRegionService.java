@@ -70,4 +70,11 @@ public interface SysRegionService {
      * @return 删除条数
      */
     int deleteBatch(Integer[] ids);
+
+	/**
+	 * 根据类型查询对应的地址信息
+	 * @param i
+	 * @return
+	 */
+	List<SysRegionEntity> queryAllByType(int type);
 }

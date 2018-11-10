@@ -1,9 +1,11 @@
 package com.platform.youle.service;
 
 import java.util.Calendar;
+import java.util.List;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.platform.youle.entity.RequestBaseEntity;
 import com.platform.youle.entity.ResponseBaseEntity;
 import com.platform.youle.entity.ResponseRegionEntity;
@@ -52,21 +54,22 @@ public abstract class AbsApiRegionService implements IApiFuncServicein {
 	 * 4.1获取一级地址(省份)
 	 * @return
 	 */
-	public abstract ResponseBaseEntity<ResponseRegionEntity> province();
+	public abstract ResponseBaseEntity<JSONArray> province();
 	/**
 	 * 4.2获取二地址(城市)
 	 * @return
 	 */
-	public abstract ResponseBaseEntity<ResponseRegionEntity> city(int province);
+	public abstract ResponseBaseEntity<JSONArray> city(int province);
 	/**
 	 * 4.3获取三级地址(县/区)
 	 * @return
 	 */
-	public abstract ResponseBaseEntity<ResponseRegionEntity> county(int city);
+	public abstract ResponseBaseEntity<JSONArray> county(int city);
 	/**
 	 * 4.4获取四级地址(镇/街道)
+	 * 
 	 * @return
 	 */
-	public abstract ResponseBaseEntity<ResponseRegionEntity> town(int county);
+	public abstract ResponseBaseEntity<JSONArray> town(int county);
 
 }

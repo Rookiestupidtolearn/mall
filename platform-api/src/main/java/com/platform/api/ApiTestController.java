@@ -1,5 +1,8 @@
 package com.platform.api;
 
+import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -7,11 +10,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.platform.annotation.IgnoreAuth;
 import com.platform.annotation.LoginUser;
+import com.platform.entity.ThirdPartyRegionEntity;
 import com.platform.entity.UserVo;
 import com.platform.service.ApiUserService;
+import com.platform.service.ThirdPartyRegionService;
 import com.platform.utils.R;
 import com.platform.youle.entity.ResponseBaseEntity;
-import com.platform.youle.entity.ResponseRegionEntity;
 import com.platform.youle.service.AbsApiGoodsService;
 import com.platform.youle.service.AbsApiRegionService;
 
@@ -32,6 +36,8 @@ public class ApiTestController {
 
     @Autowired
     private ApiUserService userService;
+    @Autowired
+    private ThirdPartyRegionService thirdPartyRegionService;
     
     @Autowired
     private AbsApiGoodsService absApiGoodsService;
@@ -110,8 +116,16 @@ public class ApiTestController {
     @ApiOperation(value = "创建订单接口")
     @PostMapping("response")
     public Object response(){
-    	ResponseBaseEntity<ResponseRegionEntity>  res = absApiRegionService.province();
-    	return res;
+    	// absApiRegionService.province(); // 省
+    	 List<ThirdPartyRegionEntity> thirdPartyRegionList = thirdPartyRegionService.queryAllByType(3); //查询全部的省 province: 省1, city(市2), county(区/县3),  town(乡/镇4
+    	 if(CollectionUtils.isNotEmpty(thirdPartyRegionList)){
+    		 for(ThirdPartyRegionEntity thirdPartyRegionEntity : thirdPartyRegionList){
+    			 //absApiRegionService.city(thirdPartyRegionEntity.getId());  //市
+    			 //absApiRegionService.county(thirdPartyRegionEntity.getId()); //区、县
+    			 //absApiRegionService.town(thirdPartyRegionEntity.getId());//镇
+    		 }
+    	 }
+    	return 	null;
     }
     
     
