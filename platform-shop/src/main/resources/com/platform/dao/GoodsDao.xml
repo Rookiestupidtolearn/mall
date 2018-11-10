@@ -46,6 +46,13 @@
     <select id="queryObject" resultType="com.platform.entity.GoodsEntity">
 		select * from nideshop_goods where id = #{value}
 	</select>
+	
+	<select id="queryGoodsList" resultType="com.platform.entity.GoodsEntity">
+		select * from nideshop_goods where id in
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</select>
 
     <select id="queryList" resultType="com.platform.entity.GoodsEntity">
         select
@@ -86,8 +93,7 @@
         nideshop_goods.update_user_id,
         nideshop_category.name category_name,
         nideshop_attribute_category.name attribute_category_name,
-        nideshop_brand.name brand_name,
-        goods_coupon_config.good_value value
+        nideshop_brand.name brand_name
         from nideshop_goods
         LEFT JOIN nideshop_category
         ON nideshop_goods.category_id = nideshop_category.id
@@ -100,7 +106,17 @@
         <if test="name != null and name != ''">
             AND nideshop_goods.name LIKE concat('%',#{name},'%')
         </if>
-        AND nideshop_goods.is_Delete = #{isDelete}
+        <if test="status != null and status != ''">
+            AND nideshop_goods.is_on_sale = #{status}
+        </if>
+       	<if test="goodss != null">
+    	 	and nideshop_goods.id in 
+    		<foreach collection="goodss" item="ids"  open="(" separator="," close=")">
+    			#{ids}
+    		</foreach>
+    	</if>
+        
+        AND nideshop_goods.is_Delete = #{isDelete} group by nideshop_goods.id
         <choose>
             <when test="sidx != null and sidx.trim() != ''">
                 order by ${sidx} ${order}
@@ -120,6 +136,9 @@
         ${filterSql}
         <if test="name != null and name != ''">
             AND name LIKE concat('%',#{name},'%')
+        </if>
+         <if test="status != null and status != ''">
+            AND nideshop_goods.is_on_sale = #{status}
         </if>
         AND nideshop_goods.is_Delete = #{isDelete}
     </select>

@@ -3,6 +3,10 @@ package com.platform.controller;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -64,19 +68,83 @@ public class GoodsCouponConfigController {
 
         return R.ok().put("goodsCouponConfig", goodsCouponConfig);
     }
+    
+    /**
+     * 保存
+     */
+    @RequestMapping("/verify/{goodsIds}")
+    public R save(@PathVariable("goodsIds") Integer[] goodsIds) {
+    	if(goodsIds.length <= 0 ){
+    		return R.error("未获取到商品");
+    	}
+    	StringBuffer sb = new StringBuffer();
+    	List<GoodsEntity> goodsList = goodsService.queryGoodsList(goodsIds);
+    	//先校验商品是否已下架(只有下架了才能新增配比)
+    	for(GoodsEntity goodsEntrty : goodsList){
+    		if(goodsEntrty.getIsOnSale() == 1){ //是上架状态不能修改、新增、删除 配比
+    			sb.append(goodsEntrty.getName()+"、");
+    		}
+    	}
+    	if(StringUtils.isNotBlank(sb.toString())){
+    		String result = sb.toString().substring(0,sb.toString().length()-1);
+    		return R.error("商品:"+result+"未下架不能新增配比值");
+    	}
+    	
+    	List<GoodsCouponConfigEntity>  goodsCouponConfigEntity = goodsCouponConfigService.selectGoodsIdsById(goodsIds);
+		if (CollectionUtils.isNotEmpty(goodsCouponConfigEntity)) {
+			StringBuffer sbf = new StringBuffer();
+			for(GoodsCouponConfigEntity goodsCouponConfig : goodsCouponConfigEntity){
+				sbf.append(goodsCouponConfig.getGoodsId()+",");
+			}
+			String goodsIDS = sbf.toString().substring(0,sbf.toString().length()-1); //返回存在配比的商品id
+			if(StringUtils.isNotBlank(goodsIDS)){ //存在有配比的商品
+	        	List<GoodsEntity> goodsEntityList = goodsService.queryGoodsList(goodsIds);
+	        	for(GoodsEntity goodsEntrty : goodsEntityList){
+	        		sb.append(goodsEntrty.getName()+"、");
+	        	}
+	        	if(StringUtils.isNotBlank(sb.toString())){
+	        		String result = sb.toString().substring(0,sb.toString().length()-1);
+	        		return R.error("商品:"+result+"已存在配比值");
+	        	}
+	        }
+		}    	
+        return R.ok();
+    }
 
     /**
      * 保存
      */
-    @RequestMapping("/save")
+    @RequestMapping("/save/{normalMatching}/{activityMatching}/{goodsIds}")
     @RequiresPermissions("goodscouponconfig:save")
-    public R save(@RequestBody GoodsCouponConfigEntity goodsCouponConfig) {
-    	//先校验商品是否已下架(只有下架了才能新增配比)
-    	boolean boo = goodsIsoldOut(goodsCouponConfig.getGoodsId());
-    	if(!boo){
-    		return R.error("商品未下架不能新增配比值");
+    public R save(@PathVariable("normalMatching") String normalMatching,@PathVariable("activityMatching") String activityMatching,@PathVariable("goodsIds") Integer[] goodsIds) {
+    	if(StringUtils.isBlank(normalMatching) || StringUtils.isBlank(activityMatching) || goodsIds.length <= 0 ){
+    		return R.error("配比数据异常");
     	}
-        goodsCouponConfigService.save(goodsCouponConfig);
+    	StringBuffer sb = new StringBuffer();
+    	List<GoodsEntity> goodsList = goodsService.queryGoodsList(goodsIds);
+    	//先校验商品是否已下架(只有下架了才能新增配比)
+    	for(GoodsEntity goodsEntrty : goodsList){
+    		if(goodsEntrty.getIsOnSale() == 1){ //是上架状态不能修改、新增、删除 配比
+    			sb.append(goodsEntrty.getName()+"、");
+    		}
+    	}
+    	if(StringUtils.isNotBlank(sb.toString())){
+    		String result = sb.toString().substring(0,sb.toString().length()-1);
+    		return R.error("商品:"+result+"未下架不能新增配比值");
+    	}
+    	//批量保存商品配比
+        String goodsIDS= goodsCouponConfigService.save(normalMatching,activityMatching,goodsIds);
+        if(StringUtils.isNotBlank(goodsIDS)){ //存在有配比的商品
+        	List<GoodsEntity> goodsEntityList = goodsService.queryGoodsList(goodsIds);
+        	//校验是否存在配比
+        	for(GoodsEntity goodsEntrty : goodsEntityList){
+        		sb.append(goodsEntrty.getName()+"、");
+        	}
+        	if(StringUtils.isNotBlank(sb.toString())){
+        		String result = sb.toString().substring(0,sb.toString().length()-1);
+        		return R.error("商品:"+result+"已存在配比值");
+        	}
+        }
         return R.ok();
     }
 
@@ -102,11 +170,11 @@ public class GoodsCouponConfigController {
     @RequiresPermissions("goodscouponconfig:delete")
     public R delete(@RequestBody Integer[] ids) {
     	//判断要删除的配比值对应的商品是否下架
-    	Integer[] goodsIds = goodsCouponConfigService.selectGoodsIdsById(ids);
-    	if(goodsIds.length>0){
-    		for(int i =0;i<goodsIds.length;i++){
+    	List<GoodsCouponConfigEntity> li = goodsCouponConfigService.selectGoodsIdsById(ids);
+    	if(li.size()>0){
+    		for(GoodsCouponConfigEntity gccf : li){
     			//先校验商品是否已下架(只有下架了才能删除配比)
-    			boolean boo = goodsIsoldOut(goodsIds[i]);
+    			boolean boo = goodsIsoldOut(gccf.getGoodsId());
     	    	if(!boo){
     	    		return R.error("有未下架商品不能删除配比值");
     	    	}

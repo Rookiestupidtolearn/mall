@@ -18,10 +18,10 @@ $(function () {
                 }
             },
             {label: '属性类别', name: 'attributeCategoryName', index: 'attribute_category', width: 80},
-            {label: '零售价格', name: 'retailPrice', index: 'retail_price', width: 80},
+            {label: '结算价', name: 'retailPrice', index: 'retail_price', width: 80},
             {label: '商品库存', name: 'goodsNumber', index: 'goods_number', width: 80},
             {label: '销售量', name: 'sellVolume', index: 'sell_volume', width: 80},
-            {label: '市场价', name: 'marketPrice', index: 'market_price', width: 80},
+            {label: '指导价', name: 'marketPrice', index: 'market_price', width: 80},
             {
                 label: '热销', name: 'isHot', index: 'is_hot', width: 80, formatter: function (value) {
                     return transIsNot(value);
@@ -86,6 +86,11 @@ var vm = new Vue({
     el: '#rrapp',
     data: {
         showList: true,
+        showData: false,
+        isTrue:false,
+        normalMatching:0,
+        activityMatching:0,
+        showMatching:true,
         title: null,
         uploadList: [],
         imgName: '',
@@ -107,7 +112,12 @@ var vm = new Vue({
             ]
         },
         q: {
-            name: ''
+            name: '',
+            min_retail_price:'',
+        	max_retail_price:'',
+        	min_pure_interest_rate:'',
+        	max_pure_interest_rate:'',
+        	status:''
         },
         brands: [],//品牌
         macros: [],//商品单位
@@ -117,8 +127,51 @@ var vm = new Vue({
         query: function () {
             vm.reload();
         },
+        clean:function(){
+        	vm.q.name='',
+        	vm.q.min_retail_price='',
+        	vm.q.max_retail_price='',
+        	vm.q.min_pure_interest_rate='',
+        	vm.q.max_pure_interest_rate='',
+        	vm.q.status=''
+        },
+        matching: function() {
+        	var ids = $("#jqGrid").getGridParam("selarrrow");
+        	if(ids.length<=0){
+        		alert("请选择需要设置配比的商品");
+        		return;
+        	}
+        	//校验选中的商品是否可以设置配比
+        	vm.verify();
+        	if(!vm.isTrue){
+        		return;
+        	}
+        	vm.isTrue = false;
+        	vm.normalMatching=0;
+            vm.activityMatching=0;
+            vm.showList=false;
+            vm.showData=false;
+        	vm.showMatching = false;
+        	vm.title = "配比设置";
+        },
+        verify:function(){
+        	var ids = $("#jqGrid").getGridParam("selarrrow");
+        	if(ids.length<=0){
+        		alert("未获取到需要设置配比的商品信息");
+        		return;
+        	}
+        	Ajax.request({
+                url: "../goodscouponconfig/verify/"+ids,
+                async: true,
+                successCallback: function (r) {
+                	vm.isTrue = true;
+                }
+            });
+        },
         add: function () {
-            vm.showList = false;
+        	vm.showList=false;
+        	vm.showMatching = true;
+            vm.showData = true;
             vm.title = "新增";
             vm.uploadList = [];
             vm.goods = {
@@ -148,7 +201,9 @@ var vm = new Vue({
             if (id == null) {
                 return;
             }
-            vm.showList = false;
+            vm.showList=false;
+        	vm.showMatching = true;
+            vm.showData = true;
             vm.title = "修改";
             vm.uploadList = [];
             vm.getInfo(id);
@@ -222,6 +277,25 @@ var vm = new Vue({
                     });
                 }
             });
+        },
+        saveGoodsCouponConfig: function () {
+            var url = "../goodscouponconfig/save";
+        	var ids = $("#jqGrid").getGridParam("selarrrow");
+        	if(ids.length<=0){
+        		alert("未获取到需要设置配比的商品信息");
+        		return;
+        	}
+        	var normalMatching = vm.normalMatching;
+        	var activityMatching = vm.activityMatching;
+        	 Ajax.request({
+                 url: "../goodscouponconfig/save/"+normalMatching+"/"+activityMatching+"/"+ids,
+                 async: true,
+                 successCallback: function (r) {
+                	 alert('操作成功', function (index) {
+                         vm.reload();
+                     });
+                 }
+             });
         },
         enSale: function () {
             var id = getSelectedRow("#jqGrid");
@@ -365,9 +439,28 @@ var vm = new Vue({
         },
         reload: function (event) {
             vm.showList = true;
+            vm.showMatching = true;
+            console.log(vm.q.min_retail_price+","+vm.q.max_retail_price+","+vm.q.min_pure_interest_rate+","+vm.q.max_pure_interest_rate);
+            if(vm.q.min_retail_price !== '' && vm.q.max_retail_price !== ''){
+            	if(parseInt(vm.q.min_retail_price) > parseInt(vm.q.max_retail_price)){
+            		alert("请设置正确查询条件");
+            		return;
+            	}
+            }
+            if(vm.q.min_pure_interest_rate !== '' && vm.q.max_pure_interest_rate !== ''){
+            	if(parseInt(vm.q.min_pure_interest_rate) > parseInt(vm.q.max_pure_interest_rate)){
+            		alert("请设置正确查询条件");
+                	return;
+            	}
+            }
             var page = $("#jqGrid").jqGrid('getGridParam', 'page');
             $("#jqGrid").jqGrid('setGridParam', {
-                postData: {'name': vm.q.name},
+                postData: {'name': vm.q.name,
+                	'status':vm.q.status,
+         		   'min_retail_price':vm.q.min_retail_price,
+        		   'max_retail_price':vm.q.max_retail_price,
+        		   'min_pure_interest_rate':vm.q.min_pure_interest_rate,
+        		   'max_pure_interest_rate':vm.q.max_pure_interest_rate},
                 page: page
             }).trigger("reloadGrid");
             vm.handleReset('formValidate');
@@ -470,6 +563,8 @@ var vm = new Vue({
         }
     },
     mounted() {
+    	console.log(this.$refs);
+    	console.log(this);
         this.uploadList = this.$refs.upload.fileList;
     }
 });

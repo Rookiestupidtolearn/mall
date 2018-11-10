@@ -6,7 +6,8 @@
     <resultMap type="com.platform.entity.GoodsCouponConfigEntity" id="goodsCouponConfigMap">
         <result property="id" column="id"/>
         <result property="goodsId" column="goods_id"/>
-        <result property="goodValue" column="good_value"/>
+        <result property="normalMatching" column="normal_matching"/>
+        <result property="activityMatching" column="activity_matching"/>
         <result property="createUserId" column="create_user_id"/>
         <result property="updateUserId" column="update_user_id"/>
         <result property="updateTime" column="update_time"/>
@@ -18,7 +19,8 @@
 		select
 			`id`,
 			`goods_id`,
-			`good_value`,
+			`normal_matching`,
+			`activity_matching`,
 			`create_user_id`,
 			`update_user_id`,
 			`update_time`,
@@ -28,8 +30,8 @@
 		where id = #{id}
 	</select>
 	
-	<select id="selectGoodsIdsById" resultType="java.lang.Integer">
-		select goods_id from goods_coupon_config where id in 
+	<select id="selectGoodsIdsById" resultType="com.platform.entity.GoodsCouponConfigEntity">
+		select * from goods_coupon_config where goods_id in 
 		<foreach item="id" collection="array" open="(" separator="," close=")">
 			#{id}
 		</foreach>
@@ -41,7 +43,8 @@
 		SELECT  
 
 	 	goods_coupon_config.id id,
-		goods_coupon_config.good_value goodValue,
+		goods_coupon_config.normal_matching normal_matching,
+		goods_coupon_config.activity_matching activity_matching,
 		goods_coupon_config.update_user_id  update_user_id,
 	 	goods_coupon_config.update_time update_time,
 	 	goods_coupon_config.del_flag del_flag,
@@ -100,7 +103,8 @@
 	<insert id="save" parameterType="com.platform.entity.GoodsCouponConfigEntity" useGeneratedKeys="true" keyProperty="id">
 		insert into goods_coupon_config(
 			`goods_id`,
-			`good_value`,
+			`normal_matching`,
+			`activity_matching`,
 			`create_user_id`,
 			`update_user_id`,
 			`update_time`,
@@ -108,7 +112,8 @@
 			`del_flag`)
 		values(
 			#{goodsId},
-			#{goodValue},
+			#{normalMatching},
+			#{activityMatching},
 			#{createUserId},
 			#{updateUserId},
 			#{updateTime},
@@ -120,7 +125,8 @@
 		update goods_coupon_config 
 		<set>
 			<if test="goodsId != null">`goods_id` = #{goodsId}, </if>
-			<if test="goodValue != null">`good_value` = #{goodValue}, </if>
+			<if test="normalMatching != null">`normal_matching` = #{normalMatching}, </if>
+			<if test="activityMatching != null">`activity_matching` = #{activityMatching}, </if>
 			<if test="createUserId != null">`create_user_id` = #{createUserId}, </if>
 			<if test="updateUserId != null">`update_user_id` = #{updateUserId}, </if>
 			<if test="updateTime != null">`update_time` = #{updateTime}, </if>
