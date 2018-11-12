@@ -135,5 +135,8 @@
             #{id}
         </foreach>
     </delete>
+    <select id="queryAllCategorys" resultMap = "categoryMap">
+    	select * from nideshop_category where 1=1
+    </select>
 
 </mapper>

@@ -38,7 +38,80 @@
         <result property="is_hot" column="is_hot"/>
         <result property="product_id" column="product_id"/>
         <result property="product_market_price" column="product_market_price"/>
+         <result property="is_7_ToReturn" column="is_7_ToReturn"/>
+          <result property="source" column="source"/>
     </resultMap>
+
+	 <insert id="save" parameterType="com.platform.entity.GoodsVo" useGeneratedKeys="true" keyProperty="id">
+		insert into nideshop_goods(
+			`category_id`,
+			`goods_sn`,
+			`name`,
+			`brand_id`,
+			`goods_number`,
+			`keywords`,
+			`goods_brief`,
+			`goods_desc`,
+			`is_on_sale`,
+			`add_time`,
+			`sort_order`,
+			`is_delete`,
+			`attribute_category`,
+			`counter_price`,
+			`extra_price`,
+			`is_new`,
+			`goods_unit`,
+			`primary_pic_url`,
+			`list_pic_url`,
+			`retail_price`,
+			`sell_volume`,
+			`primary_product_id`,
+			`unit_price`,
+			`promotion_desc`,
+			`promotion_tag`,
+			`app_exclusive_price`,
+			`is_app_exclusive`,
+			`is_limited`,
+			`is_hot`,
+			`market_price`,
+			`is_7_ToReturn`,source)
+		values(
+			#{category_id},
+			#{goods_sn},
+			#{name},
+			#{brand_id},
+			#{goods_number},
+			#{keywords},
+			#{goods_brief},
+			#{goods_desc},
+			#{is_on_sale},
+			#{add_time},
+			#{sort_order},
+			#{is_delete},
+			#{attribute_category},
+			#{counter_price},
+			#{extra_price},
+			#{is_new},
+			#{goods_unit},
+			#{primary_pic_url},
+			#{list_pic_url},
+			#{retail_price},
+			#{sell_volume},
+			#{primary_product_id},
+			#{unit_price},
+			#{promotion_desc},
+			#{promotion_tag},
+			#{app_exclusive_price},
+			#{is_app_exclusive},
+			#{is_limited},
+			#{is_hot},
+			#{market_price},
+			#{is_7_ToReturn},#{source}
+		)
+	</insert>
+
+
+
 
     <select id="queryObject" resultMap="goodsMap">
 		select 
@@ -227,4 +300,9 @@
             and is_on_sale = #{is_on_sale}
         </if>
 	</select>
+	<select id = "quertGoodsByCategory" resultMap="goodsMap"> 
+		select * from
+	    nideshop_goods where category_id = #{categoryId}
+	</select>
+	
 </mapper>

@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
-import com.platform.annotation.IgnoreAuth;
 import com.platform.annotation.LoginUser;
 import com.platform.cache.J2CacheUtils;
 import com.platform.dao.ApiCartMapper;
@@ -46,8 +45,9 @@ import com.platform.service.ApiGoodsService;
 import com.platform.service.ApiGoodsSpecificationService;
 import com.platform.service.ApiProductService;
 import com.platform.util.ApiBaseAction;
-import com.platform.youle.entity.ResponseSkuDetailEntity;
-import com.platform.youle.service.AbsApiGoodsService;
+import com.platform.youle.entity.ResponseChildsEntity;
+import com.platform.youle.entity.ResponseRootCateEntity;
+import com.platform.youle.service.AbsApiRootCateService;
 import com.qiniu.util.StringUtils;
 
 import io.swagger.annotations.Api;
@@ -85,7 +85,9 @@ public class ApiCartController extends ApiBaseAction {
     @Autowired
     private ApiTranInfoRecordMapper apiTranInfoRecordMapper;
     @Autowired
-    private AbsApiGoodsService absApiGoodsService;
+    private AbsApiRootCateService absApiRootCateService;
+
+
 
 
 
@@ -670,12 +672,14 @@ public class ApiCartController extends ApiBaseAction {
         	}
          }
          amount = userAmountVo.getAmount();//获取用户平台币
-         if(amount.compareTo(couponTotalPrice)<0){
-          	couponTotalPrice = amount;
+         if(amount != null){
+        	 if(amount.compareTo(couponTotalPrice)<0){
+        		 couponTotalPrice = amount;
+        	 }
+        	 userAmountVo.setAmount(userAmountVo.getAmount().subtract(couponTotalPrice));
+        	 qzUserAccountMapper.updateUserAccount(userAmountVo);
+        	 logger.info("更新用户平台币,更新后平台币金额" + userAmountVo.getAmount());
          }
-         userAmountVo.setAmount(userAmountVo.getAmount().subtract(couponTotalPrice));
-         qzUserAccountMapper.updateUserAccount(userAmountVo);
-         logger.info("更新用户平台币,更新后平台币金额" + userAmountVo.getAmount());
          saveTranInfoRecord(userId, "2", "2", couponTotalPrice, userAmountVo.getAmount(), "回滚平台币后扣减购物车中生成优惠券金额");
          getUserCouponTotalPrice(userId,couponTotalPrice);
          return this.toResponsObject(0, "执行成功", "");
