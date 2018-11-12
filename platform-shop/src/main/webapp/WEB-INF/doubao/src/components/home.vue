@@ -1,0 +1,269 @@
+<template>
+  <div class="hello">
+    <mt-swipe :auto="3000" class="swiper" >
+		  <mt-swipe-item v-for="item in banner">
+		  	<a :href="item.link"><img :src="item.image_url"/></a>
+		  </mt-swipe-item>
+		</mt-swipe>
+	<div class="m-menu" >
+			<router-link :to="item.url" class="item" v-for="item in channel">
+				<img :src="item.icon_url"/>
+				<p>{{item.name}}</p>
+			</router-link>
+		</div>
+		<div class="h">
+			<p class="txt">人气推荐</p>
+			<router-link class="itemhot" v-for="item in hotGoods" :to="'/pages/category/goods?id='+item.id">
+				<img :src="item.list_pic_url"/>
+				<div class="right">
+					<p class="name">{{item.name}}</p>
+					<p class="goods_brief">{{item.goods_brief}}</p>
+					<p class="market_price">￥{{item.market_price}}</p>
+				</div>
+			</router-link>
+		</div>
+		<div class="category" v-for="item in category">
+			<p class="instr">{{item.name}}</p>
+			<div class="listAmount">
+				<router-link v-for="goods in item.goodsList" :to="'/pages/category/goods?id='+goods.id">
+					<p><img :src="goods.list_pic_url"/></p>
+					<p class="name">{{goods.name}}</p>
+					<p class="price">￥{{goods.market_price}}</p>
+				</router-link>
+				<router-link :to="'/pages/category/goods?id='+item.id" class="more-a">
+					<p class="name">{{'更多'+item.name+'好物'}}</p>
+					<p><img class="icon" src="../../static/images/icon_go_more.png" background-size="cover"/></p>
+				</router-link>
+			</div>
+		</div>
+  	
+  	<!--底部导航栏-->
+  	<mt-tabbar v-model="selected">
+		  <mt-tab-item id="tab1">
+		    <img slot="icon" src="../../static/images/ic_menu_choice_nor.png">
+		    首页
+		  </mt-tab-item>
+		  <mt-tab-item id="tab2">
+		    <img slot="icon" src="../../static/images/ic_menu_sort_nor.png">
+		    分类
+		  </mt-tab-item>
+		  <mt-tab-item id="tab3">
+		    <img slot="icon" src="../../static/images/ic_menu_shoping_nor.png">
+		   购物车
+		  </mt-tab-item>
+		  <mt-tab-item id="tab4">
+		    <img slot="icon" src="../../static/images/ic_menu_me_nor.png">
+		    我的
+		  </mt-tab-item>
+		</mt-tabbar>
+  </div>
+</template>
+
+<script>
+	import { Indicator } from 'mint-ui';
+	
+export default {
+  name: 'home',
+  data () {
+    return {
+      banner:[],
+      channel:[],
+      hotGoods:[],
+      category:[],
+	   selected:'tab1'
+    }
+  },
+   watch: {
+    selected: function (val, oldVal) {
+    	console.log(val,oldVal)
+      // 这里就可以通过 val 的值变更来确定去向
+      switch(val){
+        case 'tab1':
+          this.$router.push('/');
+        break;
+        case 'tab2':
+          this.$router.push('/classification');
+        break;
+        case 'tab3':
+          this.$router.push('/shoppingcar');
+        break;
+        case 'tab4':
+          this.$router.push('/ucenter');
+        break;
+      }
+    }
+},
+  mounted(){
+  	var that = this;    
+  	//banner
+  		that.$http({
+        method: 'post',
+        url: that.$url+'index/banner',
+    	}).then(function (response) {
+		    that.banner = response.data.data.banner
+		  })
+    //channel
+  		that.$http({
+        method: 'post',
+        url:that.$url+ 'index/channel',
+    	}).then(function (response) {
+		    that.channel = response.data.data.channel
+		  })
+    //hotGoods
+    Indicator.open();
+    that.$http({
+        method: 'post',
+        url:that.$url+ 'index/hotGoods',
+    	}).then(function (response) {
+    		Indicator.close();
+		    that.hotGoods = response.data.data.hotGoodsList
+		  })
+    	//category
+    	that.$http({
+        method: 'post',
+        url:that.$url+ 'index/category',
+    	}).then(function (response) {
+		    that.category = response.data.data.categoryList
+		  })
+  }
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+	.mint-tabbar{
+		position: fixed;
+	}
+	.more-a{
+		height:4.21rem;
+	}
+		.more-a .name {
+	margin-top:1.3rem !important
+		}
+		.listAmount a img.icon{
+		margin:.60rem auto 0 auto;
+		width:.70rem;
+		height:.70rem;
+	}
+	.listAmount{
+		overflow: hidden;
+		width:7.4rem;
+		margin:0 auto;
+	}
+	.listAmount a{
+		display: block;
+		float:left;
+		width:49.5%;
+		background-color: #fff;
+		margin-bottom:.05rem;
+		margin-right: .05rem;
+		padding-bottom: .15rem;
+	}
+		.listAmount a:nth-of-type(even){
+			margin-right: 0;
+		}
+	.listAmount a img{
+		margin-top:.20rem;
+		width:3.02rem;
+		height:3.02rem;
+	}
+	.listAmount a .name{
+		text-align: center;
+    font-size: .26rem;
+    color: #333;
+    padding: 0 .2rem;
+    overflow: hidden;
+    white-space: nowrap;
+    margin: 0 auto;
+    text-overflow: ellipsis;
+	}
+	.listAmount a .price{
+		text-align:center;
+font-size:.30rem;
+color:#b4282d;
+
+	}
+	.category .instr{
+		font-size:.29rem;
+		color:#333;
+		margin: .4rem 0;
+	}
+	.itemhot .name{
+		color:#333;
+		line-height:.50rem;
+		font-size:.30rem;
+		margin-top:.35rem;
+	}
+	.itemhot .goods_brief{
+		color:#999;
+		line-height:.50rem;
+		font-size:.25rem;
+	}
+	.itemhot .market_price{
+		color:#b4282d;
+		line-height:.50rem;
+		font-size:.33rem;
+	}
+.itemhot{
+	display: block;
+		overflow: hidden;
+		background-color: #fff;
+		border-top:1px solid #d9d9d9;
+		padding:0 .20rem;
+		height:2.64rem;
+		width:7.10rem;
+	}
+	.itemhot img{
+		margin-top:.12rem;
+		margin-right:.12rem;
+		float:left;
+		width:2.40rem;
+		height:2.40rem;
+	}
+		.itemhot .right{
+		float: left;
+		width:4.5rem;
+		text-align: left;
+	}
+.swiper img{
+	width:100%;
+	height:4.17rem;
+}
+.swiper{
+	width:7.5rem;
+	height:4.17rem;
+}
+.m-menu {
+  overflow: hidden;
+  height: 1.41rem;
+  width: 7.5rem;
+  background-color: #fff;
+  margin:.15rem 0;
+}
+.m-menu .item {
+float:left;
+padding:.2rem 0;
+font-size: 0;
+width: 20%;
+}
+.m-menu .item img{
+	width:.6rem;
+	height:.6rem;
+}
+.m-menu .item p{
+	font-size:.24rem;
+	color:#333;
+	margin-top:.05rem
+}
+ .h {
+background-color: #fff;
+}
+.h .txt{
+	padding-right:.3rem;
+	background-size:.16rem .27rem;
+	display:inline-block;
+	height:.36rem;
+	font-size:.33rem;
+	line-height:.36rem;
+}
+</style>
