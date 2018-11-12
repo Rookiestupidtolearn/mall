@@ -2,9 +2,15 @@ const root = '/platform/api/';
 
 // const API_BASE_URL = 'http://fly2you.cn' + root;
 
+<<<<<<< HEAD
 const API_BASE_URL = 'http://localhost:8080' + root;
 // const API_BASE_URL = 'http://192.144.156.42:8080' + root;
 // const API_BASE_URL = 'http://192.168.0.11:6101' + root;
+=======
+// const API_BASE_URL = 'http://localhost:8080' + root;
+const API_BASE_URL = 'http://192.144.156.42:8080' + root;
+//  const API_BASE_URL = 'http://192.168.1.244:8093' + root;
+>>>>>>> wall_alpha_v1.0
 
 module.exports = {
     IndexUrlNewGoods: API_BASE_URL + 'index/newGoods', //新品首发
