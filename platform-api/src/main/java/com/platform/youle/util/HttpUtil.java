@@ -1,4 +1,4 @@
-package com.platform.jd.util;
+package com.platform.youle.util;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -12,7 +12,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.HashMap;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -20,8 +20,12 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSession;
 
+import com.alibaba.fastjson.JSON;
+import com.platform.youle.entity.RequestProductEntity;
+
 import org.apache.log4j.Logger;
 import com.alibaba.fastjson.JSONObject;
+import springfox.documentation.service.ApiListing;
 
 public class HttpUtil {
 	
@@ -30,7 +34,7 @@ public class HttpUtil {
 	//设置编码
     public static final String ENCODING = "UTF-8";
     
-    protected Logger logger = Logger.getLogger(getClass());
+    protected static final Logger logger = Logger.getLogger(HttpUtil.class);
     /**
      * 创建HTTP连接
      * 
@@ -45,28 +49,23 @@ public class HttpUtil {
      * @return
      * @throws Exception
      */
-    private static HttpURLConnection createConnection(String url,
-            String method, Map<String, String> headerParameters, String body)
+    private static HttpURLConnection createConnection(String url,String method, Map<String, String> headerParameters, String body)
             throws Exception {
         URL Url = new URL(url);
         trustAllHttpsCertificates();
-        HttpURLConnection httpConnection = (HttpURLConnection) Url
-                .openConnection();
+        HttpURLConnection httpConnection = (HttpURLConnection) Url.openConnection();
         // 设置请求时间
         httpConnection.setConnectTimeout(TIMEOUT);
         // 设置 header
         if (headerParameters != null) {
-            Iterator<String> iteratorHeader = headerParameters.keySet()
-                    .iterator();
+            Iterator<String> iteratorHeader = headerParameters.keySet().iterator();
             while (iteratorHeader.hasNext()) {
                 String key = iteratorHeader.next();
-                httpConnection.setRequestProperty(key,
-                        headerParameters.get(key));
+                httpConnection.setRequestProperty(key,headerParameters.get(key));
             }
         }
-        httpConnection.setRequestProperty("Content-Type",
-                "application/x-www-form-urlencoded;charset=" + ENCODING);
-
+        httpConnection.setRequestProperty("ContentType","application/x-www-form-urlencoded");
+        httpConnection.setRequestProperty("Accept-Charset", "UTF-8");
         // 设置请求方法
         httpConnection.setRequestMethod(method);
         httpConnection.setDoOutput(true);
@@ -87,12 +86,8 @@ public class HttpUtil {
         // 请求结果
         int responseCode = httpConnection.getResponseCode();
         if (responseCode != 200) {
-            throw new Exception(responseCode
-                    + ":"
-                    + inputStream2String(httpConnection.getErrorStream(),
-                            ENCODING));
+            throw new Exception(responseCode +":"+ inputStream2String(httpConnection.getErrorStream(),ENCODING));
         }
-
         return httpConnection;
     }
 
@@ -104,11 +99,8 @@ public class HttpUtil {
      * @return
      * @throws Exception
      */
-    public static String post(String address,
-            Map<String, String> headerParameters) throws Exception {
-
-        return proxyHttpRequest(address, "POST", null,
-                getRequestBody(headerParameters));
+    public static String post(String address,Map<String,Object> params) throws Exception {
+        return proxyHttpRequest(address, "POST", null,getRequestBody(params));
     }
 
     /**
@@ -119,11 +111,8 @@ public class HttpUtil {
      * @return
      * @throws Exception
      */
-    public static String get(String address,
-            Map<String, String> headerParameters) throws Exception {
-
-        return proxyHttpRequest(address + "?"
-                + getRequestBody(headerParameters), "GET", null, null);
+    public static String get(String address,Map<String,Object> param) throws Exception {
+        return proxyHttpRequest(address + "?"+ getRequestBody(param), "GET", null, null);
     }
 
     /**
@@ -135,16 +124,12 @@ public class HttpUtil {
      * @return
      * @throws Exception
      */
-    public static String getFile(String address,
-            Map<String, String> headerParameters, File file) throws Exception {
+    public static String getFile(String address,Map<String,Object> param, File file) throws Exception {
         String result = "fail";
-
         HttpURLConnection httpConnection = null;
         try {
-            httpConnection = createConnection(address, "POST", null,
-                    getRequestBody(headerParameters));
+            httpConnection = createConnection(address, "POST", null,getRequestBody(param));
             result = readInputStream(httpConnection.getInputStream(), file);
-
         } catch (Exception e) {
             throw e;
         } finally {
@@ -157,25 +142,20 @@ public class HttpUtil {
         return result;
     }
 
-    public static byte[] getFileByte(String address,
-            Map<String, String> headerParameters) throws Exception {
-        byte[] result = null;
 
+    public static byte[] getFileByte(String address,Map<String,Object>  param) throws Exception {
+        byte[] result = null;
         HttpURLConnection httpConnection = null;
         try {
-            httpConnection = createConnection(address, "POST", null,
-                    getRequestBody(headerParameters));
+            httpConnection = createConnection(address, "POST", null,getRequestBody(param));
             result = readInputStreamToByte(httpConnection.getInputStream());
-
         } catch (Exception e) {
             throw e;
         } finally {
             if (httpConnection != null) {
                 httpConnection.disconnect();
             }
-
         }
-
         return result;
     }
 
@@ -185,11 +165,9 @@ public class HttpUtil {
      * @return
      * @throws Exception
      */
-    public static String readInputStream(InputStream in, File file)
-            throws Exception {
+    public static String readInputStream(InputStream in, File file)throws Exception {
         FileOutputStream out = null;
         ByteArrayOutputStream output = null;
-
         try {
             output = new ByteArrayOutputStream();
             byte[] buffer = new byte[1024];
@@ -197,10 +175,8 @@ public class HttpUtil {
             while ((len = in.read(buffer)) != -1) {
                 output.write(buffer, 0, len);
             }
-
             out = new FileOutputStream(file);
             out.write(output.toByteArray());
-
         } catch (Exception e) {
             throw e;
         } finally {
@@ -255,28 +231,21 @@ public class HttpUtil {
      * @return
      * @throws Exception
      */
-    public static String proxyHttpRequest(String address, String method,
-            Map<String, String> headerParameters, String body) throws Exception {
+    public static String proxyHttpRequest(String address, String method,Map<String, String> headerParameters, String body) throws Exception {
         String result = null;
         HttpURLConnection httpConnection = null;
-
         try {
-            httpConnection = createConnection(address, method,
-                    headerParameters, body);
+            httpConnection = createConnection(address, method,headerParameters, body);
 
             String encoding = "UTF-8";
-            if (httpConnection.getContentType() != null
-                    && httpConnection.getContentType().indexOf("charset=") >= 0) {
-                encoding = httpConnection.getContentType()
-                        .substring(
-                                httpConnection.getContentType().indexOf(
-                                        "charset=") + 8);
+            if (httpConnection.getContentType() != null && httpConnection.getContentType().indexOf("charset=") >= 0) {
+                encoding = httpConnection.getContentType().substring(httpConnection.getContentType().indexOf("charset=") + 8);
             }
-            result = inputStream2String(httpConnection.getInputStream(),
-                    encoding);
+
+
+            result = inputStream2String(httpConnection.getInputStream(),encoding);
             // logger.info("HTTPproxy response: {},{}", address,
             // result.toString());
-
         } catch (Exception e) {
             // logger.info("HTTPproxy error: {}", e.getMessage());
             throw e;
@@ -293,27 +262,26 @@ public class HttpUtil {
      * @param params
      * @return
      */
-    public static String getRequestBody(Map<String, String> params) {
-        return getRequestBody(params, true);
+    public static String getRequestBody(Map<String,Object> param) {
+        return getRequestBody(param, true);
     }
 
     /**
      * 将参数化为 body
      * @param params
      * @return
+     * @throws UnsupportedEncodingException 
      */
-    public static String getRequestBody(Map<String, String> params,
-            boolean urlEncode) {
+    public static String getRequestBody(Map<String,Object> params,boolean urlEncode){
         StringBuilder body = new StringBuilder();
-
         Iterator<String> iteratorHeader = params.keySet().iterator();
         while (iteratorHeader.hasNext()) {
             String key = iteratorHeader.next();
-            String value = params.get(key);
+            Object value = params.get(key);
 
             if (urlEncode) {
                 try {
-                    body.append(key + "=" + URLEncoder.encode(value, ENCODING)
+                    body.append(key + "=" + URLEncoder.encode(value.toString(), ENCODING)
                             + "&");
                 } catch (UnsupportedEncodingException e) {
                     // e.printStackTrace();
@@ -323,11 +291,7 @@ public class HttpUtil {
             }
         }
 
-        if (body.length() == 0) {
-            return "";
-        }
-        String param = body.substring(0, body.length() - 1);
-        return param;
+        return body.toString();
     }
 
     /**
@@ -337,18 +301,14 @@ public class HttpUtil {
      * @return
      * @throws IOException
      */
-    private static String inputStream2String(InputStream input, String encoding)
-            throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(input,
-                encoding));
+    private static String inputStream2String(InputStream input, String encoding)throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(input,encoding));
         StringBuilder result = new StringBuilder();
         String temp = null;
         while ((temp = reader.readLine()) != null) {
             result.append(temp);
         }
-
         return result.toString();
-
     }
 
 
@@ -365,11 +325,9 @@ public class HttpUtil {
         javax.net.ssl.TrustManager[] trustAllCerts = new javax.net.ssl.TrustManager[1];
         javax.net.ssl.TrustManager tm = new miTM();
         trustAllCerts[0] = tm;
-        javax.net.ssl.SSLContext sc = javax.net.ssl.SSLContext
-                .getInstance("SSL");
+        javax.net.ssl.SSLContext sc = javax.net.ssl.SSLContext.getInstance("SSL");
         sc.init(null, trustAllCerts, null);
-        javax.net.ssl.HttpsURLConnection.setDefaultSSLSocketFactory(sc
-                .getSocketFactory());
+        javax.net.ssl.HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
     }
 
 
@@ -411,21 +369,22 @@ public class HttpUtil {
     public static void main(String[] args) {
 
             try {
-
+                String  wid = TokenUtil.wid ;
+                String  token = TokenUtil.token;
+                Long timestamp = Calendar.getInstance().getTimeInMillis();
+                RequestProductEntity RequestProductEntity = new RequestProductEntity();
+                RequestProductEntity.setPage(1);
+                RequestProductEntity.setTimestamp(timestamp.toString());
+                RequestProductEntity.setToken(token);
+                RequestProductEntity.setWid(wid);
+                String jsonString  =  JSONObject.toJSONString(RequestProductEntity);
+                Map<String,Object> map1 = (Map<String,Object>) JSON.parse(jsonString);
                 //请求地址
-                String address = "http://www.liguanjia.com/index.php/api";
+                String address = "http://open.fygift.com/api/product/getAllProductIds.php";
                 //请求参数
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("param", "{param: [{func: GetSku,token: afsdfa5sd2faa,page: 10}]}");//这是该接口需要的参数
-
                 // 调用 post 请求
-                String res = post(address, params);
+                String res = post(address, map1);
                 System.out.println("返回参数"+res);//打印返回参数
-
-                res = res.substring(res.indexOf("{"));//截取
-                JSONObject result = JSONObject.parseObject(res);//转JSON
-
-                System.out.println(result.toString());//打印
 
             } catch (Exception e) {
                 // TODO 异常

@@ -118,7 +118,7 @@ public class ApiBuyController extends ApiBaseAction {
           			BigDecimal couponlPrice1 = BigDecimal.ZERO;//优惠券临时总价值
           			//计算该产品优惠券总和
           			if(goodsCoupon != null){
-          				couponlPrice1 = productInfo.getMarket_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(cart.getNumber()));
+          				//couponlPrice1 = productInfo.getMarket_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(cart.getNumber()));
           			}
           			couponCartTotalPrice = couponCartTotalPrice.add(couponlPrice1);
           		}
@@ -142,7 +142,7 @@ public class ApiBuyController extends ApiBaseAction {
        ProductVo productInfo = productService.queryObject(productId);
        //计算该产品优惠券总和
        if(goodsCoupon != null){
-       	couponlPrice = productInfo.getMarket_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(number));
+       	//couponlPrice = productInfo.getMarket_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(number));
        }
        couponTotalPrice = couponTotalPrice.add(couponlPrice);
         amount = userAmountVo.getAmount();//获取用户平台币
@@ -227,7 +227,7 @@ public class ApiBuyController extends ApiBaseAction {
           			BigDecimal couponlPrice1 = BigDecimal.ZERO;//优惠券临时总价值
           			//计算该产品优惠券总和
           			if(goodsCoupon != null){
-          				couponlPrice1 = productInfo.getMarket_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(cart.getNumber()));
+          				//couponlPrice1 = productInfo.getMarket_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(cart.getNumber()));
           			}
           			couponCartTotalPrice = couponCartTotalPrice.add(couponlPrice1);
           		}

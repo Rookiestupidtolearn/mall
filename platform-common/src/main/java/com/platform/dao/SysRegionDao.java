@@ -1,6 +1,8 @@
 package com.platform.dao;
 
 
+import java.util.List;
+
 import com.platform.entity.SysRegionEntity;
 
 /**
@@ -9,5 +11,7 @@ import com.platform.entity.SysRegionEntity;
  * @date 2017-11-04 11:19:31
  */
 public interface SysRegionDao extends BaseDao<SysRegionEntity> {
+
+	List<SysRegionEntity> queryAllByType(int type);
 
 }

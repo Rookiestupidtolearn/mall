@@ -13,7 +13,8 @@ $(function () {
 			
 			{label: '品牌', name: 'brandName', index: 'brand_id', width: 80},
 			
-			{label: '配比值', name: 'goodValue', index: 'good_value', width: 80}
+			{label: '正常配比', name: 'normalMatching', index: 'normal_matching', width: 80},
+			{label: '活动配比', name: 'activityMatching', index: 'activity_matching', width: 80}
 			
 			
 	/*		{label: '创建用户ID', name: 'createUserId', index: 'create_user_id', width: 80},

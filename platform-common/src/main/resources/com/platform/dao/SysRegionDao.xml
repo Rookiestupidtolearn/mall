@@ -48,6 +48,9 @@
             limit #{offset}, #{limit}
         </if>
     </select>
+    <select id="queryAllByType" resultType="com.platform.entity.SysRegionEntity">
+    	select * from sys_region where type = #{type}
+    </select>
 
     <select id="queryTotal" resultType="int">
         select count(*)

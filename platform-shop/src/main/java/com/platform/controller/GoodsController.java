@@ -1,5 +1,6 @@
 package com.platform.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.github.pagehelper.util.StringUtil;
 import com.platform.entity.GoodsEntity;
+import com.platform.service.GoodsPureInterestRateService;
 import com.platform.service.GoodsService;
 import com.platform.utils.PageUtils;
 import com.platform.utils.Query;
@@ -30,6 +33,9 @@ public class GoodsController {
 	
     @Autowired
     private GoodsService goodsService;
+    
+    @Autowired
+	private GoodsPureInterestRateService goodsPureInterestRateService;
   
     
 
@@ -41,10 +47,39 @@ public class GoodsController {
     public R list(@RequestParam Map<String, Object> params) {
         //查询列表数据
         Query query = new Query(params);
-
         query.put("isDelete", 0);
-        
         List<GoodsEntity> goodsList = goodsService.queryList(query);
+        //查询毛利率表
+        String status = (String)params.get("status");
+        String name = (String)params.get("name");
+        String min_retail_price = (String)params.get("min_retail_price");
+        String max_retail_price = (String)params.get("max_retail_price");
+        String min_pure_interest_rate = (String) params.get("min_pure_interest_rate");
+        String max_pure_interest_rate = (String) params.get("max_pure_interest_rate");
+        if(StringUtil.isNotEmpty(min_retail_price) || StringUtil.isNotEmpty(max_retail_price) || StringUtil.isNotEmpty(min_pure_interest_rate) || StringUtil.isNotEmpty(max_pure_interest_rate)){
+        	Map<String,Object> paramMap = new HashMap<String,Object>();
+        	if(StringUtil.isNotEmpty(status) || StringUtil.isNotEmpty(name)){
+        		Integer[] goodsIdArr = new Integer[goodsList.size()];
+        		for(int i =0;i<goodsList.size();i++){
+        			goodsIdArr[i] = goodsList.get(i).getId();
+        		}
+        		paramMap.put("goodsIds", goodsIdArr);
+        	}
+        	paramMap.put("min_retail_price",StringUtil.isEmpty(min_retail_price) ? "":min_retail_price);
+        	paramMap.put("max_retail_price", StringUtil.isEmpty(max_retail_price) ? "":max_retail_price);
+        	paramMap.put("min_pure_interest_rate", StringUtil.isEmpty(min_pure_interest_rate) ? "":min_pure_interest_rate);
+        	paramMap.put("max_pure_interest_rate", StringUtil.isEmpty(max_pure_interest_rate) ? "":max_pure_interest_rate);
+        	Integer[] goodsIds = goodsPureInterestRateService.queryGoodsIdsByPrice(paramMap);
+        	if(goodsIds.length == 0){
+        		params.put("goodss", new Integer[]{0} );
+        	}else{
+        		params.put("goodss", goodsIds);
+        	}
+        	
+        	query = new Query(params);
+        	query.put("isDelete", 0);
+        	goodsList = goodsService.queryList(query);
+        }
         
         int total = goodsService.queryTotal(query);
 
