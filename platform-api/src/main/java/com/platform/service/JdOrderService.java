@@ -8,14 +8,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.platform.dao.JdOrderMapper;
 import com.platform.entity.AddressVo;
 import com.platform.entity.JdOrderVo;
 import com.platform.entity.OrderVo;
 import com.platform.youle.entity.RequestOrderSubmitEntity;
+import com.platform.youle.entity.ResponseBaseEntity;
 import com.platform.youle.entity.ResponseOrderSubmitEntity;
 import com.platform.youle.entity.result.ResponseResultEntity;
 import com.platform.youle.service.AbsApiOrderService;
+import com.qiniu.util.Json;
 
 @Service
 public class JdOrderService {
@@ -99,5 +104,35 @@ public class JdOrderService {
 		return resultObj;
 	}
 	
-
+	public Map<String, Object> cancelByOrderKey(OrderVo shopOder){
+		Map<String, Object> map =  new HashMap<>();
+		
+		JdOrderVo jdOrderVo =	jdOrderMapper.queryByThirdOrder(shopOder.getOrder_sn());
+		ResponseBaseEntity  response = null;
+		if (jdOrderVo == null) {
+			logger.info("不存在京东的订单，订单编号："+shopOder.getOrder_sn());
+		}else {
+			Gson gson = new Gson();
+			response = apiOrderService.cancelByOrderKey(jdOrderVo.getThirdOrder(),jdOrderVo.getOrderKey());
+			jdOrderVo.setResponseStatus(response.getRESPONSE_STATUS());
+			jdOrderVo.setResultData(gson.toJson(response));
+			if (response.getRESPONSE_STATUS().equals("true")) {
+			 	 //处理取消成功的逻辑
+				jdOrderVo.setOrderStatus(1);//订单已经取消
+			}else {
+			jdOrderVo.setErrorCode(response.getERROR_CODE());
+			jdOrderVo.setErrorMessage(response.getERROR_MESSAGE());
+		     
+			}
+		   jdOrderMapper.update(jdOrderVo);			
+			
+			
+		}
+		
+		
+		return map;
+		
+	}
+	
+	
 }

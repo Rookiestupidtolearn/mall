@@ -26,6 +26,7 @@
         <result property="orderShipmentFee" column="order_shipment_fee"/>
         <result property="orderTotalPrice" column="order_total_price"/>
         <result property="orderSplit" column="order_split"/>
+         <result property="resultData" column="result_data"/>
         <result property="createTime" column="create_time"/>
         <result property="isDeleted" column="is_deleted"/>
     </resultMap>
@@ -144,7 +145,7 @@
 	</select>
 	 
 	<insert id="save" parameterType="com.platform.entity.JdOrderVo" useGeneratedKeys="true" keyProperty="id">
-			insert into jd_order(
+		insert into jd_order(
 			`shop_user_id`,
 			`order_status`,
 			`third_order`,
@@ -166,6 +167,7 @@
 			`order_shipment_fee`,
 			`order_total_price`,
 			`order_split`,
+			`result_data`,
 			`create_time`,
 			`is_deleted`)
 		values(
@@ -190,6 +192,7 @@
 			#{orderShipmentFee},
 			#{orderTotalPrice},
 			#{orderSplit},
+			#{resultData},
 			#{createTime},
 			#{isDeleted})
 	</insert>
@@ -218,6 +221,7 @@
 			<if test="orderShipmentFee != null">`order_shipment_fee` = #{orderShipmentFee}, </if>
 			<if test="orderTotalPrice != null">`order_total_price` = #{orderTotalPrice}, </if>
 			<if test="orderSplit != null">`order_split` = #{orderSplit}, </if>
+			<if test="resultData != null">`result_data` = #{resultData}, </if>
 			<if test="createTime != null">`create_time` = #{createTime}, </if>
 			<if test="isDeleted != null">`is_deleted` = #{isDeleted}</if>
 		</set>

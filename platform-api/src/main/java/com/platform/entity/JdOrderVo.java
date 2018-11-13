@@ -59,6 +59,9 @@ public class JdOrderVo implements Serializable {
     private BigDecimal orderTotalPrice;
     //订单是否被拆分 true: 被拆分为多个订单, false: 未拆分
     private Boolean orderSplit;
+    
+    private String resultData;
+    
     //创建时间
     private Date createTime;
     //是否删除 0-正常 1-删除
@@ -360,6 +363,14 @@ public class JdOrderVo implements Serializable {
 
 	public void setIsDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
+	}
+
+	public String getResultData() {
+		return resultData;
+	}
+
+	public void setResultData(String resultData) {
+		this.resultData = resultData;
 	}
     
     
