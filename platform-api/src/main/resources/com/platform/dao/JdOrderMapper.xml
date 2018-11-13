@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.platform.dao.JdOrderMapper">
+
+    <resultMap type="com.platform.entity.JdOrderVo" id="jdOrderMap">
+        <result property="id" column="id"/>
+        <result property="shopUserId" column="shop_user_id"/>
+        <result property="orderStatus" column="order_status"/>
+        <result property="thirdOrder" column="third_order"/>
+        <result property="orderKey" column="order_key"/>
+        <result property="pidNums" column="pid_nums"/>
+        <result property="receiverName" column="receiver_name"/>
+        <result property="province" column="province"/>
+        <result property="city" column="city"/>
+        <result property="county" column="county"/>
+        <result property="town" column="town"/>
+        <result property="address" column="address"/>
+        <result property="mobile" column="mobile"/>
+        <result property="email" column="email"/>
+        <result property="remarke" column="remarke"/>
+        <result property="errorCode" column="error_code"/>
+        <result property="errorMessage" column="error_message"/>
+        <result property="responseStatus" column="response_status"/>
+        <result property="orderShipmentFee" column="order_shipment_fee"/>
+        <result property="orderTotalPrice" column="order_total_price"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+	<select id="queryObject" resultType="com.platform.entity.JdOrderVo">
+		select
+			`id`,
+			`shop_user_id`,
+			`order_status`,
+			`third_order`,
+			`order_key`,
+			`pid_nums`,
+			`receiver_name`,
+			`province`,
+			`city`,
+			`county`,
+			`town`,
+			`address`,
+			`mobile`,
+			`email`,
+			`remarke`,
+			`error_code`,
+			`error_message`,
+			`response_status`,
+			`order_shipment_fee`,
+			`order_total_price`,
+			`create_time`
+		from jd_order
+		where id = #{id}
+	</select>
+	
+		<select id="queryByThirdOrder" resultType="com.platform.entity.JdOrderVo">
+		select
+			`id`,
+			`shop_user_id`,
+			`order_status`,
+			`third_order`,
+			`order_key`,
+			`pid_nums`,
+			`receiver_name`,
+			`province`,
+			`city`,
+			`county`,
+			`town`,
+			`address`,
+			`mobile`,
+			`email`,
+			`remarke`,
+			`error_code`,
+			`error_message`,
+			`response_status`,
+			`order_shipment_fee`,
+			`order_total_price`,
+			`create_time`
+		from jd_order
+		where third_order = #{thirdOrder}
+	</select>
+	
+
+	<select id="queryList" resultType="com.platform.entity.JdOrderVo">
+		select
+    		`id`,
+    		`shop_user_id`,
+    		`order_status`,
+    		`third_order`,
+    		`order_key`,
+    		`pid_nums`,
+    		`receiver_name`,
+    		`province`,
+    		`city`,
+    		`county`,
+    		`town`,
+    		`address`,
+    		`mobile`,
+    		`email`,
+    		`remarke`,
+    		`error_code`,
+    		`error_message`,
+    		`response_status`,
+    		`order_shipment_fee`,
+    		`order_total_price`,
+    		`create_time`
+		from jd_order
+		WHERE 1=1
+		<if test="name != null and name.trim() != ''">
+			AND name LIKE concat('%',#{name},'%')
+		</if>
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from jd_order
+		WHERE 1=1
+        <if test="name != null and name.trim() != ''">
+            AND name LIKE concat('%',#{name},'%')
+        </if>
+	</select>
+	 
+	<insert id="save" parameterType="com.platform.entity.JdOrderVo" useGeneratedKeys="true" keyProperty="id">
+		insert into jd_order(
+			`shop_user_id`,
+			`order_status`,
+			`third_order`,
+			`order_key`,
+			`pid_nums`,
+			`receiver_name`,
+			`province`,
+			`city`,
+			`county`,
+			`town`,
+			`address`,
+			`mobile`,
+			`email`,
+			`remarke`,
+			`error_code`,
+			`error_message`,
+			`response_status`,
+			`order_shipment_fee`,
+			`order_total_price`,
+			`create_time`)
+		values(
+			#{shopUserId},
+			#{orderStatus},
+			#{thirdOrder},
+			#{orderKey},
+			#{pidNums},
+			#{receiverName},
+			#{province},
+			#{city},
+			#{county},
+			#{town},
+			#{address},
+			#{mobile},
+			#{email},
+			#{remarke},
+			#{errorCode},
+			#{errorMessage},
+			#{responseStatus},
+			#{orderShipmentFee},
+			#{orderTotalPrice},
+			#{createTime})
+	</insert>
+	 
+	<update id="update" parameterType="com.platform.entity.JdOrderVo">
+		update jd_order 
+		<set>
+			<if test="shopUserId != null">`shop_user_id` = #{shopUserId}, </if>
+			<if test="orderStatus != null">`order_status` = #{orderStatus}, </if>
+			<if test="thirdOrder != null">`third_order` = #{thirdOrder}, </if>
+			<if test="orderKey != null">`order_key` = #{orderKey}, </if>
+			<if test="pidNums != null">`pid_nums` = #{pidNums}, </if>
+			<if test="receiverName != null">`receiver_name` = #{receiverName}, </if>
+			<if test="province != null">`province` = #{province}, </if>
+			<if test="city != null">`city` = #{city}, </if>
+			<if test="county != null">`county` = #{county}, </if>
+			<if test="town != null">`town` = #{town}, </if>
+			<if test="address != null">`address` = #{address}, </if>
+			<if test="mobile != null">`mobile` = #{mobile}, </if>
+			<if test="email != null">`email` = #{email}, </if>
+			<if test="remarke != null">`remarke` = #{remarke}, </if>
+			<if test="errorCode != null">`error_code` = #{errorCode}, </if>
+			<if test="errorMessage != null">`error_message` = #{errorMessage}, </if>
+			<if test="responseStatus != null">`response_status` = #{responseStatus}, </if>
+			<if test="orderShipmentFee != null">`order_shipment_fee` = #{orderShipmentFee}, </if>
+			<if test="orderTotalPrice != null">`order_total_price` = #{orderTotalPrice}, </if>
+			<if test="createTime != null">`create_time` = #{createTime}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from jd_order where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from jd_order where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

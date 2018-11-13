@@ -38,6 +38,7 @@ public class OrderVo implements Serializable {
     private Integer pay_status;
     //收货人
     private String consignee;
+    private Integer address_id;
     //国家
     private String country;
     //省
@@ -520,4 +521,15 @@ public class OrderVo implements Serializable {
     public void setShipping_no(String shipping_no) {
         this.shipping_no = shipping_no;
     }
+
+	public Integer getAddress_id() {
+		return address_id;
+	}
+
+	public void setAddress_id(Integer address_id) {
+		this.address_id = address_id;
+	}
+
+
+    
 }
