@@ -125,7 +125,7 @@ public class ApiJdFuncServiceImpl extends AbsApiGoodsService {
             logger.info("[1.5批量查询商品库存" + result);
             reponse = JSON.parseObject(result, ResponseProductStockBatchEntity.class);
         } catch (Exception e) {
-            logger.error("[1.5批量查询商品库存", e);
+            logger.error("[1.5批量查询商品库存]", e);
         }
         return reponse;
     }

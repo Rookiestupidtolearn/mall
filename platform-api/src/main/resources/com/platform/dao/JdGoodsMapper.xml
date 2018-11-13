@@ -21,9 +21,7 @@
         <result property="is7Toreturn" column="is_7_toReturn"/>
         <result property="productDecription" column="product_decription"/>
         <result property="mobileProductDecription" column="mobile_product_decription"/>
-        <result property="goodsCommentsId" column="goods_comments_id"/>
         <result property="goodsCategoryId" column="goods_category_id"/>
-        <result property="goodsImagePathId" column="goods_image_path_id"/>
         <result property="keywords" column="keywords"/>
         <result property="deleteFlag" column="delete_flag"/>
         <result property="createTime" column="create_time"/>
@@ -50,14 +48,12 @@
 			`is_7_toReturn`,
 			`product_decription`,
 			`mobile_product_decription`,
-			`goods_comments_id`,
 			`goods_category_id`,
 			`keywords`,
 			`delete_flag`,
 			`create_time`,
 			`create_by`,
-			`update_time`,
-			`goods_image_path_id`
+			`update_time`
 		from jd_shop_goods
 		where id = #{id}
 	</select>
@@ -81,14 +77,12 @@
     		`is_7_toReturn`,
     		`product_decription`,
     		`mobile_product_decription`,
-    		`goods_comments_id`,
     		`goods_category_id`,
     		`keywords`,
     		`delete_flag`,
     		`create_time`,
     		`create_by`,
-    		`update_time`,
-    		`goods_image_path_id`
+    		`update_time`
 		from jd_shop_goods
 		WHERE 1=1
 		<if test="name != null and name.trim() != ''">
@@ -134,13 +128,12 @@
 			`is_7_toReturn`,
 			`product_decription`,
 			`mobile_product_decription`,
-			`goods_comments_id`,
 			`goods_category_id`,
 			`keywords`,
 			`delete_flag`,
 			`create_time`,
 			`create_by`,
-			`update_time`,`goods_image_path_id`)
+			`update_time`)
 		values(
 			#{id},
 			#{productId},
@@ -159,14 +152,12 @@
 			#{is7Toreturn},
 			#{productDecription},
 			#{mobileProductDecription},
-			#{goodsCommentsId},
 			#{goodsCategoryId},
 			#{keywords},
 			#{deleteFlag},
 			#{createTime},
 			#{createBy},
-			#{updateTime},
-			#{goodsImagePathId})
+			#{updateTime}
 	</insert>
 	 
 	<update id="update" parameterType="com.platform.youle.entity.JdGoodsVo">
@@ -188,14 +179,12 @@
 			<if test="is7Toreturn != null">`is_7_toReturn` = #{is7Toreturn}, </if>
 			<if test="productDecription != null">`product_decription` = #{productDecription}, </if>
 			<if test="mobileProductDecription != null">`mobile_product_decription` = #{mobileProductDecription}, </if>
-			<if test="goodsCommentsId != null">`goods_comments_id` = #{goodsCommentsId}, </if>
 			<if test="goodsCategoryId != null">`goods_category_id` = #{goodsCategoryId}, </if>
 			<if test="keywords != null">`keywords` = #{keywords}, </if>
 			<if test="deleteFlag != null">`delete_flag` = #{deleteFlag}, </if>
 			<if test="createTime != null">`create_time` = #{createTime}, </if>
 			<if test="createBy != null">`create_by` = #{createBy}, </if>
 			<if test="updateTime != null">`update_time` = #{updateTime},</if>
-			<if test="goodsImagePathId != null">`goods_image_path_id` = #{goodsImagePathId}, </if>
 		</set>
 		where id = #{id}
 	</update>

@@ -7,7 +7,7 @@
         <result property="id" column="id"/>
         <result property="imageUrl" column="image_url"/>
         <result property="orderSort" column="order_sort"/>
-        <result property="productId" column="product_id"/>
+        <result property="goodsId" column="goods_id"/>
         <result property="createTime" column="create_time"/>
         <result property="createBy" column="create_by"/>
         <result property="updateTime" column="update_time"/>
@@ -18,7 +18,7 @@
 			`id`,
 			`image_url`,
 			`order_sort`,
-			`product_id`,
+			`goods_id`,
 			`create_time`,
 			`create_by`,
 			`update_time`
@@ -31,7 +31,7 @@
     		`id`,
     		`image_url`,
     		`order_sort`,
-    		`product_id`,
+    		`goods_id`,
     		`create_time`,
     		`create_by`,
     		`update_time`
@@ -65,14 +65,14 @@
 		insert into jd_goods_image_path(
 			`image_url`,
 			`order_sort`,
-			`product_id`,
+			`goods_id`,
 			`create_time`,
 			`create_by`,
 			`update_time`)
 		values(
 			#{imageUrl},
 			#{orderSort},
-			#{productId},
+			#{goodsId},
 			#{createTime},
 			#{createBy},
 			#{updateTime})
@@ -83,7 +83,7 @@
 		<set>
 			<if test="imageUrl != null">`image_url` = #{imageUrl}, </if>
 			<if test="orderSort != null">`order_sort` = #{orderSort}, </if>
-			<if test="goodsId != null">`product_id` = #{productId}, </if>
+			<if test="goodsId != null">`goods_id` = #{goodsId}, </if>
 			<if test="createTime != null">`create_time` = #{createTime}, </if>
 			<if test="createBy != null">`create_by` = #{createBy}, </if>
 			<if test="updateTime != null">`update_time` = #{updateTime}</if>
