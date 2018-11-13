@@ -68,8 +68,8 @@ public class ApiAddressController extends ApiBaseAction {
         JSONObject addressJson = this.getJsonRequest();
         AddressVo entity = new AddressVo();
         if (null != addressJson) {
-            entity.setId(addressJson.getLong("id"));
-            entity.setUserId(loginUser.getUserId());
+            entity.setId(addressJson.getInteger("id"));
+            entity.setUserId(Integer.valueOf(loginUser.getUserId()+""));
             entity.setUserName(addressJson.getString("userName"));
             entity.setPostalCode(addressJson.getString("postalCode"));
             entity.setProvinceName(addressJson.getString("provinceName"));
@@ -78,7 +78,7 @@ public class ApiAddressController extends ApiBaseAction {
             entity.setDetailInfo(addressJson.getString("detailInfo"));
             entity.setNationalCode(addressJson.getString("nationalCode"));
             entity.setTelNumber(addressJson.getString("telNumber"));
-            entity.setIs_default(addressJson.getInteger("is_default"));
+            entity.setIsDefault(addressJson.getInteger("is_default"));
         }
         if (null == entity.getId() || entity.getId() == 0) {
             entity.setId(null);

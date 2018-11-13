@@ -3,6 +3,7 @@ package com.platform.entity;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
+import java.sql.Date;
 
 
 /**
@@ -13,10 +14,10 @@ import java.io.Serializable;
 public class AddressVo implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    //
-    private Long id;
+    //主键
+    private Integer id;
     //会员ID
-    private Long userId;
+    private Integer userId;
     //收货人姓名
     private String userName;
     //手机
@@ -25,47 +26,34 @@ public class AddressVo implements Serializable {
     private String postalCode;
     //收货地址国家码
     private String nationalCode;
+    //省编码
+    private String province;
     //省
     private String provinceName;
+    //市编码
+    private String city;
     //市
     private String cityName;
+    //区/县编码
+    private String county;
     //区
     private String countyName;
+    //乡镇编码
+    private String town;
+    //乡镇名
+    private String townName;
     //详细收货地址信息
     private String detailInfo;
-
-    //默认
-    private Integer is_default = 0;
+    //是否默认值 0:否 1:是
+    private Integer isDefault;
+    //创建时间
+    private Date createTime;
+    //是否删除 0:正常 1:删除
+    private Integer isDelete;
 
     private String full_region;
 
-    /**
-     * 设置：
-     */
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    /**
-     * 获取：
-     */
-    public Long getId() {
-        return id;
-    }
-
-    /**
-     * 设置：会员ID
-     */
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    /**
-     * 获取：会员ID
-     */
-    public Long getUserId() {
-        return userId;
-    }
 
     /**
      * 设置：收货人姓名
@@ -179,13 +167,7 @@ public class AddressVo implements Serializable {
         return detailInfo;
     }
 
-    public Integer getIs_default() {
-        return is_default;
-    }
 
-    public void setIs_default(Integer is_default) {
-        this.is_default = is_default;
-    }
 
     public String getFull_region() {
         if (StringUtils.isEmpty(full_region)) {
@@ -198,4 +180,86 @@ public class AddressVo implements Serializable {
 
         this.full_region = full_region;
     }
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public Integer getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
+
+	public String getProvince() {
+		return province;
+	}
+
+	public void setProvince(String province) {
+		this.province = province;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getCounty() {
+		return county;
+	}
+
+	public void setCounty(String county) {
+		this.county = county;
+	}
+
+	public String getTown() {
+		return town;
+	}
+
+	public void setTown(String town) {
+		this.town = town;
+	}
+
+	public String getTownName() {
+		return townName;
+	}
+
+	public void setTownName(String townName) {
+		this.townName = townName;
+	}
+
+	public Integer getIsDefault() {
+		return isDefault;
+	}
+
+	public void setIsDefault(Integer isDefault) {
+		this.isDefault = isDefault;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+
+	public Integer getIsDelete() {
+		return isDelete;
+	}
+
+	public void setIsDelete(Integer isDelete) {
+		this.isDelete = isDelete;
+	}
+    
+    
 }
