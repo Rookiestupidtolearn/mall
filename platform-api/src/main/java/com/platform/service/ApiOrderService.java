@@ -240,7 +240,7 @@ public class ApiOrderService {
 		}  
         
         //清空已购买的商品
-        apiCartMapper.deleteByCart(loginUser.getUserId(), 1, 1);
+   //     apiCartMapper.deleteByCart(loginUser.getUserId(), 1, 1);
         resultObj.put("errno", 0);
         resultObj.put("errmsg", "订单提交成功");
         //
@@ -256,7 +256,7 @@ public class ApiOrderService {
         //创建第三方订单
         JdOrderVo jdOrderVo =  new JdOrderVo();
         jdOrderVo.setPidNums(pidNums);
-        Map<String, Object> result   =   jdOrderService.jdOrderSubbmit(orderInfo,jdOrderVo);
+        Map<String, Object> result   =   jdOrderService.jdOrderSubbmit(addressVo,orderInfo,jdOrderVo);
         resultObj.put("errno", result.get("errno")) ;
         resultObj.put("errmsg", result.get("errmsg")) ;
         return resultObj;
