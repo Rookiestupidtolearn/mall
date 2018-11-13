@@ -99,10 +99,11 @@ Page({
       selectRegionList[2].id = address.district_id;
       selectRegionList[2].name = address.district_name;
       selectRegionList[2].parent_id = address.city_id;
-      
-      selectRegionList[3].id = address.town_id;
-      selectRegionList[3].name = address.town_name;
-      selectRegionList[3].parent_id = address.district_id;
+      if(selectRegionList[3] != null){
+    	  selectRegionList[3].id = address.town_id;
+          selectRegionList[3].name = address.town_name;
+          selectRegionList[3].parent_id = address.district_id;
+      }
       this.setData({
         selectRegionList: selectRegionList,
         regionType: 3
@@ -164,19 +165,15 @@ Page({
 
   },
   selectRegion(event) {
-	 console.log("event:"+event);
     let that = this;
     let regionIndex = event.target.dataset.regionIndex;
-    console.log("regionIndex:"+regionIndex);
     let regionItem = this.data.regionList[regionIndex];
-    console.log("regionItem:"+regionItem);
     let regionType = regionItem.type;
-    console.log("regionType:"+regionType);
     let selectRegionList = this.data.selectRegionList;
     selectRegionList[regionType - 1] = regionItem;
 
 
-    if (regionType != 4) {
+    if (regionType <= 4) {
       this.setData({
         selectRegionList: selectRegionList,
         regionType: regionType + 1
@@ -239,11 +236,13 @@ Page({
     address.province_id = selectRegionList[0].id;
     address.city_id = selectRegionList[1].id;
     address.district_id = selectRegionList[2].id;
-    address.town_id = selectRegionList[3].id;
+    if(selectRegionList[3] != null){
+    	address.town_id = selectRegionList[3].id;
+    	address.town_name = selectRegionList[3].name;
+    }
     address.province_name = selectRegionList[0].name;
     address.city_name = selectRegionList[1].name;
     address.district_name = selectRegionList[2].name;
-    address.town_name = selectRegionList[3].name;
     address.full_region = selectRegionList.map(item => {
       return item.name;
     }).join('');
@@ -264,21 +263,32 @@ Page({
   getRegionList(regionId) {
     let that = this;
     let regionType = that.data.regionType;
+    let selectRegionList = that.data.selectRegionList;
     util.request(api.RegionList, { parentId: regionId }).then(function (res) {
       if (res.errno === 0) {
-        that.setData({
-          regionList: res.data.map(item => {
+    	 if(res.data != 0){
+    		 that.setData({
+    	          regionList: res.data.map(item => {
 
-            //标记已选择的
-            if (regionType == item.type && that.data.selectRegionList[regionType - 1].id == item.id) {
-              item.selected = true;
-            } else {
-              item.selected = false;
-            }
+    	            //标记已选择的
+    	            if (regionType == item.type && that.data.selectRegionList[regionType - 1].id == item.id) {
+    	              item.selected = true;
+    	            } else {
+    	              item.selected = false;
+    	            }
 
-            return item;
-          })
-        });
+    	            return item;
+    	          })
+    	     });
+    	 }else{
+    		 /*that.setData({
+    		        selectRegionList:[
+    		              			{ id: selectRegionList[0].id, name: selectRegionList[0].name, parent_id: selectRegionList[0].parent_id, type: selectRegionList[0].type },
+    		              			{ id: selectRegionList[1].id, name: selectRegionList[1].name, parent_id: selectRegionList[1].parent_id, type: selectRegionList[1].type },
+    		              			{ id: selectRegionList[2].id, name: selectRegionList[2].name, parent_id: selectRegionList[2].parent_id, type: selectRegionList[2].type }
+    		                    ]
+    		      })*/
+    	 }
       }
     });
   },
@@ -324,6 +334,11 @@ Page({
       provinceName: address.province_name,
       cityName: address.city_name,
       countyName: address.district_name,
+      townName:address.town_name,
+      province:address. province_id,
+      city:address.city_id,
+      district:address.district_id,
+      town:address.town_id,
       detailInfo: address.detailInfo,
     },'post','application/json').then(function (res) {
       if (res.errno === 0) {

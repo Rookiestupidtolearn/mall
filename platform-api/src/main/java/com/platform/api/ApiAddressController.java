@@ -53,8 +53,8 @@ public class ApiAddressController extends ApiBaseAction {
     public Object detail(Integer id, @LoginUser UserVo loginUser) {
         AddressVo entity = addressService.queryObject(id);
         //判断越权行为
-        if (!entity.getUserId().equals(loginUser.getUserId())) {
-            return toResponsObject(403, "您无权查看", "");
+        if(loginUser.getUserId().intValue()!=entity.getUserId()){
+        	return toResponsObject(403, "您无权查看", "");
         }
         return toResponsSuccess(entity);
     }
@@ -75,6 +75,11 @@ public class ApiAddressController extends ApiBaseAction {
             entity.setProvinceName(addressJson.getString("provinceName"));
             entity.setCityName(addressJson.getString("cityName"));
             entity.setCountyName(addressJson.getString("countyName"));
+            entity.setTownName(addressJson.getString("townName"));
+            entity.setProvince(addressJson.getString("province"));
+            entity.setCity(addressJson.getString("city"));
+            entity.setCounty(addressJson.getString("district"));
+            entity.setTown(addressJson.getString("town"));
             entity.setDetailInfo(addressJson.getString("detailInfo"));
             entity.setNationalCode(addressJson.getString("nationalCode"));
             entity.setTelNumber(addressJson.getString("telNumber"));
@@ -100,8 +105,8 @@ public class ApiAddressController extends ApiBaseAction {
 
         AddressVo entity = addressService.queryObject(id);
         //判断越权行为
-        if (!entity.getUserId().equals(loginUser.getUserId())) {
-            return toResponsObject(403, "您无权删除", "");
+        if(loginUser.getUserId().intValue()!=entity.getUserId()){
+        	return toResponsObject(403, "您无权查看", "");
         }
         addressService.delete(id);
         return toResponsSuccess("");

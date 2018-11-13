@@ -26,7 +26,6 @@ import com.platform.youle.entity.ResponseSystemOrderTrackEntity;
 import com.platform.youle.service.AbsApiGoodsService;
 import com.platform.youle.service.AbsApiOrderService;
 import com.platform.youle.service.AbsApiRegionService;
-import com.platform.youle.service.JdAreInterface;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -55,8 +54,6 @@ public class ApiTestController {
     private AbsApiOrderService  orderService;
     @Autowired
     private AbsApiRegionService  absApiRegionService;
-    @Autowired
-    private JdAreInterface  jdAreInterface;
     
     /**
      * 获取用户信息
@@ -151,14 +148,6 @@ public class ApiTestController {
     			 absApiRegionService.town(thirdPartyRegionEntity.getThirdCode());//镇
     		 }
     	 }
-    	return 	null;
-    }
-    @IgnoreAuth
-    @ApiOperation(value = "4、三方地址接口")
-    @PostMapping("relevance")
-    public Object JdAreTest(){
-    	//jdAreInterface.provinceRelevance();
-    	jdAreInterface.cityRelevance();
     	return 	null;
     }
     
