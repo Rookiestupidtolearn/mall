@@ -17,6 +17,8 @@ public class RegionVo {
     private Integer type;
     //区域代理Id
     private Integer agency_id;
+    //第三方地址信息id
+    private Integer third_code;
 
     public RegionVo() {
     }
@@ -27,6 +29,7 @@ public class RegionVo {
         name = regionEntity.getName();
         type = regionEntity.getType();
         agency_id = regionEntity.getAgencyId();
+        third_code = regionEntity.getThirdCode();
     }
 
 
@@ -69,4 +72,14 @@ public class RegionVo {
     public void setAgency_id(Integer agency_id) {
         this.agency_id = agency_id;
     }
+
+	public Integer getThird_code() {
+		return third_code;
+	}
+
+	public void setThird_code(Integer third_code) {
+		this.third_code = third_code;
+	}
+    
+    
 }

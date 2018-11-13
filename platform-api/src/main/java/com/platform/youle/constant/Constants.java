@@ -112,4 +112,17 @@ public class Constants {
         //6.5 获取京东商品订单售后单概要信息
         public static String sale_after_basis= "/api/afterSale/jd/basis.php";
     }
+    	/**
+    	 * 渠道
+    	 * @author liutao
+    	 */
+    public static  class Channels {
+    	
+    	/**
+    	 * 京东
+    	 */
+    	final public static String JD = "JD";
+    	
+    }
+    
 }

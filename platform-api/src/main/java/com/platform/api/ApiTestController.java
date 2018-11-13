@@ -26,6 +26,7 @@ import com.platform.youle.entity.ResponseSystemOrderTrackEntity;
 import com.platform.youle.service.AbsApiGoodsService;
 import com.platform.youle.service.AbsApiOrderService;
 import com.platform.youle.service.AbsApiRegionService;
+import com.platform.youle.service.JdAreInterface;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -54,6 +55,8 @@ public class ApiTestController {
     private AbsApiOrderService  orderService;
     @Autowired
     private AbsApiRegionService  absApiRegionService;
+    @Autowired
+    private JdAreInterface  jdAreInterface;
     
     /**
      * 获取用户信息
@@ -140,14 +143,22 @@ public class ApiTestController {
     @PostMapping("response")
     public Object response(){
     	// absApiRegionService.province(); // 省
-    	 List<ThirdPartyRegionEntity> thirdPartyRegionList = thirdPartyRegionService.queryAllByType(3); //查询全部的省 province: 省1, city(市2), county(区/县3),  town(乡/镇4
+    	List<ThirdPartyRegionEntity> thirdPartyRegionList = thirdPartyRegionService.queryAllByType(3); //查询全部的省 province: 省1, city(市2), county(区/县3),  town(乡/镇4
     	 if(CollectionUtils.isNotEmpty(thirdPartyRegionList)){
     		 for(ThirdPartyRegionEntity thirdPartyRegionEntity : thirdPartyRegionList){
-    			 //absApiRegionService.city(thirdPartyRegionEntity.getId());  //市
-    			 //absApiRegionService.county(thirdPartyRegionEntity.getId()); //区、县
-    			 //absApiRegionService.town(thirdPartyRegionEntity.getId());//镇
+    			// absApiRegionService.city(thirdPartyRegionEntity.getThirdCode());  //市
+    			// absApiRegionService.county(thirdPartyRegionEntity.getThirdCode()); //区、县
+    			 absApiRegionService.town(thirdPartyRegionEntity.getThirdCode());//镇
     		 }
     	 }
+    	return 	null;
+    }
+    @IgnoreAuth
+    @ApiOperation(value = "4、三方地址接口")
+    @PostMapping("relevance")
+    public Object JdAreTest(){
+    	//jdAreInterface.provinceRelevance();
+    	jdAreInterface.cityRelevance();
     	return 	null;
     }
     

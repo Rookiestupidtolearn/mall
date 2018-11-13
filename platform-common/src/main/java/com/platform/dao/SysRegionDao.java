@@ -2,6 +2,7 @@ package com.platform.dao;
 
 
 import java.util.List;
+import java.util.Map;
 
 import com.platform.entity.SysRegionEntity;
 
@@ -13,5 +14,9 @@ import com.platform.entity.SysRegionEntity;
 public interface SysRegionDao extends BaseDao<SysRegionEntity> {
 
 	List<SysRegionEntity> queryAllByType(int type);
+
+	List<SysRegionEntity> queryDate(Map<String, Object> paramMap);
+
+	int insertBatch(List<SysRegionEntity> sysRegionEntityList);
 
 }

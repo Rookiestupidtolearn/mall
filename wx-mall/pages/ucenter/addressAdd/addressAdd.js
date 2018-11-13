@@ -8,6 +8,7 @@ Page({
       province_id: 0,
       city_id: 0,
       district_id: 0,
+      town_id:0,
       address: '',
       full_region: '',
       userName: '',
@@ -19,7 +20,8 @@ Page({
     selectRegionList: [
       { id: 0, name: '省份', parent_id: 1, type: 1 },
       { id: 0, name: '城市', parent_id: 1, type: 2 },
-      { id: 0, name: '区县', parent_id: 1, type: 3 }
+      { id: 0, name: '区县', parent_id: 1, type: 3 },
+      { id: 0, name: '乡镇', parent_id: 1, type: 4 }
     ],
     regionType: 1,
     regionList: [],
@@ -88,7 +90,7 @@ Page({
       let selectRegionList = this.data.selectRegionList;
       selectRegionList[0].id = address.province_id;
       selectRegionList[0].name = address.province_name;
-      selectRegionList[0].parent_id = 1;
+      selectRegionList[0].parent_id = 0;
 
       selectRegionList[1].id = address.city_id;
       selectRegionList[1].name = address.city_name;
@@ -97,7 +99,10 @@ Page({
       selectRegionList[2].id = address.district_id;
       selectRegionList[2].name = address.district_name;
       selectRegionList[2].parent_id = address.city_id;
-
+      
+      selectRegionList[3].id = address.town_id;
+      selectRegionList[3].name = address.town_name;
+      selectRegionList[3].parent_id = address.district_id;
       this.setData({
         selectRegionList: selectRegionList,
         regionType: 3
@@ -107,13 +112,14 @@ Page({
     } else {
       this.setData({
         selectRegionList: [
-          { id: 0, name: '省份', parent_id: 1, type: 1 },
-          { id: 0, name: '城市', parent_id: 1, type: 2 },
-          { id: 0, name: '区县', parent_id: 1, type: 3 }
+			{ id: 0, name: '省份', parent_id: 1, type: 1 },
+			{ id: 0, name: '城市', parent_id: 1, type: 2 },
+			{ id: 0, name: '区县', parent_id: 1, type: 3 },
+			{ id: 0, name: '乡镇', parent_id: 1, type: 4 }
         ],
         regionType: 1
       })
-      this.getRegionList(1);
+      this.getRegionList(0);
     }
 
     this.setRegionDoneStatus();
@@ -129,7 +135,7 @@ Page({
       this.getAddressDetail();
     }
 
-    this.getRegionList(1);
+    this.getRegionList(0);
 
   },
   onReady: function () {
@@ -139,7 +145,8 @@ Page({
     let that = this;
     let regionTypeIndex = event.target.dataset.regionTypeIndex;
     let selectRegionList = that.data.selectRegionList;
-
+    console.log("regionTypeIndex:"+regionTypeIndex);
+    
     //判断是否可点击
     if (regionTypeIndex + 1 == this.data.regionType || (regionTypeIndex - 1 >= 0 && selectRegionList[regionTypeIndex-1].id <= 0)) {
       return false;
@@ -157,20 +164,24 @@ Page({
 
   },
   selectRegion(event) {
+	 console.log("event:"+event);
     let that = this;
     let regionIndex = event.target.dataset.regionIndex;
+    console.log("regionIndex:"+regionIndex);
     let regionItem = this.data.regionList[regionIndex];
+    console.log("regionItem:"+regionItem);
     let regionType = regionItem.type;
+    console.log("regionType:"+regionType);
     let selectRegionList = this.data.selectRegionList;
     selectRegionList[regionType - 1] = regionItem;
 
 
-    if (regionType != 3) {
+    if (regionType != 4) {
       this.setData({
         selectRegionList: selectRegionList,
         regionType: regionType + 1
       })
-      this.getRegionList(regionItem.id);
+      this.getRegionList(regionItem.third_code);
     } else {
       this.setData({
         selectRegionList: selectRegionList
@@ -181,7 +192,16 @@ Page({
     selectRegionList.map((item, index) => {
       if (index > regionType - 1) {
         item.id = 0;
-        item.name = index == 1 ? '城市' : '区县';
+       // item.name = index == 1 ? '城市' : '区县';
+        if(index == 1){
+        	item.name ='城市';
+        }
+        if(index == 2){
+        	item.name ='区县';
+        }
+        if(index == 3){
+        	item.name ='乡镇';
+        }
         item.parent_id = 0;
       }
       return item;
@@ -219,9 +239,11 @@ Page({
     address.province_id = selectRegionList[0].id;
     address.city_id = selectRegionList[1].id;
     address.district_id = selectRegionList[2].id;
+    address.town_id = selectRegionList[3].id;
     address.province_name = selectRegionList[0].name;
     address.city_name = selectRegionList[1].name;
     address.district_name = selectRegionList[2].name;
+    address.town_name = selectRegionList[3].name;
     address.full_region = selectRegionList.map(item => {
       return item.name;
     }).join('');
