@@ -180,8 +180,10 @@ public class ApiOrderService {
         //留言
         orderInfo.setPostscript(postscript);
         //使用的优惠券
-//        orderInfo.setCoupon_id(userCoupon.getId());
-//        orderInfo.setCoupon_price(userCoupon.getCoupon_price());
+        if (userCoupon != null) {
+            orderInfo.setCoupon_id(userCoupon.getId());
+            orderInfo.setCoupon_price(userCoupon.getCoupon_price());
+		}
         orderInfo.setAdd_time(new Date());
         orderInfo.setGoods_price(goodsTotalPrice);
         orderInfo.setOrder_price(orderTotalPrice);
@@ -207,7 +209,34 @@ public class ApiOrderService {
         } else {
             orderInfo.setOrder_type("4");
         }
-
+        //查询库存
+        String  pid_nums = "";
+        String pids = "";
+        for (CartVo goodsItem : checkedGoodsList) {
+              pid_nums +=goodsItem.getGoods_sn().substring(2, goodsItem.getGoods_sn().length())+"_"+goodsItem.getNumber()+",";
+              pids +=goodsItem.getGoods_sn().substring(2, goodsItem.getGoods_sn().length())+","; 
+        }
+        
+           String address = "";
+           address = addressVo.getProvince()+"_"+addressVo.getCity()+"_"+addressVo.getCounty();
+           pid_nums = pid_nums.substring(0,pid_nums.length() - 1);
+           pids = pids.substring(0,pids.length() - 1);
+          Map<String, Object> stockMap = jdOrderService.stockBatch(pid_nums, address);
+          if (!stockMap.get("code").equals("200")) {
+        	   resultObj.put("errno", "100");
+               resultObj.put("errmsg", "库存不足");
+        	  return resultObj;
+		   }
+        //校验订单的上下架状态
+          Map<String, Object> saleStatusMap = jdOrderService.checkBatchSaleStatus(pids);
+          if (!saleStatusMap.get("code").equals("200")) {
+        	   resultObj.put("errno", "100");
+               resultObj.put("errmsg", "不可出售");
+        	  return resultObj;
+		   }
+          
+          
+        
         //开启事务，插入订单信息和订单商品
         apiOrderMapper.save(orderInfo);
         if (null == orderInfo.getId()) {

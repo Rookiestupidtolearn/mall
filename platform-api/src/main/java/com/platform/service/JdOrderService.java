@@ -1,6 +1,7 @@
 package com.platform.service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -8,29 +9,33 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.platform.dao.JdOrderMapper;
 import com.platform.entity.AddressVo;
 import com.platform.entity.JdOrderVo;
 import com.platform.entity.OrderVo;
 import com.platform.youle.entity.RequestOrderSubmitEntity;
 import com.platform.youle.entity.ResponseBaseEntity;
+import com.platform.youle.entity.ResponseBatchSaleEntity;
 import com.platform.youle.entity.ResponseOrderSubmitEntity;
+import com.platform.youle.entity.ResponseProductStockBatchEntity;
 import com.platform.youle.entity.result.ResponseResultEntity;
+import com.platform.youle.entity.result.ResulGoodsSaleEntity;
+import com.platform.youle.entity.result.ResultstockBatchEntity;
+import com.platform.youle.service.AbsApiGoodsService;
 import com.platform.youle.service.AbsApiOrderService;
-import com.qiniu.util.Json;
 
 @Service
 public class JdOrderService {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	
-	@Autowired
-	private JdOrderMapper jdOrderMapper;
-	  @Autowired
+	   @Autowired
+	   private JdOrderMapper jdOrderMapper;
+	    @Autowired
 	    private AbsApiOrderService  apiOrderService;
-	
+	    @Autowired
+	    private AbsApiGoodsService apiGoodsService;
+	    
 	 /**
 	  * 创建订单 
 	  * @param address
@@ -104,6 +109,11 @@ public class JdOrderService {
 		return resultObj;
 	}
 	
+	/**
+	 * 取消订单
+	 * @param shopOder
+	 * @return
+	 */
 	public Map<String, Object> cancelByOrderKey(OrderVo shopOder){
 		Map<String, Object> map =  new HashMap<>();
 		
@@ -126,13 +136,67 @@ public class JdOrderService {
 			}
 		   jdOrderMapper.update(jdOrderVo);			
 			
-			
 		}
-		
 		
 		return map;
 		
 	}
 	
+	/**
+	 * 校验三方的库存
+	 * @param pid_nums
+	 * @param address
+	 * @return
+	 */
+	public  Map<String, Object> stockBatch(String pid_nums,String address){
+		Map<String, Object> map =  new HashMap<>();
+		map.put("code", "200");
+		map.put("msg", "有库存");
+		ResponseProductStockBatchEntity response =  apiGoodsService.stockBatch(pid_nums, address);
+		if (response.getRESPONSE_STATUS().equals("false")) {
+			map.put("code", "500");
+			map.put("msg", response.getERROR_MESSAGE());
+			return map;
+		}
+       
+		List<ResultstockBatchEntity> list = response.getRESULT_DATA();
+		for(ResultstockBatchEntity entity : list){
+			 if ( !entity.getStock_status()) {
+					map.put("code", "500");
+					map.put("msg", "库存不足");
+					return map;
+			}
+		}
+		
+		 return map;
+	}
 	
+	/**
+	 * 校验是上下架状态
+	 * @param pids
+	 * @return
+	 */
+	public Map<String, Object>  checkBatchSaleStatus(String pids){
+		Map<String, Object> map =  new HashMap<>();
+		map.put("code", "200");
+		map.put("msg", "可出售");
+		ResponseBatchSaleEntity  response = apiGoodsService.batchSaleStatus(pids);
+		if (response.getRESPONSE_STATUS().equals("false")) {
+			map.put("code", "500");
+			map.put("msg", response.getERROR_MESSAGE());
+			return map;
+		}
+		List<ResulGoodsSaleEntity> list = response.getRESULT_DATA();
+		for (ResulGoodsSaleEntity entity: list) {
+			 if ( !entity.getStatus()) {
+					map.put("code", "500");
+					map.put("msg", "库存不足");
+					return map;
+			}
+		}
+		
+		
+		 return map;
+	}
+ 	
 }

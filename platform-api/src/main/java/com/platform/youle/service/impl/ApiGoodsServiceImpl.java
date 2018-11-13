@@ -16,6 +16,7 @@ import com.platform.youle.entity.RequestSkuDetailEntity;
 import com.platform.youle.entity.RequsetBatchSaleStatusEntity;
 import com.platform.youle.entity.RequstSaleStatusEntity;
 import com.platform.youle.entity.ResponseBaseEntity;
+import com.platform.youle.entity.ResponseBatchSaleEntity;
 import com.platform.youle.entity.ResponseGetPriceEntity;
 import com.platform.youle.entity.ResponseProductEntity;
 import com.platform.youle.entity.ResponseProductStockBatchEntity;
@@ -32,9 +33,9 @@ import com.platform.youle.util.HttpUtil;
  *
  */
 @Service
-public class ApiJdFuncServiceImpl extends AbsApiGoodsService {
+public class ApiGoodsServiceImpl extends AbsApiGoodsService {
 
-    private static final Logger logger = LoggerFactory.getLogger(ApiJdFuncServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(ApiGoodsServiceImpl.class);
 
 
     @Override
@@ -112,7 +113,7 @@ public class ApiJdFuncServiceImpl extends AbsApiGoodsService {
     }
 
     @Override
-    protected ResponseProductStockBatchEntity stockBatch(String pid_nums, String address) {
+    public ResponseProductStockBatchEntity stockBatch(String pid_nums, String address) {
         ResponseProductStockBatchEntity reponse = null;
         RequestProductStockBatchEntity entity = new RequestProductStockBatchEntity();
         initRequestParam(entity);
@@ -120,7 +121,7 @@ public class ApiJdFuncServiceImpl extends AbsApiGoodsService {
         entity.setAddress(address);
         try {
             logger.info("[1.5批量查询商品库存]：" + JSONObject.toJSONString(entity));
-            String result = HttpUtil.post(Urls.base_test_url + Urls.stock, objectToMap(entity));
+            String result = HttpUtil.post(Urls.base_test_url + Urls.stockBatch, objectToMap(entity));
             logger.info("[1.5批量查询商品库存" + result);
             reponse = JSON.parseObject(result, ResponseProductStockBatchEntity.class);
         } catch (Exception e) {
@@ -162,16 +163,17 @@ public class ApiJdFuncServiceImpl extends AbsApiGoodsService {
     }
 
     @Override
-    protected ResponseBaseEntity<?> batchSaleStatus(String pids) {
+    public ResponseBatchSaleEntity batchSaleStatus(String pids) {
 
-        ResponseBaseEntity reponse = null;
+    	ResponseBatchSaleEntity reponse = null;
         RequsetBatchSaleStatusEntity entity = new RequsetBatchSaleStatusEntity();
         initRequestParam(entity);
         entity.setPids(pids);
         try {
             logger.info("[1.8批量查询商品可售状态]入参：" + JSONObject.toJSONString(entity));
             String result = HttpUtil.post(Urls.base_test_url + Urls.batchSaleStatus, objectToMap(entity));
-            reponse = JSON.parseObject(result, ResponseBaseEntity.class);
+            logger.info("[1.8批量查询商品可售状态] 返回结果：" +result);
+            reponse = JSON.parseObject(result, ResponseBatchSaleEntity.class);
         } catch (Exception e) {
             logger.error("[1.8批量查询商品可售状态]异常", e);
         }
