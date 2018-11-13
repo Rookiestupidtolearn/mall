@@ -669,15 +669,15 @@ public class ApiCartController extends ApiBaseAction {
         		}
         	}
          }
-         amount = userAmountVo.getAmount();//获取用户平台币
-         if(amount.compareTo(couponTotalPrice)<0){
-          	couponTotalPrice = amount;
-         }
-         userAmountVo.setAmount(userAmountVo.getAmount().subtract(couponTotalPrice));
-         qzUserAccountMapper.updateUserAccount(userAmountVo);
-         logger.info("更新用户平台币,更新后平台币金额" + userAmountVo.getAmount());
-         saveTranInfoRecord(userId, "2", "2", couponTotalPrice, userAmountVo.getAmount(), "回滚平台币后扣减购物车中生成优惠券金额");
-         getUserCouponTotalPrice(userId,couponTotalPrice);
+//         amount = userAmountVo.getAmount();//获取用户平台币
+//         if(amount.compareTo(couponTotalPrice)<0){
+//          	couponTotalPrice = amount;
+//         }
+//         userAmountVo.setAmount(userAmountVo.getAmount().subtract(couponTotalPrice));
+//         qzUserAccountMapper.updateUserAccount(userAmountVo);
+//         logger.info("更新用户平台币,更新后平台币金额" + userAmountVo.getAmount());
+//         saveTranInfoRecord(userId, "2", "2", couponTotalPrice, userAmountVo.getAmount(), "回滚平台币后扣减购物车中生成优惠券金额");
+//         getUserCouponTotalPrice(userId,couponTotalPrice);
          return this.toResponsObject(0, "执行成功", "");
     }
     /**

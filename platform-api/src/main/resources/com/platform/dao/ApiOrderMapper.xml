@@ -12,7 +12,8 @@
         <result property="shipping_status" column="shipping_status"/>
         <result property="pay_status" column="pay_status"/>
         <result property="consignee" column="consignee"/>
-        <result property="country" column="country"/>
+         <result property="address_id" column="address_id"/>
+         <result property="country" column="country"/>
         <result property="province" column="province"/>
         <result property="city" column="city"/>
         <result property="district" column="district"/>
@@ -77,6 +78,7 @@
 			`shipping_status`,
 			`pay_status`,
 			`consignee`,
+			`address_id`,
 			`country`,
 			`province`,
 			`city`,
@@ -113,7 +115,8 @@
 			#{shipping_status},
 			#{pay_status},
 			#{consignee},
-			#{country},
+			#{address_id},
+	        #{country},
 			#{province},
 			#{city},
 			#{district},
