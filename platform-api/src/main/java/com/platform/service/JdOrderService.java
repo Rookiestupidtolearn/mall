@@ -1,6 +1,5 @@
 package com.platform.service;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,6 +26,13 @@ public class JdOrderService {
 	  @Autowired
 	    private AbsApiOrderService  apiOrderService;
 	
+	 /**
+	  * 创建订单 
+	  * @param address
+	  * @param info
+	  * @param jdOrderVo
+	  * @return
+	  */
 	public  Map<String, Object> jdOrderSubbmit(AddressVo address, OrderVo  info,JdOrderVo jdOrderVo){
 		   Map<String, Object> resultObj = new HashMap<String, Object>();
 		  //创建第三方订单开始校验数据
