@@ -2,7 +2,7 @@
   <div class="hello">
   	<ul v-infinite-scroll="loadMore" infinite-scroll-disabled="loading" infinite-scroll-distance="10">
  			 <li v-for="item in orderList">
-				<router-link  to = "cc" class="order" >
+				<router-link  :to = "'/views/ucenter/orderDetail?id='+item.id" class="order" >
 	            <div class="h">
 	                <div class="l">订单编号：{{item.order_sn}}</div>
 	                <div class="r">{{item.order_status_text}}</div>

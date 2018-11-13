@@ -67,58 +67,25 @@
 	      </router-link >
      </div>
     </div>
-   
-   <!--底部导航栏-->
-		<mt-tabbar v-model="selected">
-		  <mt-tab-item id="tab1">
-		    <img slot="icon" src="../../static/images/ic_menu_choice_nor.png">
-		    首页
-		  </mt-tab-item>
-		  <mt-tab-item id="tab2">
-		    <img slot="icon" src="../../static/images/ic_menu_sort_nor.png">
-		    分类
-		  </mt-tab-item>
-		  <mt-tab-item id="tab3">
-		    <img slot="icon" src="../../static/images/ic_menu_shoping_nor.png">
-		   购物车
-		  </mt-tab-item>
-		  <mt-tab-item id="tab4">
-		    <img slot="icon" src="../../static/images/ic_menu_me_nor.png">
-		    我的
-		  </mt-tab-item>
-		</mt-tabbar>
+   <!--公用底部导航-->
+  	<tabbar :selected="selected" :tabs='tabs'></tabbar> 
   </div>
 </template>
 
 <script>
+	
+	import tabbar from './tabbar.vue'
 	import { MessageBox } from 'mint-ui';
 	
 export default {
+	components: {tabbar },
   name: 'ucenter',
   data () {
     return {
       category:[],
-      selected:'tab4'
-    }
-  },
-   watch: {
-    selected: function (val, oldVal) {
-    	console.log(val,oldVal)
-      // 这里就可以通过 val 的值变更来确定去向
-      switch(val){
-        case 'tab1':
-          this.$router.push('/');
-        break;
-        case 'tab2':
-          this.$router.push('/classification');
-        break;
-        case 'tab3':
-          this.$router.push('/shoppingcar');
-        break;
-        case 'tab4':
-          this.$router.push('/ucenter');
-        break;
-      }
+     selected:"ucenter",
+   	 tabs:[require("../../static/images/ic_menu_choice_nor.png"),require("../../static/images/ic_menu_sort_nor.png"),
+    	require("../../static/images/ic_menu_shoping_nor.png"),require("../../static/images/ic_menu_me_pressed.png")],
     }
   },
   mounted(){
@@ -133,7 +100,7 @@ export default {
 //					  message: '请先登录 ',
 //					  showCancelButton: true
 //					});
-//  			return false;
+    			return false;
     		}else{
     			
     		}

@@ -7,7 +7,7 @@
 	            </div>
 		    </div>
 	    </div>
-	   <div class="cate-item" :data-c= "currentCategory">
+	   <div class="cate-item" >
 	        <div class="h">
 	            <p class="name">{{currentCategory.name}}</p>
 	            <p class="desc">{{currentCategory.front_name}}</p>
@@ -55,9 +55,9 @@
 		        url:that.$url+ 'goods/list',
 		        params:{categoryId:that.idm,page:1,size:20}
 	    	}).then(function (response) {
-				that.goodsList = response.data.data.goodsList
+				that.goodsList = response.data.data.goodsList;
 				if(that.goodsList.length < 1){
-					Toast({message: '内容为空',duration:1500});
+					Toast({message: '内容为空',duration:2000});
 				}
 			 })
 	  	},
@@ -79,13 +79,17 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .cate-over{
-	overflow-x: scroll;
-	overflow-y: hidden;
+	position: fixed;
+    top: 0;
+    width:100%;
 }
 .cate-nav{
-   width:250%;
-   height: .84rem;
    background-color: #fff;
+   display: -webkit-box;
+    width: 100%;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
 }
 .cate-nav-body{
     height: .84rem;
@@ -96,15 +100,13 @@
 }
 
 .cate-nav .item{
-    float:left;
     height: .84rem;
-    padding: 0 .15rem;
 }
 
 .cate-nav .item .name{
     display: block;
     height: .84rem;
-    padding: 0 .20rem;
+    padding: 0 .36rem;
     line-height: .84rem;
     color: #333;
     font-size: .30rem;
@@ -119,7 +121,7 @@
 }
 
 .cate-item{
-    margin-top: .54rem;
+    margin-top: 1.3rem;
     height: auto;
     overflow: hidden;
 }

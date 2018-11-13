@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import tabbar from '@/components/tabbar'  //首页
 import home from '@/components/home'  //首页
 import classification from '@/components/classification'  //分类
 import search from '@/views/search/search'  //分类-搜索页面
@@ -17,6 +18,7 @@ import mobile from '@/views/ucenter/mobile'  //个人中心-问题反馈
 import categoryPages from '@/pages/category/category'  //首页-渠道分类
 import goods from '@/pages/category/goods'  //商品详情
 import brandDetail from '@/pages/category/brandDetail'  //制造商详情
+import orderDetail from '@/views/ucenter/orderDetail'  //订单详情
 
 Vue.use(Router)
 
@@ -27,6 +29,10 @@ export default new Router({
       path: '/',
       name: 'home',
       component: home
+    },{
+      path: '/tabbar',
+      name: 'tabbar',
+      component: tabbar
     },{
       path: '/classification',
       name: 'classification',
@@ -91,6 +97,10 @@ export default new Router({
       path: '/pages/category/brandDetail',
       name: 'brandDetail',
       component: brandDetail
+    },{
+      path: '/views/ucenter/orderDetail',
+      name: 'orderDetail',
+      component: orderDetail
     }
   ]
 })
