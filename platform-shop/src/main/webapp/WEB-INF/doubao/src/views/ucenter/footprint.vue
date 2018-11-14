@@ -3,7 +3,7 @@
     <div class="day-item" v-for="item in footprintList" >
       <div class="day-hd">{{item[0].add_time}}</div>
       <div class="day-list">
-        <router-link to="c"  class="item"  v-for = "iitem in item" >
+        <router-link :to="'/pages/category/goods?id='+iitem.id" class="item"  v-for = "iitem in item" >
           <img class="img" :src="iitem.list_pic_url"/>
           <div class="info">
             <div class="name">{{iitem.name}}</div>

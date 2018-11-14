@@ -19,6 +19,7 @@ import categoryPages from '@/pages/category/category'  //首页-渠道分类
 import goods from '@/pages/category/goods'  //商品详情
 import brandDetail from '@/pages/category/brandDetail'  //制造商详情
 import orderDetail from '@/views/ucenter/orderDetail'  //订单详情
+import checkout from '@/pages/category/checkout'  //下单页面
 
 Vue.use(Router)
 

@@ -62,4 +62,7 @@ export default {
 	.mint-tabbar > .mint-tab-item.is-selected{
 		color:#b4282d;
 	}
+	.mint-tabbar.is-fixed{
+		height:1.2rem;
+	}
 </style>
