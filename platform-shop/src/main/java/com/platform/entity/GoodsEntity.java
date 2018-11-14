@@ -95,6 +95,9 @@ public class GoodsEntity implements Serializable {
     
     private BigDecimal value; //配比值
     
+    //是否支持7天无理由退货 0不支持 1支持
+    private Integer is7ToReturn;
+    
     List<GoodsAttributeEntity> attributeEntityList = new ArrayList<>();
 
     List<GoodsGalleryEntity> goodsImgList = new ArrayList<>();
@@ -616,4 +619,14 @@ public class GoodsEntity implements Serializable {
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
+
+	public Integer getIs7ToReturn() {
+		return is7ToReturn;
+	}
+
+	public void setIs7ToReturn(Integer is7ToReturn) {
+		this.is7ToReturn = is7ToReturn;
+	}
+    
+    
 }

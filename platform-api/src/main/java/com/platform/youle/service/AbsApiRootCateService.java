@@ -19,7 +19,7 @@ public abstract class AbsApiRootCateService implements IApiFuncServicein{
 	  @Override
 	  public void initRequestParam(RequestBaseEntity  entity){
 	      entity.setWid(TokenUtil.wid);
-	      entity.setTimestamp(String.valueOf(Calendar.getInstance().getTimeInMillis()));
+	      entity.setTimestamp(TokenUtil.currentTime.toString());
 	      entity.setToken(TokenUtil.token);
 	  }
 	
@@ -49,16 +49,16 @@ public abstract class AbsApiRootCateService implements IApiFuncServicein{
 	    * 5.1获取一级产品分类
 	    * @return
 	    */
-	   protected abstract ResponseRootCateEntity rootCate();
+	   public abstract ResponseRootCateEntity rootCate();
 	   /**
 	    * 5.2获取下级产品分类
 	    * @return
 	    */
-	   protected abstract ResponseChildsEntity childs(Integer parentCate);
+	   public abstract ResponseChildsEntity childs(Integer parentCate);
 	   /**
 	    * 5.3获取单个分类详情
 	    * @param cid
 	    * @return
 	    */
-	   protected abstract ResponseRootDetailEntity detial(Integer cid);
+	   public abstract ResponseRootDetailEntity detial(Integer cid);
 }

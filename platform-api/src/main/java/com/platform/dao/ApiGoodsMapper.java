@@ -15,4 +15,14 @@ public interface ApiGoodsMapper extends BaseDao<GoodsVo> {
     List<GoodsVo> queryHotGoodsList(Map<String, Object> params);
 
     List<GoodsVo> queryCatalogProductList(Map<String, Object> params);
+    
+    int save(GoodsVo vo);
+    
+    void saveGoods(GoodsVo vo);
+    /**
+     * 根据商品分类查询商品
+     * @param categoryId
+     * @return
+     */
+    List<GoodsVo> quertGoodsByCategory(String categoryId);
 }

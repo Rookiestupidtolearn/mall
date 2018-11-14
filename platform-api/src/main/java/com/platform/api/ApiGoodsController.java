@@ -1,22 +1,11 @@
 package com.platform.api;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import com.platform.annotation.IgnoreAuth;
-import com.platform.annotation.LoginUser;
-import com.platform.entity.*;
-import com.platform.service.*;
-import com.platform.util.ApiBaseAction;
-import com.platform.util.ApiPageUtils;
-import com.platform.utils.Base64;
-import com.platform.utils.CharUtil;
-import com.platform.utils.DateUtils;
-import com.platform.utils.Query;
-import com.qiniu.util.StringUtils;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +14,58 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigDecimal;
-import java.util.*;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.platform.annotation.IgnoreAuth;
+import com.platform.annotation.LoginUser;
+import com.platform.dao.ApiCategoryMapper;
+import com.platform.entity.AttributeVo;
+import com.platform.entity.BrandVo;
+import com.platform.entity.CartVo;
+import com.platform.entity.CategoryVo;
+import com.platform.entity.CommentPictureVo;
+import com.platform.entity.CommentVo;
+import com.platform.entity.CouponVo;
+import com.platform.entity.FootprintVo;
+import com.platform.entity.GoodsGalleryVo;
+import com.platform.entity.GoodsIssueVo;
+import com.platform.entity.GoodsSpecificationVo;
+import com.platform.entity.GoodsVo;
+import com.platform.entity.ProductVo;
+import com.platform.entity.RelatedGoodsVo;
+import com.platform.entity.SearchHistoryVo;
+import com.platform.entity.UserCouponVo;
+import com.platform.entity.UserVo;
+import com.platform.service.ApiAttributeService;
+import com.platform.service.ApiBrandService;
+import com.platform.service.ApiCartService;
+import com.platform.service.ApiCategoryService;
+import com.platform.service.ApiCollectService;
+import com.platform.service.ApiCommentPictureService;
+import com.platform.service.ApiCommentService;
+import com.platform.service.ApiCouponService;
+import com.platform.service.ApiFootprintService;
+import com.platform.service.ApiGoodsGalleryService;
+import com.platform.service.ApiGoodsIssueService;
+import com.platform.service.ApiGoodsService;
+import com.platform.service.ApiGoodsSpecificationService;
+import com.platform.service.ApiProductService;
+import com.platform.service.ApiRelatedGoodsService;
+import com.platform.service.ApiSearchHistoryService;
+import com.platform.service.ApiUserCouponService;
+import com.platform.service.ApiUserService;
+import com.platform.util.ApiBaseAction;
+import com.platform.util.ApiPageUtils;
+import com.platform.utils.Base64;
+import com.platform.utils.CharUtil;
+import com.platform.utils.DateUtils;
+import com.platform.utils.Query;
+import com.qiniu.util.StringUtils;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * 作者: @author Harmon <br>
@@ -73,6 +112,8 @@ public class ApiGoodsController extends ApiBaseAction {
     private ApiUserCouponService apiUserCouponService;
     @Autowired
     private ApiCartService cartService;
+    @Autowired
+    private ApiCategoryMapper apiCategoryMapper;
 
     /**
      */
@@ -397,16 +438,21 @@ public class ApiGoodsController extends ApiBaseAction {
         }
         //加入分类条件
         if (null != categoryId && categoryId > 0) {
-            List<Integer> categoryIds = new ArrayList();
-            Map categoryParam = new HashMap();
-            categoryParam.put("parent_id", categoryId);
-            categoryParam.put("fields", "id");
-            List<CategoryVo> childIds = categoryService.queryList(categoryParam);
-            for (CategoryVo categoryEntity : childIds) {
-                categoryIds.add(categoryEntity.getId());
-            }
-            categoryIds.add(categoryId);
-            params.put("categoryIds", categoryIds);
+        	if(categoryId == 1036044){
+        		List<Integer> categoryIds  = categoryService.quertOtherIds();
+        		params.put("categoryIds", categoryIds);
+        	}else{
+        		List<Integer> categoryIds = new ArrayList();
+        		Map categoryParam = new HashMap();
+        		categoryParam.put("parent_id", categoryId);
+        		categoryParam.put("fields", "id");
+        		List<CategoryVo> childIds = categoryService.queryList(categoryParam);
+        		for (CategoryVo categoryEntity : childIds) {
+        			categoryIds.add(categoryEntity.getId());
+        		}
+        		categoryIds.add(categoryId);
+        		params.put("categoryIds", categoryIds);
+        	}
         }
         //查询列表数据
         params.put("fields", "nideshop_goods.id as id,nideshop_goods.name as name, nideshop_goods.list_pic_url as list_pic_url, nideshop_goods.market_price as market_price, nideshop_goods.retail_price, nideshop_goods.goods_brief,case when min(nideshop_product.market_price) != '' then min(nideshop_product.market_price) else 0 end product_market_price");

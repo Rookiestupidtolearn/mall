@@ -2,7 +2,9 @@ package com.platform.youle.entity;
 
 import java.util.Map;
 
-public class ResponseRootCateEntity extends  ResponseBaseEntity<Map<String,String>>{
+import org.apache.poi.ss.formula.functions.T;
+
+public class ResponseRootCateEntity extends  ResponseBaseEntity<T>{
 	
 	private Integer code;//分类id
 	
