@@ -1,6 +1,7 @@
 package com.platform.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,33 @@ public class ThirdPartyRegionService {
 	 */
 	public List<ThirdPartyRegionEntity> queryAllByType(Integer type) {
 		return thirdPartyRegionDao.queryAllByType(type);
+	}
+	
+	/**
+	 * 根据渠道获取所有的省份
+	 * @param channel
+	 * @return
+	 */
+	public List<ThirdPartyRegionEntity> queryPrinvinceByChannel(String  channel,String partType) {
+		
+		return thirdPartyRegionDao.queryPrinvinceByChannel(channel);
+	}
+
+	/**
+	 * 批量绑定本地地址
+	 * @param updateList
+	 */
+	public int updateBatch(List<ThirdPartyRegionEntity> updateList) {
+		return thirdPartyRegionDao.updateBatch(updateList);
+	}
+
+	/**
+	 * 根据条件查询地址信息
+	 * @param paramMap
+	 * @return
+	 */
+	public List<ThirdPartyRegionEntity> queryDate(Map<String, Object> paramMap) {
+		return thirdPartyRegionDao.queryDate(paramMap);
 	}
 	
 	

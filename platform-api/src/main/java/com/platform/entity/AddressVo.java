@@ -2,6 +2,8 @@ package com.platform.entity;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.github.pagehelper.util.StringUtil;
+
 import java.io.Serializable;
 import java.sql.Date;
 
@@ -171,7 +173,12 @@ public class AddressVo implements Serializable {
 
     public String getFull_region() {
         if (StringUtils.isEmpty(full_region)) {
-            full_region = getProvinceName() + getCityName() + getCountyName();
+        	if(StringUtil.isEmpty(getTownName())){
+        		full_region = getProvinceName() + getCityName() + getCountyName();
+        	}else{
+        		full_region = getProvinceName() + getCityName() + getCountyName() + getTownName();
+        	}
+            
         }
         return full_region;
     }

@@ -140,12 +140,12 @@ public class ApiTestController {
     @PostMapping("response")
     public Object response(){
     	// absApiRegionService.province(); // 省
-    	 List<ThirdPartyRegionEntity> thirdPartyRegionList = thirdPartyRegionService.queryAllByType(3); //查询全部的省 province: 省1, city(市2), county(区/县3),  town(乡/镇4
+    	List<ThirdPartyRegionEntity> thirdPartyRegionList = thirdPartyRegionService.queryAllByType(3); //查询全部的省 province: 省1, city(市2), county(区/县3),  town(乡/镇4
     	 if(CollectionUtils.isNotEmpty(thirdPartyRegionList)){
     		 for(ThirdPartyRegionEntity thirdPartyRegionEntity : thirdPartyRegionList){
-    			 //absApiRegionService.city(thirdPartyRegionEntity.getId());  //市
-    			 //absApiRegionService.county(thirdPartyRegionEntity.getId()); //区、县
-    			 //absApiRegionService.town(thirdPartyRegionEntity.getId());//镇
+    			// absApiRegionService.city(thirdPartyRegionEntity.getThirdCode());  //市
+    			// absApiRegionService.county(thirdPartyRegionEntity.getThirdCode()); //区、县
+    			 absApiRegionService.town(thirdPartyRegionEntity.getThirdCode());//镇
     		 }
     	 }
     	return 	null;
