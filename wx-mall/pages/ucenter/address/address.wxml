@@ -3,7 +3,7 @@
         <view class="item" wx:for="{{addressList}}" wx:key="{{item.id}}" bindtap="addressAddOrUpdate" data-address-id="{{item.id}}">
             <view class="l">
                 <view class="name">{{item.userName}}</view>
-                <view class="default" wx:if="{{item.is_default}}">默认</view>
+                <view class="default" wx:if="{{item.isDefault}}">默认</view>
             </view>
             <view class="c">
                 <view class="mobile">{{item.telNumber}}</view>

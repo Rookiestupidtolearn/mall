@@ -153,10 +153,6 @@ Page({
       return false;
     }
 
-    //if (regionTypeIndex + 1 == this.data.regionType || (regionTypeIndex - 1 >= 0 && selectRegionList[regionTypeIndex-1].id <= 0)) {
-     // return false;
-   // }
-
     this.setData({
       regionType: regionTypeIndex + 1
     })
