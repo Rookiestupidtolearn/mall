@@ -107,7 +107,12 @@ public class ApiOrderService {
         String postscript = jsonParam.getString("postscript");
 //        AddressVo addressVo = jsonParam.getObject("checkedAddress",AddressVo.class);
         AddressVo addressVo = apiAddressMapper.queryObject(jsonParam.getInteger("addressId"));
-
+        if (addressVo == null) {
+            resultObj.put("errno", 400);
+            resultObj.put("errmsg", "用户地址为空，不能下单!");
+            return resultObj;
+		}
+        
         Integer freightPrice = 0;
         
         // * 获取要购买的商品
