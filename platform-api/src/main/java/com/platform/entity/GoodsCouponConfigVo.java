@@ -14,6 +14,8 @@ public class GoodsCouponConfigVo implements Serializable{
 	 private double normalMatching;
      //活动配比值
      private double activityMatching;
+     //支付配比
+     private double payMatching;
 	 //创建者id
 	 private BigDecimal create_user_id;
 	 //更新者id
@@ -113,6 +115,14 @@ public class GoodsCouponConfigVo implements Serializable{
 
 	public void setNormal_matching(Double normal_matching) {
 		this.normal_matching = normal_matching;
+	}
+
+	public double getPayMatching() {
+		return payMatching;
+	}
+
+	public void setPayMatching(double payMatching) {
+		this.payMatching = payMatching;
 	}
 	 
 }

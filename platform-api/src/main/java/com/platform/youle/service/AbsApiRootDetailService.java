@@ -17,7 +17,7 @@ public abstract class AbsApiRootDetailService implements IApiFuncServicein{
 		@Override
 	   public void initRequestParam(RequestBaseEntity  entity){
 	       entity.setWid(TokenUtil.wid);
-	       entity.setTimestamp(String.valueOf(Calendar.getInstance().getTimeInMillis()));
+	       entity.setTimestamp(TokenUtil.currentTime.toString());
 	       entity.setToken(TokenUtil.token);
 	   }
 	

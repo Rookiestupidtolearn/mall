@@ -49,4 +49,8 @@ public class ApiCategoryService {
 		categoryDao.deleteBatch(ids);
 	}
 	
+	public List<Integer> quertOtherIds(){
+		return categoryDao.quertOtherIds();
+	}
+	
 }
