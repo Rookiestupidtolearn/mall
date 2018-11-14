@@ -97,7 +97,7 @@ public abstract class AbsApiGoodsService implements IApiFuncServicein {
 	 * @param 商品ID
 	 * @return
 	 */
-	protected abstract ResponseSaleStatusEntity getsaleStatus(Integer pid);
+	public abstract ResponseSaleStatusEntity getsaleStatus(Integer pid);
 
 	/**
 	 * 1.7查询商品协议价
