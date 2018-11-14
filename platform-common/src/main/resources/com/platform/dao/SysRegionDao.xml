@@ -43,7 +43,7 @@
                 order by ${sidx} ${order}
             </when>
             <otherwise>
-                order by a.parent_Id
+                order by a.third_code
             </otherwise>
         </choose>
         <if test="offset != null and limit != null">

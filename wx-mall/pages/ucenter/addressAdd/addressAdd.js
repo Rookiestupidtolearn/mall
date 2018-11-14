@@ -173,7 +173,7 @@ Page({
     selectRegionList[regionType - 1] = regionItem;
 
 
-    if (regionType <= 4) {
+    if (regionType != 4) {
       this.setData({
         selectRegionList: selectRegionList,
         regionType: regionType + 1
@@ -267,9 +267,16 @@ Page({
     util.request(api.RegionList, { parentId: regionId }).then(function (res) {
       if (res.errno === 0) {
     	 if(res.data != 0){
+    			 that.setData({
+     		        selectRegionList:[
+     		              			{ id: selectRegionList[0].id, name: selectRegionList[0].name, parent_id: selectRegionList[0].parent_id, type: selectRegionList[0].type },
+     		              			{ id: selectRegionList[1].id, name: selectRegionList[1].name, parent_id: selectRegionList[1].parent_id, type: selectRegionList[1].type },
+     		              			{ id: selectRegionList[2].id, name: selectRegionList[2].name, parent_id: selectRegionList[2].parent_id, type: selectRegionList[2].type },
+     		              			{ id: 0, name: '乡镇', parent_id: 1, type: 4 }
+     		              			]
+     		      })
     		 that.setData({
     	          regionList: res.data.map(item => {
-
     	            //标记已选择的
     	            if (regionType == item.type && that.data.selectRegionList[regionType - 1].id == item.id) {
     	              item.selected = true;
@@ -281,13 +288,13 @@ Page({
     	          })
     	     });
     	 }else{
-    		 /*that.setData({
+    		 that.setData({
     		        selectRegionList:[
     		              			{ id: selectRegionList[0].id, name: selectRegionList[0].name, parent_id: selectRegionList[0].parent_id, type: selectRegionList[0].type },
     		              			{ id: selectRegionList[1].id, name: selectRegionList[1].name, parent_id: selectRegionList[1].parent_id, type: selectRegionList[1].type },
     		              			{ id: selectRegionList[2].id, name: selectRegionList[2].name, parent_id: selectRegionList[2].parent_id, type: selectRegionList[2].type }
     		                    ]
-    		      })*/
+    		      })
     	 }
       }
     });

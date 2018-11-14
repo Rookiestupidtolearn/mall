@@ -171,7 +171,8 @@ public class AddressVo implements Serializable {
 
     public String getFull_region() {
         if (StringUtils.isEmpty(full_region)) {
-            full_region = getProvinceName() + getCityName() + getCountyName() + getTownName();
+        	String a = "null".equals(getTownName()) ? "":getTownName();
+            full_region = getProvinceName() + getCityName() + getCountyName() + a;
         }
         return full_region;
     }

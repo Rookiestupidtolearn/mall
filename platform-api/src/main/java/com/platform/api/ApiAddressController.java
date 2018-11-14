@@ -52,6 +52,9 @@ public class ApiAddressController extends ApiBaseAction {
     @PostMapping("detail")
     public Object detail(Integer id, @LoginUser UserVo loginUser) {
         AddressVo entity = addressService.queryObject(id);
+        if(null == entity){
+        	return toResponsSuccess(entity);
+        }
         //判断越权行为
         if(loginUser.getUserId().intValue()!=entity.getUserId()){
         	return toResponsObject(403, "您无权查看", "");
@@ -68,6 +71,7 @@ public class ApiAddressController extends ApiBaseAction {
         JSONObject addressJson = this.getJsonRequest();
         AddressVo entity = new AddressVo();
         if (null != addressJson) {
+        	System.out.println(addressJson.getString("townName"));
             entity.setId(addressJson.getInteger("id"));
             entity.setUserId(Integer.valueOf(loginUser.getUserId()+""));
             entity.setUserName(addressJson.getString("userName"));
@@ -75,7 +79,7 @@ public class ApiAddressController extends ApiBaseAction {
             entity.setProvinceName(addressJson.getString("provinceName"));
             entity.setCityName(addressJson.getString("cityName"));
             entity.setCountyName(addressJson.getString("countyName"));
-            entity.setTownName(addressJson.getString("townName"));
+            entity.setTownName("null".equals(addressJson.getString("townName")) ? "" : addressJson.getString("townName"));
             entity.setProvince(addressJson.getString("province"));
             entity.setCity(addressJson.getString("city"));
             entity.setCounty(addressJson.getString("district"));
