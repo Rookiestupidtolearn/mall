@@ -50,7 +50,7 @@ public interface GoodsCouponConfigService {
     /**
      * 保存配比
      * */
-    String save(String normalMatching,String activityMatching,Integer[] goodsIds);
+    Integer[] save(String normalMatching,String activityMatching,Integer[] goodsIds);
 
     /**
      * 根据主键更新实体

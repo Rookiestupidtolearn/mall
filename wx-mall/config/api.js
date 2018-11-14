@@ -2,11 +2,11 @@ const root = '/platform/api/';
 
 // const API_BASE_URL = 'http://fly2you.cn' + root;
 
-<<<<<<< HEAD
-const API_BASE_URL = 'http://192.168.0.11:6061' + root;
-=======
+
+//const API_BASE_URL = 'http://192.168.0.11:6061' + root;
+
 //const API_BASE_URL = 'http://localhost:8093' + root;
->>>>>>> 73d5906cb452cc719739e822d298fd95591ab84c
+
 // const API_BASE_URL = 'http://192.144.156.42:8080' + root;
  const API_BASE_URL = 'http://192.168.0.11:6101' + root;
 

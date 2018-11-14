@@ -92,13 +92,13 @@ public class GoodsCouponConfigController {
     	
     	List<GoodsCouponConfigEntity>  goodsCouponConfigEntity = goodsCouponConfigService.selectGoodsIdsById(goodsIds);
 		if (CollectionUtils.isNotEmpty(goodsCouponConfigEntity)) {
-			StringBuffer sbf = new StringBuffer();
-			for(GoodsCouponConfigEntity goodsCouponConfig : goodsCouponConfigEntity){
-				sbf.append(goodsCouponConfig.getGoodsId()+",");
+			Integer[] goodsIDS = new Integer[goodsCouponConfigEntity.size()];
+			for(int i=0;i<goodsCouponConfigEntity.size();i++){
+				goodsIDS[i] = goodsCouponConfigEntity.get(i).getGoodsId();
 			}
-			String goodsIDS = sbf.toString().substring(0,sbf.toString().length()-1); //返回存在配比的商品id
-			if(StringUtils.isNotBlank(goodsIDS)){ //存在有配比的商品
-	        	List<GoodsEntity> goodsEntityList = goodsService.queryGoodsList(goodsIds);
+			
+			if(goodsIDS.length>0){ //存在有配比的商品
+	        	List<GoodsEntity> goodsEntityList = goodsService.queryGoodsList(goodsIDS);
 	        	for(GoodsEntity goodsEntrty : goodsEntityList){
 	        		sb.append(goodsEntrty.getName()+"、");
 	        	}
@@ -133,9 +133,9 @@ public class GoodsCouponConfigController {
     		return R.error("商品:"+result+"未下架不能新增配比值");
     	}
     	//批量保存商品配比
-        String goodsIDS= goodsCouponConfigService.save(normalMatching,activityMatching,goodsIds);
-        if(StringUtils.isNotBlank(goodsIDS)){ //存在有配比的商品
-        	List<GoodsEntity> goodsEntityList = goodsService.queryGoodsList(goodsIds);
+        Integer[] goodsIDS= goodsCouponConfigService.save(normalMatching,activityMatching,goodsIds);
+        if(goodsIDS.length>0){ //存在有配比的商品
+        	List<GoodsEntity> goodsEntityList = goodsService.queryGoodsList(goodsIDS);
         	//校验是否存在配比
         	for(GoodsEntity goodsEntrty : goodsEntityList){
         		sb.append(goodsEntrty.getName()+"、");

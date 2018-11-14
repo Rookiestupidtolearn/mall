@@ -310,16 +310,18 @@
     	<Tabs value="name1">
             <Tab-Pane label="配比设置" name="name1">
                 <i-form ref="matchingSubmit" :model="goods"  :label-width="80">
-		    		<Form-item label="正常配比" prop="">
+		    		<Form-item label="正常配比" prop=""  style="position:relative">
 		            	<!-- <i-input v-model="goods.goodsSn" placeholder="正常配比" size="small"/><p>正常配比</p> -->
 		            	<Input-number :min="0" :max="1" :step="0.1" :value="0" v-model="normalMatching" placeholder="正常配比"
-                                      style="width:88px;"/>
+                                      style="width:88px;"/>&nbsp;&nbsp;&nbsp;
 		        	</Form-item>
-		        	<Form-item label="活动配比" prop="">
+		        	<span style="position: absolute;top: 6px;margin-left: 188px;">(0 ≤ 正常配比 ≤ 1)</span>
+		        	<Form-item label="活动配比" prop=""  style="position:relative">
 		            	<!-- <i-input v-model="goods.name" placeholder="活动配比" size="small"/> -->
 		            	<Input-number :min="0.0" :max="1.0" :step="0.1" :value="0" v-model="activityMatching" placeholder="活动配比"
-                                      style="width:88px;"/>
+                                      style="width:88px;"/>&nbsp;&nbsp;&nbsp;
 		        	</Form-item>
+		        	<span style="position: absolute;top: 67px;margin-left: 188px;">(0 ≤ 活动配比 ≤ 1)</span>
 	     		</i-form>
 	      	</Tab-Pane>
 	     </Tabs>
