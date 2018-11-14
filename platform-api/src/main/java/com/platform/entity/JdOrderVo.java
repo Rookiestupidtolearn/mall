@@ -15,11 +15,11 @@ import java.util.Date;
 public class JdOrderVo implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    //主键
+  //主键
     private Integer id;
     //会员id
     private Integer shopUserId;
-    //订单状态
+    //订单状态 0-初始,5-失败，9-成功
     private Integer orderStatus;
     //第三方订单号（本系统的）
     private String thirdOrder;
@@ -51,12 +51,21 @@ public class JdOrderVo implements Serializable {
     private String errorMessage;
     //true, false
     private String responseStatus;
+    //产品价格
+    private BigDecimal orderProductPrice;
     //快递费用
     private BigDecimal orderShipmentFee;
     //订单总金额
     private BigDecimal orderTotalPrice;
+    //订单是否被拆分 true: 被拆分为多个订单, false: 未拆分
+    private Boolean orderSplit;
+    
+    private String resultData;
+    
     //创建时间
     private Date createTime;
+    //是否删除 0-正常 1-删除
+    private Boolean isDeleted = false;
 
     /**
      * 设置：主键
@@ -331,4 +340,38 @@ public class JdOrderVo implements Serializable {
     public Date getCreateTime() {
         return createTime;
     }
+
+	public BigDecimal getOrderProductPrice() {
+		return orderProductPrice;
+	}
+
+	public void setOrderProductPrice(BigDecimal orderProductPrice) {
+		this.orderProductPrice = orderProductPrice;
+	}
+
+	public Boolean getOrderSplit() {
+		return orderSplit;
+	}
+
+	public void setOrderSplit(Boolean orderSplit) {
+		this.orderSplit = orderSplit;
+	}
+
+	public Boolean getIsDeleted() {
+		return isDeleted;
+	}
+
+	public void setIsDeleted(Boolean isDeleted) {
+		this.isDeleted = isDeleted;
+	}
+
+	public String getResultData() {
+		return resultData;
+	}
+
+	public void setResultData(String resultData) {
+		this.resultData = resultData;
+	}
+    
+    
 }
