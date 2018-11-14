@@ -32,7 +32,9 @@ public class OrderVo implements Serializable {
     4xx 表示订单退换货相关的状态　401 没有发货，退款　402 已收货，退款退货
     */
     private Integer order_status;
-    //发货状态 商品配送情况;0未发货,1已发货,2已收货,4退货
+    /**
+     * 发货状态 商品配送情况;0未发货,1已发货,2已收货,4退货
+     * */
     private Integer shipping_status;
     //付款状态 支付状态;0未付款;1付款中;2已付款4退款
     private Integer pay_status;
@@ -84,7 +86,7 @@ public class OrderVo implements Serializable {
     //付款时间
     private Date pay_time;
     //配送费用
-    private Integer freight_price;
+    private BigDecimal freight_price;
     //使用的优惠券id
     private Integer coupon_id;
     //
@@ -355,11 +357,11 @@ public class OrderVo implements Serializable {
         this.pay_time = pay_time;
     }
 
-    public Integer getFreight_price() {
+    public BigDecimal getFreight_price() {
         return freight_price;
     }
 
-    public void setFreight_price(Integer freight_price) {
+    public void setFreight_price(BigDecimal freight_price) {
         this.freight_price = freight_price;
     }
 

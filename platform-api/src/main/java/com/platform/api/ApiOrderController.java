@@ -174,11 +174,12 @@ public class ApiOrderController extends ApiBaseAction {
             return toResponsMsgSuccess("修改订单成功");
         } else {
             return toResponsFail("修改订单失败");
+
         }
     }
 
     /**
-     * 获取订单列表
+     * 订单提交
      */
     @ApiOperation(value = "订单提交")
     @PostMapping("submit")
