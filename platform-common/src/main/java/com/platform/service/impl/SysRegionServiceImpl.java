@@ -55,4 +55,19 @@ public class SysRegionServiceImpl implements SysRegionService {
     public int deleteBatch(Integer[] ids) {
         return sysRegionDao.deleteBatch(ids);
     }
+
+	@Override
+	public List<SysRegionEntity> queryAllByType(int type) {
+		return sysRegionDao.queryAllByType(type);
+	}
+
+	@Override
+	public List<SysRegionEntity> queryDate(Map<String, Object> paramMap) {
+		return sysRegionDao.queryDate(paramMap);
+	}
+
+	@Override
+	public int insertBatch(List<SysRegionEntity> sysRegionEntityList) {
+		return sysRegionDao.insertBatch(sysRegionEntityList);
+	}
 }

@@ -1,7 +1,9 @@
 package com.platform.youle.entity;
 
-import java.util.Map;
+import java.util.List;
 
-public class ResponseProductStockBatchEntity extends ResponseBaseEntity<Map> {
+import com.platform.youle.entity.result.ResultstockBatchEntity;
+
+public class ResponseProductStockBatchEntity extends ResponseBaseEntity<List<ResultstockBatchEntity>> {
 
 }

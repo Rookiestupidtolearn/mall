@@ -18,8 +18,13 @@ public class GoodsCouponConfigEntity  implements Serializable {
     private Integer id;
     //配置ID
     private Integer goodsId;
-    //配比值
-    private double goodValue;
+    //正常配比值
+    private double normalMatching;
+    //活动配比值
+    private double activityMatching;
+    //支付配比
+    private double payMatching;
+    
     //
     private Long createUserId;
     //
@@ -110,21 +115,24 @@ public class GoodsCouponConfigEntity  implements Serializable {
     public Integer getId() {
         return id;
     }
-  
-    /**
-     * 设置：配比值
-     */
-    public void setGoodValue(double goodValue) {
-        this.goodValue = goodValue;
-    }
 
-    /**
-     * 获取：配比值
-     */
-    public double getGoodValue() {
-        return goodValue;
-    }
-    /**
+	public double getNormalMatching() {
+		return normalMatching;
+	}
+
+	public void setNormalMatching(double normalMatching) {
+		this.normalMatching = normalMatching;
+	}
+
+	public double getActivityMatching() {
+		return activityMatching;
+	}
+
+	public void setActivityMatching(double activityMatching) {
+		this.activityMatching = activityMatching;
+	}
+
+	/**
      * 设置：
      */
     public void setCreateUserId(Long createUserId) {
@@ -220,6 +228,14 @@ public class GoodsCouponConfigEntity  implements Serializable {
 
 	public void setGoodsId(Integer goodsId) {
 		this.goodsId = goodsId;
+	}
+
+	public double getPayMatching() {
+		return payMatching;
+	}
+
+	public void setPayMatching(double payMatching) {
+		this.payMatching = payMatching;
 	}
 
 

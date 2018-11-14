@@ -1,5 +1,7 @@
 package com.platform.dao;
 
+import java.util.List;
+
 import com.platform.entity.GoodsCouponConfigEntity;
 
 /**
@@ -12,6 +14,6 @@ Dao
  */
 public interface GoodsCouponConfigDao extends BaseDao<GoodsCouponConfigEntity> {
 
-	Integer[] selectGoodsIdsById(Integer[] ids);
+	List<GoodsCouponConfigEntity> selectGoodsIdsById(Integer[] ids);
 
 }

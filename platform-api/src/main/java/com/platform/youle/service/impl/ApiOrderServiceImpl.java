@@ -31,13 +31,13 @@ public class ApiOrderServiceImpl  extends AbsApiOrderService{
 
     	private static final Logger logger = LoggerFactory.getLogger(ApiOrderServiceImpl.class);
 		@Override
-		protected ResponseOrderSubmitEntity submit(RequestOrderSubmitEntity entity) {
+		public ResponseOrderSubmitEntity submit(RequestOrderSubmitEntity entity) {
 			ResponseOrderSubmitEntity reponse =null;
 	        initRequestParam(entity);
 	        try {
 	            logger.info("[2.1创建订单接口]入参："+JSONObject.toJSONString(entity));
 	            String result = HttpUtil.post(Urls.base_test_url+Urls.submit, objectToMap(entity));
-	            logger.info("[2.1创建订单接口] 返回结果："+JSONObject.toJSONString(entity));
+	            logger.info("[2.1创建订单接口] 返回结果："+JSONObject.toJSONString(result));
 	            reponse = JSON.parseObject(result,ResponseOrderSubmitEntity.class);
 	        } catch (Exception e) {
 	            logger.error("[2.1创建订单接口]异常",e);
@@ -46,7 +46,7 @@ public class ApiOrderServiceImpl  extends AbsApiOrderService{
 		}
 
 		@Override
-		protected ReponseOrderDetailEntity detail(String orderKey) {
+		public ReponseOrderDetailEntity detail(String orderKey) {
 			ReponseOrderDetailEntity reponse =null;
 			 RequestOrderDetailEntity entity = new RequestOrderDetailEntity(); 
 	        initRequestParam(entity);
@@ -54,7 +54,7 @@ public class ApiOrderServiceImpl  extends AbsApiOrderService{
 	        try {
 	            logger.info("[2.2查询订单详情接口]入参："+JSONObject.toJSONString(entity));
 	            String result = HttpUtil.post(Urls.base_test_url+Urls.detail, objectToMap(entity));
-	            logger.info("[2.2查询订单详情接口] 返回结果："+JSONObject.toJSONString(entity));
+	            logger.info("[2.2查询订单详情接口] 返回结果："+JSONObject.toJSONString(result));
 	            reponse = JSON.parseObject(result,ReponseOrderDetailEntity.class);
 	        } catch (Exception e) {
 	            logger.error("[2.2查询订单详情接口]异常",e);
@@ -62,7 +62,7 @@ public class ApiOrderServiceImpl  extends AbsApiOrderService{
 	        return reponse;
 		}
 		@Override
-		protected ResponseBaseEntity<?> thirdOrder(String thirdOrder) {
+		public ResponseBaseEntity<?> thirdOrder(String thirdOrder) {
 			ResponseBaseEntity  reponse=null;
 			RequestThirdOrderEntity entity = new RequestThirdOrderEntity();
 		    initRequestParam(entity);
@@ -79,7 +79,7 @@ public class ApiOrderServiceImpl  extends AbsApiOrderService{
 		}
 
 		@Override
-		protected ResponseOrderTrackEntity orderTrack(String thirdOrder) {
+		public ResponseOrderTrackEntity orderTrack(String thirdOrder) {
 			ResponseOrderTrackEntity  reponse=null;
 			RequestOrderTrackEntity entity = new RequestOrderTrackEntity();
 		    initRequestParam(entity);
@@ -96,11 +96,11 @@ public class ApiOrderServiceImpl  extends AbsApiOrderService{
 		}
 
 	    @Override
-	    protected ResponseSystemOrderTrackEntity systemOrderTrack(String orderKey) {
+	    public ResponseSystemOrderTrackEntity systemOrderTrack(String orderKey) {
 	        ResponseSystemOrderTrackEntity   reponse=null;
 	        RequestOrderTrackEntity  entity = new RequestOrderTrackEntity();
 	        initRequestParam(entity);
-	        entity.setThirdOrder(orderKey);
+	        entity.setOrderKey(orderKey);
 
 	        try {
 	            logger.info("2.5订单物流信息接口]入参："+JSONObject.toJSONString(entity));
@@ -114,7 +114,7 @@ public class ApiOrderServiceImpl  extends AbsApiOrderService{
 	    }
 
 	    @Override
-		protected ResponseCancelEntity cancel(String thirdOrder) {
+		public ResponseCancelEntity cancel(String thirdOrder) {
 			ResponseCancelEntity response = null;
 			RequestOrderTrackEntity entity = new RequestOrderTrackEntity();
 			initRequestParam(entity);
@@ -132,7 +132,7 @@ public class ApiOrderServiceImpl  extends AbsApiOrderService{
 
 
 		@Override
-		protected ResponseBaseEntity cancelByOrderKey(String thirdOrder, String orderKey) {
+		public ResponseBaseEntity cancelByOrderKey(String thirdOrder, String orderKey) {
 			ResponseBaseEntity  response=null;
 			RequestCancelByOrderKeyEntity entity = new RequestCancelByOrderKeyEntity();
 			initRequestParam(entity);

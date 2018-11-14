@@ -10,8 +10,12 @@ public class GoodsCouponConfigVo implements Serializable{
 	 private Integer id;
 	 //产品id
 	 private Integer goods_id;
-	 //商品配比值
-	 private double good_value;
+	 //正常配比值
+	 private double normalMatching;
+     //活动配比值
+     private double activityMatching;
+     //支付配比
+     private double payMatching;
 	 //创建者id
 	 private BigDecimal create_user_id;
 	 //更新者id
@@ -22,6 +26,8 @@ public class GoodsCouponConfigVo implements Serializable{
 	 private BigDecimal create_user_dept_id;
 	 //删除标识
 	 private String del_flag;
+	 private Double activity_matching; 
+	 private Double normal_matching;
 
 	public Integer getId() {
 		return id;
@@ -39,12 +45,20 @@ public class GoodsCouponConfigVo implements Serializable{
 		this.goods_id = goods_id;
 	}
 
-	public double getGood_value() {
-		return good_value;
+	public double getNormalMatching() {
+		return normalMatching;
 	}
 
-	public void setGood_value(double good_value) {
-		this.good_value = good_value;
+	public void setNormalMatching(double normalMatching) {
+		this.normalMatching = normalMatching;
+	}
+
+	public double getActivityMatching() {
+		return activityMatching;
+	}
+
+	public void setActivityMatching(double activityMatching) {
+		this.activityMatching = activityMatching;
 	}
 
 	public BigDecimal getCreate_user_id() {
@@ -85,6 +99,30 @@ public class GoodsCouponConfigVo implements Serializable{
 
 	public void setDel_flag(String del_flag) {
 		this.del_flag = del_flag;
+	}
+
+	public Double getActivity_matching() {
+		return activity_matching;
+	}
+
+	public void setActivity_matching(Double activity_matching) {
+		this.activity_matching = activity_matching;
+	}
+
+	public Double getNormal_matching() {
+		return normal_matching;
+	}
+
+	public void setNormal_matching(Double normal_matching) {
+		this.normal_matching = normal_matching;
+	}
+
+	public double getPayMatching() {
+		return payMatching;
+	}
+
+	public void setPayMatching(double payMatching) {
+		this.payMatching = payMatching;
 	}
 	 
 }

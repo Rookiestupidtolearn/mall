@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.dao.GoodsPureInterestRateDao">
+	<resultMap type="com.platform.entity.GoodsPureInterestRateEntity" id="goodsPureInterestRateMap">
+        <result property="id" column="id"/>
+        <result property="goodsId" column="goods_id"/>
+        <result property="productId" column="product_id"/>
+        <result property="retailPrice" column="retail_price"/>
+        <result property="pureInterestRate" column="pure_interest_rate"/>
+        <result property="createTime" column="icreate_timed"/>
+        <result property="createUserId" column="create_user_id"/>
+        <result property="memo" column="memo"/>
+    </resultMap>
+    
+    <select id="queryObject" resultType="com.platform.entity.GoodsPureInterestRateEntity">
+    	select * from goods_pure_interest_rate gpir where gpir.id = #{id}
+    </select>
+    
+    <select id="queryGoodsIdsByPrice" resultType="java.lang.Integer">
+    	select goods_id from goods_pure_interest_rate where 1=1
+    	<if test="min_retail_price != null and min_retail_price.trim() != ''"> and retail_price >= #{min_retail_price}</if>
+    	<if test="max_retail_price != null and max_retail_price.trim() != ''"  > and #{max_retail_price} >= retail_price</if>
+    	<if test="min_pure_interest_rate != null and min_pure_interest_rate.trim() != ''"> and pure_interest_rate >= #{min_pure_interest_rate}</if>
+    	<if test="max_pure_interest_rate != null and max_pure_interest_rate.trim() != ''"> and #{max_pure_interest_rate} >= pure_interest_rate</if>
+    	<if test="goodsIds != null">
+    	 and goods_id in
+    		<foreach collection="goodsIds" item="ids"  open="(" separator="," close=")">
+    			#{ids}
+    		</foreach>
+    	</if>
+    	order by goods_id desc
+    </select>
+    
+    <select id="queryAll" resultType="com.platform.entity.GoodsPureInterestRateEntity">
+    	select * from goods_pure_interest_rate 
+    	where 1=1
+    	<if test="goodsId != null">
+            and goods_id = #{goodsId}
+        </if>
+    	<if test="productId != null">
+            and product_id = #{productId}
+        </if>
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+            <otherwise>
+                order by goods_pure_interest_rate.id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+    
+    <insert id="save" parameterType="com.platform.entity.GoodsPureInterestRateEntity" >
+		insert into goods_pure_interest_rate (
+		`goods_id`,
+  		`product_id`,
+  		`retail_price`,
+  		`market_price`,
+ 		`pure_interest_rate`,
+ 		`create_time`,
+  		`create_user_id`,
+  		`memo`
+  		)values(
+  		#{goodsId},
+  		#{productId},
+  		#{retailPrice},
+  		#{marketPrice},
+  		#{pureInterestRate},
+  		#{createTime},
+  		#{createUserId},
+  		#{memo}
+  		)
+	</insert>
+	
+	<update id="update" parameterType="com.platform.entity.GoodsPureInterestRateEntity">
+		update goods_pure_interest_rate
+		<set>
+			<if test="goodsId != null">goods_id = #{goodsId},</if>
+    		<if test="productId != null">product_id = #{productId},</if>
+    		<if test="retailPrice != null">retail_price = #{retailPrice},</if>
+    		<if test="marketPrice != null">market_price = #{marketPrice},</if>
+    		<if test="pureInterestRate != null">pure_interest_rate = #{pureInterestRate},</if>
+    		<if test="createTime != null">create_time = #{createTime},</if>
+    		<if test="createUserId != null">create_user_id = #{createUserId},</if>
+    		<if test="memo != null and memo.trim() != ''">memo = #{memo},</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from goods_pure_interest_rate where id = #{id}
+	</delete>
+	
+	<delete id="delBygoodsIds">
+		delete from goods_pure_interest_rate where goods_id in
+		<foreach collection="array" item="ids"  open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+	</delete>
+	
+	<delete id="delByProductIds">
+		delete from goods_pure_interest_rate where product_id in
+		<foreach collection="array" item="ids"  open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+	</delete>
+	
+	
+
+
+</mapper>

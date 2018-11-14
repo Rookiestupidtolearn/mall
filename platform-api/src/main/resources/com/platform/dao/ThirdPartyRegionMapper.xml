@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.platform.dao.ThirdPartyRegionMapper">
+
+	 <resultMap type="com.platform.entity.ThirdPartyRegionEntity" id="ThirdPartyRegionMap">
+        <result property="thirdCode" column="third_code"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="name" column="name"/>
+        <result property="type" column="type"/>
+        <result property="thirdType" column="third_type"/>
+        <result property="thirdParty" column="third_party"/>
+        <result property="nideshopCode" column="nideshop_code"/>
+    </resultMap>
+
+	<select id="queryAllByType" resultType="com.platform.entity.ThirdPartyRegionEntity">
+		select * from third_party_region where type = #{type}
+	</select>
+	
+	
+	<select id="queryDate" resultType="com.platform.entity.ThirdPartyRegionEntity">
+		select * from third_party_region where 1=1 
+		<if test="type != null">
+			and type = #{type}
+		</if>
+		<if test="parent_id != null">
+			and parent_id = #{parent_id}
+		</if>
+		<if test="nideshop_code != null">
+			and nideshop_code != #{nideshop_code}
+		</if>
+	</select>
+
+	<insert id="insertBatch">
+   	    INSERT INTO third_party_region
+   	          (third_code, parent_id, name,type,third_type,third_party,nideshop_code)
+   	    VALUES
+   	    <foreach collection ="list" item="thirdPartyRegion" separator =",">
+   	         (#{thirdPartyRegion.thirdCode}, #{thirdPartyRegion.parentId}, #{thirdPartyRegion.name}, #{thirdPartyRegion.type},#{thirdPartyRegion.thirdType}, #{thirdPartyRegion.thirdParty}, #{thirdPartyRegion.nideshopCode})
+   	    </foreach >
+	</insert>
+	
+	
+	
+	<select id="queryPrinvinceByChannel" resultType="com.platform.entity.ThirdPartyRegionEntity">
+	
+		select * from third_party_region where  third_type = #{province}
+			
+		and  channel = #{channel}
+		
+		
+	</select>
+	
+	<update id="updateBatch" parameterType="java.util.List">
+		 <foreach collection="list" item="bean" index="index" open="" close="" separator=";">
+            UPDATE third_party_region
+            <set>
+                nideshop_code = #{bean.nideshopCode}
+            </set>
+            <where>
+                id = #{bean.id}
+            </where>
+        </foreach>
+	</update>
+	
+	
+
+</mapper>

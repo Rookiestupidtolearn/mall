@@ -70,7 +70,21 @@ public class Constants {
         //3.1查询预存款余额
         public static String remain = "/api/finance/remain.php";
         
-        
+		
+        //------------------------------系统地址接口URL--------------------------------------
+		//4.1获取一级地址(省份)
+		public static String province = "/api/area/province.php";
+		
+		//4.2获取二地址(城市)
+		public static String city = "/api/area/city.php";
+		
+		//4.3获取三级地址(县/区)
+		public static String county = "/api/area/county.php";
+		
+		//4.4获取四级地址(镇/街道)
+		public static String town = "/api/area/town.php";
+      
+		
         //----------------------------系统产品分类接口-----------------------------------
         //5.1获取一级产品分类
         public static String rootCate = "/api/cate/rootCate.php";
@@ -81,8 +95,34 @@ public class Constants {
         //5.3获取单个分类详情
         public static String cateDetial = "/api/cate/detial.php";
         
+       
+        //-----------------------------售后服务接口---------------------------------------
+        //6.1 查询商品是否可以申请售后服务
+        public static String sale_after_check = "/api/afterSale/v2/check.php" ;
         
+        //6.2 提交订单售后申请
+        public static String sale_after_submit = "/api/afterSale/v2/submit.php";
         
+        //6.3 查询售后订单详情	
+        public static String sale_after_detail="/api/afterSale/v2/detail.php";
         
+        //6.4 提交京东商品订单售后服务申请
+        public static String sale_after_jd_submit = "/api/afterSale/jd/submit.php";
+        
+        //6.5 获取京东商品订单售后单概要信息
+        public static String sale_after_basis= "/api/afterSale/jd/basis.php";
     }
+    	/**
+    	 * 渠道
+    	 * @author liutao
+    	 */
+    public static  class Channels {
+    	
+    	/**
+    	 * 京东
+    	 */
+    	final public static String JD = "JD";
+    	
+    }
+    
 }

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -19,28 +20,28 @@ import com.alibaba.fastjson.JSONObject;
 import com.platform.cache.J2CacheUtils;
 import com.platform.dao.ApiAddressMapper;
 import com.platform.dao.ApiCartMapper;
-import com.platform.dao.ApiCouponMapper;
 import com.platform.dao.ApiOrderGoodsMapper;
 import com.platform.dao.ApiOrderMapper;
 import com.platform.dao.ApiTranInfoRecordMapper;
 import com.platform.dao.ApiUserCouponMapper;
-import com.platform.dao.GoodsCouponConfigMapper;
 import com.platform.dao.QzUserAccountMapper;
 import com.platform.entity.AddressVo;
 import com.platform.entity.ApiTranInfoRecordVo;
 import com.platform.entity.BuyGoodsVo;
 import com.platform.entity.CartVo;
+import com.platform.entity.JdOrderVo;
 import com.platform.entity.OrderGoodsVo;
 import com.platform.entity.OrderVo;
 import com.platform.entity.ProductVo;
 import com.platform.entity.QzUserAccountVo;
 import com.platform.entity.UserCouponVo;
 import com.platform.entity.UserVo;
-import com.platform.util.CommonUtil;
-
+import com.platform.utils.GenerateCodeUtil;
 
 @Service
 public class ApiOrderService {
+	private Logger logger = LoggerFactory.getLogger(getClass());
+
     @Autowired
     private ApiOrderMapper orderDao;
     @Autowired
@@ -59,8 +60,9 @@ public class ApiOrderService {
     private QzUserAccountMapper qzUserAccountMapper;
     @Autowired
     private ApiTranInfoRecordMapper apiTranInfoRecordMapper;
-    
-	private Logger logger = LoggerFactory.getLogger(getClass());
+
+    @Autowired
+    private JdOrderService jdOrderService;
 
 
     public OrderVo queryObject(Integer id) {
@@ -100,46 +102,85 @@ public class ApiOrderService {
     @Transactional
     public Map<String, Object> submit(JSONObject jsonParam, UserVo loginUser) {
         Map<String, Object> resultObj = new HashMap<String, Object>();
-//        Integer couponId = jsonParam.getInteger("couponId");
+
+
+        // 1 cart  购物车 2 buy  立即购买
         String type = jsonParam.getString("type");
+
         String postscript = jsonParam.getString("postscript");
-//        AddressVo addressVo = jsonParam.getObject("checkedAddress",AddressVo.class);
+
         AddressVo addressVo = apiAddressMapper.queryObject(jsonParam.getInteger("addressId"));
 
-        Integer freightPrice = 0;
+        BigDecimal freightPrice = BigDecimal.ZERO;
+
+        if (addressVo == null) {
+            resultObj.put("errno", 400);
+            resultObj.put("errmsg", "用户地址为空，不能下单!");
+            return resultObj;
+		}
         
+
         // * 获取要购买的商品
         List<CartVo> checkedGoodsList = new ArrayList<>();
-        BigDecimal goodsTotalPrice = BigDecimal.ZERO;
-        
-        List<UserCouponVo> userCouponVos = apiUserCouponMapper.queryUserCouponTotalPrice(loginUser.getUserId());//查询用户优惠券信息
+
+
+        //查询用户优惠券信息  直接过去 平台币抵扣券
+        List<UserCouponVo> userCouponVos = apiUserCouponMapper.queryUserCouponTotalPrice(loginUser.getUserId());
+
         List<UserCouponVo> coupons = new ArrayList<>();
         if(!CollectionUtils.isEmpty(userCouponVos)){
-       	 for(int i = 0;i<userCouponVos.size();i++){
-       		 if(userCouponVos.get(i).getCoupon_id() == 11){
-       			 coupons.add(userCouponVos.get(i));
-       		 }
-       	 }
+            for (UserCouponVo vo:userCouponVos) {
+                if(vo.getCoupon_id()==11){
+                    coupons.add(vo);
+                }
+            }
         }
-      UserCouponVo userCoupon = null;
-      if(!CollectionUtils.isEmpty(coupons)){
+        // 判断数据是否异常  异常抛出
+
+        if(CollectionUtils.isNotEmpty(coupons)&&coupons.size()>1){
+            resultObj.put("errno", 1);
+            resultObj.put("errmsg", "抵扣券数据异常大于1");
+            return resultObj;
+        }
+
+
+        UserCouponVo userCoupon = null;
+        //统计商品总价
+        BigDecimal  goodsTotalPrice = BigDecimal.ZERO;
+      if(CollectionUtils.isNotEmpty(coupons)){
     	  userCoupon = coupons.get(0);
       }
+
         if (type.equals("cart")) {
             Map<String, Object> param = new HashMap<String, Object>();
             param.put("user_id", loginUser.getUserId());
             param.put("session_id", 1);
             param.put("checked", 1);
             checkedGoodsList = apiCartMapper.queryList(param);
+
+            //TODO
+            /**
+             * 1.获取库存
+             *          1.1  有  保留
+             *               没有 1.清楚购物车产品
+             *                    2.下架产品
+             *2.上下架   2.1 下架处理 1.清楚购物车产品
+             *                      2.下架产品
+             */
+
+
+
+
+
             if (null == checkedGoodsList) {
                 resultObj.put("errno", 400);
                 resultObj.put("errmsg", "请选择商品");
                 return resultObj;
             }
-            //统计商品总价
-            goodsTotalPrice = new BigDecimal(0.00);
             for (CartVo cartItem : checkedGoodsList) {
+
                 goodsTotalPrice = goodsTotalPrice.add(cartItem.getMarket_price().multiply(new BigDecimal(cartItem.getNumber())));
+
             }
         } else {
             BuyGoodsVo goodsVo = (BuyGoodsVo) J2CacheUtils.get(J2CacheUtils.SHOP_CACHE_NAME, "goods" + loginUser.getUserId());
@@ -148,7 +189,6 @@ public class ApiOrderService {
             	//计算订单的费用
             	//商品总价
             	goodsTotalPrice = productInfo.getMarket_price().multiply(new BigDecimal(goodsVo.getNumber()));
-            	
             	CartVo cartVo = new CartVo();
             	BeanUtils.copyProperties(productInfo, cartVo);
             	cartVo.setNumber(goodsVo.getNumber());
@@ -156,15 +196,15 @@ public class ApiOrderService {
             	checkedGoodsList.add(cartVo);
             }
         }
-        //订单价格计算
-        BigDecimal orderTotalPrice = goodsTotalPrice.add(new BigDecimal(freightPrice)); //订单的总价
 
-        BigDecimal actualPrice = orderTotalPrice.subtract(userCoupon.getCoupon_price());  //减去其它支付的金额后，要实际支付的金额
-        //
+        //订单的总价   商品价格+运费价格
+        BigDecimal orderTotalPrice = goodsTotalPrice.add(freightPrice);
+
         OrderVo orderInfo = new OrderVo();
-        orderInfo.setOrder_sn(CommonUtil.generateOrderNumber());
+        orderInfo.setOrder_sn(GenerateCodeUtil.buildJDBizNo());
         orderInfo.setUser_id(loginUser.getUserId());
         //收货地址和运费
+        orderInfo.setAddress_id(jsonParam.getInteger("addressId"));
         orderInfo.setConsignee(addressVo.getUserName());
         orderInfo.setMobile(addressVo.getTelNumber());
         orderInfo.setCountry(addressVo.getNationalCode());
@@ -172,13 +212,18 @@ public class ApiOrderService {
         orderInfo.setCity(addressVo.getCityName());
         orderInfo.setDistrict(addressVo.getCountyName());
         orderInfo.setAddress(addressVo.getDetailInfo());
-        //
         orderInfo.setFreight_price(freightPrice);
         //留言
         orderInfo.setPostscript(postscript);
         //使用的优惠券
-        orderInfo.setCoupon_id(userCoupon.getId());
-        orderInfo.setCoupon_price(userCoupon.getCoupon_price());
+        BigDecimal couponPrice = BigDecimal.ZERO;
+        if (userCoupon != null) {
+            couponPrice = userCoupon.getCoupon_price();
+            orderInfo.setCoupon_id(userCoupon.getId());
+            orderInfo.setCoupon_price(couponPrice);
+		}
+        //减去其它支付的金额后，要实际支付的金额
+        BigDecimal actualPrice = orderTotalPrice.subtract(couponPrice);
         orderInfo.setAdd_time(new Date());
         orderInfo.setGoods_price(goodsTotalPrice);
         orderInfo.setOrder_price(orderTotalPrice);
@@ -190,10 +235,7 @@ public class ApiOrderService {
          * 401 没有发货，退款　402 已收货，退款退货
          */
         orderInfo.setOrder_status(0);
-        
-        //发货状态 商品配送情况;0未发货,1已发货,2已收货,4退货
         orderInfo.setShipping_status(0);
-        
         orderInfo.setPay_status(0);
         orderInfo.setShipping_id(0);
         orderInfo.setShipping_fee(new BigDecimal(0));
@@ -205,6 +247,34 @@ public class ApiOrderService {
             orderInfo.setOrder_type("4");
         }
 
+        //查询库存
+        String  pid_nums = "";
+        String pids = "";
+        for (CartVo goodsItem : checkedGoodsList) {
+              pid_nums +=goodsItem.getGoods_sn().substring(2, goodsItem.getGoods_sn().length())+"_"+goodsItem.getNumber()+",";
+              pids +=goodsItem.getGoods_sn().substring(2, goodsItem.getGoods_sn().length())+",";
+        }
+
+           String address = "";
+           address = addressVo.getProvince()+"_"+addressVo.getCity()+"_"+addressVo.getCounty();
+           pid_nums = pid_nums.substring(0,pid_nums.length() - 1);
+           pids = pids.substring(0,pids.length() - 1);
+          Map<String, Object> stockMap = jdOrderService.stockBatch(pid_nums, address);
+          if (!stockMap.get("code").equals("200")) {
+        	   resultObj.put("errno", "100");
+               resultObj.put("errmsg", "库存不足");
+        	  return resultObj;
+		   }
+        //校验订单的上下架状态
+          Map<String, Object> saleStatusMap = jdOrderService.checkBatchSaleStatus(pids);
+          if (!saleStatusMap.get("code").equals("200")) {
+        	   resultObj.put("errno", "100");
+               resultObj.put("errmsg", "不可出售");
+        	  return resultObj;
+		   }
+
+
+
         //开启事务，插入订单信息和订单商品
         apiOrderMapper.save(orderInfo);
         if (null == orderInfo.getId()) {
@@ -212,6 +282,21 @@ public class ApiOrderService {
             resultObj.put("errmsg", "订单提交失败");
             return resultObj;
         }
+
+
+        /**
+         * 订单问题
+         *          1.拆分渠道
+         *              1.1 渠道增加
+         *              1.2 状态
+         *
+         *          2.定时任务轮训订单状态
+         *
+         *
+         */
+
+
+        String pidNums  = "";
         //统计商品总价
         List<OrderGoodsVo> orderGoodsData = new ArrayList<OrderGoodsVo>();
         for (CartVo goodsItem : checkedGoodsList) {
@@ -229,7 +314,11 @@ public class ApiOrderService {
             orderGoodsVo.setGoods_specifition_ids(goodsItem.getGoods_specifition_ids());
             orderGoodsData.add(orderGoodsVo);
             apiOrderGoodsMapper.save(orderGoodsVo);
+            pidNums +=orderGoodsVo.getGoods_sn().substring(2, orderGoodsVo.getGoods_sn().length())+"_"+orderGoodsVo.getNumber()+",";
         }
+        if (StringUtils.isNotEmpty(pidNums)) {
+        	pidNums = pidNums.substring(0,pidNums.length() - 1);
+		}
 
         //清空已购买的商品
         apiCartMapper.deleteByCart(loginUser.getUserId(), 1, 1);
@@ -245,16 +334,27 @@ public class ApiOrderService {
         	userCoupon.setCoupon_status(4);//支付中
             apiUserCouponMapper.updateUserOrderCoupon(userCoupon);
         }
+        //创建第三方订单
+        JdOrderVo jdOrderVo =  new JdOrderVo();
+        jdOrderVo.setPidNums(pidNums);
+        Map<String, Object> result   =   jdOrderService.jdOrderSubbmit(addressVo,orderInfo,jdOrderVo);
+        resultObj.put("errno", result.get("errno")) ;
+        resultObj.put("errmsg", result.get("errmsg")) ;
+
+        //
         return resultObj;
     }
-	
+
+
+
+
 	/***
-     * 购物车 时效性 
-     * 			
-     * 		1.支付成功	
+     * 购物车 时效性
+     *
+     * 		1.支付成功
      * 		     	优惠券已经使用
-     * 
-     * 		2.超时未支付 
+     *
+     * 		2.超时未支付
      * 			   	优惠券失效 逻辑删除
      * 				失效操作：
      * 					回滚平台币
@@ -272,7 +372,7 @@ public class ApiOrderService {
 					amount = userAmountVo.getAmount();
 				}
 				//如果当前日期减掉订单创建时间大于一天则回滚平台币
-				if(new Date().getTime() - order.getAdd_time().getTime() > 24*60*60*1000){
+				if(System.currentTimeMillis() - order.getAdd_time().getTime() > 24*60*60*1000){
 					logger.info("【定时查询订单有效性】订单标号:" +order.getId() +""+"订单创建时间:" + order.getAdd_time());
 					if(userCouponVo != null){
 						userCouponVo.setCoupon_status(3);//作废

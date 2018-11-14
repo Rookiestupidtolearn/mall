@@ -17,6 +17,8 @@ public class SysRegionEntity extends Tree<SysRegionEntity> {
     private Integer type;
     //区域代理Id
     private Integer agencyId;
+    //三方地区id
+    private Integer thirdCode;
 
     /**
      * 翻译用字段
@@ -71,5 +73,14 @@ public class SysRegionEntity extends Tree<SysRegionEntity> {
     public void setParentName(String parentName) {
         this.parentName = parentName;
     }
+
+	public Integer getThirdCode() {
+		return thirdCode;
+	}
+
+	public void setThirdCode(Integer thirdCode) {
+		this.thirdCode = thirdCode;
+	}
+    
 
 }

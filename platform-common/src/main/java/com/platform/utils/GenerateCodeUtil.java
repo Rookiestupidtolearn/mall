@@ -37,6 +37,16 @@ public class GenerateCodeUtil {
 		return getDateTimeStampSN();
 	}
 	/**
+	 * "jd"+21位长度=时间戳+4位随机数
+	 * yyyyMMddHHmmssSSS+4位随机数
+	 * 生成流水号
+	 * @return
+	 */
+	public synchronized static String buildJDBizNo() {
+		//TODO 交易流水号优化
+		return "jd"+getDateTimeStampSN();
+	}
+	/**
 	 * 获取本地交易流水号，编号前缀"9"，该流水号不会传递给富友，只适合本地业务
 	 * 22位数字=9+21位
 	 * @return
