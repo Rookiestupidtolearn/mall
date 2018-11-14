@@ -138,5 +138,11 @@
     <select id="queryAllCategorys" resultMap = "categoryMap">
     	select * from nideshop_category where 1=1
     </select>
-
+	<select id = "quertOtherIds" resultType = "integer">
+		SELECT DISTINCT category_id
+		FROM nideshop_goods WHERE category_id NOT IN (
+		SELECT id
+		FROM nideshop_category WHERE 1=1
+		)
+	</select>
 </mapper>

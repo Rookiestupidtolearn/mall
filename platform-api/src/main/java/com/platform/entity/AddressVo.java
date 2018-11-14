@@ -38,6 +38,12 @@ public class AddressVo implements Serializable {
     private Integer is_default = 0;
 
     private String full_region;
+    //省
+    private String province;
+    //市
+    private String city;
+    //区
+    private String county;
 
     /**
      * 设置：
@@ -198,4 +204,30 @@ public class AddressVo implements Serializable {
 
         this.full_region = full_region;
     }
+
+	public String getProvince() {
+		return province;
+	}
+
+	public void setProvince(String province) {
+		this.province = province;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getCounty() {
+		return county;
+	}
+
+	public void setCounty(String county) {
+		this.county = county;
+	}
+    
+    
 }

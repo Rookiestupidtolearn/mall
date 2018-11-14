@@ -18,7 +18,11 @@ public interface ApiCategoryMapper extends BaseDao<CategoryVo> {
 	 * @return
 	 */
 	List<CategoryVo> queryAllCategorys();
-	
+	/**
+	 * 查询所有分类商品ids
+	 * @return
+	 */
+	List<Integer> quertOtherIds();
 	
 	
 }

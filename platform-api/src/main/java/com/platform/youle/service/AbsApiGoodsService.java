@@ -80,7 +80,7 @@ public abstract class AbsApiGoodsService implements IApiFuncServicein {
 	 * @param address
 	 * @return
 	 */
-	protected abstract ResponseProductEntity stock(String pid, Integer num, String address);
+	public abstract ResponseProductEntity stock(String pid, Integer num, String address);
 
 	/**
 	 * 1.5批量查询商品库存

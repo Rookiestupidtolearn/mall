@@ -39,7 +39,7 @@
         <result property="updateUserId" column="update_user_id"/>
         <result property="updateTime" column="update_time"/>
         <result property="createUserDeptId" column="create_user_dept_id"/>
-        <result property="is7Toreturn" column="is_7_ToReturn"/>
+        <result property="is7ToReturn" column="is_7_ToReturn"/>
     </resultMap>
 
     <select id="queryObject" resultType="com.platform.entity.GoodsEntity">
@@ -195,7 +195,7 @@
 			#{updateUserId},
 			#{updateTime},
 			#{createUserDeptId},
-			#{is7Toreturn})
+			#{is7ToReturn})
     </insert>
 
     <update id="update" parameterType="com.platform.entity.GoodsEntity">
@@ -235,7 +235,7 @@
 			<if test="updateUserId != null">`update_user_id` = #{updateUserId}, </if>
 			<if test="updateTime != null">`update_time` = #{updateTime}, </if>
 			<if test="createUserDeptId != null">`create_user_dept_id` = #{createUserDeptId}, </if>
-			<if test="is7Toreturn != null">`is_7_ToReturn` = #{is7Toreturn}</if>
+			<if test="is7ToReturn != null">`is_7_ToReturn` = #{is7ToReturn}</if>
 		</set>
         where id = #{id}
     </update>

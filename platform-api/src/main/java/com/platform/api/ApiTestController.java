@@ -2,6 +2,7 @@ package com.platform.api;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,8 +41,10 @@ import com.platform.youle.entity.GoodsImagePathVo;
 import com.platform.youle.entity.JdGoodsVo;
 import com.platform.youle.entity.RequestBaseEntity;
 import com.platform.youle.entity.RequestChildsEntity;
+import com.platform.youle.entity.RequestProductStockEntity;
 import com.platform.youle.entity.RequestSkuDetailEntity;
-import com.platform.youle.service.AbsApiRootCateService;
+import com.platform.youle.entity.ResponseProductEntity;
+import com.platform.youle.service.AbsApiGoodsService;
 import com.platform.youle.util.HttpUtil;
 import com.platform.youle.util.TokenUtil;
 
@@ -62,11 +65,6 @@ public class ApiTestController extends ApiBaseAction{
 
     @Autowired
     private ApiUserService userService;
-//    @Autowired
-//    private AbsApiGoodsService absApiGoodsService;
-    
-    @Autowired
-    private AbsApiRootCateService absApiRootCateService;
     @Autowired
     private ApiCategoryMapper apiCategoryMapper;
     @Autowired
@@ -81,6 +79,9 @@ public class ApiTestController extends ApiBaseAction{
     private JdGoodsImgPathMapper goodsImagePathMapper;
     @Autowired
     private ApiProductMapper apiProductMapper;
+    //查询库存默认地址
+    private String DEFAULT_ADDRESS = "1_72_2799";
+    
     /**
      * 获取用户信息
      */
@@ -338,9 +339,10 @@ public class ApiTestController extends ApiBaseAction{
 					vo.setGoods_desc(resultDate.get("PRODUCT_DESCRIPTION") == null ? null : resultDate.get("PRODUCT_DESCRIPTION").toString());
 					vo.setAdd_time(new Date());
 					vo.setSource("JD");
-					//保存商品库存，初次录入商品，查询地区以北京市(1)朝阳区(72)三环以里(2799)
-					
-					
+					Map<String,Object> param = stock(productObj.get("productId").toString(), 100, DEFAULT_ADDRESS);
+					if(param.get("num") != null){
+						vo.setGoods_number(Integer.parseInt(param.get("num").toString()));
+					}
 					apiGoodsMapper.save(vo);
 					saveProduct(vo);
 				}
@@ -489,5 +491,48 @@ public class ApiTestController extends ApiBaseAction{
 		}
 		resultObj.put("status", "success");
     	return resultObj;
+    }
+    
+    
+    
+    public Map<String,Object> stock(String productId,Integer num,String address){
+    	Map<String,Object> param = new HashMap<>();
+    	////保存商品库存，初次录入商品，查询地区以北京市(1)朝阳区(72)三环以里(2799) 商品数量100
+    	Integer number = num;
+    	 RequestProductStockEntity entity = new RequestProductStockEntity();
+         initRequestParam(entity);
+         entity.setPid(productId);
+         entity.setNum(number);
+         entity.setAddress(address);
+         logger.info("[1.4单个查询商品库存]入参：" + JSONObject.toJSONString(entity));
+         String result = "";
+		try {
+			result = HttpUtil.post(Urls.base_test_url + Urls.stock, objectToMap(entity));
+			logger.info("[1.4单个查询商品库存" + result);
+			if(result == null){
+				param.put("msg", "三方返回数据为空");
+				return param;
+			}
+		} catch (Exception e) {
+			logger.error("[1.4单个查询商品库存]异常",e);
+		}
+    	JSONObject resultDate = JSONObject.parseObject(result);
+		String  results = resultDate.get("RESULT_DATA").toString();
+    	if(StringUtils.isEmpty(results)){
+    		param.put("msg", "三方返回数据为空");
+    		return param;
+    	}
+    	JSONObject resObj = JSONObject.parseObject(results);
+    	if(resObj.get("stock_status") == null){
+    		param.put("msg", "三方返回数据为空");
+    		return param;
+    	}
+    	
+    	if(Boolean.parseBoolean(resObj.get("stock_status").toString())){
+    		param.put("msg", "三方返回数据成功");
+        	param.put("num", number);
+        	return param;
+    	}
+    	return stock(productId, Math.round(number/2), address);
     }
 }
