@@ -72,16 +72,16 @@ public class JdOrderService {
            jdOrderMapper.save(jdOrderVo);
            //处理订单
          RequestOrderSubmitEntity entity = new RequestOrderSubmitEntity();
-       	entity.setThirdOrder(jdOrderVo.getThirdOrder());
-       	entity.setPid_nums(jdOrderVo.getPidNums());
-       	entity.setReceiverName(jdOrderVo.getReceiverName());
-       	entity.setMobile(jdOrderVo.getMobile());
-       	entity.setAddress(jdOrderVo.getAddress());
-       	entity.setProvince(Integer.parseInt(jdOrderVo.getProvince()));
-       	entity.setCity(Integer.parseInt(jdOrderVo.getCity()));
-       	entity.setCounty(Integer.parseInt(jdOrderVo.getCounty()));
-//       	entity.setPid_nums("81392458_1");
-        JdOrderVo  jdOrder = jdOrderMapper.queryByThirdOrder(jdOrderVo.getThirdOrder());
+			entity.setThirdOrder(jdOrderVo.getThirdOrder());
+			entity.setPid_nums(jdOrderVo.getPidNums());
+			entity.setReceiverName(jdOrderVo.getReceiverName());
+			entity.setMobile(jdOrderVo.getMobile());
+			entity.setAddress(jdOrderVo.getAddress());
+			entity.setProvince(Integer.parseInt(jdOrderVo.getProvince()));
+			entity.setCity(Integer.parseInt(jdOrderVo.getCity()));
+			entity.setCounty(Integer.parseInt(jdOrderVo.getCounty()));
+        	JdOrderVo  jdOrder = jdOrderMapper.queryByThirdOrder(jdOrderVo.getThirdOrder());
+
        	ResponseOrderSubmitEntity response  = apiOrderService.submit(entity);
          if (response.getRESPONSE_STATUS().equals("false")) {
         	  resultObj.put("errno", 1);
