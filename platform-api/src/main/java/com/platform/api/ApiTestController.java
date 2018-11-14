@@ -535,4 +535,72 @@ public class ApiTestController extends ApiBaseAction{
     	}
     	return stock(productId, Math.round(number/2), address);
     }
+    
+    
+    
+    
+    @ApiOperation(value = "保存二级分类")
+    @PostMapping("queryAllChildsCategorys")
+    @IgnoreAuth
+    public JSONObject queryAllChildsCategorys() {
+    	JSONObject resultObj = new JSONObject();
+    	List<CategoryVo> categorys = apiCategoryMapper.queryAllChildsCategorys();
+    	if(CollectionUtils.isEmpty(categorys)){
+    		resultObj.put("status", "false");
+			resultObj.put("msg", "保存二级分类异常");
+			return resultObj;
+    	}
+		for(CategoryVo vo : categorys){
+			RequestChildsEntity entity = new RequestChildsEntity();
+		    initRequestParam(entity);
+		    entity.setParentCate(vo.getId());
+			try {
+				String result = HttpUtil.post(Urls.base_test_url+Urls.childs, objectToMap(entity));
+				if(StringUtils.isEmpty(result)){
+					resultObj.put("status", "false");
+					resultObj.put("msg", "查询二级分类三方返回数据为空");
+					return resultObj;
+				}
+    			JSONObject dateObj = JSONObject.parseObject(result);
+    			String resultDate = dateObj.get("RESULT_DATA").toString();
+    			if(StringUtils.isEmpty(resultDate)){
+					resultObj.put("status", "false");
+					resultObj.put("msg", "查询二级分类三方返回数据为空");
+					return resultObj;
+				}
+				JSONArray dateAttr = JSONArray.parseArray(resultDate);
+				if(CollectionUtils.isEmpty(dateAttr)){
+					continue;
+				}
+				for(int i = 0;i<dateAttr.size();i++){
+					JSONObject obj = JSONObject.parseObject(dateAttr.get(i).toString());
+					CategoryVo vos = new CategoryVo();
+					List<GoodsVo> goods = apiGoodsMapper.quertGoodsByCategory(obj.get("code").toString());
+					if(!CollectionUtils.isEmpty(goods)){
+						for(GoodsVo good : goods){
+							if(good.getList_pic_url() !=  null){
+								vos.setWap_banner_url(good.getList_pic_url());
+							}
+							break;
+						}
+					}
+					vos.setId(Integer.parseInt(obj.get("code").toString()));
+					vos.setName(obj.get("name").toString());
+					vos.setIs_show(1);
+					vos.setParent_id(vo.getParent_id());
+					vos.setLevel(vo.getLevel());
+					apiCategoryMapper.save(vos);
+				}
+				resultObj.put("status", "success");
+				resultObj.put("msg", "[5.2获取下级产品分类]保存成功");
+			} catch (Exception e) {
+				resultObj.put("status", "false");
+				resultObj.put("msg", "[5.2获取下级产品分类]保存异常");
+				logger.error("[5.2获取下级产品分类]保存异常",e);
+			}
+		}
+    	return resultObj;
+    }
+    
+    
 }

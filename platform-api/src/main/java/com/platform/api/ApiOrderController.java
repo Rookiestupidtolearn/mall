@@ -223,13 +223,15 @@ public class ApiOrderController extends ApiBaseAction {
                     }
                     orderVo.setPay_status(4);
                     orderService.update(orderVo);
-                    UserCouponVo userCoupon=  apiUserCouponMapper.queryObject(orderVo.getCoupon_id());
-                    userCoupon.setCoupon_status(3);
-                    apiUserCouponMapper.update(userCoupon);
-                    saveTranInfoRecord(orderVo.getUser_id(), "1", "2", userCoupon.getCoupon_price(), BigDecimal.ZERO, "取消订单，原优惠券作废");
-                    userAmountVo.setAmount(userAmountVo.getAmount().add(userCoupon.getCoupon_price()));
-                    qzUserAccountMapper.update(userAmountVo);
-                    saveTranInfoRecord(orderVo.getUser_id(), "2", "1", userCoupon.getCoupon_price(), userAmountVo.getAmount(), "取消订单，原优惠券回滚到平台币");
+                    if(userAmountVo != null){
+                    	UserCouponVo userCoupon=  apiUserCouponMapper.queryObject(orderVo.getCoupon_id());
+                    	userCoupon.setCoupon_status(3);
+                    	apiUserCouponMapper.update(userCoupon);
+                    	saveTranInfoRecord(orderVo.getUser_id(), "1", "2", userCoupon.getCoupon_price(), BigDecimal.ZERO, "取消订单，原优惠券作废");
+                    	userAmountVo.setAmount(userAmountVo.getAmount().add(userCoupon.getCoupon_price()));
+                    	qzUserAccountMapper.update(userAmountVo);
+                    	saveTranInfoRecord(orderVo.getUser_id(), "2", "1", userCoupon.getCoupon_price(), userAmountVo.getAmount(), "取消订单，原优惠券回滚到平台币");
+                    }
                     return toResponsMsgSuccess("取消成功");
                     
                 } else {
@@ -238,13 +240,15 @@ public class ApiOrderController extends ApiBaseAction {
             } else {
                 orderVo.setOrder_status(101);
                 orderService.update(orderVo);
-                UserCouponVo userCoupon=  apiUserCouponMapper.queryObject(orderVo.getCoupon_id());
-                userCoupon.setCoupon_status(3);
-                apiUserCouponMapper.update(userCoupon);
-                saveTranInfoRecord(orderVo.getUser_id(), "1", "2", userCoupon.getCoupon_price(), userCoupon.getCoupon_price(), "取消订单，原优惠券作废");
-                userAmountVo.setAmount(userAmountVo.getAmount().add(userCoupon.getCoupon_price()));
-                qzUserAccountMapper.updateUserAccount(userAmountVo);
-                saveTranInfoRecord(orderVo.getUser_id(), "2", "1", userCoupon.getCoupon_price(), userAmountVo.getAmount(), "取消订单，原优惠券回滚到平台币");
+                if(userAmountVo != null){
+                	UserCouponVo userCoupon=  apiUserCouponMapper.queryObject(orderVo.getCoupon_id());
+                	userCoupon.setCoupon_status(3);
+                	apiUserCouponMapper.update(userCoupon);
+                	saveTranInfoRecord(orderVo.getUser_id(), "1", "2", userCoupon.getCoupon_price(), userCoupon.getCoupon_price(), "取消订单，原优惠券作废");
+                	userAmountVo.setAmount(userAmountVo.getAmount().add(userCoupon.getCoupon_price()));
+                	qzUserAccountMapper.updateUserAccount(userAmountVo);
+                	saveTranInfoRecord(orderVo.getUser_id(), "2", "1", userCoupon.getCoupon_price(), userAmountVo.getAmount(), "取消订单，原优惠券回滚到平台币");
+                }
                 return toResponsSuccess("取消成功");
             }
         } catch (Exception e) {
