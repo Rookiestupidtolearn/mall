@@ -14,7 +14,7 @@
 		  	<div class="goods-info">
 		     <div class="c">
 		        <p class="name">{{goods.name}}</p>
-		        <p class="desc">{{goods.goods_brief}}</p>
+		        <!--<p class="desc">{{goods.goods_brief}}</p>-->
 		        <p class="price">￥{{goods.market_price}}</p>
 		        <div class="brand" v-if="!brandShow"></div>
 		        <div class="brand" v-else>
@@ -1056,6 +1056,7 @@ overflow: hidden;
     font-size: .35rem;
     line-height: .35rem;
     color: #b4282d;
+    margin-top: .23rem;
 }
 
 .goods-info .brand{

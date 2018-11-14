@@ -17,12 +17,12 @@
 				<img :src="item.list_pic_url"/>
 				<div class="right">
 					<p class="name">{{item.name}}</p>
-					<p class="goods_brief">{{item.goods_brief}}</p>
+					<!--<p class="goods_brief">{{item.goods_brief}}</p>-->
 					<p class="market_price">￥{{item.market_price}}</p>
 				</div>
 			</router-link>
 		</div>
-		<div class="category" v-for="item in category">
+		<!--<div class="category" v-for="item in category">
 			<p class="instr">{{item.name}}</p>
 			<div class="listAmount">
 				<router-link v-for="goods in item.goodsList" :to="'/pages/category/goods?id='+goods.id">
@@ -35,7 +35,7 @@
 					<p><img class="icon" src="../../static/images/icon_go_more.png" background-size="cover"/></p>
 				</router-link>
 			</div>
-		</div>
+		</div>-->
 		<!--公用底部导航-->
   	<tabbar :selected="selected" :tabs='tabs'></tabbar> 
   </div>

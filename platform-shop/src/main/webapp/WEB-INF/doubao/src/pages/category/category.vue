@@ -8,10 +8,10 @@
 		    </div>
 	    </div>
 	   <div class="cate-item" >
-	        <div class="h">
+	        <!--<div class="h">
 	            <p class="name">{{currentCategory.name}}</p>
 	            <p class="desc">{{currentCategory.front_name}}</p>
-	        </div>
+	        </div>-->
 	        <div class="b">
 	            <router-link :to="'/pages/goods/goods?id='+iitem.id" class="item [(iindex + 1) % 2 == 0 ? 'item-b' : '']"   v-for="(iitem,index) in goodsList" >
 	                <img class="img" :src="iitem.list_pic_url" background-size="cover"/>
@@ -121,7 +121,7 @@
 }
 
 .cate-item{
-    margin-top: 1.3rem;
+    margin-top: 1.05rem;
     height: auto;
     overflow: hidden;
 }
