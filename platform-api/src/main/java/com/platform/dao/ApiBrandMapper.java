@@ -1,5 +1,7 @@
 package com.platform.dao;
 
+import java.util.List;
+
 import com.platform.entity.BrandVo;
 
 /**
@@ -11,4 +13,8 @@ import com.platform.entity.BrandVo;
  */
 public interface ApiBrandMapper extends BaseDao<BrandVo> {
 	
+	/*
+	 * 根据品牌商名称查询
+	 */
+	List<BrandVo> quertBrandByNames(String brandName);
 }

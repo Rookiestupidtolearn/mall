@@ -77,4 +77,17 @@ public interface SysRegionService {
 	 * @return
 	 */
 	List<SysRegionEntity> queryAllByType(int type);
+
+	/**
+	 * 根据条件查询地址数据
+	 * @param paramMap
+	 * @return
+	 */
+	List<SysRegionEntity> queryDate(Map<String, Object> paramMap);
+
+	/**
+	 * 批量插入三方接口数据
+	 * @param sysRegionEntityList
+	 */
+	int insertBatch(List<SysRegionEntity> sysRegionEntityList);
 }

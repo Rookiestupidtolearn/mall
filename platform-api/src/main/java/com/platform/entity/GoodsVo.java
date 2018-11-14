@@ -82,6 +82,10 @@ public class GoodsVo implements Serializable {
     private Integer product_id;
     //有规格时最低市场价格
     private BigDecimal product_market_price;
+    //是否支持7天无理由退货 0不支持 1支持
+    private Integer is_7_ToReturn;
+    //商品来源
+    private String source;
 
     public Integer getId() {
         return id;
@@ -354,4 +358,21 @@ public class GoodsVo implements Serializable {
     public void setMarket_price(BigDecimal market_price) {
         this.market_price = market_price;
     }
+
+	public Integer getIs_7_ToReturn() {
+		return is_7_ToReturn;
+	}
+
+	public void setIs_7_ToReturn(Integer is_7_ToReturn) {
+		this.is_7_ToReturn = is_7_ToReturn;
+	}
+
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
+	}
+    
 }

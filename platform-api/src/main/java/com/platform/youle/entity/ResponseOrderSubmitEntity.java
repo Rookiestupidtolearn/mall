@@ -1,7 +1,7 @@
 package com.platform.youle.entity;
 
-import java.util.Map;
+import com.platform.youle.entity.result.ResponseResultEntity;
 
-public class ResponseOrderSubmitEntity extends ResponseBaseEntity<Map> {
+public class ResponseOrderSubmitEntity extends ResponseBaseEntity<ResponseResultEntity> {
 
 }

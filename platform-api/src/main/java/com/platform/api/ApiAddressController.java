@@ -52,9 +52,12 @@ public class ApiAddressController extends ApiBaseAction {
     @PostMapping("detail")
     public Object detail(Integer id, @LoginUser UserVo loginUser) {
         AddressVo entity = addressService.queryObject(id);
+        if(null == entity){
+        	return toResponsSuccess(entity);
+        }
         //判断越权行为
-        if (!entity.getUserId().equals(loginUser.getUserId())) {
-            return toResponsObject(403, "您无权查看", "");
+        if(loginUser.getUserId().intValue()!=entity.getUserId()){
+        	return toResponsObject(403, "您无权查看", "");
         }
         return toResponsSuccess(entity);
     }
@@ -68,17 +71,26 @@ public class ApiAddressController extends ApiBaseAction {
         JSONObject addressJson = this.getJsonRequest();
         AddressVo entity = new AddressVo();
         if (null != addressJson) {
-            entity.setId(addressJson.getLong("id"));
-            entity.setUserId(loginUser.getUserId());
+            entity.setId(addressJson.getInteger("id"));
+            entity.setUserId(Integer.valueOf(loginUser.getUserId()+""));
             entity.setUserName(addressJson.getString("userName"));
             entity.setPostalCode(addressJson.getString("postalCode"));
             entity.setProvinceName(addressJson.getString("provinceName"));
             entity.setCityName(addressJson.getString("cityName"));
             entity.setCountyName(addressJson.getString("countyName"));
+            entity.setTownName(addressJson.getString("townName"));
+            entity.setProvince(addressJson.getString("province"));
+            entity.setCity(addressJson.getString("city"));
+            entity.setCounty(addressJson.getString("district"));
+            if("0".equals(addressJson.getString("town"))){
+            	entity.setTown("");
+            }else{
+            	 entity.setTown(addressJson.getString("town"));
+            }
             entity.setDetailInfo(addressJson.getString("detailInfo"));
             entity.setNationalCode(addressJson.getString("nationalCode"));
             entity.setTelNumber(addressJson.getString("telNumber"));
-            entity.setIs_default(addressJson.getInteger("is_default"));
+            entity.setIsDefault(addressJson.getInteger("is_default"));
         }
         if (null == entity.getId() || entity.getId() == 0) {
             entity.setId(null);
@@ -100,8 +112,8 @@ public class ApiAddressController extends ApiBaseAction {
 
         AddressVo entity = addressService.queryObject(id);
         //判断越权行为
-        if (!entity.getUserId().equals(loginUser.getUserId())) {
-            return toResponsObject(403, "您无权删除", "");
+        if(loginUser.getUserId().intValue()!=entity.getUserId()){
+        	return toResponsObject(403, "您无权查看", "");
         }
         addressService.delete(id);
         return toResponsSuccess("");

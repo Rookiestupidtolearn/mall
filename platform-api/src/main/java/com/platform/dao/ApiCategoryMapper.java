@@ -1,5 +1,7 @@
 package com.platform.dao;
 
+import java.util.List;
+
 import com.platform.entity.CategoryVo;
 
 /**
@@ -10,5 +12,17 @@ import com.platform.entity.CategoryVo;
  * @date 2017-08-11 09:14:25
  */
 public interface ApiCategoryMapper extends BaseDao<CategoryVo> {
+	
+	/**
+	 * 查询所有分类
+	 * @return
+	 */
+	List<CategoryVo> queryAllCategorys();
+	/**
+	 * 查询所有分类商品ids
+	 * @return
+	 */
+	List<Integer> quertOtherIds();
+	
 	
 }

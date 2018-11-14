@@ -22,6 +22,9 @@ public class GoodsCouponConfigEntity  implements Serializable {
     private double normalMatching;
     //活动配比值
     private double activityMatching;
+    //支付配比
+    private double payMatching;
+    
     //
     private Long createUserId;
     //
@@ -225,6 +228,14 @@ public class GoodsCouponConfigEntity  implements Serializable {
 
 	public void setGoodsId(Integer goodsId) {
 		this.goodsId = goodsId;
+	}
+
+	public double getPayMatching() {
+		return payMatching;
+	}
+
+	public void setPayMatching(double payMatching) {
+		this.payMatching = payMatching;
 	}
 
 

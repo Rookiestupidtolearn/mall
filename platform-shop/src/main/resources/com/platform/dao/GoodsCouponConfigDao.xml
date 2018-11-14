@@ -8,6 +8,7 @@
         <result property="goodsId" column="goods_id"/>
         <result property="normalMatching" column="normal_matching"/>
         <result property="activityMatching" column="activity_matching"/>
+        <result property="payMatching" column="pay_matching"/>
         <result property="createUserId" column="create_user_id"/>
         <result property="updateUserId" column="update_user_id"/>
         <result property="updateTime" column="update_time"/>
@@ -25,7 +26,8 @@
 			`update_user_id`,
 			`update_time`,
 			`create_user_dept_id`,
-			`del_flag`
+			`del_flag`,
+			pay_matching
 		from goods_coupon_config
 		where id = #{id}
 	</select>
@@ -48,6 +50,7 @@
 		goods_coupon_config.update_user_id  update_user_id,
 	 	goods_coupon_config.update_time update_time,
 	 	goods_coupon_config.del_flag del_flag,
+	 	goods_coupon_config.pay_matching,
 	 	nideshop_goods.id  goodsId,
 	 	nideshop_goods.category_id categoryId,
 	 	nideshop_category.NAME categoryName,
@@ -105,6 +108,7 @@
 			`goods_id`,
 			`normal_matching`,
 			`activity_matching`,
+			`pay_matching`,
 			`create_user_id`,
 			`update_user_id`,
 			`update_time`,
@@ -114,6 +118,7 @@
 			#{goodsId},
 			#{normalMatching},
 			#{activityMatching},
+			#{payMatching},
 			#{createUserId},
 			#{updateUserId},
 			#{updateTime},
@@ -127,6 +132,7 @@
 			<if test="goodsId != null">`goods_id` = #{goodsId}, </if>
 			<if test="normalMatching != null">`normal_matching` = #{normalMatching}, </if>
 			<if test="activityMatching != null">`activity_matching` = #{activityMatching}, </if>
+			<if test="payMatching != null">`pay_matching` = #{payMatching}, </if>
 			<if test="createUserId != null">`create_user_id` = #{createUserId}, </if>
 			<if test="updateUserId != null">`update_user_id` = #{updateUserId}, </if>
 			<if test="updateTime != null">`update_time` = #{updateTime}, </if>

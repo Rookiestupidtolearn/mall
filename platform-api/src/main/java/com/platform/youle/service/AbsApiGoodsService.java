@@ -80,7 +80,7 @@ public abstract class AbsApiGoodsService implements IApiFuncServicein {
 	 * @param address
 	 * @return
 	 */
-	protected abstract ResponseProductEntity stock(String pid, Integer num, String address);
+	public abstract ResponseProductEntity stock(String pid, Integer num, String address);
 
 	/**
 	 * 1.5批量查询商品库存
@@ -89,7 +89,7 @@ public abstract class AbsApiGoodsService implements IApiFuncServicein {
 	 * @param address
 	 * @return
 	 */
-	protected abstract ResponseProductStockBatchEntity stockBatch(String pid_nums, String address);
+	public abstract ResponseProductStockBatchEntity stockBatch(String pid_nums, String address);
 
 	/**
 	 * 1.6查询商品可售状态
@@ -114,7 +114,7 @@ public abstract class AbsApiGoodsService implements IApiFuncServicein {
 	 * @return
 	 */
 
-	protected abstract ResponseBaseEntity<?> batchSaleStatus(String pids);
+	public abstract ResponseBatchSaleEntity batchSaleStatus(String pids);
 
 	/**
 	 * 1.9批量查询商品协议价

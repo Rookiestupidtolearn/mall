@@ -8,6 +8,8 @@ import java.util.Map;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alibaba.fastjson.JSONObject;
 import com.platform.annotation.IgnoreAuth;
 import com.platform.annotation.LoginUser;
 import com.platform.dao.ApiOrderMapper;
@@ -31,6 +32,7 @@ import com.platform.entity.UserVo;
 import com.platform.service.ApiKdniaoService;
 import com.platform.service.ApiOrderGoodsService;
 import com.platform.service.ApiOrderService;
+import com.platform.service.JdOrderService;
 import com.platform.util.ApiBaseAction;
 import com.platform.util.ApiPageUtils;
 import com.platform.util.wechat.WechatRefundApiResult;
@@ -49,6 +51,8 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/api/order")
 public class ApiOrderController extends ApiBaseAction {
+	private Logger logger = LoggerFactory.getLogger(getClass());
+
     @Autowired
     private ApiOrderService orderService;
     @Autowired
@@ -63,7 +67,9 @@ public class ApiOrderController extends ApiBaseAction {
     private ApiOrderMapper apiOrderMapper;
     @Autowired
     private ApiTranInfoRecordMapper apiTranInfoRecordMapper;
-
+    @Autowired
+    private JdOrderService JdOrderService;
+    
     /**
      */
     @ApiOperation(value = "订单首页")
@@ -168,11 +174,12 @@ public class ApiOrderController extends ApiBaseAction {
             return toResponsMsgSuccess("修改订单成功");
         } else {
             return toResponsFail("修改订单失败");
+
         }
     }
 
     /**
-     * 获取订单列表
+     * 订单提交
      */
     @ApiOperation(value = "订单提交")
     @PostMapping("submit")
@@ -198,13 +205,18 @@ public class ApiOrderController extends ApiBaseAction {
     public Object cancelOrder(Integer orderId) {
         try {
             OrderVo orderVo = orderService.queryObject(orderId);
-            QzUserAccountVo userAmountVo =qzUserAccountMapper.queruUserAccountInfo(orderVo.getUser_id());
             if (orderVo.getOrder_status() == 300) {
                 return toResponsFail("已发货，不能取消");
             } else if (orderVo.getOrder_status() == 301) {
                 return toResponsFail("已收货，不能取消");
             }
+            if (orderVo.getOrder_status() !=0) {
+				return toResponsFail("订单初始完毕，该订单不能取消");
+			}
+            //取消本系统的订单
             
+     
+           QzUserAccountVo userAmountVo =qzUserAccountMapper.queruUserAccountInfo(orderVo.getUser_id());
             /*
              * 0 订单创建成功等待付款，　101订单已取消，　102订单已删除
              * 201订单已付款，等待发货
@@ -212,7 +224,7 @@ public class ApiOrderController extends ApiBaseAction {
              * 401 没有发货，退款　402 已收货，退款退货
              */
             // 需要退款
-            if (orderVo.getPay_status() == 2) {
+             if (orderVo.getPay_status() == 2) {
                 WechatRefundApiResult result = WechatUtil.wxRefund(orderVo.getId().toString(),
                         0.01, 0.01);
                 if (result.getResult_code().equals("SUCCESS")) {
@@ -223,28 +235,37 @@ public class ApiOrderController extends ApiBaseAction {
                     }
                     orderVo.setPay_status(4);
                     orderService.update(orderVo);
-                    UserCouponVo userCoupon=  apiUserCouponMapper.queryObject(orderVo.getCoupon_id());
-                    userCoupon.setCoupon_status(3);
-                    apiUserCouponMapper.update(userCoupon);
-                    saveTranInfoRecord(orderVo.getUser_id(), "1", "2", userCoupon.getCoupon_price(), BigDecimal.ZERO, "取消订单，原优惠券作废");
-                    userAmountVo.setAmount(userAmountVo.getAmount().add(userCoupon.getCoupon_price()));
-                    qzUserAccountMapper.update(userAmountVo);
-                    saveTranInfoRecord(orderVo.getUser_id(), "2", "1", userCoupon.getCoupon_price(), userAmountVo.getAmount(), "取消订单，原优惠券回滚到平台币");
+                    //取消京东订单
+                    JdOrderService.cancelByOrderKey(orderVo);
+                    
+//                    UserCouponVo userCoupon=  apiUserCouponMapper.queryObject(orderVo.getCoupon_id());
+//                    userCoupon.setCoupon_status(3);
+//                    apiUserCouponMapper.update(userCoupon);
+//                    saveTranInfoRecord(orderVo.getUser_id(), "1", "2", userCoupon.getCoupon_price(), BigDecimal.ZERO, "取消订单，原优惠券作废");
+//                    userAmountVo.setAmount(userAmountVo.getAmount().add(userCoupon.getCoupon_price()));
+//                    qzUserAccountMapper.update(userAmountVo);
+//                    saveTranInfoRecord(orderVo.getUser_id(), "2", "1", userCoupon.getCoupon_price(), userAmountVo.getAmount(), "取消订单，原优惠券回滚到平台币");
+//                 
                     return toResponsMsgSuccess("取消成功");
                     
                 } else {
                     return toResponsObject(400, "取消成失败", "");
                 }
             } else {
-                orderVo.setOrder_status(101);
-                orderService.update(orderVo);
-                UserCouponVo userCoupon=  apiUserCouponMapper.queryObject(orderVo.getCoupon_id());
-                userCoupon.setCoupon_status(3);
-                apiUserCouponMapper.update(userCoupon);
-                saveTranInfoRecord(orderVo.getUser_id(), "1", "2", userCoupon.getCoupon_price(), userCoupon.getCoupon_price(), "取消订单，原优惠券作废");
-                userAmountVo.setAmount(userAmountVo.getAmount().add(userCoupon.getCoupon_price()));
-                qzUserAccountMapper.updateUserAccount(userAmountVo);
-                saveTranInfoRecord(orderVo.getUser_id(), "2", "1", userCoupon.getCoupon_price(), userAmountVo.getAmount(), "取消订单，原优惠券回滚到平台币");
+                   orderVo.setOrder_status(101);
+                   orderService.update(orderVo);
+                   UserCouponVo userCoupon=  apiUserCouponMapper.queryObject(orderVo.getCoupon_id());
+                   if (userCoupon != null) {
+                     userCoupon.setCoupon_status(3);
+                     apiUserCouponMapper.update(userCoupon);
+                     saveTranInfoRecord(orderVo.getUser_id(), "1", "2", userCoupon.getCoupon_price(), userCoupon.getCoupon_price(), "取消订单，原优惠券作废");
+                     userAmountVo.setAmount(userAmountVo.getAmount().add(userCoupon.getCoupon_price()));
+                     qzUserAccountMapper.updateUserAccount(userAmountVo);
+                     saveTranInfoRecord(orderVo.getUser_id(), "2", "1", userCoupon.getCoupon_price(), userAmountVo.getAmount(), "取消订单，原优惠券回滚到平台币");
+				  }
+          
+                //取消京东订单
+                JdOrderService.cancelByOrderKey(orderVo);
                 return toResponsSuccess("取消成功");
             }
         } catch (Exception e) {

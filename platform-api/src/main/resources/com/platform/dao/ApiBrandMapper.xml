@@ -48,7 +48,9 @@
     <select id="queryTotal" resultType="int">
 		select count(*) from nideshop_brand 
 	</select>
-
+	<select id="quertBrandByNames" resultMap = "brandMap">
+		select * from nideshop_brand where name = #{brandName}
+	</select>
     <insert id="save" parameterType="com.platform.entity.BrandVo" useGeneratedKeys="true" keyProperty="id">
 		insert into nideshop_brand
 		(
