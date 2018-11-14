@@ -24,5 +24,7 @@ public interface ApiCategoryMapper extends BaseDao<CategoryVo> {
 	 */
 	List<Integer> quertOtherIds();
 	
+	List<CategoryVo> queryAllChildsCategorys();
+	
 	
 }
