@@ -71,7 +71,6 @@ public class ApiAddressController extends ApiBaseAction {
         JSONObject addressJson = this.getJsonRequest();
         AddressVo entity = new AddressVo();
         if (null != addressJson) {
-        	System.out.println(addressJson.getString("townName"));
             entity.setId(addressJson.getInteger("id"));
             entity.setUserId(Integer.valueOf(loginUser.getUserId()+""));
             entity.setUserName(addressJson.getString("userName"));
@@ -79,11 +78,15 @@ public class ApiAddressController extends ApiBaseAction {
             entity.setProvinceName(addressJson.getString("provinceName"));
             entity.setCityName(addressJson.getString("cityName"));
             entity.setCountyName(addressJson.getString("countyName"));
-            entity.setTownName("null".equals(addressJson.getString("townName")) ? "" : addressJson.getString("townName"));
+            entity.setTownName(addressJson.getString("townName"));
             entity.setProvince(addressJson.getString("province"));
             entity.setCity(addressJson.getString("city"));
             entity.setCounty(addressJson.getString("district"));
-            entity.setTown(addressJson.getString("town"));
+            if("0".equals(addressJson.getString("town"))){
+            	entity.setTown("");
+            }else{
+            	 entity.setTown(addressJson.getString("town"));
+            }
             entity.setDetailInfo(addressJson.getString("detailInfo"));
             entity.setNationalCode(addressJson.getString("nationalCode"));
             entity.setTelNumber(addressJson.getString("telNumber"));
