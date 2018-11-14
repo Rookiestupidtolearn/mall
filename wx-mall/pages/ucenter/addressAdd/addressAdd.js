@@ -83,7 +83,7 @@ Page({
     this.setData({
       openSelectRegion: !this.data.openSelectRegion
     });
-
+    console.log(that.data.selectRegionList);
     //设置区域选择数据
     let address = this.data.address;
     if (address.province_id > 0 && address.city_id > 0 && address.district_id > 0) {
@@ -108,15 +108,15 @@ Page({
         selectRegionList: selectRegionList,
         regionType: 3
       });
-
+      console.log(that.data.selectRegionList);
       this.getRegionList(address.city_id);
     } else {
       this.setData({
         selectRegionList: [
-			{ id: 0, name: '省份', parent_id: 1, type: 1 },
-			{ id: 0, name: '城市', parent_id: 1, type: 2 },
-			{ id: 0, name: '区县', parent_id: 1, type: 3 },
-			{ id: 0, name: '乡镇', parent_id: 1, type: 4 }
+          { id: 0, name: '省份', parent_id: 1, type: 1 },
+          { id: 0, name: '城市', parent_id: 1, type: 2 },
+          { id: 0, name: '区县', parent_id: 1, type: 3 },
+          { id: 0, name: '乡镇', parent_id: 1, type: 4 }
         ],
         regionType: 1
       })
@@ -149,9 +149,13 @@ Page({
     console.log("regionTypeIndex:"+regionTypeIndex);
     
     //判断是否可点击
-    if (regionTypeIndex + 1 == this.data.regionType || (regionTypeIndex - 1 >= 0 && selectRegionList[regionTypeIndex-1].id <= 0)) {
+    if (selectRegionList[regionTypeIndex].id == 0){
       return false;
     }
+
+    //if (regionTypeIndex + 1 == this.data.regionType || (regionTypeIndex - 1 >= 0 && selectRegionList[regionTypeIndex-1].id <= 0)) {
+     // return false;
+   // }
 
     this.setData({
       regionType: regionTypeIndex + 1
@@ -187,9 +191,10 @@ Page({
 
     //重置下级区域为空
     selectRegionList.map((item, index) => {
+    
       if (index > regionType - 1) {
         item.id = 0;
-       // item.name = index == 1 ? '城市' : '区县';
+        // item.name = index == 1 ? '城市' : '区县';
         if(index == 1){
         	item.name ='城市';
         }
@@ -267,34 +272,56 @@ Page({
     util.request(api.RegionList, { parentId: regionId }).then(function (res) {
       if (res.errno === 0) {
     	 if(res.data != 0){
-    			 that.setData({
-     		        selectRegionList:[
-     		              			{ id: selectRegionList[0].id, name: selectRegionList[0].name, parent_id: selectRegionList[0].parent_id, type: selectRegionList[0].type },
-     		              			{ id: selectRegionList[1].id, name: selectRegionList[1].name, parent_id: selectRegionList[1].parent_id, type: selectRegionList[1].type },
-     		              			{ id: selectRegionList[2].id, name: selectRegionList[2].name, parent_id: selectRegionList[2].parent_id, type: selectRegionList[2].type },
-     		              			{ id: 0, name: '乡镇', parent_id: 1, type: 4 }
-     		              			]
-     		      })
+         if (regionType == 1){
+           that.setData({
+             selectRegionList: [
+               { id: selectRegionList[0].id, name: selectRegionList[0].name, parent_id: selectRegionList[0].parent_id,      type: selectRegionList[0].type },
+               { id: 0, name: '城市', parent_id: 1, type: 2 },
+               { id: 0, name: '区县', parent_id: 1, type: 3 },
+               { id: 0, name: '乡镇', parent_id: 1, type: 4 }
+             ]
+           })
+         } else if (regionType == 2){
+           that.setData({
+             selectRegionList: [
+               { id: selectRegionList[0].id, name: selectRegionList[0].name, parent_id: selectRegionList[0].parent_id, type: selectRegionList[0].type },
+               { id: selectRegionList[1].id, name: selectRegionList[1].name, parent_id: selectRegionList[1].parent_id, type: selectRegionList[1].type },
+               { id: 0, name: '区县', parent_id: 1, type: 3 },
+               { id: 0, name: '乡镇', parent_id: 1, type: 4 }
+             ]
+           })
+         } else if (regionType == 3){
+           that.setData({
+             selectRegionList: [
+               { id: selectRegionList[0].id, name: selectRegionList[0].name, parent_id: selectRegionList[0].parent_id, type: selectRegionList[0].type },
+               { id: selectRegionList[1].id, name: selectRegionList[1].name, parent_id: selectRegionList[1].parent_id, type: selectRegionList[1].type },
+               { id: selectRegionList[2].id, name: selectRegionList[2].name, parent_id: selectRegionList[2].parent_id, type: selectRegionList[2].type },
+               { id: 0, name: '乡镇', parent_id: 1, type: 4 }
+             ]
+           })
+         }
     		 that.setData({
-    	          regionList: res.data.map(item => {
-    	            //标记已选择的
-    	            if (regionType == item.type && that.data.selectRegionList[regionType - 1].id == item.id) {
-    	              item.selected = true;
-    	            } else {
-    	              item.selected = false;
-    	            }
-
-    	            return item;
-    	          })
-    	     });
+            regionList: res.data.map(item => {
+              //标记已选择的
+              if (regionType == item.type && that.data.selectRegionList[regionType - 1].id == item.id) {
+                item.selected = true;
+              } else {
+                item.selected = false;
+              }
+              return item;
+            })
+          });
     	 }else{
-    		 that.setData({
-    		        selectRegionList:[
-    		              			{ id: selectRegionList[0].id, name: selectRegionList[0].name, parent_id: selectRegionList[0].parent_id, type: selectRegionList[0].type },
-    		              			{ id: selectRegionList[1].id, name: selectRegionList[1].name, parent_id: selectRegionList[1].parent_id, type: selectRegionList[1].type },
-    		              			{ id: selectRegionList[2].id, name: selectRegionList[2].name, parent_id: selectRegionList[2].parent_id, type: selectRegionList[2].type }
-    		                    ]
-    		      })
+         if(that.data.regionType == 4){
+           that.setData({
+             selectRegionDone:true,
+             selectRegionList: [
+               { id: selectRegionList[0].id, name: selectRegionList[0].name, parent_id: selectRegionList[0].parent_id, type: selectRegionList[0].type },
+               { id: selectRegionList[1].id, name: selectRegionList[1].name, parent_id: selectRegionList[1].parent_id, type: selectRegionList[1].type },
+               { id: selectRegionList[2].id, name: selectRegionList[2].name, parent_id: selectRegionList[2].parent_id, type: selectRegionList[2].type }   
+             ]
+           })
+         }
     	 }
       }
     });
