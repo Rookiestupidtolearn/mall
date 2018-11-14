@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -113,6 +112,13 @@ public class ApiOrderService {
         AddressVo addressVo = apiAddressMapper.queryObject(jsonParam.getInteger("addressId"));
 
         BigDecimal freightPrice = BigDecimal.ZERO;
+
+        if (addressVo == null) {
+            resultObj.put("errno", 400);
+            resultObj.put("errmsg", "用户地址为空，不能下单!");
+            return resultObj;
+		}
+        
 
         // * 获取要购买的商品
         List<CartVo> checkedGoodsList = new ArrayList<>();
