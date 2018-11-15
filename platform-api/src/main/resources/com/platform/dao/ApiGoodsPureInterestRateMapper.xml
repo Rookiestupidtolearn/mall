@@ -87,15 +87,15 @@
   		`create_user_id`,
   		`memo`
   		)values
-  		<foreach collection="list" item="GoodsPureInterestRateVo" separator =",">
-  		(#{goodsId},
-  		#{productId},
-  		#{retailPrice},
-  		#{marketPrice},
-  		#{pureInterestRate},
-  		#{createTime},
-  		#{createUserId},
-  		#{memo})
+  		<foreach collection="list" item="goodsPureInterestRateVo" separator =",">
+  		(#{goodsPureInterestRateVo.goodsId},
+  		#{goodsPureInterestRateVo.productId},
+  		#{goodsPureInterestRateVo.retailPrice},
+  		#{goodsPureInterestRateVo.marketPrice},
+  		#{goodsPureInterestRateVo.pureInterestRate},
+  		#{goodsPureInterestRateVo.createTime},
+  		#{goodsPureInterestRateVo.createUserId},
+  		#{goodsPureInterestRateVo.memo})
   		</foreach>
 	</insert>
 	
