@@ -93,7 +93,7 @@
 	import { MessageBox } from 'mint-ui';
 		
 	export default {
-	  name: 'checkout',
+	  name: 'payResult',
 	  data () {
 	    return {
 	    	checkedGoodsList: [],
@@ -138,10 +138,10 @@
 	 },
 	 methods:{
 	 	tapCoupon(){
-	 		this.$router.push('/pages/category/selCoupon?buyType=' + this.buyType);
+	 		this.$router.push('/pages/category/address?buyType=' + that.data.buyType);
 	 	},
 	 	selectAddress(){
-	 		this.$router.push( '/views/ucenter/addressList');
+	 		this.$router.push( '/pages/category/address');
 	 	},
 	 	addAddress(){
 	 		this.$router.push( '/pages/category/addressAdd');
