@@ -70,7 +70,7 @@
 		select count(*) from nideshop_product 
 	</select>
 	
-    <select id="queryGoodsMatchingInfo" resultType="com.platform.entity.ProductVo">
+    <select id="queryGoodsMatchingInfo" resultMap="productMap">
 		select 
 		np.id,
 		np.goods_id,
