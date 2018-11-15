@@ -304,5 +304,8 @@
 		select * from
 	    nideshop_goods where category_id = #{categoryId}
 	</select>
-	
+	<select id = "queryGoodsBySn" resultMap="goodsMap"> 
+		select * from
+	    nideshop_goods where goods_sn = #{goodsn}
+	</select>
 </mapper>
