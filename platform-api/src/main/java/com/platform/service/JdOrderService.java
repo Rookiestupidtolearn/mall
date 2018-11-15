@@ -82,6 +82,7 @@ public class JdOrderService {
 			entity.setProvince(Integer.parseInt(jdOrderVo.getProvince()));
 			entity.setCity(Integer.parseInt(jdOrderVo.getCity()));
 			entity.setCounty(Integer.parseInt(jdOrderVo.getCounty()));
+			entity.setTown(Integer.parseInt(jdOrderVo.getTown()));
         	JdOrderVo  jdOrder = jdOrderMapper.queryByThirdOrder(jdOrderVo.getThirdOrder());
 
        	ResponseOrderSubmitEntity response  = apiOrderService.submit(entity);
