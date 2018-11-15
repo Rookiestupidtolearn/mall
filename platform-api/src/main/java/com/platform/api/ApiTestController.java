@@ -1,6 +1,7 @@
 package com.platform.api;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -32,10 +33,12 @@ import com.platform.dao.JdGoodsMapper;
 import com.platform.entity.BrandVo;
 import com.platform.entity.CategoryVo;
 import com.platform.entity.GoodsGalleryVo;
+import com.platform.entity.GoodsPureInterestRateVo;
 import com.platform.entity.GoodsVo;
 import com.platform.entity.ProductVo;
 import com.platform.entity.ThirdPartyRegionEntity;
 import com.platform.entity.UserVo;
+import com.platform.service.ApiGoodsPureInterestRateService;
 import com.platform.service.ApiUserService;
 import com.platform.service.ThirdPartyRegionService;
 import com.platform.utils.GenerateCodeUtil;
@@ -87,6 +90,8 @@ public class ApiTestController {
     private AbsApiOrderService  orderService;
     @Autowired
     private AbsApiRegionService  absApiRegionService;
+    @Autowired
+    private  ApiGoodsPureInterestRateService apiGoodsPureInterestRateService;
     
     @Autowired
     private ApiCategoryMapper apiCategoryMapper;
@@ -103,6 +108,7 @@ public class ApiTestController {
     private JdGoodsImgPathMapper goodsImagePathMapper;
     @Autowired
     private ApiProductMapper apiProductMapper;
+    
     //查询库存默认地址
     private String DEFAULT_ADDRESS = "1_72_2799";
     
@@ -395,6 +401,7 @@ public class ApiTestController {
    @PostMapping("saveGoods")
    @Transactional
    public JSONObject saveGoods(){
+	   List<GoodsPureInterestRateVo> goodsPureInterestRateVoList = new ArrayList<>(); //批量保存毛利率
    	JSONObject resultObj = new JSONObject();
    	String porducts = this.queryAllProduects();
 //   	JSONArray proAttr = JSONArray.parseArray(porducts);
@@ -476,6 +483,10 @@ public class ApiTestController {
 					}
 					apiGoodsMapper.save(vo);
 					saveProduct(vo);
+					GoodsPureInterestRateVo goodsPureInterestRateVo = saveGoodsPureInterestRate(vo); //保存商品毛利率
+					if(null != goodsPureInterestRateVo){
+						goodsPureInterestRateVoList.add(goodsPureInterestRateVo);
+					}
 				}
 				if(resultDate.get("PRODUCT_IMAGE") != null){
 					JSONArray imgattr = JSONArray.parseArray(resultDate.get("PRODUCT_IMAGE").toString());
@@ -497,12 +508,41 @@ public class ApiTestController {
 				continue;
 			}
 		}
+		if(CollectionUtils.isNotEmpty(goodsPureInterestRateVoList)){
+			//执行批量保存商品毛利率
+			apiGoodsPureInterestRateService.saveBatch(goodsPureInterestRateVoList);
+		}
 		resultObj.put("status", "success");
 		return resultObj;
 //   		}
 //   	}
    }
    /**
+    * 保存商品毛利率
+    * @param vo
+    */
+   private GoodsPureInterestRateVo saveGoodsPureInterestRate(GoodsVo vo) {
+	   if(null != vo){
+		   GoodsPureInterestRateVo goodsPureInterestRateVo = new GoodsPureInterestRateVo();
+		   goodsPureInterestRateVo.setGoodsId(vo.getId());
+		   goodsPureInterestRateVo.setProductId(0); //无规格id
+		   goodsPureInterestRateVo.setMarketPrice(vo.getMarket_price());
+		   goodsPureInterestRateVo.setRetailPrice(vo.getRetail_price());
+		   goodsPureInterestRateVo.setCreateUserId(0L);
+		   goodsPureInterestRateVo.setCreateTime(new Date());
+		   goodsPureInterestRateVo.setMemo("JD");
+		   //计算毛利息
+		   double PureInterestRate = vo.getMarket_price().subtract(vo.getRetail_price()).divide(vo.getRetail_price(),2,BigDecimal.ROUND_HALF_UP).doubleValue();
+		   goodsPureInterestRateVo.setPureInterestRate(PureInterestRate);
+		   return goodsPureInterestRateVo;
+		  // apiGoodsPureInterestRateService.save(goodsPureInterestRateVo);
+	   }else{
+		   logger.info("【jd商品入毛利率】商品为空");
+		   return null;
+	   }
+   }
+
+/**
     * 保存产品信息
     * @param vo
     */
