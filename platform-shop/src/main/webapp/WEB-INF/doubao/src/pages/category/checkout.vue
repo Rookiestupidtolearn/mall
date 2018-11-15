@@ -89,8 +89,9 @@
 </template>
 
 <script>
-	import { Toast } from 'mint-ui';
+	import { setCookie,getCookie,delCookie } from '@/assets/cookie';
 	import { MessageBox } from 'mint-ui';
+	import { Toast } from 'mint-ui';
 		
 	export default {
 	  name: 'checkout',
@@ -106,7 +107,7 @@
 		    orderTotalPrice: 0.00,  //订单总价
 		    actualPrice: 0.00,     //实际需要支付的总价
 		    addressId: 0,
-		    couponId: 0,
+		    couponId: ' ',
 		    isBuy: false,
 		    couponDesc: '',
 		    couponCode: '',
@@ -114,8 +115,24 @@
 		    isBuyType:''
 	    }
 	  },
+	  	destroyed() {
+		    setCookie('addressId','0');
+		    setCookie('couponId','');
+		},
 	  mounted(){
-  			this.isBuyType = this.$route.query.isBuy
+  			this.isBuyType = this.$route.query.isBuy;
+//			var _day = 60 * 60 * 24 *1;
+			if(getCookie('addressId') == undefined || getCookie('addressId') == null || getCookie('addressId') == ''){
+				setCookie('addressId','0');
+			}else{
+				this.addressId = getCookie('addressId');
+			}
+  			if(getCookie('couponId') == undefined || getCookie('couponId') == null || getCookie('couponId') == ''){
+  				setCookie('couponId','');
+  			}else{
+  				this.couponId = getCookie('couponId');
+  			}
+  			
 		    // 页面初始化 options为页面跳转所带来的参数
 		    if (this.$route.query.isBuy!="false") {
 		     	 this.isBuy = this.$route.query.isBuy
@@ -138,10 +155,10 @@
 	 },
 	 methods:{
 	 	tapCoupon(){
-	 		this.$router.push('/pages/category/selCoupon?buyType=' + this.buyType);
+	 		this.$router.push('/pages/category/selCoupon?buyType=' + this.buyType+'&isBuy='+this.isBuy);
 	 	},
 	 	selectAddress(){
-	 		this.$router.push( '/views/ucenter/addressList');
+	 		this.$router.push( '/pages/category/addressList'); //购物车选择地址
 	 	},
 	 	addAddress(){
 	 		this.$router.push( '/pages/category/addressAdd');
@@ -196,17 +213,17 @@
 		        	type: buyType
 		        }
 	        }).then(function (res) {
-	        	res = {"errno":0,"data":{"checkedAddress":{"id":null,"userId":null,"userName":null,"telNumber":null,"postalCode":null,"nationalCode":null,"province":null,"provinceName":null,"city":null,"cityName":null,"county":null,"countyName":null,"town":null,"townName":null,"detailInfo":null,"isDefault":null,"createTime":null,"isDelete":null,"full_region":"nullnullnull"},"actualPrice":1000.00,"orderTotalPrice":1000.00,"couponPrice":0.00,"freightPrice":0,"checkedGoodsList":[{"id":1094,"user_id":28,"session_id":"1","goods_id":1181025,"goods_sn":"001","product_id":307,"goods_name":"测试使用001","market_price":1000.00,"retail_price":1000.00,"retail_product_price":1000.00,"number":1,"goods_specifition_name_value":"白色","goods_specifition_ids":"43","checked":1,"crash_save_price":0.00,"list_pic_url":"http://aoss.huaqianyueshang.com/wall/20181026/1400011555eb77.jpg","good_url":"/pages/goods/goods?id=1181025"}],"goodsTotalPrice":1000.00},"errmsg":"执行成功"};
-		      if (res.errno === 0) {
-		          that.checkedGoodsList = res.data.checkedGoodsList;
-		          that.checkedAddress = res.data.checkedAddress;
-		          that.actualPrice = res.data.actualPrice;
-		          that.checkedCoupon = res.data.checkedCoupon;
-		          that.couponList = res.data.couponList;
-		          that.couponPrice = res.data.couponPrice;
-		          that.freightPrice = res.data.freightPrice;
-		          that.goodsTotalPrice = res.data.goodsTotalPrice;
-		          that.orderTotalPrice = res.data.orderTotalPrice
+	        	res = {"data":{"errno":0,"data":{"checkedAddress":{"id":101,"userId":28,"userName":"mn","telNumber":"151580464311","postalCode":null,"nationalCode":null,"province":"2","provinceName":"上海","city":"2813","cityName":"徐汇区","county":"51976","countyName":"城区","town":"","townName":null,"detailInfo":"rrrr","isDefault":1,"createTime":"2018-11-14","isDelete":null,"full_region":"上海徐汇区城区"},"actualPrice":2.00,"orderTotalPrice":2.00,"couponPrice":0.00,"freightPrice":0,"checkedGoodsList":[{"id":1127,"user_id":28,"session_id":"1","goods_id":1183172,"goods_sn":"JD298970","product_id":587,"goods_name":"维仕蓝组合TG-WR6026+TG-WA8019-B","market_price":2.00,"retail_price":290.00,"retail_product_price":null,"number":1,"goods_specifition_name_value":null,"goods_specifition_ids":"","checked":1,"crash_save_price":null,"list_pic_url":"http://img.fygift.com//2016/1/8833537719968799190.jpg","good_url":"/pages/goods/goods?id=1183172"}],"goodsTotalPrice":2.00},"errmsg":"执行成功"}};
+		      if (res.data.errno === 0) {
+		          that.checkedGoodsList = res.data.data.checkedGoodsList;
+		          that.checkedAddress = res.data.data.checkedAddress;
+		          that.actualPrice = res.data.data.actualPrice;
+		          that.checkedCoupon = res.data.data.checkedCoupon;
+		          that.couponList = res.data.data.couponList;
+		          that.couponPrice = res.data.data.couponPrice;
+		          that.freightPrice = res.data.data.freightPrice;
+		          that.goodsTotalPrice = res.data.data.goodsTotalPrice;
+		          that.orderTotalPrice = res.data.data.orderTotalPrice
 		        //设置默认收获地址
 		        if (that.checkedAddress){
 		            let addressId = that.checkedAddress.id;

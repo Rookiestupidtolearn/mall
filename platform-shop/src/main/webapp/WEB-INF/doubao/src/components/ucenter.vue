@@ -7,37 +7,37 @@
    
    <div class="user-menu">
 	   <div class="item">
-	      <router-link to="/views/ucenter/order" class="a">
+	      <router-link to="/pages/ucenter/order" class="a">
 	        <p class="icon order"></p>
 	        <p class="txt">我的订单</p>
 	      </router-link >
 	    </div>
 	     <div class="item">
-	      <router-link  to="/views/ucenter/coupon" class="a">
+	      <router-link  to="/pages/ucenter/coupon" class="a">
 	        <p class="icon coupon"></p>
 	        <p class="txt">优惠券</p>
 	      </router-link >
 	    </div>
 	      <div class="item no-border">
-	      <router-link  to="/views/ucenter/collect" class="a">
+	      <router-link  to="/pages/ucenter/collect" class="a">
 	        <p class="icon address"></p>
 	        <p class="txt">我的收藏</p>
 	      </router-link >
 	    </div>
 	      <div class="item">
-	      <router-link  to="/views/ucenter/footprint" class="a">
+	      <router-link  to="/pages/ucenter/footprint" class="a">
 	        <p class="icon security"></p>
 	        <p class="txt">我的足迹</p>
 	      </router-link >
 	    </div>
 	      <div class="item">
-	      <router-link  to="/views/ucenter/addressList" class="a">
+	      <router-link  to="/pages/ucenter/addressList" class="a">
 	        <p class="icon address"></p>
 	        <p class="txt">地址管理</p>
 	      </router-link >
 	    </div>
 	      <div class="item no-border">
-	      <router-link  to="/views/ucenter/accountSecurity" class="a">
+	      <router-link  to="/pages/ucenter/accountSecurity" class="a">
 	        <p class="icon security"></p>
 	        <p class="txt">账号安全</p>
 	      </router-link >
@@ -49,19 +49,19 @@
 	      </router-link >
 	    </div>
 	      <div class="item">
-	      <router-link  to="/views/ucenter/helpCenter" class="a">
+	      <router-link  to="/pages/ucenter/helpCenter" class="a">
 	        <p class="icon help"></p>
 	        <p class="txt">帮助中心</p>
 	      </router-link >
 	    </div>
 	    <div class="item no-border">
-	      <router-link  to="/views/ucenter/feedback" class="a">
+	      <router-link  to="/pages/ucenter/feedback" class="a">
 	        <p class="icon feedback"></p>
 	        <p class="txt">意见反馈</p>
 	      </router-link >
 	    </div>
 	    <div class="item item-bottom">
-	      <router-link  to="/views/ucenter/mobile" class="a">
+	      <router-link  to="/pages/ucenter/mobile" class="a">
 	        <p class="icon phone"></p>
 	        <p class="txt">绑定手机</p>
 	      </router-link >

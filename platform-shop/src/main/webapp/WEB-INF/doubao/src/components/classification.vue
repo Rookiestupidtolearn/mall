@@ -57,7 +57,7 @@ export default {
   },
   methods:{
   	searchRoute(){
-  		this.$router.push('/views/ucenter/search');
+  		this.$router.push('/pages/ucenter/search');
   	},
   	switchCate(eventId){
 	    var that = this;

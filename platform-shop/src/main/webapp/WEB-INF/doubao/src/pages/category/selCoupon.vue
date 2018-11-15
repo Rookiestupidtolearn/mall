@@ -8,7 +8,7 @@
  	
 	  <div v-else class="coupon-list">
 	    <div v-for="item in couponList" >
-	    <div  @click='tapCoupon(item.enabled)' class="item" :style="{background: [item.enabled==1?'linear-gradient(to right,#cfa568,#e3bf79)':'linear-gradient(to right,#999,#DDDDDD)']}">
+	    <div  @click='tapCoupon(item.enabled,item.user_coupon_id)' class="item" :style="{background: [item.enabled==1?'linear-gradient(to right,#cfa568,#e3bf79)':'linear-gradient(to right,#999,#DDDDDD)']}">
 	        <div class="content">
 	          <div class="left">
 	            <div class="name">{{item.name}}</div>
@@ -30,18 +30,22 @@
 </template>
 
 <script>
-		
-	export default {
+import { setCookie,getCookie,delCookie } from '@/assets/cookie';
+
+export default {
 	  name: 'selCoupon',
 	  data () {
 	    return {
 	    	couponList: '',
-    		buyType: ''
+    		buyType: '',
+    		isBuy:''
 	    }
 	  },
 	  mounted(){
 	  		let that = this;
 	  		this.buyType = this.$route.query.buyType;
+	  		this.isBuy = this.$route.query.isBuy;
+	  		console.log(this.isBuy)
     		 that.$http({
 			   	method:'post',
 			   	url:that.$url+'coupon/listByGoods',
@@ -55,14 +59,13 @@
 		   });	    
 	  },
 	  methods:{
-	  	tapCoupon(enabled){
+	  	tapCoupon(enabled,couponId){
 		    if (enabled==0) {
 		      return
 		    }
-		    app.globalData.userCoupon = 'USE_COUPON'
-		    app.globalData.courseCouponCode = item
-		    wx.navigateBack({
-		    })
+		    setCookie('couponId',couponId); //缓存优惠券id
+		    console.log(this.isBuy);
+		    this.$router.push('/pages/category/checkout');
 	  	}
 	  }
 	}

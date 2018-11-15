@@ -3,26 +3,27 @@ import Router from 'vue-router'
 import tabbar from '@/components/tabbar'  //首页
 import home from '@/components/home'  //首页
 import classification from '@/components/classification'  //分类
-import search from '@/views/search/search'  //分类-搜索页面
+import search from '@/pages/search/search'  //分类-搜索页面
 import shoppingcar from '@/components/shoppingcar'  //购物车
 import ucenter from '@/components/ucenter'  //个人中心
-import order from '@/views/ucenter/order'  //个人中心-我的订单
-import coupon from '@/views/ucenter/coupon'  //个人中心-我的优惠券
-import collect from '@/views/ucenter/collect'  //个人中心-我的收藏
-import footprint from '@/views/ucenter/footprint'  //个人中心-我的足迹
-import addressList from '@/views/ucenter/addressList'  //个人中心-地址管理
-import accountSecurity from '@/views/ucenter/accountSecurity'  //个人中心-账户安全
-import helpCenter from '@/views/ucenter/helpCenter'  //个人中心-帮助中心
-import feedback from '@/views/ucenter/feedback'  //个人中心-问题反馈
-import mobile from '@/views/ucenter/mobile'  //个人中心-问题反馈
+import order from '@/pages/ucenter/order'  //个人中心-我的订单
+import coupon from '@/pages/ucenter/coupon'  //个人中心-我的优惠券
+import collect from '@/pages/ucenter/collect'  //个人中心-我的收藏
+import footprint from '@/pages/ucenter/footprint'  //个人中心-我的足迹
+import addressList from '@/pages/ucenter/addressList'  //个人中心-地址管理
+import accountSecurity from '@/pages/ucenter/accountSecurity'  //个人中心-账户安全
+import helpCenter from '@/pages/ucenter/helpCenter'  //个人中心-帮助中心
+import feedback from '@/pages/ucenter/feedback'  //个人中心-问题反馈
+import mobile from '@/pages/ucenter/mobile'  //个人中心-问题反馈
 import categoryPages from '@/pages/category/category'  //首页-渠道分类
 import goods from '@/pages/category/goods'  //商品详情
 import brandDetail from '@/pages/category/brandDetail'  //制造商详情
-import orderDetail from '@/views/ucenter/orderDetail'  //订单详情
+import orderDetail from '@/pages/ucenter/orderDetail'  //订单详情
 import checkout from '@/pages/category/checkout'  //下单页面
 import addressAdd from '@/pages/category/addressAdd'  //选择地址页面
 import payResult from '@/pages/category/payResult'  //去付款页面
 import selCoupon from '@/pages/category/selCoupon'  //选择优惠券页面
+import addressList2 from '@/pages/category/addressList'  //购物车选择地址页面
 
 Vue.use(Router)
 
@@ -50,43 +51,43 @@ export default new Router({
       name: 'ucenter',
       component: ucenter
     },{
-      path: '/views/ucenter/order',
+      path: '/pages/ucenter/order',
       name: 'order',
       component: order
     },{
-      path: '/views/ucenter/coupon',
+      path: '/pages/ucenter/coupon',
       name: 'coupon',
       component: coupon
     },{
-      path: '/views/ucenter/collect',
+      path: '/pages/ucenter/collect',
       name: 'collect',
       component: collect
     },{
-      path: '/views/ucenter/footprint',
+      path: '/pages/ucenter/footprint',
       name: 'footprint',
       component: footprint
     },{
-      path: '/views/ucenter/addressList',
+      path: '/pages/ucenter/addressList',
       name: 'addressList',
       component: addressList
     },{
-      path: '/views/ucenter/accountSecurity',
+      path: '/pages/ucenter/accountSecurity',
       name: 'accountSecurity',
       component: accountSecurity
     },{
-      path: '/views/ucenter/helpCenter',
+      path: '/pages/ucenter/helpCenter',
       name: 'helpCenter',
       component: helpCenter
     },{
-      path: '/views/ucenter/feedback',
+      path: '/pages/ucenter/feedback',
       name: 'feedback',
       component: feedback
     },{
-      path: '/views/ucenter/mobile',
+      path: '/pages/ucenter/mobile',
       name: 'mobile',
       component: mobile
     },{
-      path: '/views/ucenter/search',
+      path: '/pages/ucenter/search',
       name: 'search',
       component: search
     },{
@@ -102,7 +103,7 @@ export default new Router({
       name: 'brandDetail',
       component: brandDetail
     },{
-      path: '/views/ucenter/orderDetail',
+      path: '/pages/ucenter/orderDetail',
       name: 'orderDetail',
       component: orderDetail
     },{
@@ -121,6 +122,10 @@ export default new Router({
       path: '/pages/category/selCoupon',
       name: 'selCoupon',
       component: selCoupon
+    },{
+      path: '/pages/category/addressList',
+      name: 'addressList2',
+      component: addressList2
     }
   ]
 })

@@ -1016,7 +1016,6 @@ overflow: hidden;
 	}
 	.goods-info{
     width: 7.50rem;
-    height: 3.06rem;
     overflow: hidden;
     background: #fff;
 }
