@@ -142,20 +142,6 @@ var vm = new Vue({
         		return;
         	}
         	//校验选中的商品是否可以设置配比
-        	vm.verify();
-        	if(!vm.isTrue){
-        		return;
-        	}
-        	vm.isTrue = false;
-        	vm.normalMatching=0;
-            vm.activityMatching=0;
-            vm.showList=false;
-            vm.showData=false;
-        	vm.showMatching = false;
-        	vm.title = "配比设置";
-        },
-        verify:function(){
-        	var ids = $("#jqGrid").getGridParam("selarrrow");
         	if(ids.length<=0){
         		alert("未获取到需要设置配比的商品信息");
         		return;
@@ -164,7 +150,20 @@ var vm = new Vue({
                 url: "../goodscouponconfig/verify/"+ids,
                 async: true,
                 successCallback: function (r) {
-                	vm.isTrue = true;
+                	if(r.code === 0){
+                		vm.isTrue = true;
+                	}
+                	if(!vm.isTrue){
+                		return;
+                	}else{
+	                	vm.isTrue = false;
+	                	vm.normalMatching=0;
+	                    vm.activityMatching=0;
+	                    vm.showList=false;
+	                    vm.showData=false;
+	                    vm.title = "配比设置";
+	                	vm.showMatching = false;
+                	}
                 }
             });
         },

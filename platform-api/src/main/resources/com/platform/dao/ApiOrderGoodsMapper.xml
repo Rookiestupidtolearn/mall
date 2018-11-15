@@ -18,6 +18,9 @@
         <result property="is_real" column="is_real"/>
         <result property="goods_specifition_ids" column="goods_specifition_ids"/>
         <result property="list_pic_url" column="list_pic_url"/>
+         <result property="channel" column="channel"/>
+        <result property="createTime" column="create_time"/>
+        <result property="goodStatus" column="good_status"/>
     </resultMap>
 
     <select id="queryObject" resultMap="orderGoodsMap">
@@ -62,8 +65,11 @@
 			`goods_specifition_name_value`, 
 			`is_real`, 
 			`goods_specifition_ids`, 
-			`list_pic_url`
-		)
+			`list_pic_url`,
+			`channel`,
+			`create_time`,
+			`good_status`)
+		
 		values
 		(
 		#{order_id},
@@ -77,8 +83,10 @@
 			#{goods_specifition_name_value},
 			#{is_real},
 			#{goods_specifition_ids},
-			#{list_pic_url}
-		)
+			#{list_pic_url},
+	    	#{channel},
+			#{createTime},
+			#{goodStatus})
 	</insert>
 
     <update id="update" parameterType="com.platform.entity.OrderGoodsVo">
@@ -98,6 +106,9 @@
             <if test="is_real != null">`is_real` = #{is_real},</if>
             <if test="goods_specifition_ids != null">`goods_specifition_ids` = #{goods_specifition_ids},</if>
             <if test="list_pic_url != null">`list_pic_url` = #{list_pic_url}</if>
+            <if test="channel != null">`channel` = #{channel}, </if>
+			<if test="createTime != null">`create_time` = #{createTime}, </if>
+			<if test="goodStatus != null">`good_status` = #{goodStatus}</if>
         </set>
         where id = #{id}
     </update>

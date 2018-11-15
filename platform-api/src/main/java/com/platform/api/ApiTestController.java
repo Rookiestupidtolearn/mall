@@ -1,6 +1,7 @@
 package com.platform.api;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -30,10 +31,12 @@ import com.platform.dao.JdGoodsMapper;
 import com.platform.entity.BrandVo;
 import com.platform.entity.CategoryVo;
 import com.platform.entity.GoodsGalleryVo;
+import com.platform.entity.GoodsPureInterestRateVo;
 import com.platform.entity.GoodsVo;
 import com.platform.entity.ProductVo;
 import com.platform.entity.ThirdPartyRegionEntity;
 import com.platform.entity.UserVo;
+import com.platform.service.ApiGoodsPureInterestRateService;
 import com.platform.service.ApiUserService;
 import com.platform.service.ThirdPartyRegionService;
 import com.platform.util.ApiBaseAction;
@@ -101,6 +104,8 @@ public class ApiTestController extends ApiBaseAction{
     private AbsApiOrderService  orderService;
     @Autowired
     private AbsApiRegionService  absApiRegionService;
+    @Autowired
+    private ApiGoodsPureInterestRateService apiGoodsPureInterestRateService;
     
     
     
@@ -300,6 +305,16 @@ public class ApiTestController extends ApiBaseAction{
     		logger.info("[1.1获取所有商品ID为空]");
     		return resultObj;
     	}
+	   List<GoodsPureInterestRateVo> goodsPureInterestRateVoList = new ArrayList<>(); //批量保存毛利率
+//   	JSONArray proAttr = JSONArray.parseArray(porducts);
+//   	if(!CollectionUtils.isEmpty(proAttr)){
+//   		for(int i = 0;i<proAttr.size();i++){
+   	if(StringUtils.isEmpty(porducts)){
+   		resultObj.put("status", "false");
+   		resultObj.put("msg", "1.1获取所有商品ID为空");
+   		logger.info("[1.1获取所有商品ID为空]");
+   		return resultObj;
+   	}
 		JSONObject obj = JSONObject.parseObject(porducts);
 		String res = obj.get("1").toString();
 		String newStr = (String) res.subSequence(1, res.length()-1);
@@ -371,6 +386,10 @@ public class ApiTestController extends ApiBaseAction{
 					vo.setGoods_number(100);
 					apiGoodsMapper.save(vo);
 					saveProduct(vo);
+					GoodsPureInterestRateVo goodsPureInterestRateVo = saveGoodsPureInterestRate(vo); //保存商品毛利率
+					if(null != goodsPureInterestRateVo){
+						goodsPureInterestRateVoList.add(goodsPureInterestRateVo);
+					}
 				}
 				if(resultDate.get("PRODUCT_IMAGE") != null){
 					JSONArray imgattr = JSONArray.parseArray(resultDate.get("PRODUCT_IMAGE").toString());
@@ -392,11 +411,40 @@ public class ApiTestController extends ApiBaseAction{
 				continue;
 			}
 		}
+		if(!CollectionUtils.isEmpty(goodsPureInterestRateVoList)){
+			//执行批量保存商品毛利率
+			apiGoodsPureInterestRateService.saveBatch(goodsPureInterestRateVoList);
+		}
 		resultObj.put("status", "success");
 		return resultObj;
 //    		}
 //    	}
     }
+   /**
+    * 保存商品毛利率
+    * @param vo
+    */
+   private GoodsPureInterestRateVo saveGoodsPureInterestRate(GoodsVo vo) {
+	   if(null != vo){
+		   GoodsPureInterestRateVo goodsPureInterestRateVo = new GoodsPureInterestRateVo();
+		   goodsPureInterestRateVo.setGoodsId(vo.getId());
+		   goodsPureInterestRateVo.setProductId(0); //无规格id
+		   goodsPureInterestRateVo.setMarketPrice(vo.getMarket_price());
+		   goodsPureInterestRateVo.setRetailPrice(vo.getRetail_price());
+		   goodsPureInterestRateVo.setCreateUserId(0L);
+		   goodsPureInterestRateVo.setCreateTime(new Date());
+		   goodsPureInterestRateVo.setMemo("JD");
+		   //计算毛利息
+		   double PureInterestRate = vo.getMarket_price().subtract(vo.getRetail_price()).divide(vo.getRetail_price(),2,BigDecimal.ROUND_HALF_UP).doubleValue();
+		   goodsPureInterestRateVo.setPureInterestRate(PureInterestRate);
+		   return goodsPureInterestRateVo;
+		  // apiGoodsPureInterestRateService.save(goodsPureInterestRateVo);
+	   }else{
+		   logger.info("【jd商品入毛利率】商品为空");
+		   return null;
+	   }
+   }
+
     /**
      * 保存产品信息
      * @param vo
