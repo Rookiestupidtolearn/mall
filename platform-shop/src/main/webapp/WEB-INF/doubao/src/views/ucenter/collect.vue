@@ -1,6 +1,6 @@
 <template>
  	<div class="collect-list">
-    <router-link to="dd" class="item" v-for="item in collectList" >
+    <router-link :to="'/pages/category/goods?id='+item.id" class="item" v-for="item in collectList" >
       <img class="img" :src="item.list_pic_url"/>
       <div class="info">
         <div class="name">{{item.name}}</div>

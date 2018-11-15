@@ -10,7 +10,7 @@ Page({
         availUrl:'/pages/ucenter/amountMoney/amountMoney',
         availMoney:'',
         availResult:true
-    },
+        },
     userAccount:function(){
       var that = this;
       util.request(api.UserAccount).then(function (res) {

@@ -17,12 +17,12 @@
 				<img :src="item.list_pic_url"/>
 				<div class="right">
 					<p class="name">{{item.name}}</p>
-					<p class="goods_brief">{{item.goods_brief}}</p>
+					<!--<p class="goods_brief">{{item.goods_brief}}</p>-->
 					<p class="market_price">￥{{item.market_price}}</p>
 				</div>
 			</router-link>
 		</div>
-		<div class="category" v-for="item in category">
+		<!--<div class="category" v-for="item in category">
 			<p class="instr">{{item.name}}</p>
 			<div class="listAmount">
 				<router-link v-for="goods in item.goodsList" :to="'/pages/category/goods?id='+goods.id">
@@ -35,34 +35,18 @@
 					<p><img class="icon" src="../../static/images/icon_go_more.png" background-size="cover"/></p>
 				</router-link>
 			</div>
-		</div>
-  	
-  	<!--底部导航栏-->
-  	<mt-tabbar v-model="selected">
-		  <mt-tab-item id="tab1">
-		    <img slot="icon" src="../../static/images/ic_menu_choice_nor.png">
-		    首页
-		  </mt-tab-item>
-		  <mt-tab-item id="tab2">
-		    <img slot="icon" src="../../static/images/ic_menu_sort_nor.png">
-		    分类
-		  </mt-tab-item>
-		  <mt-tab-item id="tab3">
-		    <img slot="icon" src="../../static/images/ic_menu_shoping_nor.png">
-		   购物车
-		  </mt-tab-item>
-		  <mt-tab-item id="tab4">
-		    <img slot="icon" src="../../static/images/ic_menu_me_nor.png">
-		    我的
-		  </mt-tab-item>
-		</mt-tabbar>
+		</div>-->
+		<!--公用底部导航-->
+  	<tabbar :selected="selected" :tabs='tabs'></tabbar> 
   </div>
 </template>
 
 <script>
+	import tabbar from './tabbar'
 	import { Indicator } from 'mint-ui';
 	
 export default {
+	components: {tabbar },
   name: 'home',
   data () {
     return {
@@ -70,29 +54,12 @@ export default {
       channel:[],
       hotGoods:[],
       category:[],
-	   selected:'tab1'
+      selected:"home",
+   	 tabs:[require("../../static/images/ic_menu_choice_pressed.png"),require("../../static/images/ic_menu_sort_nor.png"),
+          require("../../static/images/ic_menu_shoping_nor.png"),require("../../static/images/ic_menu_me_nor.png")],
+
     }
   },
-   watch: {
-    selected: function (val, oldVal) {
-    	console.log(val,oldVal)
-      // 这里就可以通过 val 的值变更来确定去向
-      switch(val){
-        case 'tab1':
-          this.$router.push('/');
-        break;
-        case 'tab2':
-          this.$router.push('/classification');
-        break;
-        case 'tab3':
-          this.$router.push('/shoppingcar');
-        break;
-        case 'tab4':
-          this.$router.push('/ucenter');
-        break;
-      }
-    }
-},
   mounted(){
   	var that = this;    
   	//banner

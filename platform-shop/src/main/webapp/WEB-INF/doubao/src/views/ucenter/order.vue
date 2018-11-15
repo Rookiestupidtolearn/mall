@@ -1,8 +1,8 @@
 <template>
   <div class="hello">
   	<ul v-infinite-scroll="loadMore" infinite-scroll-disabled="loading" infinite-scroll-distance="10">
- 			 <li v-for="item in orderList">
-				<router-link  to = "cc" class="order" >
+ 			 <li v-for="(item,index) in orderList">
+				<router-link  :to = "'/views/ucenter/orderDetail?id='+item.id" class="order" >
 	            <div class="h">
 	                <div class="l">订单编号：{{item.order_sn}}</div>
 	                <div class="r">{{item.order_status_text}}</div>
@@ -10,7 +10,7 @@
 	            <div class="b">
 	                <div class="l">实付：￥{{item.actual_price}}</div>
 	                <div class="r">
-	                	<mt-button type="danger"  size="small"  @click="payOrder()" :style="{ display: [ item.handleOption.pay ? 'block' : 'none']}">去付款</mt-button>
+	                	<mt-button type="danger"  size="small" @click.prevent="payOrder(index)"  :style="{ display: [ item.handleOption.pay ? 'block' : 'none']}">去付款</mt-button>
 	                </div>
 	            </div>
 	        </router-link>
@@ -55,6 +55,10 @@ export default {
 		  })
   },
   methods:{
+  	payOrder(orderIndex){
+	      let order = this.orderList[orderIndex];
+	    	this.$router.push( '/pages/pay/pay?orderId=' + order.id + '&actualPrice=' + order.actual_price);
+  	},
   	loadMore() {
 		  this.loading = true;
 		  setTimeout(() => {

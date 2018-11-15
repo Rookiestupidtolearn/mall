@@ -15,6 +15,7 @@ Page({
     attribute: [],
     issueList: [],
     comment: [],
+    minPriceList:{},
     brand: {},
     specificationList: [],
     productList: [],
@@ -43,7 +44,8 @@ Page({
           brand: res.data.brand,
           specificationList: res.data.specificationList,
           productList: res.data.productList,
-          userHasCollect: res.data.userHasCollect
+          userHasCollect: res.data.userHasCollect,
+          minPriceList: res.data.minPriceList
         });
         //购物车下架至灰
         if (that.data.undercarriage == '0'){
@@ -72,6 +74,31 @@ Page({
         WxParse.wxParse('goodsDetail', 'html', res.data.info.goods_desc, that);
 
         that.getGoodsRelated();
+
+        //默认显示最低价格组
+        let showArraySpec=[];
+        let _specificationList = that.data.specificationList;
+        let minGoodsSpec = (that.data.minPriceList[0].goods_specification_ids).split('_');
+        let specValueList = that.data.specificationList;
+        for (let i = 0; i < minGoodsSpec.length; i++){
+          for (let j = 0; j < specValueList[i].valueList.length; j++){
+            if (minGoodsSpec[i] == specValueList[i].valueList[j].id){
+              showArraySpec.push(specValueList[i].valueList[j].value);
+              if (_specificationList[i].valueList[j].checked) {
+                _specificationList[i].valueList[j].checked = false;
+              } else {
+                _specificationList[i].valueList[j].checked = true;
+              }
+            } else {
+              _specificationList[i].valueList[j].checked = false;
+            }
+          }
+        }
+        that.setData({
+          'market_price': that.data.minPriceList[0].market_price,
+          'checkedSpecText' : showArraySpec.join('　'),
+          'specificationList': _specificationList
+        })
       }
     });
 
@@ -252,9 +279,6 @@ Page({
 
   },
   onShow: function () {
-    // 页面显示  默认价格最小的参数集合
-    // var goodsSpec = this.data.productList;
-
 
   },
   onHide: function () {
