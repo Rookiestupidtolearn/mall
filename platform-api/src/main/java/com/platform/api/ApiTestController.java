@@ -176,9 +176,9 @@ public class ApiTestController {
     	entity.setReceiverName("冯老师");
     	entity.setMobile("13391506299");
     	entity.setAddress("承德双桥露露集团");
-    	entity.setProvince(5);
-    	entity.setCity(239);
-    	entity.setCounty(48379);
+    	entity.setProvince("5");
+    	entity.setCity("239");
+    	entity.setCounty("48379");
     	ResponseOrderSubmitEntity response  = orderService.submit(entity);
     	
     	return response;
