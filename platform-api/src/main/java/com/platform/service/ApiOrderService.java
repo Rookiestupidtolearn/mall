@@ -193,6 +193,12 @@ public class ApiOrderService {
 				soureMap.put(goodsVo.getGoodsId().toString(), "JD");
 			}
 		}
+        if (CollectionUtils.isEmpty(orderGoodsList)) {
+    		resultObj.put("errno", 1);
+			resultObj.put("errmsg", "没可下单数据");
+			return resultObj;
+	}
+		
 		// 查询用户优惠券信息 直接过去 平台币抵扣券
 		List<UserCouponVo> userCouponVos = apiUserCouponMapper.queryUserCouponTotalPrice(loginUser.getUserId());
 
@@ -281,11 +287,7 @@ public class ApiOrderService {
 		 *
 		 *
 		 */
-         if (CollectionUtils.isEmpty(orderGoodsList)) {
-        		resultObj.put("errno", 1);
-    			resultObj.put("errmsg", "购物车没数据");
-    			return resultObj;
-		}
+
 		String pidNums = "";
 		// 统计商品总价
 		List<OrderGoodsVo> orderGoodsData = new ArrayList<OrderGoodsVo>();//目前没用
