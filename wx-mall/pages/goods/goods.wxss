@@ -75,6 +75,7 @@
     font-size: 35rpx;
     line-height: 35rpx;
     color: #b4282d;
+    margin-top:23rpx;
 }
 
 .goods-info .brand{
