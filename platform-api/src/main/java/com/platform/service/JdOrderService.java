@@ -79,10 +79,10 @@ public class JdOrderService {
 			entity.setReceiverName(jdOrderVo.getReceiverName());
 			entity.setMobile(jdOrderVo.getMobile());
 			entity.setAddress(jdOrderVo.getAddress());
-			entity.setProvince(Integer.parseInt(jdOrderVo.getProvince()));
-			entity.setCity(Integer.parseInt(jdOrderVo.getCity()));
-			entity.setCounty(Integer.parseInt(jdOrderVo.getCounty()));
-			entity.setTown(Integer.parseInt(jdOrderVo.getTown()));
+			entity.setProvince(jdOrderVo.getProvince());
+			entity.setCity(jdOrderVo.getCity());
+			entity.setCounty(jdOrderVo.getCounty());
+			entity.setTown(jdOrderVo.getTown());
         	JdOrderVo  jdOrder = jdOrderMapper.queryByThirdOrder(jdOrderVo.getThirdOrder());
 
        	ResponseOrderSubmitEntity response  = apiOrderService.submit(entity);
