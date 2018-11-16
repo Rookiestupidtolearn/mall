@@ -139,6 +139,9 @@ public class ApiTestController extends ApiBaseAction {
 
 		return R.ok().put("propter", "可以了");
 	}
+    
+  
+   
 
 	/**
 	 * 根据手机号查询用户信息接口测试方法
@@ -639,9 +642,9 @@ public class ApiTestController extends ApiBaseAction {
 		entity.setReceiverName("冯老师");
 		entity.setMobile("13391506299");
 		entity.setAddress("承德双桥露露集团");
-		entity.setProvince(5);
-		entity.setCity(239);
-		entity.setCounty(48379);
+		entity.setProvince("5");
+		entity.setCity("239");
+		entity.setCounty("48379");
 		ResponseOrderSubmitEntity response = orderService.submit(entity);
 
 		return response;

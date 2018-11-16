@@ -12,6 +12,8 @@
         <result property="goods_number" column="goods_number"/>
         <result property="retail_price" column="retail_price"/>
         <result property="market_price" column="market_price"/>
+        <result property="normal_matching" column="normal_matching"/>
+        <result property="activity_matching" column="activity_matching"/>
     </resultMap>
 
 
@@ -78,5 +80,20 @@
 
     <select id="queryTotal" resultType="int">
 		select count(*) from nideshop_product 
+	</select>
+	
+    <select id="queryGoodsMatchingInfo" resultMap="productMap">
+		select 
+		np.id,
+		np.goods_id,
+		np.retail_price,
+		np.market_price,
+		np.goods_sn,
+		np.goods_number,
+		gcc.normal_matching,
+		gcc.activity_matching
+		from nideshop_product np left join goods_coupon_config gcc 
+		on np.goods_id = gcc.goods_id
+		where gcc.del_flag = 0 and np.id = #{value}
 	</select>
 </mapper>

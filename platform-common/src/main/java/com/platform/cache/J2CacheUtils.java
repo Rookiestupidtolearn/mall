@@ -21,6 +21,11 @@ public class J2CacheUtils {
     private static String SYS_CACHE_NAME = "sysCache";
 
     private static CacheChannel cache = J2Cache.getChannel();
+    
+    
+    
+    
+    
 
     /**
      * 获取SYS_CACHE_NAME缓存
@@ -74,6 +79,11 @@ public class J2CacheUtils {
         cache.set(cacheName, key, value);
     }
 
+    public static void putExire(String cacheName, String key, Object value,Long time) {
+        cache.set(cacheName, key, value,time);
+    }
+    
+    
     /**
      * 从缓存中移除
      *

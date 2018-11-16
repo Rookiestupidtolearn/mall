@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.print.attribute.standard.RequestingUserName;
+
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.platform.annotation.IgnoreAuth;
 import com.platform.annotation.LoginUser;
+import com.platform.cache.J2CacheUtils;
 import com.platform.dao.ApiOrderMapper;
 import com.platform.dao.ApiTranInfoRecordMapper;
 import com.platform.dao.ApiUserCouponMapper;
@@ -70,8 +73,9 @@ public class ApiOrderController extends ApiBaseAction {
     @Autowired
     private JdOrderService JdOrderService;
     
-    /**
-     */
+
+   
+    
     @ApiOperation(value = "订单首页")
     @IgnoreAuth
     @PostMapping("index")
@@ -184,15 +188,29 @@ public class ApiOrderController extends ApiBaseAction {
     @ApiOperation(value = "订单提交")
     @PostMapping("submit")
     public Object submit(@LoginUser UserVo loginUser) {
-        Map resultObj = null;
-        try {
-            resultObj = orderService.submit(getJsonRequest(), loginUser);
-            if (null != resultObj) {
-                return toResponsObject(MapUtils.getInteger(resultObj, "errno"), MapUtils.getString(resultObj, "errmsg"), resultObj.get("data"));
+    	
+//        String  REDIS_ORDER_LOCK ="orderSubmitLock"+loginUser.getUserId();
+        
+//    	Object  orderSubmitLock =  J2CacheUtils.get(J2CacheUtils.SHOP_CACHE_NAME,REDIS_ORDER_LOCK);
+//    	if(orderSubmitLock!=null){
+//    		return toResponsFail("订单处理中，请稍后再试。。。");
+//    	}
+//    	
+//    	J2CacheUtils.putExire(J2CacheUtils.SHOP_CACHE_NAME, REDIS_ORDER_LOCK, REDIS_ORDER_LOCK, 5*60L);
+    	synchronized (loginUser.getUserId()) {
+    		Map resultObj = null;
+    	    try {
+            	logger.info("订单提交，用户id:"+loginUser.getUserId());
+            	logger.info("订单提交，redis锁:orderSubmitLock"+loginUser.getUserId());
+            	  resultObj = orderService.submit(getJsonRequest(), loginUser);
+                  if (null != resultObj) {
+                      return toResponsObject(MapUtils.getInteger(resultObj, "errno"), MapUtils.getString(resultObj, "errmsg"), resultObj.get("data"));
+                  }
+            } catch (Exception e) {
+            	logger.error("订单提交,处理订单失败",e);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+		}
+    
         return toResponsFail("提交失败");
     }
 
