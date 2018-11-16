@@ -142,10 +142,6 @@ var vm = new Vue({
         		return;
         	}
         	//校验选中的商品是否可以设置配比
-        	if(ids.length<=0){
-        		alert("未获取到需要设置配比的商品信息");
-        		return;
-        	}
         	Ajax.request({
                 url: "../goodscouponconfig/verify/"+ids,
                 async: true,
@@ -297,10 +293,10 @@ var vm = new Vue({
              });
         },
         enSale: function () {
-            var id = getSelectedRow("#jqGrid");
-            if (id == null) {
-                return;
-            }
+        	 var id = getSelectedRow("#jqGrid");
+             if (id == null) {
+                 return;
+             }
             confirm('确定要上架选中的商品？', function () {
                 Ajax.request({
                     type: "POST",
