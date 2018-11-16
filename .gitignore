@@ -26,4 +26,8 @@
 hs_err_pid*
 /.project
 node_modules/
+<<<<<<< HEAD
 .project
+=======
+.project
+>>>>>>> 50c9b1137debaaa37120add80be5665f1be65845

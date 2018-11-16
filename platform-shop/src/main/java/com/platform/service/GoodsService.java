@@ -116,4 +116,16 @@ public interface GoodsService {
      * @return
      */
     List<GoodsEntity> queryGoodsList(Integer[] ids);
+
+	/**
+	 * 批量上架
+	 * @param ids
+	 */
+	int enSaleBatch(Integer[] ids);
+
+	/**
+	 * 批量下架
+	 * @param ids
+	 */
+	int unSaleBatch(Integer[] ids);
 }

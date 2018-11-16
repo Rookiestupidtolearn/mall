@@ -1,16 +1,18 @@
 package com.platform.controller;
 
-import com.platform.BaseSpringTestCase;
-import com.platform.entity.SysUserEntity;
-import com.platform.service.SysUserService;
-import com.platform.service.TestSysUserService;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.platform.BaseSpringTestCase;
+import com.platform.entity.SysUserEntity;
+import com.platform.service.SysUserService;
+import com.platform.service.TestSysUserService;
+import com.platform.util.PayMatchingUtil;
 
 /**
  * 会员测试
@@ -25,7 +27,10 @@ public class TestSysUserController extends BaseSpringTestCase {
     @Autowired
     SysUserService sysUserService;
     private Logger logger = getLogger();
-
+    
+    
+    @Autowired
+    private PayMatchingUtil payMatchingUtil ;
     /**
      * 使用测试类
      */
@@ -52,5 +57,10 @@ public class TestSysUserController extends BaseSpringTestCase {
                 logger.info("username：" + userEntity.getUsername() + "；mobile：" + userEntity.getMobile());
             }
         }
+    }
+    
+    @Test
+    public void testPayMatchingUtil(){
+    	System.out.println(payMatchingUtil.getPayMatching(1125));
     }
 }

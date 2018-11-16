@@ -4,10 +4,10 @@ public class RequestOrderSubmitEntity extends RequestBaseEntity {
 	private String  thirdOrder;
 	private String pid_nums;
 	private String  receiverName;
-	private Integer province;
-	private Integer city;
-	private Integer county;
-	private Integer town;
+	private String province;
+	private String city;
+	private String county;
+	private String town;
 	private String address;
 	private String mobile;
 	private String email;
@@ -30,30 +30,7 @@ public class RequestOrderSubmitEntity extends RequestBaseEntity {
 	public void setReceiverName(String receiverName) {
 		this.receiverName = receiverName;
 	}
-	public Integer getProvince() {
-		return province;
-	}
-	public void setProvince(Integer province) {
-		this.province = province;
-	}
-	public Integer getCity() {
-		return city;
-	}
-	public void setCity(Integer city) {
-		this.city = city;
-	}
-	public Integer getCounty() {
-		return county;
-	}
-	public void setCounty(Integer county) {
-		this.county = county;
-	}
-	public Integer getTown() {
-		return town;
-	}
-	public void setTown(Integer town) {
-		this.town = town;
-	}
+
 	public String getAddress() {
 		return address;
 	}
@@ -77,6 +54,54 @@ public class RequestOrderSubmitEntity extends RequestBaseEntity {
 	}
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+	/**
+	 * @return the province
+	 */
+	public String getProvince() {
+		return province;
+	}
+	/**
+	 * @param province the province to set
+	 */
+	public void setProvince(String province) {
+		this.province = province;
+	}
+	/**
+	 * @return the city
+	 */
+	public String getCity() {
+		return city;
+	}
+	/**
+	 * @param city the city to set
+	 */
+	public void setCity(String city) {
+		this.city = city;
+	}
+	/**
+	 * @return the county
+	 */
+	public String getCounty() {
+		return county;
+	}
+	/**
+	 * @param county the county to set
+	 */
+	public void setCounty(String county) {
+		this.county = county;
+	}
+	/**
+	 * @return the town
+	 */
+	public String getTown() {
+		return town;
+	}
+	/**
+	 * @param town the town to set
+	 */
+	public void setTown(String town) {
+		this.town = town;
 	}
 
 	

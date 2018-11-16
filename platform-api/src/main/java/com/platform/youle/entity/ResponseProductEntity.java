@@ -2,6 +2,8 @@ package com.platform.youle.entity;
 
 import java.util.List;
 
+import com.platform.youle.entity.result.ResultstockBatchEntity;
+
 public class ResponseProductEntity {
 
 	private String RESPONSE_STATUS;
@@ -9,7 +11,7 @@ public class ResponseProductEntity {
 	private String ERROR_MESSAGE;
 	private Integer  TOTAL_PAGE;
 	private Integer PAGE;
-	private List<Integer> RESULT_DATA;
+	private List<ResultstockBatchEntity> RESULT_DATA;
 	public String getRESPONSE_STATUS() {
 		return RESPONSE_STATUS;
 	}
@@ -40,10 +42,10 @@ public class ResponseProductEntity {
 	public void setPAGE(Integer pAGE) {
 		PAGE = pAGE;
 	}
-	public List<Integer> getRESULT_DATA() {
+	public List<ResultstockBatchEntity> getRESULT_DATA() {
 		return RESULT_DATA;
 	}
-	public void setRESULT_DATA(List<Integer> rESULT_DATA) {
+	public void setRESULT_DATA(List<ResultstockBatchEntity> rESULT_DATA) {
 		RESULT_DATA = rESULT_DATA;
 	}
 

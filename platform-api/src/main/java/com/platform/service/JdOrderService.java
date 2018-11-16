@@ -18,7 +18,9 @@ import com.platform.youle.entity.RequestOrderSubmitEntity;
 import com.platform.youle.entity.ResponseBaseEntity;
 import com.platform.youle.entity.ResponseBatchSaleEntity;
 import com.platform.youle.entity.ResponseOrderSubmitEntity;
+import com.platform.youle.entity.ResponseProductEntity;
 import com.platform.youle.entity.ResponseProductStockBatchEntity;
+import com.platform.youle.entity.ResponseSaleStatusEntity;
 import com.platform.youle.entity.result.ResponseResultEntity;
 import com.platform.youle.entity.result.ResulGoodsSaleEntity;
 import com.platform.youle.entity.result.ResultstockBatchEntity;
@@ -77,9 +79,10 @@ public class JdOrderService {
 			entity.setReceiverName(jdOrderVo.getReceiverName());
 			entity.setMobile(jdOrderVo.getMobile());
 			entity.setAddress(jdOrderVo.getAddress());
-			entity.setProvince(Integer.parseInt(jdOrderVo.getProvince()));
-			entity.setCity(Integer.parseInt(jdOrderVo.getCity()));
-			entity.setCounty(Integer.parseInt(jdOrderVo.getCounty()));
+			entity.setProvince(jdOrderVo.getProvince());
+			entity.setCity(jdOrderVo.getCity());
+			entity.setCounty(jdOrderVo.getCounty());
+			entity.setTown(jdOrderVo.getTown());
         	JdOrderVo  jdOrder = jdOrderMapper.queryByThirdOrder(jdOrderVo.getThirdOrder());
 
        	ResponseOrderSubmitEntity response  = apiOrderService.submit(entity);
@@ -141,9 +144,59 @@ public class JdOrderService {
 		return map;
 		
 	}
+	/**
+	 * 校验单个库存 
+	 * @param pid
+	 * @param num
+	 * @param address
+	 * @return
+	 */
+	public Map<String, Object> checkStockSingle(String pid,Integer num,String address){
+		Map<String, Object> map =  new HashMap<>();
+		map.put("code", "200");
+		map.put("msg", "有库存");
+		ResponseProductEntity response = apiGoodsService.stock(pid,num,address);
+		if (response.getRESPONSE_STATUS().equals("false")) {
+			map.put("code", "500");
+			map.put("msg", "查询库存失败");
+			return map;
+		}
+		List<ResultstockBatchEntity> list = response.getRESULT_DATA();
+		for(ResultstockBatchEntity entity : list){
+			 if ( !entity.getStock_status()) {
+					map.put("code", "500");
+					map.put("msg", "库存不足");
+					return map;
+			}
+		}
+		 return map;
+	}
 	
 	/**
-	 * 校验三方的库存
+	 * 查询上下架状态
+	 * @param pid
+	 * @return
+	 */
+	public Map<String, Object> checkSaleStatusSingle(Integer pid){
+		Map<String, Object> map =  new HashMap<>();
+		map.put("code", "200");
+		map.put("msg", "可售");
+		ResponseSaleStatusEntity response = apiGoodsService.getsaleStatus(pid);
+		if (response.getRESPONSE_STATUS().equals("false")) {
+			map.put("code", "500");
+			map.put("msg", "查询上下架状态");
+			return map;
+		}
+		if (response.getRESULT_DATA().get("status").equals(false)) {
+			map.put("code", "500");
+			map.put("msg", "商品已经下架");
+			return map;
+		}
+		 return map;
+	}
+	
+	/**
+	 * 校验批量三方的库存
 	 * @param pid_nums
 	 * @param address
 	 * @return
@@ -172,7 +225,7 @@ public class JdOrderService {
 	}
 	
 	/**
-	 * 校验是上下架状态
+	 * 批量校验是上下架状态
 	 * @param pids
 	 * @return
 	 */

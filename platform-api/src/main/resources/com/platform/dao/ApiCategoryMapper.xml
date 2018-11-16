@@ -145,4 +145,8 @@
 		FROM nideshop_category WHERE 1=1
 		)
 	</select>
+	
+	<select id="queryAllChildsCategorys" resultMap = "categoryMap">
+		select * from nideshop_category where level = 1
+	</select>
 </mapper>

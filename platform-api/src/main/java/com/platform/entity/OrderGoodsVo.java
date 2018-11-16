@@ -39,6 +39,13 @@ public class OrderGoodsVo implements Serializable {
     private String goods_specifition_ids;
     //图片链接
     private String list_pic_url;
+    
+    //渠道
+    private String channel;
+    //创建时间
+    private Date createTime;
+    //订单的状态 0-初始;
+    private Integer goodStatus;
 
     public Integer getId() {
         return id;
@@ -143,4 +150,30 @@ public class OrderGoodsVo implements Serializable {
     public void setList_pic_url(String list_pic_url) {
         this.list_pic_url = list_pic_url;
     }
+
+	public String getChannel() {
+		return channel;
+	}
+
+	public void setChannel(String channel) {
+		this.channel = channel;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+
+	public Integer getGoodStatus() {
+		return goodStatus;
+	}
+
+	public void setGoodStatus(Integer goodStatus) {
+		this.goodStatus = goodStatus;
+	}
+    
+    
 }

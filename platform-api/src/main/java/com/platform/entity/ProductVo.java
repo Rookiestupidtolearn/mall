@@ -33,6 +33,11 @@ public class ProductVo implements Serializable {
     private String goods_name;
     //商品图片
     private String list_pic_url;
+    //正常配比
+    private double normal_matching;
+    //活动配比
+    private double activity_matching;
+    
 
     public String getGoods_name() {
         return goods_name;
@@ -113,4 +118,22 @@ public class ProductVo implements Serializable {
     public void setMarket_price(BigDecimal market_price) {
         this.market_price = market_price;
     }
+
+	public double getNormal_matching() {
+		return normal_matching;
+	}
+
+	public void setNormal_matching(double normal_matching) {
+		this.normal_matching = normal_matching;
+	}
+
+	public double getActivity_matching() {
+		return activity_matching;
+	}
+
+	public void setActivity_matching(double activity_matching) {
+		this.activity_matching = activity_matching;
+	}
+    
+    
 }
