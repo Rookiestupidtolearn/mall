@@ -363,16 +363,18 @@ public class ApiPayController extends ApiBaseAction {
 
     public void saveMoneyRecord(Long userId,Integer type,OrderVo order){
 		QzUserAccountVo userAmountVo =qzUserAccountMapper.queruUserAccountInfo(Long.parseLong(userId.toString()));
-    	QzMoneyRecordVo moneyRecord  = new QzMoneyRecordVo();
-    	moneyRecord.setShopUserId(userId.intValue());
-    	moneyRecord.setTranType("2");//使用优惠券
-    	moneyRecord.setTranFlag(type == 1 ? 0 : 1);//0-支出 1-收入
-    	moneyRecord.setTarnAmount(order.getCoupon_price());
-    	moneyRecord.setCreateTime(new Date());
-    	moneyRecord.setTradeNo(order.getOrder_sn());
     	if(userAmountVo != null){
-    		moneyRecord.setCurrentAmount(userAmountVo.getAmount());
+    		QzMoneyRecordVo moneyRecord  = new QzMoneyRecordVo();
+    		moneyRecord.setShopUserId(userId.intValue());
+    		moneyRecord.setTranType("2");//使用优惠券
+    		moneyRecord.setTranFlag(type == 1 ? 0 : 1);//0-支出 1-收入
+    		moneyRecord.setTarnAmount(order.getCoupon_price());
+    		moneyRecord.setCreateTime(new Date());
+    		moneyRecord.setTradeNo(order.getOrder_sn());
+    		if(userAmountVo != null){
+    			moneyRecord.setCurrentAmount(userAmountVo.getAmount());
+    		}
+    		apiMoneyRecordMapper.save(moneyRecord);
     	}
-    	apiMoneyRecordMapper.save(moneyRecord);
     }
 }
