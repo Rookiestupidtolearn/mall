@@ -11,6 +11,7 @@ import com.platform.entity.GoodsCouponConfigVo;
 import com.platform.entity.ProductVo;
 import com.platform.entity.QzUserAccountVo;
 import com.platform.entity.UserCouponVo;
+import com.platform.util.PayMatchingUtil;
 
 import jline.internal.Log;
 
@@ -50,6 +51,8 @@ public class ApiCartService {
     private ApiCartMapper apiCartMapper;
     @Autowired
     private ApiTranInfoRecordMapper apiTranInfoRecordMapper;
+    @Autowired
+    private PayMatchingUtil payMatchingUtils;
 
     public CartVo queryObject(Integer id) {
         return cartDao.queryObject(id);
@@ -240,7 +243,14 @@ public class ApiCartService {
         				 BigDecimal couponlPrice = BigDecimal.ZERO;//优惠券临时总价值
         				 //计算该产品优惠券总和
         				 if(goodsCoupon != null){
-        					 //	couponlPrice = productInfo.getMarket_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(cart.getNumber()));
+        					 BigDecimal payMatching = BigDecimal.ZERO;
+                 			if(payMatchingUtils.getPayMatching(cart.getProduct_id())!= null){
+                 				Object value = payMatchingUtils.getPayMatching(cart.getProduct_id()).get(cart.getGoods_id());
+                 				if(value != null){
+                 					payMatching = new BigDecimal(value.toString());
+                 				}
+                 			}
+        					 couponlPrice = payMatching.multiply(new BigDecimal(cart.getNumber()));
         				 }
         				 couponTotalPrice = couponTotalPrice.add(couponlPrice);
         			 }
@@ -334,11 +344,17 @@ public class ApiCartService {
         			if(null != cart.getChecked() && 1 == cart.getChecked()){
         				//获取产品配比值
         				GoodsCouponConfigVo goodsCoupon = goodsCouponConfigMapper.getUserCoupons(cart.getGoods_id(),userId);
-        				ProductVo productInfo = productService.queryObject(cart.getProduct_id());
         				//计算该产品优惠券总和
         				BigDecimal couponlPrice = BigDecimal.ZERO;//优惠券临时总价值
         				if(goodsCoupon != null){
-        					//couponlPrice = productInfo.getMarket_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(cart.getNumber()));
+        					BigDecimal payMatching = BigDecimal.ZERO;
+                			if(payMatchingUtils.getPayMatching(cart.getProduct_id())!= null){
+                				Object value = payMatchingUtils.getPayMatching(cart.getProduct_id()).get(cart.getGoods_id());
+                				if(value != null){
+                					payMatching = new BigDecimal(value.toString());
+                				}
+                			}
+        					couponlPrice = payMatching.multiply(new BigDecimal(cart.getNumber()));
         				}
         				couponTotalPrice = couponTotalPrice.add(couponlPrice);
         			}
@@ -348,7 +364,6 @@ public class ApiCartService {
         	if(amount.compareTo(couponTotalPrice)<0){
         		couponTotalPrice = amount;
         	}
-        	
         	
         	/**
         	 * 1.检查当前购物车是否已经生成了优惠券
@@ -439,11 +454,17 @@ public class ApiCartService {
         			   if(null != cart.getChecked() && 1 == cart.getChecked()){
         				   //获取产品配比值
         				   GoodsCouponConfigVo goodsCoupon = goodsCouponConfigMapper.getUserCoupons(cart.getGoods_id(),userId);
-        				   ProductVo productInfo = productService.queryObject(cart.getProduct_id());
         				   BigDecimal couponlPrice = BigDecimal.ZERO;//优惠券临时总价值
         				   //计算该产品优惠券总和
         				   if(goodsCoupon != null){
-        					   //couponlPrice = productInfo.getMarket_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(cart.getNumber()));
+        					BigDecimal payMatching = BigDecimal.ZERO;
+                   			if(payMatchingUtils.getPayMatching(cart.getProduct_id())!= null){
+                   				Object value = payMatchingUtils.getPayMatching(cart.getProduct_id()).get(cart.getGoods_id());
+                   				if(value != null){
+                   					payMatching = new BigDecimal(value.toString());
+                   				}
+                   			}
+        					couponlPrice = payMatching.multiply(new BigDecimal(cart.getNumber()));
         				   }
         				   couponTotalPrice = couponTotalPrice.add(couponlPrice);
         			   }
@@ -492,11 +513,17 @@ public class ApiCartService {
     					if(userCouponVo != null){
     						//获取产品配比值
     						GoodsCouponConfigVo goodsCoupon = goodsCouponConfigMapper.getUserCoupons(cart.getGoods_id(),cart.getUser_id());
-    						ProductVo productInfo = productService.queryObject(cart.getProduct_id());
     						BigDecimal couponlPrice = BigDecimal.ZERO;//优惠券临时总价值
     						//计算该产品优惠券总和
     						if(goodsCoupon != null){
-    							//	couponlPrice = productInfo.getMarket_price().multiply(new BigDecimal(goodsCoupon.getGood_value())).multiply(new BigDecimal(cart.getNumber()));
+    							BigDecimal payMatching = BigDecimal.ZERO;
+                    			if(payMatchingUtils.getPayMatching(cart.getProduct_id())!= null){
+                    				Object value = payMatchingUtils.getPayMatching(cart.getProduct_id()).get(cart.getGoods_id());
+                    				if(value != null){
+                    					payMatching = new BigDecimal(value.toString());
+                    				}
+                    			}
+    							couponlPrice = payMatching.multiply(new BigDecimal(cart.getNumber()));
     						}
     						//购物车发生修改  原有优惠券作废，重新生成优惠券
     						userCouponVo.setCoupon_status(1);
