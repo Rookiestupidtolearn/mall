@@ -1035,10 +1035,8 @@ overflow: hidden;
 }
 
 .goods-info .name{
-    height: .41rem;
     margin-bottom: .05rem;
     font-size: .41rem;
-    line-height: .41rem;
 }
 
 .goods-info .desc{

@@ -34,7 +34,6 @@
 
 .goods-info{
     width: 750rpx;
-    height: 306rpx;
     overflow: hidden;
     background: #fff;
 }
@@ -55,10 +54,8 @@
 }
 
 .goods-info .name{
-    height: 41rpx;
     margin-bottom: 5.208rpx;
     font-size: 41rpx;
-    line-height: 41rpx;
 }
 
 .goods-info .desc{
