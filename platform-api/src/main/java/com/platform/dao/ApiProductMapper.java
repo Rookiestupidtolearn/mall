@@ -11,4 +11,6 @@ import com.platform.entity.ProductVo;
  */
 public interface ApiProductMapper extends BaseDao<ProductVo> {
 	int save(ProductVo productVo);
+	
+	int update(ProductVo productVo);
 }

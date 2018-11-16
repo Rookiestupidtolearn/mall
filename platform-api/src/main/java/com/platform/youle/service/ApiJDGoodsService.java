@@ -8,4 +8,9 @@ public interface ApiJDGoodsService {
 	 * @return
 	 */
 	public JSONObject saveGoods();
+	/**
+	 * 三方返回分类入库
+	 * @return
+	 */
+	public JSONObject saveCategory();
 }

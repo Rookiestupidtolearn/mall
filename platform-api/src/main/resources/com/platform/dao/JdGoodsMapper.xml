@@ -157,7 +157,7 @@
 			#{deleteFlag},
 			#{createTime},
 			#{createBy},
-			#{updateTime}
+			#{updateTime})
 	</insert>
 	 
 	<update id="update" parameterType="com.platform.youle.entity.JdGoodsVo">

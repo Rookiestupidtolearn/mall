@@ -31,4 +31,11 @@ public interface ApiGoodsMapper extends BaseDao<GoodsVo> {
      * @return
      */
     List<GoodsVo> queryGoodsBySn(String goodsn);
+    
+    int update(GoodsVo vo);
+    /**
+     * 查询本地京东商品
+     * @return
+     */
+    List<GoodsVo> queryAllJDGoods();
 }

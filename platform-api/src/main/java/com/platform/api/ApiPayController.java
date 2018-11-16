@@ -147,14 +147,14 @@ public class ApiPayController extends ApiBaseAction {
             String return_msg = MapUtils.getString("return_msg", resultUn);
             //
             if (return_code.equalsIgnoreCase("FAIL")) {
-            	saveMoneyRecord(loginUser.getUserId(),0,orderInfo.getOrder_sn());
+            	saveMoneyRecord(loginUser.getUserId(),0,orderInfo);
                 return toResponsFail("支付失败," + return_msg);
             } else if (return_code.equalsIgnoreCase("SUCCESS")) {
                 // 返回数据
                 String result_code = MapUtils.getString("result_code", resultUn);
                 String err_code_des = MapUtils.getString("err_code_des", resultUn);
                 if (result_code.equalsIgnoreCase("FAIL")) {
-                	saveMoneyRecord(loginUser.getUserId(),0,orderInfo.getOrder_sn());
+                	saveMoneyRecord(loginUser.getUserId(),0,orderInfo);
                     return toResponsFail("支付失败," + err_code_des);
                 } else if (result_code.equalsIgnoreCase("SUCCESS")) {
                     String prepay_id = MapUtils.getString("prepay_id", resultUn);
@@ -171,7 +171,7 @@ public class ApiPayController extends ApiBaseAction {
                     // 付款中
                     orderInfo.setPay_status(1);
                     orderService.update(orderInfo);
-                    saveMoneyRecord(loginUser.getUserId(),1,orderInfo.getOrder_sn());
+                    saveMoneyRecord(loginUser.getUserId(),1,orderInfo);
                     return toResponsObject(0, "微信统一订单下单成功", resultObj);
                 }
             }
@@ -361,21 +361,18 @@ public class ApiPayController extends ApiBaseAction {
     
     
 
-    public void saveMoneyRecord(Long userId,Integer type,String order_sn){
-    	UserCouponVo userCouponVo = apiUserCouponMapper.queryUserUsedCouponTotalPrice(userId);
+    public void saveMoneyRecord(Long userId,Integer type,OrderVo order){
 		QzUserAccountVo userAmountVo =qzUserAccountMapper.queruUserAccountInfo(Long.parseLong(userId.toString()));
-        if(userCouponVo != null){
-        	QzMoneyRecordVo moneyRecord  = new QzMoneyRecordVo();
-        	moneyRecord.setShopUserId(userId.intValue());
-        	moneyRecord.setTranType("2");//使用优惠券
-        	moneyRecord.setTranFlag(type == 1 ? 0 : 1);//0-支出 1-收入
-        	moneyRecord.setTarnAmount(userCouponVo.getCoupon_price());
-        	moneyRecord.setCreateTime(new Date());
-        	moneyRecord.setTradeNo(order_sn);
-        	if(userAmountVo != null){
-        		moneyRecord.setCurrentAmount(userAmountVo.getAmount());
-        	}
-        	apiMoneyRecordMapper.save(moneyRecord);
-        }
+    	QzMoneyRecordVo moneyRecord  = new QzMoneyRecordVo();
+    	moneyRecord.setShopUserId(userId.intValue());
+    	moneyRecord.setTranType("2");//使用优惠券
+    	moneyRecord.setTranFlag(type == 1 ? 0 : 1);//0-支出 1-收入
+    	moneyRecord.setTarnAmount(order.getCoupon_price());
+    	moneyRecord.setCreateTime(new Date());
+    	moneyRecord.setTradeNo(order.getOrder_sn());
+    	if(userAmountVo != null){
+    		moneyRecord.setCurrentAmount(userAmountVo.getAmount());
+    	}
+    	apiMoneyRecordMapper.save(moneyRecord);
     }
 }
