@@ -28,7 +28,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 10,
+			"current": 11,
 			"list": [
 				{
 					"id": 0,
@@ -93,7 +93,13 @@
 				{
 					"id": -1,
 					"name": "地址",
-					"pathName": "pages/ucenter/addressAdd/addressAdd"
+					"pathName": "pages/ucenter/addressAdd/addressAdd",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "购物车",
+					"pathName": "pages/cart/cart"
 				}
 			]
 		}

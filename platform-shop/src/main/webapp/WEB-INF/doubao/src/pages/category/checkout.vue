@@ -115,10 +115,6 @@
 		    isBuyType:''
 	    }
 	  },
-	  	destroyed() {
-		    setCookie('addressId','0');
-		    setCookie('couponId','');
-		},
 	  mounted(){
   			this.isBuyType = this.$route.query.isBuy;
 //			var _day = 60 * 60 * 24 *1;
