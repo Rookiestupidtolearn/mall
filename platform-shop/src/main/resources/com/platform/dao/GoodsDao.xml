@@ -258,6 +258,9 @@
 		</set>
         where id = #{id}
     </update>
+    
+    <update id="enSaleBatch" >
+    </update>
 
     <delete id="delete">
         delete from nideshop_goods where id = #{value}

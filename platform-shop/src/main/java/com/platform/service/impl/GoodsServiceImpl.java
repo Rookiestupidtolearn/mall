@@ -343,4 +343,18 @@ public class GoodsServiceImpl implements GoodsService {
 	public List<GoodsEntity> queryGoodsList(Integer[] ids) {
 		return goodsDao.queryGoodsList(ids);
 	}
+	@Override
+	public int enSaleBatch(Integer[] ids) {
+		SysUserEntity user = ShiroUtils.getUserEntity();
+		Map<String,Object> paramMap = new HashMap<>();
+		
+		
+		//paramMap.put(key, value)
+		return goodsDao.enSaleBatch(ids);		
+	}
+	@Override
+	public int unSaleBatch(Integer[] ids) {
+		return goodsDao.unSaleBatch(ids);
+		
+	}
 }

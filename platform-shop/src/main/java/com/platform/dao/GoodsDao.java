@@ -15,4 +15,8 @@ public interface GoodsDao extends BaseDao<GoodsEntity> {
     Integer queryMaxId();
 
 	List<GoodsEntity> queryGoodsList(Integer[] ids);
+
+	int enSaleBatch(Integer[] ids);
+
+	int unSaleBatch(Integer[] ids);
 }
