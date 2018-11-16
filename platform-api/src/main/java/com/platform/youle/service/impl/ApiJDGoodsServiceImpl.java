@@ -1,6 +1,7 @@
 package com.platform.youle.service.impl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -29,8 +30,10 @@ import com.platform.dao.JdGoodsMapper;
 import com.platform.entity.BrandVo;
 import com.platform.entity.CategoryVo;
 import com.platform.entity.GoodsGalleryVo;
+import com.platform.entity.GoodsPureInterestRateVo;
 import com.platform.entity.GoodsVo;
 import com.platform.entity.ProductVo;
+import com.platform.service.ApiGoodsPureInterestRateService;
 import com.platform.youle.constant.Constants.Urls;
 import com.platform.youle.entity.RequestBaseEntity;
 import com.platform.youle.entity.RequestChildsEntity;
@@ -67,6 +70,8 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService{
 	private JdGoodsImgPathMapper goodsImagePathMapper;
 	@Autowired
 	private ApiProductMapper apiProductMapper;
+	@Autowired
+	private ApiGoodsPureInterestRateService apiGoodsPureInterestRateService;
 	// 查询库存默认地址
 	private String DEFAULT_ADDRESS = "1_72_2799";
 	
@@ -171,6 +176,65 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService{
 		product.setRetail_price(vo.getRetail_price());
 		apiProductMapper.update(product);
 	}
+	
+	/**
+	 * 保存商品毛利率
+	 * 
+	 * @param vo
+	 */
+	private GoodsPureInterestRateVo saveGoodsPureInterestRate(GoodsVo vo) {
+		if (null != vo) {
+			GoodsPureInterestRateVo goodsPureInterestRateVo = new GoodsPureInterestRateVo();
+			goodsPureInterestRateVo.setGoodsId(vo.getId());
+			goodsPureInterestRateVo.setProductId(0); // 无规格id
+			goodsPureInterestRateVo.setMarketPrice(vo.getMarket_price());
+			goodsPureInterestRateVo.setRetailPrice(vo.getRetail_price());
+			goodsPureInterestRateVo.setCreateUserId(0L);
+			goodsPureInterestRateVo.setCreateTime(new Date());
+			goodsPureInterestRateVo.setMemo("JD");
+			// 计算毛利息
+			double PureInterestRate = vo.getMarket_price().subtract(vo.getRetail_price())
+					.divide(vo.getRetail_price(), 2, BigDecimal.ROUND_HALF_UP).doubleValue();
+			goodsPureInterestRateVo.setPureInterestRate(PureInterestRate);
+			return goodsPureInterestRateVo;
+			// apiGoodsPureInterestRateService.save(goodsPureInterestRateVo);
+		} else {
+			logger.info("【jd商品入毛利率】商品为空");
+			return null;
+		}
+	}
+	
+	/**
+	 * 更新产品毛利率
+	 * @param vo
+	 * @return
+	 */
+	private boolean updateGoodsPureInterestRate(GoodsVo vo) {
+		if (null != vo) {
+			//通过商品id查询毛利率中的商品信息
+			HashMap<String,Object> paramMap =new HashMap<>();
+			paramMap.put("goodsId",vo.getId());
+			List<GoodsPureInterestRateVo> goodsPureInterestRateList = apiGoodsPureInterestRateService.queryAll(paramMap);
+			if(CollectionUtils.isEmpty(goodsPureInterestRateList)){
+				logger.info("【jd商品更新修改毛利率】未查找到毛利率表中商品id为"+vo.getId()+"的商品信息");
+				return false;
+			}
+			for(GoodsPureInterestRateVo goodsPureInterestRateVo : goodsPureInterestRateList){
+				goodsPureInterestRateVo.setMarketPrice(vo.getMarket_price());
+				goodsPureInterestRateVo.setRetailPrice(vo.getRetail_price());
+				//计算毛利率
+				double PureInterestRate = vo.getMarket_price().subtract(vo.getRetail_price())
+						.divide(vo.getRetail_price(), 2, BigDecimal.ROUND_HALF_UP).doubleValue();
+				goodsPureInterestRateVo.setPureInterestRate(PureInterestRate);
+				goodsPureInterestRateVo.setCreateTime(new Date());
+				apiGoodsPureInterestRateService.update(goodsPureInterestRateVo);
+			}
+			return true;
+		} else {
+			logger.info("【jd商品更新修改毛利率】商品为空");
+			return false;
+		}
+	}
 
 
 	@Override
@@ -188,6 +252,7 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService{
 		String newStr = (String) res.subSequence(1, res.length() - 1);
 		String[] attr = newStr.split(",");
 		//查询所有京东商品 查出库中商品是否匹配到三方返回商品id，没有则置为下架状态
+		List<GoodsPureInterestRateVo> goodsPureInterestRateVoList = new ArrayList<>(); // 批量保存毛利率
 		List<GoodsVo> goodsVos = apiGoodsMapper.queryAllJDGoods();
 		if(!CollectionUtils.isEmpty(goodsVos)){
 			for(GoodsVo good : goodsVos){
@@ -270,6 +335,10 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService{
 						}
 						apiGoodsMapper.save(vo);
 						saveProduct(vo);
+						GoodsPureInterestRateVo goodsPureInterestRateVo = saveGoodsPureInterestRate(vo); // 保存商品毛利率
+						if (null != goodsPureInterestRateVo) {
+							goodsPureInterestRateVoList.add(goodsPureInterestRateVo);
+						}
 					}else{
 						GoodsVo good = goods.get(0);
 						good.setName(productObj.get("name") == null ? "" : productObj.get("name").toString());
@@ -308,6 +377,7 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService{
 						}
 						apiGoodsMapper.update(good);
 						updateProduct(good);
+						updateGoodsPureInterestRate(good); //更新毛利率
 					}
 				}
 				if (resultDate.get("PRODUCT_IMAGE") != null) {
@@ -328,6 +398,10 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService{
 				logger.error("[商品入库/更新异常]",e);
 			}
 			
+		}
+		if (!CollectionUtils.isEmpty(goodsPureInterestRateVoList)) {
+			// 执行批量保存商品毛利率
+			apiGoodsPureInterestRateService.saveBatch(goodsPureInterestRateVoList);
 		}
 		resultObj.put("status", "success");
 		return resultObj;
