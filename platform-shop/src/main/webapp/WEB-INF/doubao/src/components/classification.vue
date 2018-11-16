@@ -75,6 +75,12 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only  active -->
 <style scoped>
+	.searchTop{
+		position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 2;
+	}
 	.front_name {
 		position:absolute;
 		top:0rem;
@@ -115,6 +121,9 @@ export default {
 	color:#333;
 	height:.72rem;
 	width:1.44rem;
+	overflow: hidden;
+ text-overflow: ellipsis;
+ white-space: nowrap;
 }
 	.topb{
 		height: 1.92rem;
@@ -140,11 +149,13 @@ width:auto;
 	.rightca{
 		float:left;
 		border-left:1px solid #fafafa;
-		height:100%;
-		/*padding:0 .30rem 0 .30rem;*/
+		height: 11rem;
+		padding:0 .30rem 0 .30rem;
 		width: 5.2rem;
 		margin-top: 0.3rem;
 		position: relative;
+		overflow-y: scroll;
+		padding-bottom:30px;
 	}
 	.item{
 		text-align:center;
@@ -153,6 +164,7 @@ width:auto;
 		height:.90rem;
 		color:#333;
 		font-size:.28rem;
+		overflow: hidden;
 	}
 		.wusearch{
 			font-size:.28rem !important;
@@ -160,11 +172,14 @@ width:auto;
 		}
 		.content{
 			overflow: hidden;
-	    margin-top: .1rem;
+	    margin-top: 1.3rem;
 		}
 		.content .catalog{
 			float:left;
-			height:100%;
+			height:11rem;
 			width:1.62rem;
+			overflow-y:scroll ;
+			overflow-x:hidden ;
+			padding-bottom:30px;
 		}
 </style>

@@ -219,14 +219,22 @@ Page({
     let checkedProduct = this.getCheckedProductItem(this.getCheckedSpecKey());
     if (!checkedProduct || checkedProduct.length <= 0) {
       //找不到对应的product信息，提示没有库存
-      util.showErrorToast("商品无库存")
+      // util.showErrorToast("商品无库存");
+      this.setData({
+        undercarriage: true,
+        undercarriName: '暂无库存'
+      })
       return false;
     }
 
     //验证库存
     if (checkedProduct.goods_number < this.data.number) {
       //找不到对应的product信息，提示没有库存
-      util.showErrorToast("商品无库存")
+      // util.showErrorToast("商品无库存");
+      this.setData({
+        undercarriage: true,
+        undercarriName: '暂无库存'
+      })
       return false;
     }
     this.setData({

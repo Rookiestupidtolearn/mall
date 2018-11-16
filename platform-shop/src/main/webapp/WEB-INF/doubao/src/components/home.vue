@@ -202,7 +202,6 @@ color:#b4282d;
 }
 .m-menu {
   overflow: hidden;
-  height: 1.41rem;
   width: 7.5rem;
   background-color: #fff;
   margin:.15rem 0;

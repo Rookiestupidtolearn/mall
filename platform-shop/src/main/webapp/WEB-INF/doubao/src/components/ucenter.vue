@@ -3,6 +3,10 @@
    <div class="viewTop">
    		<img class="userinfo-avatar" src="https://platform-wxmall.oss-cn-beijing.aliyuncs.com/upload/20180727/150547696d798c.png"/>
    		<p class="userinfo-nickname">Hi,游客</p>
+   		<router-link class="userinfo-availMoney" :to="availUrl" :style="{display:[availResult?'block':'none']}">
+	      <p class="userinfo-title">平台币可用余额</p>
+	      <p class="money">{{ availMoney }}</p>
+	    </router-link>
    </div>
    
    <div class="user-menu">
@@ -75,7 +79,6 @@
 <script>
 	
 	import tabbar from './tabbar.vue'
-	import { MessageBox } from 'mint-ui';
 	
 export default {
 	components: {tabbar },
@@ -83,6 +86,9 @@ export default {
   data () {
     return {
       category:[],
+      availResult:true,
+      availUrl:'/pages/ucenter/amountMoney',
+      availMoney:'',
      selected:"ucenter",
    	 tabs:[require("../../static/images/ic_menu_choice_nor.png"),require("../../static/images/ic_menu_sort_nor.png"),
     	require("../../static/images/ic_menu_shoping_nor.png"),require("../../static/images/ic_menu_me_pressed.png")],
@@ -94,15 +100,11 @@ export default {
         method: 'post',
         url:that.$url+ 'user/userAccount',
     	}).then(function (response) {
+    		response = {"code":1,"data":"13.23"};
     		if(response.data.errno == '401' || response.data.errno == '请先登录'){
-//  			MessageBox({
-//					  title: ' ',
-//					  message: '请先登录 ',
-//					  showCancelButton: true
-//					});
     			return false;
     		}else{
-    			
+    			that.availMoney = response.data;
     		}
 		  })
   }
@@ -111,6 +113,21 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+	.userinfo-availMoney{
+	  font-size:.29rem;
+	  text-align: center;
+	}
+	.userinfo-availMoney .userinfo-title{
+	  display:block;
+	  color:#fff;
+	  margin-top:.10rem;
+	}
+	.userinfo-availMoney .money{
+	  display:block;
+	  margin-top:.20rem;
+	  color:#fff;
+	  font-size:.36rem;
+	}
 	.user-menu{
     width: 100%;
     height: auto;
