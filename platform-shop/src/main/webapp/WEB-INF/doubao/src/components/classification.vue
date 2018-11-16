@@ -91,7 +91,7 @@ export default {
 	.catalog 	.active{
 		border-left:.06rem solid #ab2b2b;
 		color:#ab2b2b;
-		font-size:.36rem;
+		font-size:.28rem;
 	}
 	.bd {
 	 	overflow: hidden;

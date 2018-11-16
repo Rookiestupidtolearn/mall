@@ -4,7 +4,7 @@
 	        <div class="item" v-for="item in addressList" @click="selectAddress(item.id)">
 	            <div class="l">
 	                <div class="name">{{item.userName}}</div>
-	                <div class="default" v-if="item.is_default">默认</div>
+	                <div class="default" v-if="item.isDefault">默认</div>
 	            </div>
 	            <div class="c">
 	                <div class="mobile">{{item.telNumber}}</div>
@@ -19,7 +19,7 @@
 	      <img class="icon" src="http://yanxuan.nosdn.127.net/hxm/yanxuan-wap/p/20161201/style/img/icon-normal/noAddress-26d570cefa.png"/>
 	      <p class="text">收货地址在哪里</p>
 	    </div>
-	    <div class="add-address" @click="addressAddOrUpdate(item.id)" data-address-id="0">新建</div>
+	    <div class="add-address" @click="addressAddOrUpdate('0')" data-address-id="0">新建</div>
 	</div>
 </template>
 
@@ -123,7 +123,6 @@ export default {
 }
 
 .address-list .name{
-    margin-top: -.05rem;
     width: 1.55rem;
     height: .43rem;
     font-size: .29rem;
