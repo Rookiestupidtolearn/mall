@@ -24,6 +24,7 @@ import addressAdd from '@/pages/category/addressAdd'  //选择地址页面
 import payResult from '@/pages/category/payResult'  //去付款页面
 import selCoupon from '@/pages/category/selCoupon'  //选择优惠券页面
 import addressList2 from '@/pages/category/addressList'  //购物车选择地址页面
+import addressAdd2 from '@/pages/ucenter/addressAdd'  //个人中心选择地址页面
 
 Vue.use(Router)
 
@@ -126,6 +127,10 @@ export default new Router({
       path: '/pages/category/addressList',
       name: 'addressList2',
       component: addressList2
+    },{
+      path: '/pages/ucenter/addressAdd',
+      name: 'addressAdd2',
+      component: addressAdd2
     }
   ]
 })

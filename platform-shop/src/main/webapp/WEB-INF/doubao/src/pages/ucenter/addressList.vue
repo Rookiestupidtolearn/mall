@@ -59,7 +59,7 @@ export default {
 			  })
 	  	},
 		addressAddOrUpdate:function(setId){
-		    this.$router.push({ path: '/pages/ucenter/addressAdd/addressAdd', query: { id: setId }})
+		    this.$router.push({ path: '/pages/ucenter/addressAdd', query: { id: setId }})
 		},
 		deleteAddress:function(deleteId){
 			MessageBox({
