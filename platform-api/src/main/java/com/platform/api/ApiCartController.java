@@ -45,6 +45,7 @@ import com.platform.service.ApiGoodsService;
 import com.platform.service.ApiGoodsSpecificationService;
 import com.platform.service.ApiProductService;
 import com.platform.util.ApiBaseAction;
+import com.platform.util.PayMatchingUtil;
 import com.platform.youle.entity.ResponseChildsEntity;
 import com.platform.youle.entity.ResponseRootCateEntity;
 import com.platform.youle.service.AbsApiRootCateService;
@@ -86,7 +87,8 @@ public class ApiCartController extends ApiBaseAction {
     private ApiTranInfoRecordMapper apiTranInfoRecordMapper;
     @Autowired
     private AbsApiRootCateService absApiRootCateService;
-
+    @Autowired
+    private PayMatchingUtil payMatchingUtils;
 
 
 
@@ -627,7 +629,7 @@ public class ApiCartController extends ApiBaseAction {
          BigDecimal amount = BigDecimal.ZERO;//初始化用户平台币
          logger.info("【更新用户优惠券开始】,用户id" + userId);
          QzUserAccountVo userAmountVo =qzUserAccountMapper.queruUserAccountInfo(userId);//查询用户平台币信息
-       
+         
          if(userAmountVo != null){
         	 List<UserCouponVo> userCouponVos = apiUserCouponMapper.queryUserCouponTotalPrice(userId);//查询用户优惠券信息
              List<UserCouponVo> coupons = new ArrayList<>();
@@ -662,11 +664,17 @@ public class ApiCartController extends ApiBaseAction {
             		if(null != cart.getChecked() && 1 == cart.getChecked()){
             			//获取产品配比值
             			GoodsCouponConfigVo goodsCoupon = goodsCouponConfigMapper.getUserCoupons(cart.getGoods_id(),userId);
-            			ProductVo productInfo = productService.queryObject(cart.getProduct_id());
             			BigDecimal couponlPrice = BigDecimal.ZERO;//优惠券临时总价值
             			//计算该产品优惠券总和
             			if(goodsCoupon != null){
-            				couponlPrice = productInfo.getMarket_price().multiply(new BigDecimal(goodsCoupon.getPayMatching())).multiply(new BigDecimal(cart.getNumber()));
+            				BigDecimal payMatching = BigDecimal.ZERO;
+                			if(payMatchingUtils.getPayMatching(cart.getProduct_id())!= null){
+                				Object value = payMatchingUtils.getPayMatching(cart.getProduct_id()).get(cart.getGoods_id());
+                				if(value != null){
+                					payMatching = new BigDecimal(value.toString());
+                				}
+                			}
+            				couponlPrice = payMatching.multiply(new BigDecimal(cart.getNumber()));
             			}
             			couponTotalPrice = couponTotalPrice.add(couponlPrice);
             		}

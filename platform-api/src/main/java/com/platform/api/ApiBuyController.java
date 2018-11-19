@@ -18,6 +18,8 @@ import com.platform.entity.UserCouponVo;
 import com.platform.entity.UserVo;
 import com.platform.service.ApiProductService;
 import com.platform.util.ApiBaseAction;
+import com.platform.util.PayMatchingUtil;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -51,7 +53,8 @@ public class ApiBuyController extends ApiBaseAction {
     private ApiProductService productService;
     @Autowired
     private ApiTranInfoRecordMapper apiTranInfoRecordMapper;
-    
+    @Autowired
+    private PayMatchingUtil payMatchingUtils;
     
     @ApiOperation(value = "商品添加")
     @PostMapping("/add")
@@ -114,11 +117,17 @@ public class ApiBuyController extends ApiBaseAction {
         			if(null != cart.getChecked() && 1 == cart.getChecked()){
         				//获取产品配比值
         				GoodsCouponConfigVo goodsCoupon = goodsCouponConfigMapper.getUserCoupons(cart.getGoods_id(),userId);
-        				ProductVo productInfo = productService.queryObject(cart.getProduct_id());
         				BigDecimal couponlPrice1 = BigDecimal.ZERO;//优惠券临时总价值
         				//计算该产品优惠券总和
         				if(goodsCoupon != null){
-        					couponlPrice1 = productInfo.getMarket_price().multiply(new BigDecimal(goodsCoupon.getPayMatching())).multiply(new BigDecimal(cart.getNumber()));
+        					BigDecimal payMatching = BigDecimal.ZERO;
+                			if(payMatchingUtils.getPayMatching(cart.getProduct_id())!= null){
+                				Object value = payMatchingUtils.getPayMatching(cart.getProduct_id()).get(cart.getGoods_id());
+                				if(value != null){
+                					payMatching = new BigDecimal(value.toString());
+                				}
+                			}
+        					couponlPrice1 = payMatching.multiply(new BigDecimal(cart.getNumber()));
         				}
         				couponCartTotalPrice = couponCartTotalPrice.add(couponlPrice1);
         			}
@@ -139,10 +148,16 @@ public class ApiBuyController extends ApiBaseAction {
         	
         	//获取产品配比值
         	GoodsCouponConfigVo goodsCoupon = goodsCouponConfigMapper.getUserBuyNowCoupons(goodsId);
-        	ProductVo productInfo = productService.queryObject(productId);
         	//计算该产品优惠券总和
         	if(goodsCoupon != null){
-        		couponlPrice = productInfo.getMarket_price().multiply(new BigDecimal(goodsCoupon.getPayMatching())).multiply(new BigDecimal(number));
+        		BigDecimal payMatching = BigDecimal.ZERO;
+    			if(payMatchingUtils.getPayMatching(productId)!= null){
+    				Object value = payMatchingUtils.getPayMatching(productId).get(goodsId);
+    				if(value != null){
+    					payMatching = new BigDecimal(value.toString());
+    				}
+    			}
+        		couponlPrice = payMatching.multiply(new BigDecimal(number));
         	}
         	couponTotalPrice = couponTotalPrice.add(couponlPrice);
         	amount = userAmountVo.getAmount();//获取用户平台币
@@ -221,11 +236,17 @@ public class ApiBuyController extends ApiBaseAction {
         			if(null != cart.getChecked() && 1 == cart.getChecked()){
         				//获取产品配比值
         				GoodsCouponConfigVo goodsCoupon = goodsCouponConfigMapper.getUserCoupons(cart.getGoods_id(),userId);
-        				ProductVo productInfo = productService.queryObject(cart.getProduct_id());
         				BigDecimal couponlPrice1 = BigDecimal.ZERO;//优惠券临时总价值
         				//计算该产品优惠券总和
         				if(goodsCoupon != null){
-        					couponlPrice1 = productInfo.getMarket_price().multiply(new BigDecimal(goodsCoupon.getPayMatching())).multiply(new BigDecimal(cart.getNumber()));
+        					BigDecimal payMatching = BigDecimal.ZERO;
+                			if(payMatchingUtils.getPayMatching(cart.getProduct_id())!= null){
+                				Object value = payMatchingUtils.getPayMatching(cart.getProduct_id()).get(cart.getGoods_id());
+                				if(value != null){
+                					payMatching = new BigDecimal(value.toString());
+                				}
+                			}
+        					couponlPrice1 = payMatching.multiply(new BigDecimal(cart.getNumber()));
         				}
         				couponCartTotalPrice = couponCartTotalPrice.add(couponlPrice1);
         			}
