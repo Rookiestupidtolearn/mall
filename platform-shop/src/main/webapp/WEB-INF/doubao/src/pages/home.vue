@@ -206,12 +206,16 @@ color:#b4282d;
   width: 7.5rem;
   background-color: #fff;
   margin:.15rem 0;
+  display: flex;
+  display: -webkit-flex;
+  justify-content: space-between;
 }
 .m-menu .item {
 float:left;
 padding:.2rem 0;
 font-size: 0;
 width: 20%;
+flex: 1;
 }
 .m-menu .item img{
 	width:.6rem;

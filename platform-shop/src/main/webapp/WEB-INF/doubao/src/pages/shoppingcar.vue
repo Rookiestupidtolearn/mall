@@ -330,32 +330,10 @@ export default {
 		background:#f4f4f4;
 		margin:0 .18rem 0 0;
 }
-.cart-div .item .t {
-		margin:.08rem 0;
-		height:.28rem;
-		font-size:.25rem;
-		color:#333;
-		overflow:hidden;
-}
-.cart-div .item .attr {
-		margin-bottom:..17rem;
-		height:.24rem;
-		line-height:.24rem;
-		font-size:.22rem;
-		color:#666;
-		overflow:hidden;
-}
 .cart-div .item .price {
 	float:left;
 	font-size: .29rem;
 	color:#333;
-}
-.cart-div .item .t {
-		margin:.08rem 0;
-		height:.28rem;
-		font-size:.25rem;
-		color:#333;
-		overflow:hidden;
 }
 .cart-div .item .b {
 		height:.28rem;
@@ -503,7 +481,6 @@ export default {
 
 .cart-div .item .t{
     margin: .08rem 0;
-    height: .28rem;
     font-size: .25rem;
     color: #333;
     overflow: hidden;
@@ -511,12 +488,13 @@ export default {
 
 
 .cart-div .item .name{
-    height: .28rem;
-    max-width: 3.10rem;
-    line-height: .28rem;
     font-size: .25rem;
     color: #333;
     overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 4.5rem;
+    display: inline-block;
 }
 
 .cart-div .item .num{
@@ -526,7 +504,7 @@ export default {
 }
 
 .cart-div .item .attr{
-    margin-bottom: .17rem;
+    margin-bottom: .06rem;
     height: .24rem;
     line-height: .24rem;
     font-size: .22rem;
