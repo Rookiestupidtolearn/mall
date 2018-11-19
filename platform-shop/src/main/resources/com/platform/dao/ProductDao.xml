@@ -45,7 +45,9 @@
         <if test="goodsName != null and goodsName.trim() != ''">
             AND nideshop_goods.name LIKE concat('%',#{goodsName},'%')
         </if>
-        
+        <if test="goodsSpecificationIds != null">
+            AND nideshop_product.goods_specification_ids = #{goodsSpecificationIds}
+ 		</if>
          <if test="deptId != null">
             AND nideshop_goods.create_user_dept_id = #{deptId}
  		</if>

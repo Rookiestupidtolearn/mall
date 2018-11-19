@@ -193,9 +193,12 @@ public class GoodsController {
      * 上架
      */
     @RequestMapping("/enSale")
-    public R enSale(@RequestBody Integer id) {
-        goodsService.enSale(id);
-
+    public R enSale(@RequestBody Integer[] ids) {
+    	int i = goodsService.enSaleBatch(ids);
+        //goodsService.enSale(id);
+    	if(i == 0){
+    		return R.error("未查询到对应的商品信息");
+    	}
         return R.ok();
     }
 
@@ -203,9 +206,11 @@ public class GoodsController {
      * 下架
      */
     @RequestMapping("/unSale")
-    public R unSale(@RequestBody Integer id) {
-        goodsService.unSale(id);
-
+    public R unSale(@RequestBody Integer[] ids) {
+        int i = goodsService.unSaleBatch(ids);
+        if(i == 0){
+    		return R.error("未查询到对应的商品信息");
+    	}
         return R.ok();
     }
     
@@ -213,14 +218,20 @@ public class GoodsController {
      * 申请上架
      */
     @RequestMapping("/applyEnSale")
-    public R applySale(@RequestBody Integer id) {
-        goodsService.applySale(id);
+    public R applySale(@RequestBody Integer[] ids) {
+       int i = goodsService.applySaleBatch(ids);
+       if(i == 0){
+   		return R.error("未查询到对应的商品信息");
+   		}
         return R.ok();
     }
     
     @RequestMapping("/applyUnSale")
-    public R applyUnSale(@RequestBody Integer id) {
-        goodsService.applyUnSale(id);
+    public R applyUnSale(@RequestBody Integer[] ids) {
+        int i = goodsService.applyUnSaleBatch(ids);
+        if(i == 0){
+    		return R.error("未查询到对应的商品信息");
+    	}
         return R.ok();
     }
     

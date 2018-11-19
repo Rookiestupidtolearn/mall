@@ -7,7 +7,8 @@
         <result property="productId" column="product_id"/>
         <result property="retailPrice" column="retail_price"/>
         <result property="pureInterestRate" column="pure_interest_rate"/>
-        <result property="createTime" column="icreate_timed"/>
+        <result property="createTime" column="create_timed"/>
+        <result property="updateTime" column="update_timed"/>
         <result property="createUserId" column="create_user_id"/>
         <result property="memo" column="memo"/>
     </resultMap>
@@ -111,6 +112,7 @@
     		<if test="marketPrice != null">market_price = #{marketPrice},</if>
     		<if test="pureInterestRate != null">pure_interest_rate = #{pureInterestRate},</if>
     		<if test="createTime != null">create_time = #{createTime},</if>
+    		<if test="updateTime != null">update_time = #{updateTime},</if>
     		<if test="createUserId != null">create_user_id = #{createUserId},</if>
     		<if test="memo != null and memo.trim() != ''">memo = #{memo},</if>
 		</set>
