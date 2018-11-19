@@ -35,8 +35,12 @@ public class UserCouponVo implements Serializable {
     private int coupon_status;
     //优惠券价格
     private BigDecimal coupon_price;
+    //父id
+    private Long  parent_id;
     //商品id
-    private Integer good_id;
+    private Long goods_id;
+    
+    
     public Integer getId() {
         return id;
     }
@@ -126,13 +130,20 @@ public class UserCouponVo implements Serializable {
 		this.coupon_price = coupon_price;
 	}
 
-	public Integer getGood_id() {
-		return good_id;
+	public Long getParent_id() {
+		return parent_id;
 	}
 
-	public void setGood_id(Integer good_id) {
-		this.good_id = good_id;
+	public void setParent_id(Long parent_id) {
+		this.parent_id = parent_id;
 	}
-    
+
+	public Long getGoods_id() {
+		return goods_id;
+	}
+
+	public void setGoods_id(Long goods_id) {
+		this.goods_id = goods_id;
+	}
     
 }

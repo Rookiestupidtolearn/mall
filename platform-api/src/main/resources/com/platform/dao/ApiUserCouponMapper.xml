@@ -15,8 +15,9 @@
         <result property="source_key" column="source_key"/>
         <result property="referrer" column="referrer"/>
          <result property="coupon_price" column="coupon_price"/>
-        <result property="good_id" column="good_id"/>
         <result property="coupon_status" column="coupon_status"/>
+         <result property="goods_id" column="goods_id"/>
+        <result property="parent_id" column="parent_id"/>
     </resultMap>
 
     <select id="queryObject" resultMap="userCouponMap">
@@ -86,8 +87,9 @@
 			`source_key`,
 			`referrer`,
 			`coupon_price`,
-			`good_id`,
-			`coupon_status`
+			`coupon_status`,
+			`parent_id`,
+			`goods_id`
 		)
 		values
 		(
@@ -100,8 +102,9 @@
 			#{source_key},
 			#{referrer},
 			#{coupon_price},
-			#{good_id},
-			#{coupon_status}
+			#{coupon_status},
+			#{parent_id},
+			#{goods_id}
 		)
 	</insert>
 
@@ -118,7 +121,8 @@
             <if test="referrer != null">`referrer` = #{referrer},</if>
             <if test="coupon_status != null">`coupon_status` = #{coupon_status},</if>
             <if test="coupon_price != null">`coupon_price` = #{coupon_price},</if>
-            <if test="good_id != null">`good_id` = #{good_id}</if>
+            <if test="parent_id != null">`parent_id` = #{parent_id},</if>
+            <if test="goods_id != null">`goods_id` = #{goods_id}</if>
         </set>
         where id = #{id}
     </update>
