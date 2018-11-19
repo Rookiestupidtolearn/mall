@@ -165,16 +165,25 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService{
 	}
 	
 	public void updateProduct(GoodsVo vo) {
-		ProductVo product = new ProductVo();
-		product.setGoods_id(vo.getId());
-		product.setGoods_name(vo.getName());
-		product.setGoods_number(vo.getGoods_number());
-		product.setGoods_sn(vo.getGoods_sn());
-		product.setGoods_specification_ids("");
-		product.setList_pic_url(vo.getList_pic_url());
-		product.setMarket_price(vo.getMarket_price());
-		product.setRetail_price(vo.getRetail_price());
-		apiProductMapper.update(product);
+		//根据商品id查询product信息
+		Map<String,Object> paramMap = new HashMap();
+		paramMap.put("goods_id",vo.getId());
+		List<ProductVo> productList = apiProductMapper.queryList(paramMap);
+		if(org.apache.shiro.util.CollectionUtils.isEmpty(productList)){
+			logger.info("【jd商品更新入规格product】查询商品id为"+vo.getId()+"的商品为空");
+		}
+		for(ProductVo productVo : productList){
+			productVo.setGoods_id(vo.getId());
+			productVo.setGoods_name(vo.getName());
+			productVo.setGoods_number(vo.getGoods_number());
+			productVo.setGoods_sn(vo.getGoods_sn());
+			productVo.setGoods_specification_ids("");
+			productVo.setList_pic_url(vo.getList_pic_url());
+			productVo.setMarket_price(vo.getMarket_price());
+			productVo.setRetail_price(vo.getRetail_price());
+			apiProductMapper.update(productVo);
+			logger.info("【jd商品更新入规格product】商品id:"+vo.getId()+"更新成功");
+		}
 	}
 	
 	/**
@@ -228,6 +237,7 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService{
 				goodsPureInterestRateVo.setPureInterestRate(PureInterestRate);
 				goodsPureInterestRateVo.setCreateTime(new Date());
 				apiGoodsPureInterestRateService.update(goodsPureInterestRateVo);
+				logger.info("【jd商品更新修改毛利率】商品："+vo.getId()+"更新成功");
 			}
 			return true;
 		} else {
