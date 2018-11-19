@@ -235,7 +235,7 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService{
 				double PureInterestRate = vo.getMarket_price().subtract(vo.getRetail_price())
 						.divide(vo.getRetail_price(), 2, BigDecimal.ROUND_HALF_UP).doubleValue();
 				goodsPureInterestRateVo.setPureInterestRate(PureInterestRate);
-				goodsPureInterestRateVo.setCreateTime(new Date());
+				goodsPureInterestRateVo.setUpdateTime(new Date());
 				apiGoodsPureInterestRateService.update(goodsPureInterestRateVo);
 				logger.info("【jd商品更新修改毛利率】商品："+vo.getId()+"更新成功");
 			}

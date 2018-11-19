@@ -128,4 +128,18 @@ public interface GoodsService {
 	 * @param ids
 	 */
 	int unSaleBatch(Integer[] ids);
+
+	/**
+	 * 批量申请上架
+	 * @param ids
+	 * @return
+	 */
+	int applySaleBatch(Integer[] ids);
+
+	/**
+	 * 批量申请下架
+	 * @param ids
+	 * @return
+	 */
+	int applyUnSaleBatch(Integer[] ids);
 }
