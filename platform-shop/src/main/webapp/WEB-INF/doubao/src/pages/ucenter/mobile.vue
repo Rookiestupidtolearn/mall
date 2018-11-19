@@ -1,6 +1,9 @@
 <template>
  	<div class="container">
- 		<div class="weibind"  :style="{display:[!bindResult ? 'none' : 'block' ]}">
+ 		<!--公共头部-->
+ 		<headbar :headFont="headFont"></headbar>
+ 		
+ 		<div class="weibind mt88"  :style="{display:[!bindResult ? 'none' : 'block' ]}">
 	 		<div class="noBind">
 				<div class="userinfo">
 					<img class="userinfo-avatar"  :src="mobileInfo.avatar" background-size="cover"/>
@@ -18,32 +21,35 @@
 		        </div>
 		      <div class="third-line"><button @click="submitForm" :disabled="disableSubmitMobileCode">提交</button></div>
 		  </div>
-			<div class="titleamount" :style="{display:[bindResult ? 'none' : 'block' ]}">
-				<div class='titleTop'>
-				    <p>绑定账号</p>
-				    <div >
-				      <span class='col5e5e5e'>昵称:{{mobileInfo.nickname}}</span>
-				      <img  class="image" :src="mobileInfo.avatar"/>
-				    </div>
-				  </div>
-				  <div class="titleBottom">
-				    <span>绑定手机号</span>
-				    <span class='mobile'  data-c="cee" v-if="telephone">{{telephone}}</span>
-					<span class='mobile'  data-c="cdd" v-else @click="bindPhone">去绑定</span>
-				  </div>
-			 	</div>
-			</div>
+		<div class="titleamount mt88" :style="{display:[bindResult ? 'none' : 'block' ]}">
+			<div class='titleTop'>
+			    <p>绑定账号</p>
+			    <div >
+			      <span class='col5e5e5e'>昵称:{{mobileInfo.nickname}}</span>
+			      <img  class="image" :src="mobileInfo.avatar"/>
+			    </div>
+			  </div>
+			  <div class="titleBottom">
+			    <span>绑定手机号</span>
+			    <span class='mobile'  data-c="cee" v-if="telephone">{{telephone}}</span>
+				<span class='mobile'  data-c="cdd" v-else @click="bindPhone">去绑定</span>
+			  </div>
+		 	</div>
+		</div>
 	</div>
 </template>
 
 <script>
 	import { MessageBox } from 'mint-ui';
 	import { Toast } from 'mint-ui';
+	import headbar from '@/components/headbar.vue'
 		
 	export default {
 	  name: 'feedback',
+	  components:{headbar},
 	  data () {
 	    return {
+	    	headFont:"绑定手机",
 	        telephone: '',
 	        teleyzm:'',
 	        bindResult:true,

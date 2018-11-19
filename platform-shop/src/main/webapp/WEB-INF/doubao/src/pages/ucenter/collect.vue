@@ -1,10 +1,13 @@
 <template>
  	<div class="collect-list">
-    <router-link :to="'/pages/category/goods?id='+item.id" class="item" v-for="item in collectList" >
+ 		<!--公用头部-->
+  		<headbar :headFont = "headFont"></headbar>
+  		
+    <router-link :to="'/pages/category/goods?id='+item.id" class="item mt88" v-for="item in collectList" >
       <img class="img" :src="item.list_pic_url"/>
       <div class="info">
         <div class="name">{{item.name}}</div>
-        <div class="subtitle">{{item.goods_brief}}</div>
+        <!--<div class="subtitle">{{item.goods_brief}}</div>-->
         <div class="price">￥{{item.market_price}}</div>
       </div>
     </router-link>
@@ -13,12 +16,14 @@
 
 <script>
 	import { MessageBox } from 'mint-ui';
-		
+	import headbar from '@/components/headbar.vue';
 		
 export default {
   name: 'coupon',
+    components:{headbar},
   data () {
     return {
+    	headFont:'我的收藏',
     	collectList:[]
     }
   },

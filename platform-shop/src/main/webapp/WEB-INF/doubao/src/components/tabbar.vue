@@ -29,7 +29,7 @@ export default {
   data () {
     return {
     		message:this.selected,
-			  atabs:this.tabs
+			atabs:this.tabs
     }
   },
    props:{
@@ -43,13 +43,13 @@ export default {
                     this.$router.push('/');
                 break;
                 case 'classification':
-                    this.$router.push('/classification');
+                    this.$router.push('/pages/classification');
                 break;
                 case 'shoppingcar':
-                    this.$router.push('/shoppingcar');
+                    this.$router.push('/pages/shoppingcar');
                 break;
                 case 'ucenter':
-                    this.$router.push('/ucenter');
+                    this.$router.push('/pages/ucenter');
                 break;
             }
         }

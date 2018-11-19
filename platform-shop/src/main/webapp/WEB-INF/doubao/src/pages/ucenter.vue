@@ -1,6 +1,9 @@
 <template>
   <div class="hello">
-   <div class="viewTop">
+  	<!--公用头部-->
+  	<headbar :headFont = "headFont"></headbar>
+  	
+   <div class="viewTop mt88">
    		<img class="userinfo-avatar" src="https://platform-wxmall.oss-cn-beijing.aliyuncs.com/upload/20180727/150547696d798c.png"/>
    		<p class="userinfo-nickname">Hi,游客</p>
    		<router-link class="userinfo-availMoney" :to="availUrl" :style="{display:[availResult?'block':'none']}">
@@ -78,10 +81,11 @@
 
 <script>
 	
-	import tabbar from './tabbar.vue'
+	import tabbar from '@/components/tabbar.vue'
+	import headbar from '@/components/headbar.vue'
 	
 export default {
-	components: {tabbar },
+	components: {tabbar,headbar },
   name: 'ucenter',
   data () {
     return {
@@ -89,6 +93,7 @@ export default {
       availResult:true,
       availUrl:'/pages/ucenter/amountMoney',
       availMoney:'',
+      headFont:'个人中心',
      selected:"ucenter",
    	 tabs:[require("../../static/images/ic_menu_choice_nor.png"),require("../../static/images/ic_menu_sort_nor.png"),
     	require("../../static/images/ic_menu_shoping_nor.png"),require("../../static/images/ic_menu_me_pressed.png")],

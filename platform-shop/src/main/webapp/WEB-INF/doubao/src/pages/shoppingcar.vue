@@ -1,6 +1,9 @@
 <template>
   <div class="shoppingcar">
-  	<div class="service-policy">
+  	<!--公用头部-->
+  	<headbar :headFont = "headFont"></headbar>
+  	
+  	<div class="service-policy mt88">
   		<span class="item">30天无忧退货</span>
   		<span class="item">48小时快速退款</span>
   		<span class="item">免邮费</span>
@@ -59,14 +62,16 @@
 </template>
 
 <script>
-import tabbar from './tabbar.vue'
+import tabbar from '@/components/tabbar.vue'
+	import headbar from '@/components/headbar'
 import { Toast } from 'mint-ui'
 	
 export default {
-	components: {tabbar },
+	components: {tabbar,headbar },
   name: 'shoppingcar',
   data () {
     return {
+    	headFont:'购物车',
     	cartGoods: [],
 	    cartTotal: {
 	      "goodsCount": 0,
@@ -89,7 +94,7 @@ export default {
         method: 'post',
         url: that.$url+'cart/index',
     	}).then(function (response) {
-    		response = { "data":{"errno":0,"data":{"cartTotal":{"goodsCount":1,"checkedGoodsCount":1,"goodsAmount":90.00,"checkedGoodsAmount":90.00},"couponInfoList":[{"msg":"满￥88.00元免配送费","type":0},{"msg":"满1000减20元，还差410.00元","type":1}],"cartList":[{"id":1069,"user_id":28,"session_id":"1","goods_id":1181023,"goods_sn":"136","product_id":280,"goods_name":"sjmBB测试勿动002修改过名字","market_price":90.00,"retail_price":120.00,"retail_product_price":120.00,"number":1,"goods_specifition_name_value":null,"goods_specifition_ids":"","checked":1,"crash_save_price":0.00,"list_pic_url":"http://aoss.huaqianyueshang.com/wall/20181026/162648787edb46.png","good_url":"/pages/goods/goods?id=1181023"}]},"errmsg":"执行成功"}};
+    		response = { "data":{"errno":0,"data":{"cartTotal":{"goodsCount":1,"checkedGoodsCount":1,"goodsAmount":90.00,"checkedGoodsAmount":90.00},"couponInfoList":[{"msg":"满￥88.00元免配送费","type":0},{"msg":"满1000减20元，还差410.00元","type":1}],"cartList":[{"id":1069,"user_id":28,"session_id":"1","goods_id":1181023,"goods_sn":"136","product_id":280,"goods_name":"sjmBB测试勿动002修改过名字","market_price":90.00,"retail_price":120.00,"retail_product_price":120.00,"number":1,"goods_specifition_name_value":null,"goods_specifition_ids":"","checked":1,"crash_save_price":0.00,"list_pic_url":"http://aoss.huaqianyueshang.com/wall/20181026/162648787edb46.png","good_url":"/pages/category/goods?id=1181023"}]},"errmsg":"执行成功"}};
     		console.log(response);
 		    that.cartGoods = response.data.data.cartList;
 		    that.cartTotal = response.data.data.cartTotal;
@@ -201,7 +206,7 @@ export default {
 			        	isChecked: that.cartGoods[itemIndex].checked ? 0 : 1 
 		      	 }
 		        }).then(function (res) {
-		        	res = {"errno":0,"data":{"cartTotal":{"goodsCount":1,"checkedGoodsCount":1,"goodsAmount":1000.00,"checkedGoodsAmount":1000.00},"couponInfoList":[{"msg":"满￥88.00元免配送费","type":0},{"msg":"可使用满减券满1000减20元","type":0}],"cartList":[{"id":1094,"user_id":28,"session_id":"1","goods_id":1181025,"goods_sn":"001","product_id":307,"goods_name":"测试使用001","market_price":1000.00,"retail_price":1000.00,"retail_product_price":1000.00,"number":1,"goods_specifition_name_value":"白色","goods_specifition_ids":"43","checked":1,"crash_save_price":0.00,"list_pic_url":"http://aoss.huaqianyueshang.com/wall/20181026/1400011555eb77.jpg","good_url":"/pages/goods/goods?id=1181025"}]},"errmsg":"执行成功"};
+		        	res = {"errno":0,"data":{"cartTotal":{"goodsCount":1,"checkedGoodsCount":1,"goodsAmount":1000.00,"checkedGoodsAmount":1000.00},"couponInfoList":[{"msg":"满￥88.00元免配送费","type":0},{"msg":"可使用满减券满1000减20元","type":0}],"cartList":[{"id":1094,"user_id":28,"session_id":"1","goods_id":1181025,"goods_sn":"001","product_id":307,"goods_name":"测试使用001","market_price":1000.00,"retail_price":1000.00,"retail_product_price":1000.00,"number":1,"goods_specifition_name_value":"白色","goods_specifition_ids":"43","checked":1,"crash_save_price":0.00,"list_pic_url":"http://aoss.huaqianyueshang.com/wall/20181026/1400011555eb77.jpg","good_url":"/pages/category/goods?id=1181025"}]},"errmsg":"执行成功"};
 				        if (res.errno === 0) {
 				          console.log(res.data);
 				            that.cartGoods = res.data.cartList;

@@ -42,11 +42,11 @@
 </template>
 
 <script>
-	import tabbar from './tabbar'
+	import tabbar from '@/components/tabbar'
 	import { Indicator } from 'mint-ui';
 	
 export default {
-	components: {tabbar },
+	components: { tabbar },
   name: 'home',
   data () {
     return {
@@ -67,6 +67,7 @@ export default {
         method: 'post',
         url: that.$url+'index/banner',
     	}).then(function (response) {
+    		console.log(response);
 		    that.banner = response.data.data.banner
 		  })
     //channel

@@ -1,6 +1,9 @@
 <template>
  	<div class="container">
-	 	<div class="searchTop">
+ 		<!--公用头部-->
+  		<headbar :headFont = "headFont"></headbar>
+  		
+	 	<div class="searchTop mt88" >
 	  		<mt-search v-model="value"  @keyup.enter.native="showList" @input="inputFocus" cancel-text="取消"  placeholder="商品搜索" class="wusearch" ></mt-search>
 	  	</div>
 	  	<div class="no-search" :style="{display: [value || historyKeyword? 'none' : 'block']}">
@@ -23,8 +26,8 @@
 		      <div class="item" hover-class="navigator-hover" v-for="item in hotKeyword">{{item}}</div>
 		    </div>
 	  	</div>
- 		<div class="search-result"  :data-c="searchStatus"  :data-d="goodsList.length"  v-if="searchStatus && goodsList.length">
-		    <div class="sort">
+ 		<div class="search-result"  :data-c="searchStatus"  :data-d="goodsList.length"  v-if="searchStatus && goodsList.length" >
+		    <div class="sort mt88">
 			    <div class="sort-box">
 				      <div  class="item" :class="[currentSortType == 'default' ? 'active' : '']" @click="openSortFilter('defaultSort')" >
 				        <span class="txt">综合</span>
@@ -60,12 +63,15 @@
 </template>
 
 <script>
+	import headbar from '@/components/headbar.vue'
 export default {
 	  name: 'search',
+	  components:{headbar},
 	  data () {
 	    return {
     		value:'',
     		searchStatus:false,
+    		headFont:'搜索',
     		historyKeyword: [],
     		defaultKeyword: {},
    			hotKeyword: [],
@@ -195,6 +201,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+	.mt88{
+		margin-top:.88rem;
+	}
 	.wusearch{
 		font-size:.28rem !important;
 		height:100%;

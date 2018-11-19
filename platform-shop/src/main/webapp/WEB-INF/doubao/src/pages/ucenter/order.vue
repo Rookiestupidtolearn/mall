@@ -1,6 +1,9 @@
 <template>
   <div class="hello">
-  	<ul v-infinite-scroll="loadMore" infinite-scroll-disabled="loading" infinite-scroll-distance="10">
+  	<!--公用头部-->
+  		<headbar :headFont = "headFont"></headbar>
+  		
+  	<ul class="mt88" v-infinite-scroll="loadMore" infinite-scroll-disabled="loading" infinite-scroll-distance="10">
  			 <li v-for="(item,index) in orderList">
 				<router-link  :to = "'/views/ucenter/orderDetail?id='+item.id" class="order" >
 	            <div class="h">
@@ -22,11 +25,14 @@
 <script>
 import { InfiniteScroll } from 'mint-ui';
 import { MessageBox } from 'mint-ui';
+import headbar from '@/components/headbar.vue';
 		
 export default {
   name: 'order',
+  components:{headbar},
   data () {
     return {
+    	headFont:'订单列表',
     	orderList:[]
     }
   },

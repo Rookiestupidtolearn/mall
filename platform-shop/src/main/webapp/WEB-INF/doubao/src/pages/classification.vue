@@ -1,5 +1,9 @@
 <template>
   <div class="classification">
+  	<!--头部返回-->
+  	<headbar :headFont = "headFont"></headbar>
+  	
+  	<!--主体内容-->
   	<div class="searchTop" @click="searchRoute">
   		<mt-search v-model="value"  cancel-text="取消"  placeholder="商品搜索" class="wusearch" ></mt-search>
   	</div>
@@ -29,16 +33,18 @@
 </template>
 
 <script>
-	import tabbar from './tabbar.vue'
+	import tabbar from '@/components/tabbar.vue'
+	import headbar from '@/components/headbar'
 	
 export default {
-	components: {tabbar },
+	components: {tabbar,headbar },
   name: 'classification',
   data () {
     return {
     	value:'',
 			categoryList:[],
 			currentCategory:[],
+			headFont:'分类',
 		selected:"classification",
    	 tabs:[require("../../static/images/ic_menu_choice_nor.png"),require("../../static/images/ic_menu_sort_pressed.png"),
           require("../../static/images/ic_menu_shoping_nor.png"),require("../../static/images/ic_menu_me_nor.png")],
@@ -80,6 +86,7 @@ export default {
     width: 100%;
     top: 0;
     z-index: 2;
+    margin-top:.88rem;
 	}
 	.front_name {
 		position:absolute;
@@ -172,7 +179,7 @@ width:auto;
 		}
 		.content{
 			overflow: hidden;
-	    margin-top: 1.3rem;
+	    margin-top: 2.1rem;
 		}
 		.content .catalog{
 			float:left;

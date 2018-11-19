@@ -1,13 +1,16 @@
 <template>
  	<div class="footprint">
-    <div class="day-item" v-for="item in footprintList" >
+ 			<!--公用头部-->
+  		<headbar :headFont = "headFont"></headbar>
+  		
+    <div class="day-item mt88" v-for="item in footprintList" >
       <div class="day-hd">{{item[0].add_time}}</div>
       <div class="day-list">
         <router-link :to="'/pages/category/goods?id='+iitem.id" class="item"  v-for = "iitem in item" >
           <img class="img" :src="iitem.list_pic_url"/>
           <div class="info">
             <div class="name">{{iitem.name}}</div>
-            <div class="subtitle">{{iitem.goods_brief}}</div>
+            <!--<div class="subtitle">{{iitem.goods_brief}}</div>-->
             <div class="price">￥{{iitem.market_price}}</div>
           </div>
         </router-link>
@@ -18,12 +21,14 @@
 
 <script>
 import { MessageBox } from 'mint-ui';
-		
+import headbar from '@/components/headbar.vue';
 		
 export default {
 name: 'footprint',
+components:{headbar},
   data () {
     return {
+    	headFont:'我的足迹',
     	footprintList:[]
     }
   },

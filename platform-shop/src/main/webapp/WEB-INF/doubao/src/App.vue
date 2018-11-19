@@ -32,4 +32,7 @@ body{
 .mint-indicator-wrapper{
 	padding: .2rem .5rem !important;
 }
+.mt88{
+	margin-top:.88rem !important;
+}
 </style>

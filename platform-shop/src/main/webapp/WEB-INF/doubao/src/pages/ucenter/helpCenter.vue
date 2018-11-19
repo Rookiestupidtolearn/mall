@@ -1,5 +1,9 @@
 <template>
  	<div class='container'>
+ 		<!--公用头部-->
+  		<headbar :headFont = "headFont"></headbar>
+  	
+  	<div class="mt88">
 	  <div v-for="(item,index) in listArray"  @click='showList(index)' >
 	    <div class="question">
 	      <span>{{item.question}}</span>
@@ -9,17 +13,20 @@
 	      {{item.answer}}
 	    </div>
 	  </div>
+	  </div>
 	</div> 
 </template>
 
 <script>
 	import { MessageBox } from 'mint-ui';
-		
+	import headbar from '@/components/headbar.vue';	
 		
 export default {
   name: 'helpCenter',
+  components:{headbar},
   data () {
     return {
+    	headFont:'帮助中心',
     	helpImg:'../../static/images/go.png',
 	    listArray: [
 	      {

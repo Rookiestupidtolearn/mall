@@ -1,32 +1,40 @@
 <template>
  	<div class="coupon-list">
- 		<div class="item" v-for = "item in couponList"  :style="{background: [ item.coupon_status==1 || item.coupon_status==4  ? 'linear-gradient(to right,#cfa568,#e3bf79)' : 'linear-gradient(to right,#999,#DDDDDD)']}">
-         <!-- <div class="tag">新人专享</div>  -->
-        <div class="content">
-          <div class="left">
-            <div class="name">{{item.name}}</div>
-            <!-- <div class="time">有效期至{{item.use_end_date}}</div> -->
-            <div class="time">仅限该单使用</div>
-          </div>
-          <div class="right">
-            <img v-if="item.coupon_status==1" class='mid-img' src='../../../static/images/coupon_ksy.png'/>
-            <img v-if="item.coupon_status==2" class='mid-img' src='../../../static/images/coupon_ysy.png'/>
-            <img v-if="item.coupon_status==3" class='mid-img' src='../../../static/images/coupon_gq.png'/>
-            <img v-if="item.coupon_status==4" class='mid-img' src='../../../static/images/coupon_zfz.png'/>
-          </div>
-        </div>
-        <div class="condition">抵扣￥{{item.coupon_price}}</div>
-      </div>
+ 		<!--公用头部-->
+  		<headbar :headFont = "headFont"></headbar>
+  		
+  		<div class="mt88">
+	 		<div class="item" v-for = "item in couponList"  :style="{background: [ item.coupon_status==1 || item.coupon_status==4  ? 'linear-gradient(to right,#cfa568,#e3bf79)' : 'linear-gradient(to right,#999,#DDDDDD)']}">
+	         <!-- <div class="tag">新人专享</div>  -->
+	        <div class="content">
+	          <div class="left">
+	            <div class="name">{{item.name}}</div>
+	            <!-- <div class="time">有效期至{{item.use_end_date}}</div> -->
+	            <div class="time">仅限该单使用</div>
+	          </div>
+	          <div class="right">
+	            <img v-if="item.coupon_status==1" class='mid-img' src='../../../static/images/coupon_ksy.png'/>
+	            <img v-if="item.coupon_status==2" class='mid-img' src='../../../static/images/coupon_ysy.png'/>
+	            <img v-if="item.coupon_status==3" class='mid-img' src='../../../static/images/coupon_gq.png'/>
+	            <img v-if="item.coupon_status==4" class='mid-img' src='../../../static/images/coupon_zfz.png'/>
+	          </div>
+	        </div>
+	        <div class="condition">抵扣￥{{item.coupon_price}}</div>
+	      </div>
+	     </div>
  	</div>
 </template>
 
 <script>
 	import { MessageBox } from 'mint-ui';
+	import headbar from '@/components/headbar.vue';
 		
 export default {
   name: 'coupon',
+ components:{headbar},
   data () {
     return {
+    	headFont:'优惠券列表',
     	couponList:[]
     }
   },

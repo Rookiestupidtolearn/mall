@@ -1,6 +1,9 @@
 <template>
  	<div class="container">
- 		<div class="cate-over">
+ 		<!--公用头部-->
+  		<headbar :headFont = "headFont"></headbar>
+  		
+ 		<div class="cate-over mt88">
 	 		<div class="cate-nav">
 	            <div v-for="item in brotherCategory"  :class="idm == item.id ? 'active' : ''" class="item" @click="switchCate(item.id)">
 	                <div class="name">{{item.name}}</div>
@@ -25,12 +28,15 @@
 
 <script>
 	import { MessageBox } from 'mint-ui';
+	import headbar from '@/components/headbar.vue'
 	import { Toast } from 'mint-ui';
 		
 	export default {
 	  name: 'coupon',
+	  components:{headbar},
 	  data () {
 	    return {
+	    	headFont:'产品分类',
 	    	brotherCategory:[],
 	    	goodsList:[],
 	    	currentCategory:'',

@@ -1,7 +1,9 @@
 <template>
  	<div class="container">
- 		
-		 <div class="address-box">
+ 		<!--公用头部-->
+  		<headbar :headFont = "headFont"></headbar>
+  		
+		 <div class="address-box mt88">
 	        <div class="address-item" @click="selectAddress" v-if="checkedAddress.id > 0">
 	            <div class="l">
 	                <span class="name">{{checkedAddress.userName}}</span>
@@ -91,11 +93,14 @@
 <script>
 	import { Toast } from 'mint-ui';
 	import { MessageBox } from 'mint-ui';
+	import headbar from '@/components/headbar.vue'
 		
 	export default {
 	  name: 'payResult',
+	  components:{headbar},
 	  data () {
 	    return {
+	    	headFont:'支付页面',
 	    	checkedGoodsList: [],
 		    checkedAddress: {},
 		    checkedCoupon: [],

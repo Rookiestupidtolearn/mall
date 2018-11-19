@@ -1,6 +1,9 @@
 <template>
  	<div class="container">
- 		<div class="list1" @click="showList">{{values}}<img src='../../../static/images/go.png'  class="imageO animation" /></div>
+ 			<!--公用头部-->
+  		<headbar :headFont = "headFont"></headbar>
+  		
+ 		<div class="list1 mt88" @click="showList">{{values}}<img src='../../../static/images/go.png'  class="imageO animation" /></div>
  		<div class="bg" :style="{display:[ resultShow ? 'none' : 'block']}"></div>
  		<div class="pickerO" :style="{display:[ resultShow ? 'none' : 'block']}">
  			<p class="top"><span @click="cancel">取消</span><span class='sure' @click="suredo">确定</span></p>
@@ -24,11 +27,14 @@
 	import { MessageBox } from 'mint-ui';
 	import { Picker } from 'mint-ui';
 	import { Toast } from 'mint-ui';
+	import headbar from '@/components/headbar.vue';
 		
 	export default {
 	  name: 'feedback',
+	  components:{headbar},
 	  data () {
 	    return {
+	    	headFont:'问题反馈',
 	    	values:'请选择反馈类型',
 	    	values2:'',
 	    	introduct:'',

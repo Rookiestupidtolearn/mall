@@ -1,11 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import tabbar from '@/components/tabbar'  //首页
-import home from '@/components/home'  //首页
-import classification from '@/components/classification'  //分类
+import home from '@/pages/home'  //首页
+import classification from '@/pages/classification'  //分类
+import shoppingcar from '@/pages/shoppingcar'  //购物车
+import ucenter from '@/pages/ucenter'  //个人中心
 import search from '@/pages/search/search'  //分类-搜索页面
-import shoppingcar from '@/components/shoppingcar'  //购物车
-import ucenter from '@/components/ucenter'  //个人中心
 import order from '@/pages/ucenter/order'  //个人中心-我的订单
 import coupon from '@/pages/ucenter/coupon'  //个人中心-我的优惠券
 import collect from '@/pages/ucenter/collect'  //个人中心-我的收藏
@@ -26,6 +25,7 @@ import selCoupon from '@/pages/category/selCoupon'  //选择优惠券页面
 import addressList2 from '@/pages/category/addressList'  //购物车选择地址页面
 import addressAdd2 from '@/pages/ucenter/addressAdd'  //个人中心选择地址页面
 import amountMoney from '@/pages/ucenter/amountMoney'  //资金明细
+import pay from '@/pages/category/pay'  //支付订单
 
 Vue.use(Router)
 
@@ -37,19 +37,15 @@ export default new Router({
       name: 'home',
       component: home
     },{
-      path: '/tabbar',
-      name: 'tabbar',
-      component: tabbar
-    },{
-      path: '/classification',
+      path: '/pages/classification',
       name: 'classification',
       component: classification
     },{
-      path: '/shoppingcar',
+      path: '/pages/shoppingcar',
       name: 'shoppingcar',
       component: shoppingcar
     },{
-      path: '/ucenter',
+      path: '/pages/ucenter',
       name: 'ucenter',
       component: ucenter
     },{
@@ -136,6 +132,10 @@ export default new Router({
       path: '/pages/ucenter/amountMoney',
       name: 'amountMoney',
       component: amountMoney
+    },{
+      path: '/pages/category/pay',
+      name: 'pay',
+      component: pay
     }
     
   ]

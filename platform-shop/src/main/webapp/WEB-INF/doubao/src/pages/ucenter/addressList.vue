@@ -1,6 +1,9 @@
 <template>
  	<div class="container">
-	    <div class="address-list"  v-if="addressList.length > 0" >
+ 		<!--公用头部-->
+  		<headbar :headFont = "headFont"></headbar>
+  		
+	    <div class="address-list mt88"  v-if="addressList.length > 0" >
 	        <div class="item" v-for="item in addressList" @click="addressAddOrUpdate('1')" >
 	            <div class="l">
 	                <div class="name">{{item.userName}}</div>
@@ -15,7 +18,7 @@
 	            </div>
 	        </div>
 	    </div>
-	    <div class="empty-view" v-if="addressList.length <= 0">
+	    <div class="empty-view mt88" v-if="addressList.length <= 0">
 	      <img class="icon" src="http://yanxuan.nosdn.127.net/hxm/yanxuan-wap/p/20161201/style/img/icon-normal/noAddress-26d570cefa.png"/>
 	      <p class="text">收货地址在哪里</p>
 	    </div>
@@ -25,11 +28,14 @@
 
 <script>
 import { MessageBox } from 'mint-ui';
+import headbar from '@/components/headbar.vue';
 		
 export default {
 	name: 'addressList',
+	 components:{headbar},
   data () {
     return {
+    	headFont:'地址管理',
     	addressList:[],
     	deleteList:[]
     }

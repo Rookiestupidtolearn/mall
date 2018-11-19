@@ -1,12 +1,14 @@
 <template>
  	<div class="container">
- 		
- 	<div class="no-course" v-if="couponList.length <= 0" >
+ 		<!--公用头部-->
+  		<headbar :headFont = "headFont"></headbar>
+  		
+ 	<div class="no-course mt88" v-if="couponList.length <= 0" >
  		<img src="../../../static/images/my_course_empty.png"/>
  		<p class="desc">您还没有优惠券~</p>
  	</div>
  	
-	  <div v-else class="coupon-list">
+	  <div v-else class="coupon-list mt88">
 	    <div v-for="item in couponList" >
 	    <div  @click='tapCoupon(item.enabled,item.user_coupon_id)' class="item" :style="{background: [item.enabled==1?'linear-gradient(to right,#cfa568,#e3bf79)':'linear-gradient(to right,#999,#DDDDDD)']}">
 	        <div class="content">
@@ -31,14 +33,17 @@
 
 <script>
 import { setCookie,getCookie,delCookie } from '@/assets/cookie';
+import headbar from '@/components/headbar.vue'
 
 export default {
 	  name: 'selCoupon',
+	  components:{headbar},
 	  data () {
 	    return {
 	    	couponList: '',
     		buyType: '',
-    		isBuy:''
+    		isBuy:'',
+    		headFont:'选择优惠券'
 	    }
 	  },
 	  mounted(){
