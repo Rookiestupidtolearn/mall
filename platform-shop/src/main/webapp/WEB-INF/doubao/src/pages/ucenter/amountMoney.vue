@@ -1,22 +1,30 @@
 <template>
  	<div class="container">
- 		<div class='list' v-for="item in userAccountDetail" >
-		    <p class='ExchangeName'>{{ item.tranType }}</p>
-		    <p class='boxMoney red' v-if=" item.tarnAmount>0 ">{{ item.tarnAmount }}</p>
-		    <p class='boxMoney green' v-if=" item.tarnAmount<0 ">{{ item.tarnAmount }}</p>
-		    <p>{{ item.createTime }}</p>
+ 		<!--公用头部-->
+ 		<headbar :headFont = "headFont"></headbar>
+ 		
+ 		<div class="mt88">
+	 		<div class='list' v-for="item in userAccountDetail" >
+			    <p class='ExchangeName'>{{ item.tranType }}</p>
+			    <p class='boxMoney red' v-if=" item.tarnAmount>0 ">{{ item.tarnAmount }}</p>
+			    <p class='boxMoney green' v-if=" item.tarnAmount<0 ">{{ item.tarnAmount }}</p>
+			    <p>{{ item.createTime }}</p>
+		 	 </div>
 	 	 </div>
  	</div>
 </template>
 
 <script>
 	import { MessageBox } from 'mint-ui';
+	import headbar from '@/components/headbar.vue';
 		
 		
 export default {
   name: 'coupon',
+  components:{headbar},
   data () {
     return {
+    	headFont:'平台币明细',
     	userAccountDetail:[]
     }
   },
@@ -86,10 +94,6 @@ export default {
 	.list p.boxMoney{
 	  text-align:right;
 	  font-size:.30rem;
-	}
-	.container {
-	  height:100%;
-	  padding-top:.30rem;
 	}
 	.red{
 	  color:#cc6666

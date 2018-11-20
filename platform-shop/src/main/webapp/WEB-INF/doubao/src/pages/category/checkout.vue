@@ -495,6 +495,10 @@
 .goods-items .t .name{
     display: block;
     float: left;
+    width: 4.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .goods-items .t .number{
