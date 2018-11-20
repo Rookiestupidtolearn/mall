@@ -72,6 +72,14 @@ public class ApiCollectController extends ApiBaseAction {
         param.put("type_id", typeId);
         param.put("value_id", valueId);
         List<CollectVo> collectEntities = collectService.queryList(param);
+        if (!CollectionUtils.isEmpty(collectEntities)) {
+        	if (collectEntities.size() == 1) {
+        		CollectVo  vo  = collectEntities.get(0);
+        		if (vo.getId() == null) {
+        			collectEntities = null;
+				}
+			}
+		}
         //
         Integer collectRes = null;
         String handleType = "add";
