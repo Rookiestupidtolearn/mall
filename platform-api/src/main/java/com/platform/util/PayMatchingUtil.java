@@ -5,6 +5,8 @@ import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,7 +25,7 @@ public class PayMatchingUtil {
 
 	 @Autowired
 	 public ApiProductMapper apiProductMapper;
-	
+	 private Logger logger = LoggerFactory.getLogger(getClass());
 	/**
 	 * 获取商品支付配比
 	 * @param goodsId
@@ -46,8 +48,12 @@ public class PayMatchingUtil {
 		
 		//计算支付配比 : 公式 S={M*Z-(Z-H)*N}/M*100%
 		BigDecimal PayMatching =marketPrice.multiply(normalMatching).subtract(normalMatching.subtract(activityMatching).multiply(retailPrice)).divide(marketPrice,4, BigDecimal.ROUND_DOWN);
+		logger.info("【计算支付配比】--- 支付配比值"+PayMatching);
+		
 		//计算抵扣金额
 		BigDecimal Money = marketPrice.multiply(PayMatching).setScale(2, BigDecimal.ROUND_HALF_UP);
+		
+		logger.info("【计算支付配比】--- 抵扣金额"+Money);
 		goodsPayMatching.put(productVo.getGoods_id(), Money);
 		return goodsPayMatching;
 	}
