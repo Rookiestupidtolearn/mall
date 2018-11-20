@@ -16,4 +16,6 @@ public interface GoodsPureInterestRateDao extends BaseDao<GoodsPureInterestRateE
 
 	int delByProductIds(Integer[] productIds);
 
+	List<GoodsPureInterestRateEntity> queryGoodsByPureInterestRate(Map<String, Object> map);
+
 }

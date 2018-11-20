@@ -448,6 +448,10 @@ var vm = new Vue({
             vm.showMatching = true;
             vm.showData = false;
             console.log(vm.q.min_retail_price+","+vm.q.max_retail_price+","+vm.q.min_pure_interest_rate+","+vm.q.max_pure_interest_rate);
+            if(parseInt(vm.q.min_retail_price) < 0 || parseInt(vm.q.max_retail_price) < 0){
+        		alert("结算价不能小于0");
+        		return;
+        	}
             if(vm.q.min_retail_price !== '' && vm.q.max_retail_price !== ''){
             	if(parseInt(vm.q.min_retail_price) > parseInt(vm.q.max_retail_price)){
             		alert("请设置正确查询条件");

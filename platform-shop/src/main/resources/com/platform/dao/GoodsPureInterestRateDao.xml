@@ -55,6 +55,22 @@
         </if>
     </select>
     
+    <select id="queryGoodsByPureInterestRate" resultType="com.platform.entity.GoodsPureInterestRateEntity">
+    	select * from goods_pure_interest_rate gpir left join nideshop_goods ng 
+    	on gpir.goods_id = ng.id
+    	where 1=1 
+    	<if test="pureInterestRate=='greaterThan'.toString()">
+    		and pure_interest_rate &gt;= 0
+    	</if>
+    	<if test="pureInterestRate=='lessThan'.toString()">
+    		and pure_interest_rate &lt;= 0
+    	</if>
+    	<if test="isOnSale!=null">
+    		and ng.is_on_sale = #{isOnSale};
+    	</if>
+    </select>
+    
+    
     <insert id="save" parameterType="com.platform.entity.GoodsPureInterestRateEntity" >
 		insert into goods_pure_interest_rate (
 		`goods_id`,
