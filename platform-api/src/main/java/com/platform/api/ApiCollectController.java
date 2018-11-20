@@ -46,6 +46,12 @@ public class ApiCollectController extends ApiBaseAction {
         List<CollectVo> collectEntities = collectService.queryList(param);
         if(CollectionUtils.isNotEmpty(collectEntities)){
         	for(CollectVo collectVo : collectEntities){
+        		
+        		if (collectVo.getProduct_market_price() == null) {
+        			collectVo.setMarket_price(new BigDecimal(0));
+        			continue;
+				}
+        		
         		if(collectVo.getProduct_market_price().compareTo(BigDecimal.ZERO) > 0){
         			collectVo.setMarket_price(collectVo.getProduct_market_price());
         		}
