@@ -1,6 +1,7 @@
 package com.platform.util;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,7 +45,7 @@ public class PayMatchingUtil {
 		BigDecimal normalMatching =  new BigDecimal(productVo.getNormal_matching()); //正常配比 Z
 		
 		//计算支付配比 : 公式 S={M*Z-(Z-H)*N}/M*100%
-		BigDecimal PayMatching = marketPrice.multiply(normalMatching).subtract(normalMatching.subtract(activityMatching).multiply(retailPrice)).divide(marketPrice);
+		BigDecimal PayMatching =marketPrice.multiply(normalMatching).subtract(normalMatching.subtract(activityMatching).multiply(retailPrice)).divide(marketPrice,4, BigDecimal.ROUND_DOWN);
 		//计算抵扣金额
 		BigDecimal Money = marketPrice.multiply(PayMatching).setScale(2, BigDecimal.ROUND_HALF_UP);
 		goodsPayMatching.put(productVo.getGoods_id(), Money);

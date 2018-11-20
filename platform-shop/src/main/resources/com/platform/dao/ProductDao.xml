@@ -45,7 +45,7 @@
         <if test="goodsName != null and goodsName.trim() != ''">
             AND nideshop_goods.name LIKE concat('%',#{goodsName},'%')
         </if>
-        <if test="goodsSpecificationIds != null">
+        <if test="goodsSpecificationIds != null and goodsSpecificationIds.trim() != ''">
             AND nideshop_product.goods_specification_ids = #{goodsSpecificationIds}
  		</if>
          <if test="deptId != null">
@@ -108,7 +108,7 @@
         update nideshop_product
         <set>
             <if test="goodsId != null">`goods_id` = #{goodsId},</if>
-            <if test="goodsSpecificationIds != null">`goods_specification_ids` = #{goodsSpecificationIds},</if>
+            <if test="goodsSpecificationIds != null and goodsSpecificationIds.trim() != ''">`goods_specification_ids` = #{goodsSpecificationIds},</if>
             <if test="goodsSn != null">`goods_sn` = #{goodsSn},</if>
             <if test="goodsNumber != null">`goods_number` = #{goodsNumber},</if>
             <if test="retailPrice != null">`retail_price` = #{retailPrice},</if>

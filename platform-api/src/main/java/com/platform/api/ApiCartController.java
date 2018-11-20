@@ -681,6 +681,7 @@ public class ApiCartController extends ApiBaseAction {
             	}
              }
              if(userAmountVo != null){
+            	 amount = userAmountVo.getAmount();
             	 if(amount.compareTo(couponTotalPrice)<0){
             		 couponTotalPrice = amount;
             	 }

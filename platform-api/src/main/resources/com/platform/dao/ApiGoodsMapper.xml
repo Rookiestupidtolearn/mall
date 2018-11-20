@@ -316,7 +316,7 @@
 	</select>
 	
 	
-	<update id="update" parameterType="com.platform.entity.ProductVo">
+	<update id="update" parameterType="com.platform.entity.GoodsVo">
         update nideshop_goods
         <set>
             <if test="category_id != null">`category_id` = #{category_id},</if>
