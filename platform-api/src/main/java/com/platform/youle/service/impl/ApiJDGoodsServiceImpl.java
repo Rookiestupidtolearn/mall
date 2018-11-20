@@ -338,6 +338,7 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService{
 						vo.setIs_hot(0);
 						vo.setGoods_desc(resultDate.get("PRODUCT_DESCRIPTION") == null ? null : resultDate.get("PRODUCT_DESCRIPTION").toString());
 						vo.setAdd_time(new Date());
+						vo.setUpdate_time(new Date());
 						vo.setSource("JD");
 						Map<String, Object> param = stock(productObj.get("productId").toString(), 100, DEFAULT_ADDRESS);
 						if (param.get("num") != null) {
@@ -379,7 +380,8 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService{
 						good.setIs_hot(good.getIs_hot());
 							
 						good.setGoods_desc(resultDate.get("PRODUCT_DESCRIPTION") == null ? null : resultDate.get("PRODUCT_DESCRIPTION").toString());
-						good.setAdd_time(new Date());
+						good.setAdd_time(good.getAdd_time());
+						good.setUpdate_time(new Date());
 						good.setSource("JD");
 						Map<String, Object> param = stock(productObj.get("productId").toString(), 100, DEFAULT_ADDRESS);
 						if (param.get("num") != null) {
