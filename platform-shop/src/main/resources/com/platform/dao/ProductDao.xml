@@ -68,7 +68,7 @@
         select count(*) from nideshop_product
         LEFT JOIN nideshop_goods ON nideshop_product.goods_id = nideshop_goods.id
         WHERE 1=1
-        <if test="goodsId != null and goodsId.trim() != ''">
+        <if test="goodsId != null">
             AND nideshop_product.goods_id = #{goodsId}
         </if>
         <if test="goodsName != null and goodsName.trim() != ''">

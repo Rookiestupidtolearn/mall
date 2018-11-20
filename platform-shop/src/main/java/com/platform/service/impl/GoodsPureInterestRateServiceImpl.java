@@ -56,4 +56,9 @@ public class GoodsPureInterestRateServiceImpl implements GoodsPureInterestRateSe
 		return goodsPureInterestRateDao.delByProductIds(productIds);
 	}
 
+	@Override
+	public List<GoodsPureInterestRateEntity> queryGoodsByPureInterestRate(Map<String, Object> map) {
+		return goodsPureInterestRateDao.queryGoodsByPureInterestRate(map);
+	}
+
 }

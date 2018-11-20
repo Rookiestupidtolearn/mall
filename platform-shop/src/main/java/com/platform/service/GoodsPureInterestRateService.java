@@ -25,4 +25,11 @@ public interface GoodsPureInterestRateService {
 	int delBygoodsIds(Integer[] ids);
 
 	int delByProductIds(Integer[] ids);
+
+	/**
+	 * 根据毛利率和商品上架状态查询商品
+	 * @param map
+	 * @return
+	 */
+	List<GoodsPureInterestRateEntity> queryGoodsByPureInterestRate(Map<String, Object> map);
 }
