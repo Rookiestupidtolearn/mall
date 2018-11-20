@@ -1,9 +1,9 @@
 <template>
  	<div class="container">
  		<!--公用头部-->
-  		<headbar :headFont = "headFont"></headbar>
+  		<!--<headbar :headFont = "headFont"></headbar>-->
   		
-	    <div class="brand-info mt88">
+	    <div class="brand-info">
 	        <div class="name">
 	            <img class="img"  :src="brand.app_list_pic_url" background-size="cover"/>
 	            <div class="info-box">
@@ -34,14 +34,14 @@
 <script>
 	import { MessageBox } from 'mint-ui';
 	import { Toast } from 'mint-ui';
-	import headbar from '@/components/headbar.vue'
+//	import headbar from '@/components/headbar.vue'
 		
 	export default {
 	  name: 'brandDetail',
-	   components:{headbar},
+//	   components:{headbar},
 	  data () {
 	    return {
-	    	headFont:'品牌制造商',
+//	    	headFont:'品牌制造商',
 	    	idm:'',
 	    	brand:'',
 	    	goodsList:[],

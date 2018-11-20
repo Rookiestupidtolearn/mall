@@ -1,7 +1,7 @@
 <template>
   <div class="classification">
   	<!--头部返回-->
-  	<headbar :headFont = "headFont"></headbar>
+  	<!--<headbar :headFont = "headFont"></headbar>-->
   	
   	<!--主体内容-->
   	<div class="searchTop" @click="searchRoute">
@@ -34,17 +34,17 @@
 
 <script>
 	import tabbar from '@/components/tabbar.vue'
-	import headbar from '@/components/headbar'
+//	import headbar from '@/components/headbar'
 	
 export default {
-	components: {tabbar,headbar },
+	components: {tabbar },
   name: 'classification',
   data () {
     return {
     	value:'',
 			categoryList:[],
 			currentCategory:[],
-			headFont:'分类',
+//			headFont:'分类',
 		selected:"classification",
    	 tabs:[require("../../static/images/ic_menu_choice_nor.png"),require("../../static/images/ic_menu_sort_pressed.png"),
           require("../../static/images/ic_menu_shoping_nor.png"),require("../../static/images/ic_menu_me_nor.png")],
@@ -86,7 +86,6 @@ export default {
     width: 100%;
     top: 0;
     z-index: 2;
-    margin-top:.88rem;
 	}
 	.front_name {
 		position:absolute;
@@ -110,6 +109,7 @@ export default {
 	 	overflow: hidden;
 	 	margin-top: .3rem;
 	 	width: 5.5rem;
+	 	padding-bottom:.5rem
 	 }
  .bd a {
 		display:block;
@@ -162,7 +162,6 @@ width:auto;
 		margin-top: 0.3rem;
 		position: relative;
 		overflow-y: scroll;
-		padding-bottom:30px;
 	}
 	.item{
 		text-align:center;
@@ -179,7 +178,8 @@ width:auto;
 		}
 		.content{
 			overflow: hidden;
-	    margin-top: 2.1rem;
+	    margin-top: 1.2rem;
+	    height: 11rem;
 		}
 		.content .catalog{
 			float:left;
@@ -187,6 +187,5 @@ width:auto;
 			width:1.62rem;
 			overflow-y:scroll ;
 			overflow-x:hidden ;
-			padding-bottom:30px;
 		}
 </style>

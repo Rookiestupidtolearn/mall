@@ -1,9 +1,9 @@
 <template>
  	<div class="footprint">
  			<!--公用头部-->
-  		<headbar :headFont = "headFont"></headbar>
+  		<!--<headbar :headFont = "headFont"></headbar>-->
   	
-  	<div class="mt88">
+  	<div class="">
 	    <div class="day-item" v-for="item in footprintList" >
 	      <div class="day-hd">{{item[0].add_time}}</div>
 	      <div class="day-list">
@@ -23,14 +23,14 @@
 
 <script>
 import { MessageBox } from 'mint-ui';
-import headbar from '@/components/headbar.vue';
+//import headbar from '@/components/headbar.vue';
 		
 export default {
 name: 'footprint',
-components:{headbar},
+//components:{headbar},
   data () {
     return {
-    	headFont:'我的足迹',
+//  	headFont:'我的足迹',
     	footprintList:[]
     }
   },

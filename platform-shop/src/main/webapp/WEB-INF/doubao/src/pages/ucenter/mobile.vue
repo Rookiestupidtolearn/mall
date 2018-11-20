@@ -1,9 +1,9 @@
 <template>
  	<div class="container">
  		<!--公共头部-->
- 		<headbar :headFont="headFont"></headbar>
+ 		<!--<headbar :headFont="headFont"></headbar>-->
  		
- 		<div class="weibind mt88"  :style="{display:[!bindResult ? 'none' : 'block' ]}">
+ 		<div class="weibind "  :style="{display:[!bindResult ? 'none' : 'block' ]}">
 	 		<div class="noBind">
 				<div class="userinfo">
 					<img class="userinfo-avatar"  :src="mobileInfo.avatar" background-size="cover"/>
@@ -21,7 +21,7 @@
 		        </div>
 		      <div class="third-line"><button @click="submitForm" :disabled="disableSubmitMobileCode">提交</button></div>
 		  </div>
-		<div class="titleamount mt88" :style="{display:[bindResult ? 'none' : 'block' ]}">
+		<div class="titleamount " :style="{display:[bindResult ? 'none' : 'block' ]}">
 			<div class='titleTop'>
 			    <p>绑定账号</p>
 			    <div >
@@ -42,14 +42,14 @@
 <script>
 	import { MessageBox } from 'mint-ui';
 	import { Toast } from 'mint-ui';
-	import headbar from '@/components/headbar.vue'
+//	import headbar from '@/components/headbar.vue'
 		
 	export default {
 	  name: 'feedback',
-	  components:{headbar},
+//	  components:{headbar},
 	  data () {
 	    return {
-	    	headFont:"绑定手机",
+//	    	headFont:"绑定手机",
 	        telephone: '',
 	        teleyzm:'',
 	        bindResult:true,

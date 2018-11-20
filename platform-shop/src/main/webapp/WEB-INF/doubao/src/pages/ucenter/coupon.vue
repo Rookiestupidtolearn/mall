@@ -1,9 +1,9 @@
 <template>
  	<div class="coupon-list">
  		<!--公用头部-->
-  		<headbar :headFont = "headFont"></headbar>
+  		<!--<headbar :headFont = "headFont"></headbar>-->
   		
-  		<div class="mt88">
+  		<div class="">
 	 		<div class="item" v-for = "item in couponList"  :style="{background: [ item.coupon_status==1 || item.coupon_status==4  ? 'linear-gradient(to right,#cfa568,#e3bf79)' : 'linear-gradient(to right,#999,#DDDDDD)']}">
 	         <!-- <div class="tag">新人专享</div>  -->
 	        <div class="content">
@@ -27,14 +27,14 @@
 
 <script>
 	import { MessageBox } from 'mint-ui';
-	import headbar from '@/components/headbar.vue';
+//	import headbar from '@/components/headbar.vue';
 		
 export default {
   name: 'coupon',
- components:{headbar},
+// components:{headbar},
   data () {
     return {
-    	headFont:'优惠券列表',
+//  	headFont:'优惠券列表',
     	couponList:[]
     }
   },

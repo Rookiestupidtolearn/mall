@@ -1,9 +1,9 @@
 <template>
  	<div class="container">
  		<!--公用头部-->
-  		<headbar :headFont = "headFont"></headbar>
+  		<!--<headbar :headFont = "headFont"></headbar>-->
   		
-	    <div class="address-list mt88"  v-if="addressList.length > 0" >
+	    <div class="address-list"  v-if="addressList.length > 0" >
 	        <div class="item" v-for="item in addressList" @click="selectAddress(item.id)">
 	            <div class="l">
 	                <div class="name">{{item.userName}}</div>
@@ -29,14 +29,14 @@
 <script>
 import { MessageBox } from 'mint-ui';
 import { setCookie,getCookie,delCookie } from '@/assets/cookie';
-import headbar from '@/components/headbar.vue'
+//import headbar from '@/components/headbar.vue'
 		
 export default {
 	name: 'addressList',
-	components:{headbar},
+//	components:{headbar},
   data () {
     return {
-    	headFont:'地址列表',
+//  	headFont:'地址列表',
     	addressList:[],
     	deleteList:[]
     }

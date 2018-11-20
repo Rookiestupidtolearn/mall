@@ -1,9 +1,9 @@
 <template>
  	<div class="container">
  		<!--公用头部-->
-  		<headbar :headFont = "headFont"></headbar>
+  		<!--<headbar :headFont = "headFont"></headbar>-->
   		
-  		<div class="mt88">
+  		<div class="">
  		<div class='titleTop'>
 		    <p>绑定账号</p>
 		    <div style="overflow: hidden;">
@@ -23,14 +23,14 @@
 
 <script>
 	import { MessageBox } from 'mint-ui';
-	import headbar from '@/components/headbar.vue';	
+//	import headbar from '@/components/headbar.vue';	
 		
 export default {
   name: 'accountSecurity',
-    components:{headbar},
+//  components:{headbar},
   data () {
     return {
-		headFont:'账户安全',
+//		headFont:'账户安全',
     	accountSecurity:[],
     	telephone:''
     }

@@ -15,9 +15,9 @@ Vue.prototype.$http= axios
 Vue.config.productionTip = false
 
 //接口配置
-Vue.prototype.$url='http://localhost:8080/platform/api/'  //本地
+//Vue.prototype.$url='http://localhost:8080/platform/api/'  //本地
 //Vue.prototype.$url='http://192.168.0.11:6101/platform/api/'  //本地
-//Vue.prototype.$url= 'http://106.75.99.126:6302/platform/api/'; //外网
+Vue.prototype.$url= 'http://106.75.99.126:6302/platform/api/'; //外网
 
 
 

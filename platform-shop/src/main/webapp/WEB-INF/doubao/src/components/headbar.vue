@@ -12,7 +12,7 @@
 	import { Header } from 'mint-ui';
 	
 	export default {
-	  name: 'tabbar',
+	  name: 'headbar',
 	  data () {
 	    return {
 	    	
@@ -25,8 +25,7 @@
 	   },
 	   methods:{
 	   		handleClose(){
-	   			console.log('返回');
-	   			this.$router.go(-1);
+	   			
 	   		}
 	   }
 	}

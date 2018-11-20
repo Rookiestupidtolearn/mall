@@ -1,7 +1,7 @@
 <template>
  	<div class="container">
  		<!--公用头部-->
-  		<headbar :headFont = "headFont"></headbar>
+  		<!--<headbar :headFont = "headFont"></headbar>-->
   	
 	 	<div v-if="!openAttr" >
 		   <mt-swipe :auto="3000" class="swiper" >
@@ -80,7 +80,7 @@
 		    </div>
 	    </div>
     	<!--商品规格-->
-    	 <div v-if="openAttr" class="attr-pop mt88">
+    	 <div v-if="openAttr" class="attr-pop ">
 		    <div class="img-info">
 		      <img class="img" :src="goods.list_pic_url"/>
 		      <div class="info">
@@ -127,14 +127,14 @@
 
 <script>
 	import { Toast } from 'mint-ui';
-	import headbar from '@/components/headbar.vue'
+//	import headbar from '@/components/headbar.vue'
 		
 	export default {
 	  name: 'goods',
-	  components:{headbar},
+//	  components:{headbar},
 	  data () {
 	    return {
-	    	headFont:'商品详情',
+//	    	headFont:'商品详情',
 	    	market_price:'',
 	    	idm:'',
 	    	banner:[],

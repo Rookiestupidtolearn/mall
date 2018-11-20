@@ -1,9 +1,9 @@
 <template>
  	<div class="container">
  		<!--公用头部-->
-  		<headbar :headFont = "headFont"></headbar>
+  		<!--<headbar :headFont = "headFont"></headbar>-->
   		
- 		<div class="add-address mt88">
+ 		<div class="add-address">
 		   <div class="add-form">
 		        <div class="form-item">
 		            <input class="input"  placeholder="姓名" v-model="address.userName" />
@@ -47,14 +47,14 @@
 <script>
 	import { Toast } from 'mint-ui';
 	import { MessageBox } from 'mint-ui';
-	import headbar from '@/components/headbar.vue'
+//	import headbar from '@/components/headbar.vue'
 		
 	export default {
 	  name: 'addressAdd',
-	  components:{headbar},
+//	  components:{headbar},
 	  data () {
 	    return {
-	    	headFont:'商品详情',
+//	    	headFont:'商品详情',
 	    	address: {
 		      id:0,
 		      province_id: 0,

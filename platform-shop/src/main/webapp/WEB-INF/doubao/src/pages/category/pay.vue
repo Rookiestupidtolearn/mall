@@ -1,9 +1,9 @@
 <template>
  	<div class="container">
  		<!--公用头部-->
-  		<headbar :headFont = "headFont"></headbar>
+  		<!--<headbar :headFont = "headFont"></headbar>-->
   		
-	    <div class="total mt88">
+	    <div class="total ">
 	      <div class="label">订单金额</div>
 	      <div class="txt">{{actualPrice}}元</div>
 	    </div>
@@ -37,14 +37,14 @@
 <script>
 	import { MessageBox } from 'mint-ui';
 	import { Toast } from 'mint-ui';
-	import headbar from '@/components/headbar.vue'
+//	import headbar from '@/components/headbar.vue'
 		
 	export default {
 	  name: 'brandDetail',
-	   components:{headbar},
+//	   components:{headbar},
 	  data () {
 	    return {
-	    	headFont:'支付订单',
+//	    	headFont:'支付订单',
 	    	orderId: 0,
     		actualPrice: 0.00
 	    }

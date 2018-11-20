@@ -1,9 +1,9 @@
 <template>
   <div class="shoppingcar">
   	<!--公用头部-->
-  	<headbar :headFont = "headFont"></headbar>
+  	<!--<headbar :headFont = "headFont"></headbar>-->
   	
-  	<div class="service-policy mt88">
+  	<div class="service-policy ">
   		<span class="item">30天无忧退货</span>
   		<span class="item">48小时快速退款</span>
   		<span class="item">免邮费</span>
@@ -63,15 +63,15 @@
 
 <script>
 import tabbar from '@/components/tabbar.vue'
-	import headbar from '@/components/headbar'
+//	import headbar from '@/components/headbar'
 import { Toast } from 'mint-ui'
 	
 export default {
-	components: {tabbar,headbar },
+	components: {tabbar },
   name: 'shoppingcar',
   data () {
     return {
-    	headFont:'购物车',
+//  	headFont:'购物车',
     	cartGoods: [],
 	    cartTotal: {
 	      "goodsCount": 0,
