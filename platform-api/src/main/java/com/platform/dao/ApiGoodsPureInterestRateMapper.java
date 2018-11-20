@@ -16,4 +16,6 @@ public interface ApiGoodsPureInterestRateMapper extends BaseDao<GoodsPureInteres
 
 	int delByProductIds(Integer[] ids);
 
+	List<GoodsPureInterestRateVo> queryGoodsByPureInterestRate(Map<String, Object> map);
+
 }

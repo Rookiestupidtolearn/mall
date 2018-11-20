@@ -38,4 +38,10 @@ public interface ApiGoodsMapper extends BaseDao<GoodsVo> {
      * @return
      */
     List<GoodsVo> queryAllJDGoods();
+
+	/**根据id查询商品信息
+	 * @param ids
+	 * @return
+	 */
+	List<GoodsVo> queryGoodsList(Integer[] ids);
 }

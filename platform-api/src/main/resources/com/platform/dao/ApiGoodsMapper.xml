@@ -38,8 +38,9 @@
         <result property="is_hot" column="is_hot"/>
         <result property="product_id" column="product_id"/>
         <result property="product_market_price" column="product_market_price"/>
-         <result property="is_7_ToReturn" column="is_7_ToReturn"/>
-          <result property="source" column="source"/>
+        <result property="is_7_ToReturn" column="is_7_ToReturn"/>
+        <result property="source" column="source"/>
+        <result property="update_time" column="update_time"/>
     </resultMap>
 
 	 <insert id="save" parameterType="com.platform.entity.GoodsVo" useGeneratedKeys="true" keyProperty="id">
@@ -110,7 +111,12 @@
 		)
 	</insert>
 
-
+	<select id="queryGoodsList" resultMap="goodsMap">
+		select * from nideshop_goods where id in
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</select>
 
 
     <select id="queryObject" resultMap="goodsMap">
@@ -347,6 +353,7 @@
             <if test="product_market_price != null">`product_market_price` = #{product_market_price},</if>
             <if test="is_7_ToReturn != null">`is_7_ToReturn` = #{is_7_ToReturn},</if>
             <if test="source != null">`source` = #{source}</if>
+            <if test="update_time != null">`update_time` = #{update_time}</if>
         </set>
         where id = #{id}
     </update>

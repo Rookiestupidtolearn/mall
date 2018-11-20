@@ -33,6 +33,10 @@
 			#{id}
 		</foreach>
 	</select>
+	
+	<select id="queryCartListByGoodsId" resultMap="cartMap">
+		select * from nideshop_cart where goods_id = #{0} and checked = #{1}
+	</select>
 
     <select id="queryList" resultMap="cartMap">
         select a.*,

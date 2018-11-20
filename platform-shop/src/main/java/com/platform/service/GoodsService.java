@@ -127,14 +127,14 @@ public interface GoodsService {
 	 * 批量下架
 	 * @param ids
 	 */
-	int unSaleBatch(Integer[] ids,String str);
+	int unSaleBatch(Integer[] ids);
 
 	/**
 	 * 批量申请上架
 	 * @param ids
 	 * @return
 	 */
-	int applySaleBatch(Integer[] ids,String str);
+	int applySaleBatch(Integer[] ids);
 
 	/**
 	 * 批量申请下架
