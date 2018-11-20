@@ -374,15 +374,19 @@
 		    let checkedProduct = this.getCheckedProductItem(this.getCheckedSpecKey());
 		    if (!checkedProduct || checkedProduct.length <= 0) {
 		      //找不到对应的product信息，提示没有库存
-		     	Toast({message:'商品无库存',duration: 1500});
+//		     	Toast({message:'商品无库存',duration: 1500});
+		     	this.undercarriage = true,
+		        this.undercarriName = '商品无库存';
 		    	return false;
 		    }
 		
 		    //验证库存
 		    if (checkedProduct.goods_number <this.number) {
 		      //找不到对应的product信息，提示没有库存
-			     Toast({message:'商品无库存',duration: 1500});
-			      return false;
+//			     Toast({message:'商品无库存',duration: 1500});
+			     this.undercarriage = true,
+		         this.undercarriName = '商品无库存';
+			     return false;
 		    }
 		     this.market_price =  checkedProduct[0].market_price;
 		

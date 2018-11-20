@@ -3,19 +3,21 @@
  		<!--公用头部-->
   		<headbar :headFont = "headFont"></headbar>
   		
- 		<div class='titleTop mt88'>
-	    <p>绑定账号</p>
-	    <div style="overflow: hidden;">
-	      <span class='col5e5e5e'>昵称:{{accountSecurity.nickname}}</span>
-	      <img  class="image" :src="accountSecurity.avatar"/>
-	    </div>
+  		<div class="mt88">
+ 		<div class='titleTop'>
+		    <p>绑定账号</p>
+		    <div style="overflow: hidden;">
+		      <span class='col5e5e5e'>昵称:{{accountSecurity.nickname}}</span>
+		      <img  class="image" :src="accountSecurity.avatar"/>
+		    </div>
+		  </div>
+		  <div class="titleBottom">
+		    <span>绑定手机号</span>
+		    <span class='mobile'  data-c="cee" v-if="telephone">{{telephone}}</span>
+			<span class='mobile'  data-c="cdd" v-else @click="bindPhone">去绑定</span>
+		  </div>
+		  <div class="logout" @click="exitLogin">退出登录</div>
 	  </div>
-	  <div class="titleBottom mt88">
-	    <span>绑定手机号</span>
-	    <span class='mobile'  data-c="cee" v-if="telephone">{{telephone}}</span>
-		<span class='mobile'  data-c="cdd" v-else @click="bindPhone">去绑定</span>
-	  </div>
-	  <div class="logout" @click="exitLogin">退出登录</div>
  	</div>
 </template>
 
