@@ -45,7 +45,7 @@ public class AutoUpdateGoodsStateTask {
 					goodsIds[i] = onSalelist.get(i).getGoodsId();
 				}
 				//调用下架接口处理商品
-				goodsService.unSaleBatch(goodsIds);
+				goodsService.unSaleBatch(goodsIds,"jd");
 				logger.info("【jd商品根据毛利率自动更新上下架状态】--下架毛利率为0且为上架状态的商品共"+goodsIds.length+"条成功");
 			}
 			map.put("pureInterestRate","greaterThan");
@@ -61,8 +61,8 @@ public class AutoUpdateGoodsStateTask {
 				for(int i = 0;i < notOnSalelist.size();i++){
 					goodsIds[i] = notOnSalelist.get(i).getGoodsId();
 				}
-				goodsService.enSaleBatch(goodsIds);
-				logger.info("【jd商品根据毛利率自动更新上下架状态】--上架毛利率非0且为下架状态的商品共"+goodsIds.length+"条成功");
+				goodsService.applySaleBatch(goodsIds,"jd");
+				logger.info("【jd商品根据毛利率自动更新上下架状态】--申请上架毛利率非0且为下架状态的商品共"+goodsIds.length+"条成功");
 			}
 		}catch(Exception e){
 			logger.info("【jd商品根据毛利率自动更新上下架状态】--异常"+e);

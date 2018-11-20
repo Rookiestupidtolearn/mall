@@ -207,7 +207,7 @@ public class GoodsController {
      */
     @RequestMapping("/unSale")
     public R unSale(@RequestBody Integer[] ids) {
-        int i = goodsService.unSaleBatch(ids);
+        int i = goodsService.unSaleBatch(ids,"");
         if(i == 0){
     		return R.error("未查询到对应的商品信息");
     	}
@@ -219,7 +219,7 @@ public class GoodsController {
      */
     @RequestMapping("/applyEnSale")
     public R applySale(@RequestBody Integer[] ids) {
-       int i = goodsService.applySaleBatch(ids);
+       int i = goodsService.applySaleBatch(ids,"");
        if(i == 0){
    		return R.error("未查询到对应的商品信息");
    		}

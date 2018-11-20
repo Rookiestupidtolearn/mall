@@ -376,9 +376,14 @@ public class GoodsServiceImpl implements GoodsService {
 		}
 		return 1;		
 	}
+	
+	//为兼容自动更新商品上下架状态任务，新增str做任务标识。
 	@Override
-	public int unSaleBatch(Integer[] ids) {
-		SysUserEntity user = ShiroUtils.getUserEntity();
+	public int unSaleBatch(Integer[] ids,String str) {
+		SysUserEntity user =  null;
+		if(!"jd".equals(str)){
+			user = ShiroUtils.getUserEntity();
+		}
 		List<GoodsEntity> goodsList = goodsDao.queryGoodsList(ids);
 		
 		
@@ -424,7 +429,9 @@ public class GoodsServiceImpl implements GoodsService {
 				
 				goodsEntity.setIsOnSale(0);
 				goodsEntity.setUpdateTime(new Date());
-				goodsEntity.setUpdateUserId(user.getUserId());
+				if(!"jd".equals(str)){
+					goodsEntity.setUpdateUserId(user.getUserId());
+				}
 				goodsDao.update(goodsEntity);
 			}
 		}
@@ -449,9 +456,13 @@ public class GoodsServiceImpl implements GoodsService {
 		return 1;
 	}
 	
+	//为兼容自动更新商品上下架状态任务，新增str做任务标识。
 	@Override
-	public int applySaleBatch(Integer[] ids) {
-		SysUserEntity user = ShiroUtils.getUserEntity();
+	public int applySaleBatch(Integer[] ids,String str) {
+		SysUserEntity user =  null;
+		if(!"jd".equals(str)){
+			user = ShiroUtils.getUserEntity();
+		}
 		List<GoodsEntity> goodsList = goodsDao.queryGoodsList(ids);
 		if(CollectionUtils.isEmpty(goodsList)){
 			return 0;
@@ -459,7 +470,9 @@ public class GoodsServiceImpl implements GoodsService {
 		for(GoodsEntity goodsEntity : goodsList){
 			if(1 != goodsEntity.getIsOnSale() && 2 != goodsEntity.getIsOnSale() && -1 != goodsEntity.getIsOnSale()){
 				goodsEntity.setIsOnSale(2);
-				goodsEntity.setUpdateUserId(user.getUserId());
+				if(!"jd".equals(str)){
+					goodsEntity.setUpdateUserId(user.getUserId());	
+				}
 				goodsEntity.setUpdateTime(new Date());
 				goodsDao.update(goodsEntity);
 			}
