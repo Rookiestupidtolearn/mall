@@ -44,10 +44,10 @@ public class ApiSmsController {
     @PostMapping("/sendSms")
     public R sendSms(HttpServletRequest request, @RequestParam Map<String, String> params) {
         SysSmsLogEntity smsLog = new SysSmsLogEntity();
-        String validIP = RequestUtil.getIpAddrByRequest(request);
-        if (ResourceUtil.getConfigByName("sms.validIp").indexOf(validIP) < 0) {
-        	 return R.error("非法IP请求！");
-        }
+//        String validIP = RequestUtil.getIpAddrByRequest(request);
+//        if (ResourceUtil.getConfigByName("sms.validIp").indexOf(validIP) < 0) {
+//        	 return R.error("非法IP请求！");
+//        }
         if (params.get("mobile").equals("")) {
         	 return R.error("手机号不能为空！");
 		}
