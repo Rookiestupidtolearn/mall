@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
@@ -28,25 +27,24 @@ import com.platform.dao.ApiProductMapper;
 import com.platform.dao.JdGoodsImgPathMapper;
 import com.platform.dao.JdGoodsMapper;
 import com.platform.entity.BrandVo;
+import com.platform.entity.CartVo;
 import com.platform.entity.CategoryVo;
 import com.platform.entity.GoodsGalleryVo;
 import com.platform.entity.GoodsPureInterestRateVo;
 import com.platform.entity.GoodsVo;
 import com.platform.entity.ProductVo;
 import com.platform.service.ApiGoodsPureInterestRateService;
+import com.platform.service.ApiGoodsService;
 import com.platform.youle.constant.Constants.Urls;
 import com.platform.youle.entity.RequestBaseEntity;
 import com.platform.youle.entity.RequestChildsEntity;
 import com.platform.youle.entity.RequestProductStockEntity;
 import com.platform.youle.entity.RequestSkuDetailEntity;
 import com.platform.youle.entity.ResponseBaseEntity;
-import com.platform.youle.entity.ResponseSkuDetailEntity;
 import com.platform.youle.service.AbsApiGoodsService;
 import com.platform.youle.service.ApiJDGoodsService;
 import com.platform.youle.util.HttpUtil;
 import com.platform.youle.util.TokenUtil;
-
-import io.swagger.annotations.ApiOperation;
 
 @Service
 public class ApiJDGoodsServiceImpl implements ApiJDGoodsService{
@@ -74,6 +72,8 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService{
 	private ApiGoodsPureInterestRateService apiGoodsPureInterestRateService;
 	// 查询库存默认地址
 	private String DEFAULT_ADDRESS = "1_72_2799";
+	@Autowired
+	private ApiGoodsService apiGoodsService;
 	
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	
@@ -338,6 +338,7 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService{
 						vo.setIs_hot(0);
 						vo.setGoods_desc(resultDate.get("PRODUCT_DESCRIPTION") == null ? null : resultDate.get("PRODUCT_DESCRIPTION").toString());
 						vo.setAdd_time(new Date());
+						vo.setUpdate_time(new Date());
 						vo.setSource("JD");
 						Map<String, Object> param = stock(productObj.get("productId").toString(), 100, DEFAULT_ADDRESS);
 						if (param.get("num") != null) {
@@ -367,8 +368,10 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService{
 								productObj.get("thumbnailImage") == null ? "" : productObj.get("thumbnailImage").toString());
 						good.setCategory_id(Integer.parseInt(productObj.get("productCate").toString()));
 						if (productObj.get("status") != null) {
+							Integer[] ids = new Integer[good.getId()];
 							if ("undercarriage".equals(productObj.get("status").toString())) {
-								good.setIs_on_sale(0);
+//								good.setIs_on_sale(0);
+								apiGoodsService.unSaleBatch(ids);
 							} else {
 								good.setIs_on_sale(good.getIs_on_sale());
 							}
@@ -379,7 +382,8 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService{
 						good.setIs_hot(good.getIs_hot());
 							
 						good.setGoods_desc(resultDate.get("PRODUCT_DESCRIPTION") == null ? null : resultDate.get("PRODUCT_DESCRIPTION").toString());
-						good.setAdd_time(new Date());
+						good.setAdd_time(good.getAdd_time());
+						good.setUpdate_time(new Date());
 						good.setSource("JD");
 						Map<String, Object> param = stock(productObj.get("productId").toString(), 100, DEFAULT_ADDRESS);
 						if (param.get("num") != null) {
@@ -556,7 +560,4 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService{
 		}
 		return resultObj;
 	}
-	
-	
-	
 }

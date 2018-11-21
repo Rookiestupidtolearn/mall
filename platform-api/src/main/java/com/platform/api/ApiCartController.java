@@ -86,14 +86,7 @@ public class ApiCartController extends ApiBaseAction {
     @Autowired
     private ApiTranInfoRecordMapper apiTranInfoRecordMapper;
     @Autowired
-    private AbsApiRootCateService absApiRootCateService;
-    @Autowired
     private PayMatchingUtil payMatchingUtils;
-
-
-
-
-    
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	
     /**

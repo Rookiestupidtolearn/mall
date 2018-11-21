@@ -75,7 +75,7 @@
 			`is_limited`,
 			`is_hot`,
 			`market_price`,
-			`is_7_ToReturn`,source)
+			`is_7_ToReturn`,source,update_time)
 		values(
 			#{category_id},
 			#{goods_sn},
@@ -107,7 +107,7 @@
 			#{is_limited},
 			#{is_hot},
 			#{market_price},
-			#{is_7_ToReturn},#{source}
+			#{is_7_ToReturn},#{source},#{update_time}
 		)
 	</insert>
 
@@ -350,7 +350,6 @@
             <if test="is_limited != null">`is_limited` = #{is_limited},</if>
             <if test="is_hot != null">`is_hot` = #{is_hot},</if>
             <if test="product_id != null">`product_id` = #{product_id},</if>
-            <if test="product_market_price != null">`product_market_price` = #{product_market_price},</if>
             <if test="is_7_ToReturn != null">`is_7_ToReturn` = #{is_7_ToReturn},</if>
             <if test="source != null">`source` = #{source},</if>
             <if test="update_time != null">`update_time` = #{update_time}</if>
