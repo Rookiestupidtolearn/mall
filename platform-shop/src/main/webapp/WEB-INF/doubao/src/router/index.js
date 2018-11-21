@@ -26,6 +26,8 @@ import addressList2 from '@/pages/category/addressList'  //购物车选择地址
 import addressAdd2 from '@/pages/ucenter/addressAdd'  //个人中心选择地址页面
 import amountMoney from '@/pages/ucenter/amountMoney'  //资金明细
 import pay from '@/pages/category/pay'  //支付订单
+import register from '@/pages/register/register'  //注册页面
+import ptfwxy from '@/pages/xieyi/ptfwxy'  //平台服务协议
 
 Vue.use(Router)
 
@@ -136,6 +138,14 @@ export default new Router({
       path: '/pages/category/pay',
       name: 'pay',
       component: pay
+    },{
+      path: '/pages/register/register',
+      name: 'register',
+      component: register
+    },{
+      path: '/pages/xieyi/ptfwxy',
+      name: 'ptfwxy',
+      component: ptfwxy
     }
     
   ]

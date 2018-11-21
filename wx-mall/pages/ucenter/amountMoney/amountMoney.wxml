@@ -1,9 +1,14 @@
 <!--pages/ucenter/amountMoney/amountMoney.wxml-->
 <view  class="container">
-  <view class='list' wx:for="{{boxMount}}" wx:key="{{idx}}">
-    <text class='ExchangeName'>{{ item.tranType }}</text>
-    <text class='boxMoney red' wx:if="{{ item.tarnAmount>0 }}">{{ item.tarnAmount }}</text>
-    <text class='boxMoney green' wx:if="{{ item.tarnAmount<0 }}">{{ item.tarnAmount }}</text>
-    <text>{{ item.createTime }}</text>
+  <view wx:if="{{boxMount.length > 0}}">
+    <view class='list' wx:for="{{boxMount}}" wx:key="{{idx}}">
+      <text class='ExchangeName'>{{ item.tranType }}</text>
+      <text class='boxMoney red' wx:if="{{ item.tarnAmount>0 }}">{{ item.tarnAmount }}</text>
+      <text class='boxMoney green' wx:if="{{ item.tarnAmount<0 }}">{{ item.tarnAmount }}</text>
+      <text>{{ item.createTime }}</text>
+    </view>
+  </view>
+  <view wx:else class="nomore">
+    没有更多数据了
   </view>
 </view>

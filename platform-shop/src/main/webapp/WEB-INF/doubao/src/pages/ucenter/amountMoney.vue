@@ -3,13 +3,16 @@
  		<!--公用头部-->
  		<!--<headbar :headFont = "headFont"></headbar>-->
  		
- 		<div class="">
+ 		<div v-if="userAccountDetail.length > 0">
 	 		<div class='list' v-for="item in userAccountDetail" >
 			    <p class='ExchangeName'>{{ item.tranType }}</p>
 			    <p class='boxMoney red' v-if=" item.tarnAmount>0 ">{{ item.tarnAmount }}</p>
 			    <p class='boxMoney green' v-if=" item.tarnAmount<0 ">{{ item.tarnAmount }}</p>
 			    <p>{{ item.createTime }}</p>
 		 	 </div>
+	 	 </div>
+	 	 <div class="nomore" v-else>
+	 	 	没有更多数据了
 	 	 </div>
  	</div>
 </template>
@@ -34,7 +37,7 @@ export default {
 	        method: 'post',
 	        url:that.$url+ 'user/userAccountDetail',
     	}).then(function (res) {
-      		 res = {"data":{"code":1,"data":[{"id":29,"shopUserId":28,"tranFlag":0,"tranType":"充值","tarnAmount":1.00,"currentAmount":556.00,"createTime":1539840765000,"tradeNo":"201810181332107070084"},{"id":27,"shopUserId":28,"tranFlag":1,"tranType":"充值","tarnAmount":555.00,"currentAmount":555.00,"createTime":1539840637000,"tradeNo":"201810181330222227881"}]}};
+      		 res = {"data":{"code":1,"data":[]}};
       		 var res = res.data;
     		if(res.errno == '401' || res.errno == '请先登录'){
     			MessageBox({
@@ -81,6 +84,10 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+	.nomore{
+		font-size:.28rem;
+		margin-top:.5rem;
+	}
 	.list { 
 	  padding: .20rem .50rem;
 	  background-color: #fff;

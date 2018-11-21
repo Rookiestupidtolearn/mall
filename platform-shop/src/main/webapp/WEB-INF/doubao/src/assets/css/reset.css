@@ -60,3 +60,32 @@ color: #bfbfbf;
 input,button{
 	outline: none;
 }
+body{
+	margin:0;
+	padding-bottom: 1.2rem;
+}
+.mint-msgbox-cancel{
+	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
+.mint-tabbar{
+	position: fixed;
+}
+.mint-indicator-wrapper{
+	padding: .2rem .5rem !important;
+}
+.mt88{
+	margin-top:.88rem !important;
+}
+/*注册*/
+.mint-field .mint-cell-title{
+		text-align: left;
+		font-size:.32rem;
+		width:1.7rem;
+}
+.mint-cell-wrapper{
+	padding:0 .8rem 0 .2rem;
+}
+.mint-cell:last-child{
+	margin-top:.1rem;
+}
