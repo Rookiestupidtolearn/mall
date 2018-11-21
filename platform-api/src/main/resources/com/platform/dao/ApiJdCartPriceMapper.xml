@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.platform.dao.ApiJdCartPriceMapper">
+
+    <resultMap type="com.platform.entity.JdCartPriceVo" id="jdCartsMap">
+        <result property="id" column="id"/>
+        <result property="user_id" column="user_id"/>
+        <result property="goods_sn" column="goods_sn"/>
+        <result property="market_price" column="market_price"/>
+        <result property="retail_price" column="retail_price"/>
+        <result property="raw_market_price" column="raw_market_price"/>
+        <result property="raw_retail_price" column="raw_retail_price"/>
+        <result property="create_time" column="create_time"/>
+    </resultMap>
+
+	<select id="queryObject" resultType="com.platform.entity.JdCartPriceVo">
+		select
+			`id`,
+			`user_id`,
+			`goods_sn`,
+			`market_price`,
+			`retail_price`,
+			`raw_market_price`,
+			`raw_retail_price`,
+			`create_time`
+		from nideshop_jd_carts
+		where id = #{id}
+	</select>
+
+	<select id="queryList" resultType="com.platform.entity.JdCartPriceVo">
+		select
+    		`id`,
+    		`user_id`,
+    		`goods_sn`,
+    		`market_price`,
+    		`retail_price`,
+    		`raw_market_price`,
+    		`raw_retail_price`,
+    		`create_time`
+		from nideshop_jd_carts
+		WHERE 1=1
+		<if test="name != null and name.trim() != ''">
+			AND name LIKE concat('%',#{name},'%')
+		</if>
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from nideshop_jd_carts
+		WHERE 1=1
+        <if test="name != null and name.trim() != ''">
+            AND name LIKE concat('%',#{name},'%')
+        </if>
+	</select>
+	 
+	<insert id="save" parameterType="com.platform.entity.JdCartPriceVo" useGeneratedKeys="true" keyProperty="id">
+		insert into nideshop_jd_carts(
+			`user_id`,
+			`goods_sn`,
+			`market_price`,
+			`retail_price`,
+			`raw_market_price`,
+			`raw_retail_price`,
+			`create_time`)
+		values(
+			#{user_id},
+			#{goods_sn},
+			#{market_price},
+			#{retail_price},
+			#{raw_market_price},
+			#{raw_retail_price},
+			#{create_time})
+	</insert>
+	 
+	<update id="update" parameterType="com.platform.entity.JdCartPriceVo">
+		update nideshop_jd_carts 
+		<set>
+			<if test="user_id != null">`user_id` = #{userId}, </if>
+			<if test="goods_sn != null">`goods_sn` = #{goodsSn}, </if>
+			<if test="market_price != null">`market_price` = #{marketPrice}, </if>
+			<if test="retail_price != null">`retail_price` = #{retailPrice}, </if>
+			<if test="raw_market_price != null">`raw_market_price` = #{rawMarketPrice}, </if>
+			<if test="raw_retail_price != null">`raw_retail_price` = #{rawRetailPrice}, </if>
+			<if test="create_time != null">`create_time` = #{createTime}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from nideshop_jd_carts where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from nideshop_jd_carts where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+	<select id="queryCartPrices" resultMap="jdCartsMap">
+		select * from nideshop_jd_carts where goods_sn = #{0} and market_price = #{1} and raw_market_price = #{2}
+	</select>
+</mapper>

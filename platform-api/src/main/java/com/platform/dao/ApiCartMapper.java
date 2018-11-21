@@ -40,4 +40,9 @@ public interface ApiCartMapper extends BaseDao<CartVo> {
 	 * @return
 	 */
 	List<CartVo> queryCartListByGoodsId(Integer id, int i);
+	/**
+	 * 查询所有购物车
+	 * @return
+	 */
+	List<CartVo> quertAllCarts();
 }
