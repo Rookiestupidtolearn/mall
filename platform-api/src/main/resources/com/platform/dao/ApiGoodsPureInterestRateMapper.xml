@@ -35,15 +35,18 @@
     <select id="queryGoodsByPureInterestRate" resultType="com.platform.entity.GoodsPureInterestRateVo">
 	    select * from goods_pure_interest_rate gpir left join nideshop_goods ng 
 	    	on gpir.goods_id = ng.id
-	    	where 1=1 
+	    	where ng.source = 'JD' 
 	    	<if test="pureInterestRate=='greaterThan'.toString()">
-	    		and pure_interest_rate &gt;= 0
+	    		and pure_interest_rate &gt; 0
 	    	</if>
 	    	<if test="pureInterestRate=='lessThan'.toString()">
 	    		and pure_interest_rate &lt;= 0
 	    	</if>
 	    	<if test="isOnSale!=null">
-	    		and ng.is_on_sale = #{isOnSale}
+	    		and is_on_sale in
+	    		<foreach collection="isOnSale" item="isOnSale" open="(" separator="," close=")">
+	    			#{isOnSale}
+	    		</foreach>
 	    	</if>
 	    	group by gpir.goods_id
     </select>

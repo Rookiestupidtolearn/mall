@@ -33,8 +33,8 @@ public class AutoUpdateGoodsStateTask {
 		try{
 			Map<String,Object> map = new HashMap<>();
 			map.put("pureInterestRate","lessThan");
-			map.put("isOnSale",1); //0 下架  1上架 2 申请上架  3申请下架  -1编辑状态
-			//查询毛利率为0且上架的商品
+			map.put("isOnSale",new Integer[]{1,3}); //0 下架  1上架 2 申请上架  3申请下架  -1编辑状态
+			//查询毛利率为0且上架的商品（操作下架）
 			List<GoodsPureInterestRateVo> onSalelist = goodsPureInterestRateService.queryGoodsByPureInterestRate(map);
 			if(CollectionUtils.isEmpty(onSalelist)){
 				logger.info("【jd商品根据毛利率自动更新上下架状态】--未查询到毛利率为0且为上架状态的商品");
@@ -48,9 +48,9 @@ public class AutoUpdateGoodsStateTask {
 				ApigoodsService.unSaleBatch(goodsIds);
 				logger.info("【jd商品根据毛利率自动更新上下架状态】--下架毛利率为0且为上架状态的商品共"+goodsIds.length+"条成功");
 			}
-			map.put("pureInterestRate","greaterThan");
-			map.put("isOnSale",0); //0 下架  1上架 2 申请上架  3申请下架  -1编辑状态
-			//查询毛利率非0且下架的商品
+			/*map.put("pureInterestRate","greaterThan");
+			map.put("isOnSale",new Integer[]{0}); //0 下架  1上架 2 申请上架  3申请下架  -1编辑状态
+*/			/*//查询毛利率非0且下架的商品(操作申请上架)
 			List<GoodsPureInterestRateVo> notOnSalelist = goodsPureInterestRateService.queryGoodsByPureInterestRate(map);
 			if(CollectionUtils.isEmpty(notOnSalelist)){
 				logger.info("【jd商品根据毛利率自动更新上下架状态】--未查询到毛利率非0且为下架状态的商品");
@@ -63,7 +63,7 @@ public class AutoUpdateGoodsStateTask {
 				}
 				ApigoodsService.applySaleBatch(goodsIds);
 				logger.info("【jd商品根据毛利率自动更新上下架状态】--申请上架毛利率非0且为下架状态的商品共"+goodsIds.length+"条成功");
-			}
+			}*/
 		}catch(Exception e){
 			logger.info("【jd商品根据毛利率自动更新上下架状态】--异常"+e);
 		}
