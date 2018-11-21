@@ -18,21 +18,22 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.platform.dao.ApiCartMapper;
 import com.platform.dao.ApiGoodsMapper;
+import com.platform.dao.ApiJdCartPriceMapper;
 import com.platform.dao.ApiProductMapper;
 import com.platform.dao.ApiTranInfoRecordMapper;
 import com.platform.dao.ApiUserCouponMapper;
 import com.platform.dao.GoodsCouponConfigMapper;
 import com.platform.dao.QzUserAccountMapper;
-import com.platform.dao.ApiJdCartPriceMapper;
 import com.platform.entity.ApiTranInfoRecordVo;
 import com.platform.entity.CartVo;
 import com.platform.entity.GoodsCouponConfigVo;
+import com.platform.entity.GoodsPureInterestRateVo;
 import com.platform.entity.GoodsVo;
 import com.platform.entity.JdCartPriceVo;
 import com.platform.entity.ProductVo;
 import com.platform.entity.QzUserAccountVo;
 import com.platform.entity.UserCouponVo;
-import com.platform.service.ApiCouponService;
+import com.platform.service.ApiGoodsPureInterestRateService;
 import com.platform.util.PayMatchingUtil;
 import com.platform.youle.constant.Constants.Urls;
 import com.platform.youle.entity.RequestBaseEntity;
@@ -62,6 +63,8 @@ public class AbsApiCartPriceServiceImpl implements AbsApiCartPriceService {
 	private PayMatchingUtil payMatchingUtils;
 	@Autowired
 	private ApiTranInfoRecordMapper apiTranInfoRecordMapper;
+	@Autowired
+	private ApiGoodsPureInterestRateService goodsPureInterestRateService;
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -96,7 +99,7 @@ public class AbsApiCartPriceServiceImpl implements AbsApiCartPriceService {
 				if (StringUtils.isEmpty(resObj)) {
 					resultObj.put("status", "false");
 					resultObj.put("msg", "[1.3获取单个商品详情]为空");
-					logger.info("定时查询购物车商品]为空,productId:" + Long.parseLong(jdProductId));
+					logger.info("[定时查询购物车商品]为空,productId:" + Long.parseLong(jdProductId));
 					continue;
 				}
 				JSONObject resultDate = JSONObject.parseObject(resObj);
@@ -117,11 +120,25 @@ public class AbsApiCartPriceServiceImpl implements AbsApiCartPriceService {
 							good.setUpdate_time(new Date());
 							apiGoodsMapper.update(good);
 							paramMap.put("goods_id", goodsId);
+							//更新product表
 							List<ProductVo> productList = apiProductMapper.queryList(paramMap);
 							if (!CollectionUtils.isEmpty(productList)) {
 								for (ProductVo product : productList) {
 									product.setMarket_price(new BigDecimal(productObj.get("marketPrice").toString()));
 									apiProductMapper.update(product);
+								}
+							}
+							//更新毛利率表
+							 List<GoodsPureInterestRateVo> rateList = goodsPureInterestRateService.queryAll((HashMap)paramMap.put("goodsId", goodsId));
+							if(!CollectionUtils.isEmpty(rateList)){
+								for(GoodsPureInterestRateVo goodsPureInterestRateVo : rateList){
+									goodsPureInterestRateVo.setMarketPrice(new BigDecimal(productObj.get("marketPrice").toString()));
+									//重新计算毛利率
+									// 计算毛利息
+									double PureInterestRate = goodsPureInterestRateVo.getMarketPrice().subtract(goodsPureInterestRateVo.getRetailPrice())
+											.divide(goodsPureInterestRateVo.getRetailPrice(), 2, BigDecimal.ROUND_HALF_UP).doubleValue();
+									goodsPureInterestRateVo.setPureInterestRate(PureInterestRate);
+									goodsPureInterestRateService.update(goodsPureInterestRateVo);
 								}
 							}
 						}
