@@ -526,14 +526,19 @@ public class ApiCartService {
     							couponlPrice = payMatching.multiply(new BigDecimal(cart.getNumber()));
     						}
     						//购物车发生修改  原有优惠券作废，重新生成优惠券
-    						userCouponVo.setCoupon_status(1);
-    						userCouponVo.setCoupon_price(userCouponVo.getCoupon_price().subtract(couponlPrice));
+    						userCouponVo.setCoupon_status(1); 
+    						if(userCouponVo.getCoupon_price().compareTo(couponlPrice) <= 0){
+    							userAmountVo.setAmount(userAmountVo.getAmount().add(userCouponVo.getCoupon_price()));
+    							userCouponVo.setCoupon_price(BigDecimal.ZERO);
+    						}else{
+    							userCouponVo.setCoupon_price(userCouponVo.getCoupon_price().subtract(couponlPrice));
+    							userAmountVo.setAmount(userAmountVo.getAmount().add(couponlPrice));
+    						}
     						apiUserCouponMapper.update(userCouponVo);
     						saveTranInfoRecord(cart.getUser_id(), "1", "2", couponlPrice, userCouponVo.getCoupon_price(), "商品下架，清空选中购物车商品，优惠券做减");
     						//回滚平台币
-    						userAmountVo.setAmount(userAmountVo.getAmount().add(couponlPrice));
     						qzUserAccountMapper.updateUserAccount(userAmountVo);
-    						saveTranInfoRecord(cart.getUser_id(), "2", "1", couponlPrice, userAmountVo.getAmount(), "原有优惠券作废,原优惠券金额回滚到平台币");
+    						saveTranInfoRecord(cart.getUser_id(), "2", "1", couponlPrice, userAmountVo.getAmount(), "商品下架,原有优惠券作废,原优惠券金额回滚到平台币");
     					}
     				}
 				} catch (Exception e) {
