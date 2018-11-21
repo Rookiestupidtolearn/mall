@@ -18,7 +18,9 @@
     
     <select id="queryGoodsIdsByPrice" resultType="java.lang.Integer">
     	select a.goods_id from (
-			select goods_id,max(retail_price) as retail_price,min(pure_interest_rate) as pure_interest_rate from goods_pure_interest_rate GROUP BY goods_id
+		select goods_id,max(retail_price) as retail_price,min(pure_interest_rate) as pure_interest_rate from goods_pure_interest_rate where goods_id not in (select goods_id from (select count(goods_id) cou,goods_id from goods_pure_interest_rate GROUP BY goods_id) b where b.cou > 1) GROUP BY goods_id
+			UNION all
+			select goods_id,max(retail_price) as retail_price,min(pure_interest_rate) from goods_pure_interest_rate where product_id > 0 and goods_id in (select goods_id from (select count(goods_id) cou,goods_id from goods_pure_interest_rate GROUP BY goods_id) b where b.cou > 1) GROUP BY goods_id
 		) a where 1=1
     	<if test="min_retail_price != null and min_retail_price.trim() != ''"> and a.retail_price >= #{min_retail_price}</if>
     	<if test="max_retail_price != null and max_retail_price.trim() != ''"  > and #{max_retail_price} >= a.retail_price</if>
