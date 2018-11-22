@@ -32,7 +32,7 @@
 		where id = #{id}
 	</select>
 	
-	<select id="selectGoodsIdsById" resultType="com.platform.entity.GoodsCouponConfigEntity">
+	<select id="selectGoodsIdsByGoodsId" resultType="com.platform.entity.GoodsCouponConfigEntity">
 		select * from goods_coupon_config where goods_id in 
 		<foreach item="id" collection="array" open="(" separator="," close=")">
 			#{id}
@@ -43,7 +43,6 @@
 
 	<select id="queryList" resultType="com.platform.entity.GoodsCouponConfigEntity">
 		SELECT  
-
 	 	goods_coupon_config.id id,
 		goods_coupon_config.normal_matching normal_matching,
 		goods_coupon_config.activity_matching activity_matching,

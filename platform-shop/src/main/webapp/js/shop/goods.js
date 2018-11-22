@@ -80,11 +80,14 @@ var setting = {
         key: {
             url: "nourl"
         }
+       
+        
     }
 };
 var vm = new Vue({
     el: '#rrapp',
     data: {
+    	 aaaa:false,
         showList: true,
         showData: false,
         isTrue:false,
@@ -93,6 +96,7 @@ var vm = new Vue({
         showMatching:true,
         title: null,
         uploadList: [],
+        msg:'',
         imgName: '',
         visible: false,
         goods: {
@@ -124,6 +128,17 @@ var vm = new Vue({
         attributeCategories: []//属性类别
     },
     methods: {
+    	 ok () {
+    		 vm.isTrue = false;
+         	vm.normalMatching=0;
+             vm.activityMatching=0;
+             vm.showList=false;
+             vm.showData=false;
+             vm.title = "配比设置";
+         	vm.showMatching = false;
+         },
+         cancel () {
+         },
         query: function () {
             vm.reload();
         },
@@ -146,7 +161,14 @@ var vm = new Vue({
                 url: "../goodscouponconfig/verify/"+ids,
                 async: true,
                 successCallback: function (r) {
-                	if(r.code === 0){
+                	if(r != ''){
+                    	vm.msg = r.str;
+                    	vm.aaaa = true;
+                		return;
+                	}
+                	
+                	
+                	if(r === ''){
                 		vm.isTrue = true;
                 	}
                 	if(!vm.isTrue){
