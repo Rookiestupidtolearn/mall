@@ -50,14 +50,8 @@ export default {
 		        method: 'post',
 		        url:that.$url+ 'address/list',
 	    	}).then(function (response) {
-	      		  	response = {"errno":0,"data":[{"id":21,"userId":28,"userName":"xt","telNumber":"a1323","postalCode":null,"nationalCode":null,"provinceName":"天津市","cityName":"市辖区","countyName":"河东区","detailInfo":"sd","is_default":1,"full_region":"天津市市辖区河东区"}],"errmsg":"执行成功"};
 	    		if(response.data.errno == '401' || response.data.errno == '请先登录'){
-	    			MessageBox({
-						  title: ' ',
-						  message: '请先登录 ',
-						  showCancelButton: true
-						});
-	    			return false;
+	    			that.fontSize.goLogin()
 	    		}else{
 	    			console.log(response)
 	    			that.addressList = response.data;

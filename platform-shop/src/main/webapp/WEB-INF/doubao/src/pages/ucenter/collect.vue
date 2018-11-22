@@ -35,14 +35,8 @@ export default {
 	        url:that.$url+ 'collect/list',
 	        params:{typeId:0}
     	}).then(function (response) {
-      		  		response = {"errno":0,"data":[{"id":99,"user_id":28,"value_id":1181000,"add_time":1540456127,"is_attention":0,"type_id":0,"name":"母亲节礼物-舒适安睡组合","list_pic_url":"http://yanxuan.nosdn.127.net/1f67b1970ee20fd572b7202da0ff705d.png","goods_brief":"安心舒适是最好的礼物","retail_price":"2598.00","market_price":2857.80,"product_market_price":0},{"id":99,"user_id":28,"value_id":1181000,"add_time":1540456127,"is_attention":0,"type_id":0,"name":"母亲节礼物-舒适安睡组合","list_pic_url":"http://yanxuan.nosdn.127.net/1f67b1970ee20fd572b7202da0ff705d.png","goods_brief":"安心舒适是最好的礼物","retail_price":"2598.00","market_price":2857.80,"product_market_price":0}],"errmsg":"执行成功"};
     		if(response.data.errno == '401' || response.data.errno == '请先登录'){
-    			MessageBox({
-					  title: ' ',
-					  message: '请先登录 ',
-					  showCancelButton: true
-					});
-    			return false;
+    			that.fontSize.goLogin()
     		}else{
     			console.log(response)
     			that.collectList = response.data;

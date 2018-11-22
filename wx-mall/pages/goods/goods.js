@@ -48,7 +48,7 @@ Page({
           minPriceList: res.data.minPriceList
         });
         //购物车下架至灰
-        if (that.data.undercarriage == '0'){
+        if (that.data.undercarriage == '0' || that.data.undercarriage == '2'){
           that.setData({
             undercarriage:true,
             undercarriName: '商品已下架'
@@ -469,7 +469,7 @@ Page({
           } else {
             wx.showToast({
               image: '/static/images/icon_error.png',
-              title: _res.msg,
+              title: _res.errmsg,
               mask: true
             });
           }

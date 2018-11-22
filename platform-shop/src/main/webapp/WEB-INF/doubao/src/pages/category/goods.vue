@@ -195,7 +195,7 @@
 //				that.banner = response.data.data.gallery
 
 		    	//购物车下架至灰
-		        if (that.undercarriage == '0'){
+		        if (that.undercarriage == '0' || that.undercarriage == '2'){
 		            that.undercarriage = true,
 		            that.undercarriName = '商品已下架';
 		        }else{
@@ -416,18 +416,14 @@
 		      let checkedProduct = this.getCheckedProductItem(this.getCheckedSpecKey());
 		      if (!checkedProduct || checkedProduct.length <= 0) {
 		        //找不到对应的product信息，提示没有库存
-//		         Toast({message:'商品无库存',duration: 1500});
-		         that.undercarriage = true,
-		         that.undercarriName = '商品已下架';
+		         Toast({message:'商品无库存',duration: 1500});
 		        return false;
 		      }
 		
 		      //验证库存
 		      if (checkedProduct.goods_number <this.number) {
 		        //找不到对应的product信息，提示没有库存
-//		        Toast({message:'商品无库存',duration: 1500});
-		        that.undercarriage = true,
-		        that.undercarriName = '商品已下架';
+		        Toast({message:'商品无库存',duration: 1500});
 		        return false;
 		      }
 		
@@ -454,7 +450,7 @@
 			              });
 			            }
 			          } else {
-			          	Toast(_res.data.errmsg);
+			          	that.fontSize.goLogin();
 			          }
 			
 			        });

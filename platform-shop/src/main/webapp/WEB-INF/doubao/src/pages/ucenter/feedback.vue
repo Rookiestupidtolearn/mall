@@ -93,25 +93,19 @@
 		      }
 		    }
 		    that.$http({
-		        method: 'post',
-		        url:that.$url+ 'feedback/save',
-		       headers:{
-					'Content-Type':'application/json'
-				},
-		        params:{
-		        	content:this.introduct,
-		        	index:this.values,
-		        	mobile:this.inputValue
-		        }
+			        method: 'post',
+			        url:that.$url+ 'feedback/save',
+			       headers:{
+						'Content-Type':'application/json'
+					},
+			        params:{
+			        	content:this.introduct,
+			        	index:this.values,
+			        	mobile:this.inputValue
+			        }
 		    	}).then(function (response) {
-		    		response = {"errno":0,"data":"感谢你的反馈","errmsg":"执行成功"};
 		    		if(response.data.errno == '401' || response.data.errno == '请先登录'){
-		    			MessageBox({
-							  title: ' ',
-							  message: '请先登录 ',
-							  showCancelButton: true
-							});
-		    			return false;
+		    			that.fontSize.goLogin()
 		    		}else{
 		    			if(response.errno == '0'){
 		    				Toast(response.data);

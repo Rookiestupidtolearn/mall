@@ -42,14 +42,8 @@ export default {
 	        url:that.$url+ 'user/userInfo',
 	        params:{typeId:0}
     	}).then(function (response) {
-      		response = {"data":{"userId":28,"username":"微信用户jp895zmvcjbd","password":"","gender":2,"birthday":null,"register_time":1539068898000,"last_login_time":1541642314000,"last_login_ip":"8.8.8.8","user_level_id":null,"nickname":"张然","mobile":"15158017054","register_ip":"8.8.8.8","avatar":"https://wx.qlogo.cn/mmopen/vi_32/WV9ibUvvrphP9auBTSl3HLpcBmZcWyR3IkXibN4q0dkxiakUfR8TLZfibzokH1tOcUial8yaa6SM5cxkmZAJQjZQpBw/132","weixin_openid":"oohoZ4zvNYZ6_S3ghj4Zy1xX4fhI"}};
     		if(response.data.errno == '401' || response.data.errno == '请先登录'){
-    			MessageBox({
-					  title: ' ',
-					  message: '请先登录 ',
-					  showCancelButton: true
-					});
-    			return false;
+    			that.fontSize.goLogin()
     		}else{
 	    			console.log(response.data)
 	    			that.accountSecurity = response.data;

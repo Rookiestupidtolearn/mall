@@ -94,10 +94,12 @@ export default {
         method: 'post',
         url: that.$url+'cart/index',
     	}).then(function (response) {
-    		response = { "data":{"errno":0,"data":{"cartTotal":{"goodsCount":1,"checkedGoodsCount":1,"goodsAmount":90.00,"checkedGoodsAmount":90.00},"couponInfoList":[{"msg":"满￥88.00元免配送费","type":0},{"msg":"满1000减20元，还差410.00元","type":1}],"cartList":[{"id":1069,"user_id":28,"session_id":"1","goods_id":1181023,"goods_sn":"136","product_id":280,"goods_name":"sjmBB测试勿动002修改过名字","market_price":90.00,"retail_price":120.00,"retail_product_price":120.00,"number":1,"goods_specifition_name_value":null,"goods_specifition_ids":"","checked":1,"crash_save_price":0.00,"list_pic_url":"http://aoss.huaqianyueshang.com/wall/20181026/162648787edb46.png","good_url":"/pages/category/goods?id=1181023"}]},"errmsg":"执行成功"}};
-    		console.log(response);
-		    that.cartGoods = response.data.data.cartList;
-		    that.cartTotal = response.data.data.cartTotal;
+    		if(response.data.errno == '401' || response.data.errno == '请先登录'){
+    				that.fontSize.goLogin()
+    		}else{
+				    that.cartGoods = response.data.data.cartList;
+				    that.cartTotal = response.data.data.cartTotal;
+			  }
 		  })
   },
   methods:{

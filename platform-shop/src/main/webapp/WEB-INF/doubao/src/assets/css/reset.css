@@ -77,6 +77,9 @@ body{
 .mt88{
 	margin-top:.88rem !important;
 }
+.mint-msgbox-btns button{
+	font-size:.28rem;
+}
 /*注册*/
 .mint-field .mint-cell-title{
 		text-align: left;
@@ -84,8 +87,11 @@ body{
 		width:1.7rem;
 }
 .mint-cell-wrapper{
-	padding:0 .8rem 0 .2rem;
+	padding:0 .4rem 0 .2rem;
 }
 .mint-cell:last-child{
 	margin-top:.1rem;
 }
+/*.mint-button--small{
+	width:2.1rem;
+}*/

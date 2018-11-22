@@ -7,18 +7,18 @@ import router from './router'
 import MintUI from 'mint-ui'
 import 'mint-ui/lib/style.css'
 import axios from 'axios'  //ajax
-import './assets/fontSize.js' //字号适配js
+import fontSize from './assets/fontSize.js' //字号适配js
 import './assets/css/reset.css' //公用样式引入
 
 Vue.use(MintUI)
 Vue.prototype.$http= axios
+Vue.prototype.fontSize = fontSize
 Vue.config.productionTip = false
 
 //接口配置
 //Vue.prototype.$url='http://localhost:8080/platform/api/'  //本地
 //Vue.prototype.$url='http://192.168.0.11:6101/platform/api/'  //本地
 Vue.prototype.$url= 'http://106.75.99.126:6302/platform/api/'; //外网
-
 
 
 /* eslint-disable no-new */

@@ -1,23 +1,23 @@
 <template>
-		<div class="container">
+		<div class="container" >
 		  	<!--底部导航栏-->
 				<mt-tabbar v-model="message" fixed>
-	        <mt-tab-item id="home">
-	            <img slot="icon" :src="this.atabs[0]">
-	            首页
-	        </mt-tab-item>
-	        <mt-tab-item id="classification">
-	            <img slot="icon" v-bind:src="this.atabs[1]">
-	            分类
-	        </mt-tab-item>
-	        <mt-tab-item id="shoppingcar">
-	            <img slot="icon" v-bind:src="this.atabs[2]">
-	            购物车
-	        </mt-tab-item>
-	        <mt-tab-item id="ucenter">
-	            <img slot="icon" v-bind:src="this.atabs[3]">
-	            我的
-	        </mt-tab-item>
+			        <mt-tab-item id="home">
+			            <img slot="icon" :src="this.atabs[0]">
+			            首页
+			        </mt-tab-item>
+			        <mt-tab-item id="classification">
+			            <img slot="icon" v-bind:src="this.atabs[1]">
+			            分类
+			        </mt-tab-item>
+			        <mt-tab-item id="shoppingcar">
+			            <img slot="icon" v-bind:src="this.atabs[2]">
+			            购物车
+			        </mt-tab-item>
+			        <mt-tab-item id="ucenter">
+			            <img slot="icon" v-bind:src="this.atabs[3]">
+			            我的
+			        </mt-tab-item>
 				</mt-tabbar>
 		</div>
 </template>
@@ -64,5 +64,10 @@ export default {
 	}
 	.mint-tabbar.is-fixed{
 		height:1.2rem;
+		max-width: 750px;
+		margin:0 auto;
+	}
+	.mint-tab-item-label{
+		font-size:.26rem;
 	}
 </style>
