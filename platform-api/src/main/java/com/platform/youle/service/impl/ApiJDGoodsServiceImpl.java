@@ -18,6 +18,7 @@ import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.github.pagehelper.util.StringUtil;
 import com.platform.dao.ApiBrandMapper;
 import com.platform.dao.ApiCategoryMapper;
@@ -40,6 +41,7 @@ import com.platform.youle.entity.RequestBaseEntity;
 import com.platform.youle.entity.RequestChildsEntity;
 import com.platform.youle.entity.RequestProductStockEntity;
 import com.platform.youle.entity.RequestSkuDetailEntity;
+import com.platform.youle.entity.ResponseAllProductEntity;
 import com.platform.youle.entity.ResponseBaseEntity;
 import com.platform.youle.service.AbsApiGoodsService;
 import com.platform.youle.service.ApiJDGoodsService;
@@ -82,10 +84,19 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService{
 	 * 查询三方返回所有商品id
 	 * @return
 	 */
-	public String queryAllProduects() {
-		ResponseBaseEntity response = absApiGoodsService.getAllProductIds();
-		String result = response.getRESULT_DATA().toString();
-		return result;
+	public ResponseAllProductEntity queryAllProduects() {
+		ResponseAllProductEntity  reponse=null;
+        RequestBaseEntity entity = new RequestBaseEntity();
+        initRequestParam(entity);
+        try {
+            logger.info("[1.1获取所有商品ID]入参："+JSONObject.toJSONString(entity));
+            String result = HttpUtil.post(Urls.base_test_url+Urls.getAllProductIdsUrl, objectToMap(entity));
+            logger.info("[1.1获取所有商品ID]出参："+result);
+            reponse = JSON.parseObject(result,new TypeReference<ResponseAllProductEntity>(){});
+        } catch (Exception e) {
+            logger.error("[1.1获取所有商品ID]异常",e);
+        }
+        return reponse;
 	}
 	
 	
@@ -250,170 +261,181 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService{
 	@Override
 	public JSONObject saveGoods() {
 		JSONObject resultObj = new JSONObject();
-		String porducts = this.queryAllProduects();
-		if (StringUtils.isEmpty(porducts)) {
+		ResponseAllProductEntity response = this.queryAllProduects();
+		if(!response.isRESPONSE_STATUS()){
 			resultObj.put("status", "false");
 			resultObj.put("msg", "1.1获取所有商品ID为空");
 			logger.info("[1.1获取所有商品ID为空]");
 			return resultObj;
 		}
-		JSONObject obj = JSONObject.parseObject(porducts);
-		String res = obj.get("1").toString();
-		String newStr = (String) res.subSequence(1, res.length() - 1);
-		String[] attr = newStr.split(",");
-		//查询所有京东商品 查出库中商品是否匹配到三方返回商品id，没有则置为下架状态
-		List<GoodsPureInterestRateVo> goodsPureInterestRateVoList = new ArrayList<>(); // 批量保存毛利率
-		List<GoodsVo> goodsVos = apiGoodsMapper.queryAllJDGoods();
-		if(!CollectionUtils.isEmpty(goodsVos)){
-			for(GoodsVo good : goodsVos){
-				if(!Arrays.asList(attr).contains(good.getGoods_sn().substring(2, good.getGoods_sn().length()))){
-					Integer[] ids = new Integer[good.getId()];
-					apiGoodsService.unSaleBatch(ids);
+		List array = response.getRESULT_DATA();
+		if(CollectionUtils.isEmpty(array)){
+			resultObj.put("status", "false");
+			resultObj.put("msg", "1.1获取所有商品ID为空");
+			logger.info("[1.1获取所有商品ID为空]");
+			return resultObj;
+		}
+		for(int i = 0;i<array.size();i++){
+			JSONObject json = JSONObject.parseObject(array.get(i).toString());
+			String res = json.get((i+1)+"").toString();
+			String newStr = (String) res.subSequence(1, res.length() - 1);
+			String[] attr = newStr.split(",");
+			//查询所有京东商品 查出库中商品是否匹配到三方返回商品id，没有则置为下架状态
+			List<GoodsPureInterestRateVo> goodsPureInterestRateVoList = new ArrayList<>(); // 批量保存毛利率
+			List<GoodsVo> goodsVos = apiGoodsMapper.queryAllJDGoods();
+			if(!CollectionUtils.isEmpty(goodsVos)){
+				for(GoodsVo good : goodsVos){
+					if(!Arrays.asList(attr).contains(good.getGoods_sn().substring(2, good.getGoods_sn().length()))){
+						Integer[] ids = new Integer[good.getId()];
+						apiGoodsService.unSaleBatch(ids);
+					}
 				}
 			}
+			
+			for (int j = 0; j < attr.length; j++) {
+				RequestSkuDetailEntity entity = new RequestSkuDetailEntity();
+				initRequestParam(entity);
+				entity.setPid(Long.parseLong(attr[j].toString()));
+				
+				String result = "";
+				try {
+					result = HttpUtil.post(Urls.base_test_url + Urls.detial, objectToMap(entity));
+					if (StringUtils.isEmpty(result)) {
+						resultObj.put("status", "false");
+						resultObj.put("msg", "[1.3获取单个商品详情]为空");
+						logger.info("[1.3获取单个商品详情]为空,productId:" + Long.parseLong(attr[j].toString()));
+						continue;
+					}
+					JSONObject dateObj = JSONObject.parseObject(result);
+					String resObj = dateObj.get("RESULT_DATA").toString();
+					if (StringUtils.isEmpty(resObj)) {
+						resultObj.put("status", "false");
+						resultObj.put("msg", "[1.3获取单个商品详情]为空");
+						logger.info("[1.3获取单个商品详情]为空,productId:" + Long.parseLong(attr[j].toString()));
+						continue;
+					}
+					GoodsVo vo = new GoodsVo();
+					JSONObject resultDate = JSONObject.parseObject(resObj);
+					
+					String productDate = resultDate.get("PRODUCT_DATA").toString();
+					if (!StringUtils.isEmpty(productDate)) {
+						JSONObject productObj = JSONObject.parseObject(productDate);
+						String goodsn = "";
+						if(productObj.get("productId") != null){
+							goodsn = "JD".concat(productObj.get("productId").toString());
+							vo.setGoods_sn(productObj.get("productId") == null ? null : goodsn);
+						}
+						List<GoodsVo> goods = apiGoodsMapper.queryGoodsBySn(goodsn);
+						if(CollectionUtils.isEmpty(goods)){
+							vo.setName(productObj.get("name") == null ? "" : productObj.get("name").toString());
+							BrandVo brand = new BrandVo();
+							if (productObj.get("brand") != null) {
+								List<BrandVo> brands = apiBrandMapper.quertBrandByNames(productObj.get("brand").toString());
+								if (CollectionUtils.isEmpty(brands)) {
+									brand.setName(productObj.get("brand").toString());
+									apiBrandMapper.save(brand);
+									vo.setBrand_id(brand.getId());
+								}
+							}
+							
+							vo.setIs_delete(0);
+							vo.setList_pic_url(
+									productObj.get("thumbnailImage") == null ? "" : productObj.get("thumbnailImage").toString());
+							vo.setCategory_id(Integer.parseInt(productObj.get("productCate").toString()));
+							if (productObj.get("status") != null) {
+								if ("undercarriage".equals(productObj.get("status").toString())) {
+									vo.setIs_on_sale(0);
+								} else {
+									vo.setIs_on_sale(2);
+								}
+							}
+							vo.setMarket_price(productObj.get("marketPrice") == null ? BigDecimal.ZERO : new BigDecimal(productObj.get("marketPrice").toString()));
+							vo.setRetail_price(productObj.get("retailPrice") == null ? BigDecimal.ZERO : new BigDecimal(productObj.get("retailPrice").toString()));
+							vo.setGoods_brief(productObj.get("features") == null ? "" : productObj.get("features").toString());
+							vo.setIs_hot(0);
+							vo.setGoods_desc(resultDate.get("PRODUCT_DESCRIPTION") == null ? null : resultDate.get("PRODUCT_DESCRIPTION").toString());
+							vo.setAdd_time(new Date());
+							vo.setUpdate_time(new Date());
+							vo.setSource("JD");
+							Map<String, Object> param = stock(productObj.get("productId").toString(), 100, DEFAULT_ADDRESS);
+							if (param.get("num") != null) {
+								vo.setGoods_number(Integer.parseInt(param.get("num").toString()));
+							}
+							apiGoodsMapper.save(vo);
+							saveProduct(vo);
+							GoodsPureInterestRateVo goodsPureInterestRateVo = saveGoodsPureInterestRate(vo); // 保存商品毛利率
+							if (null != goodsPureInterestRateVo) {
+								goodsPureInterestRateVoList.add(goodsPureInterestRateVo);
+							}
+						}else{
+							GoodsVo good = goods.get(0);
+							good.setName(productObj.get("name") == null ? "" : productObj.get("name").toString());
+							BrandVo brand = new BrandVo();
+							if (productObj.get("brand") != null) {
+								List<BrandVo> brands = apiBrandMapper.quertBrandByNames(productObj.get("brand").toString());
+								if (CollectionUtils.isEmpty(brands)) {
+									brand.setName(productObj.get("brand").toString());
+									apiBrandMapper.save(brand);
+									good.setBrand_id(brand.getId());
+								}
+							}
+							
+							good.setIs_delete(good.getIs_delete());
+							good.setList_pic_url(
+									productObj.get("thumbnailImage") == null ? "" : productObj.get("thumbnailImage").toString());
+							good.setCategory_id(Integer.parseInt(productObj.get("productCate").toString()));
+							if (productObj.get("status") != null) {
+								Integer[] ids = new Integer[good.getId()];
+								if ("undercarriage".equals(productObj.get("status").toString())) {
+									apiGoodsService.unSaleBatch(ids);
+								} else {
+									good.setIs_on_sale(good.getIs_on_sale());
+								}
+							}
+							good.setMarket_price(productObj.get("marketPrice") == null ? BigDecimal.ZERO : new BigDecimal(productObj.get("marketPrice").toString()));
+							good.setRetail_price(productObj.get("retailPrice") == null ? BigDecimal.ZERO : new BigDecimal(productObj.get("retailPrice").toString()));
+							good.setGoods_brief(productObj.get("features") == null ? "" : productObj.get("features").toString());
+							good.setIs_hot(good.getIs_hot());
+								
+							good.setGoods_desc(resultDate.get("PRODUCT_DESCRIPTION") == null ? null : resultDate.get("PRODUCT_DESCRIPTION").toString());
+							good.setAdd_time(good.getAdd_time());
+							good.setUpdate_time(new Date());
+							good.setSource("JD");
+							Map<String, Object> param = stock(productObj.get("productId").toString(), 100, DEFAULT_ADDRESS);
+							if (param.get("num") != null) {
+								good.setGoods_number(Integer.parseInt(param.get("num").toString()));
+							}
+							apiGoodsMapper.update(good);
+							updateProduct(good);
+							updateGoodsPureInterestRate(good); //更新毛利率
+						}
+					}
+					if (resultDate.get("PRODUCT_IMAGE") != null) {
+						JSONArray imgattr = JSONArray.parseArray(resultDate.get("PRODUCT_IMAGE").toString());
+						if (!CollectionUtils.isEmpty(imgattr)) {
+							for (int t = 0; t < imgattr.size(); t++) {
+								GoodsGalleryVo galleryVo = new GoodsGalleryVo();
+								JSONObject imgObj = JSONObject.parseObject(imgattr.get(t).toString());
+								galleryVo.setImg_url(imgObj.get("imageUrl").toString());
+								galleryVo.setGoods_id(vo.getId());
+								galleryVo.setSort_order(Integer.parseInt(imgObj.get("orderSort").toString()));
+								apiGoodsGalleryMapper.save(galleryVo);
+							}
+						}
+					}
+
+				} catch (Exception e) {
+					logger.error("[商品入库/更新异常]",e);
+				}
+				
+			}
+			if (!CollectionUtils.isEmpty(goodsPureInterestRateVoList)) {
+				// 执行批量保存商品毛利率
+				apiGoodsPureInterestRateService.saveBatch(goodsPureInterestRateVoList);
+			}
+			
 		}
 		
-		for (int j = 0; j < attr.length; j++) {
-			RequestSkuDetailEntity entity = new RequestSkuDetailEntity();
-			initRequestParam(entity);
-			entity.setPid(Long.parseLong(attr[j].toString()));
-			
-			String result = "";
-			try {
-				result = HttpUtil.post(Urls.base_test_url + Urls.detial, objectToMap(entity));
-				if (StringUtils.isEmpty(result)) {
-					resultObj.put("status", "false");
-					resultObj.put("msg", "[1.3获取单个商品详情]为空");
-					logger.info("[1.3获取单个商品详情]为空,productId:" + Long.parseLong(attr[j].toString()));
-					continue;
-				}
-				JSONObject dateObj = JSONObject.parseObject(result);
-				String resObj = dateObj.get("RESULT_DATA").toString();
-				if (StringUtils.isEmpty(resObj)) {
-					resultObj.put("status", "false");
-					resultObj.put("msg", "[1.3获取单个商品详情]为空");
-					logger.info("[1.3获取单个商品详情]为空,productId:" + Long.parseLong(attr[j].toString()));
-					continue;
-				}
-				GoodsVo vo = new GoodsVo();
-				JSONObject resultDate = JSONObject.parseObject(resObj);
-				
-				String productDate = resultDate.get("PRODUCT_DATA").toString();
-				if (!StringUtils.isEmpty(productDate)) {
-					JSONObject productObj = JSONObject.parseObject(productDate);
-					String goodsn = "";
-					if(productObj.get("productId") != null){
-						goodsn = "JD".concat(productObj.get("productId").toString());
-						vo.setGoods_sn(productObj.get("productId") == null ? null : goodsn);
-					}
-					List<GoodsVo> goods = apiGoodsMapper.queryGoodsBySn(goodsn);
-					if(CollectionUtils.isEmpty(goods)){
-						vo.setName(productObj.get("name") == null ? "" : productObj.get("name").toString());
-						BrandVo brand = new BrandVo();
-						if (productObj.get("brand") != null) {
-							List<BrandVo> brands = apiBrandMapper.quertBrandByNames(productObj.get("brand").toString());
-							if (CollectionUtils.isEmpty(brands)) {
-								brand.setName(productObj.get("brand").toString());
-								apiBrandMapper.save(brand);
-								vo.setBrand_id(brand.getId());
-							}
-						}
-						
-						vo.setIs_delete(0);
-						vo.setList_pic_url(
-								productObj.get("thumbnailImage") == null ? "" : productObj.get("thumbnailImage").toString());
-						vo.setCategory_id(Integer.parseInt(productObj.get("productCate").toString()));
-						if (productObj.get("status") != null) {
-							if ("undercarriage".equals(productObj.get("status").toString())) {
-								vo.setIs_on_sale(0);
-							} else {
-								vo.setIs_on_sale(2);
-							}
-						}
-						vo.setMarket_price(productObj.get("marketPrice") == null ? BigDecimal.ZERO : new BigDecimal(productObj.get("marketPrice").toString()));
-						vo.setRetail_price(productObj.get("retailPrice") == null ? BigDecimal.ZERO : new BigDecimal(productObj.get("retailPrice").toString()));
-						vo.setGoods_brief(productObj.get("features") == null ? "" : productObj.get("features").toString());
-						vo.setIs_hot(0);
-						vo.setGoods_desc(resultDate.get("PRODUCT_DESCRIPTION") == null ? null : resultDate.get("PRODUCT_DESCRIPTION").toString());
-						vo.setAdd_time(new Date());
-						vo.setUpdate_time(new Date());
-						vo.setSource("JD");
-						Map<String, Object> param = stock(productObj.get("productId").toString(), 100, DEFAULT_ADDRESS);
-						if (param.get("num") != null) {
-							vo.setGoods_number(Integer.parseInt(param.get("num").toString()));
-						}
-						apiGoodsMapper.save(vo);
-						saveProduct(vo);
-						GoodsPureInterestRateVo goodsPureInterestRateVo = saveGoodsPureInterestRate(vo); // 保存商品毛利率
-						if (null != goodsPureInterestRateVo) {
-							goodsPureInterestRateVoList.add(goodsPureInterestRateVo);
-						}
-					}else{
-						GoodsVo good = goods.get(0);
-						good.setName(productObj.get("name") == null ? "" : productObj.get("name").toString());
-						BrandVo brand = new BrandVo();
-						if (productObj.get("brand") != null) {
-							List<BrandVo> brands = apiBrandMapper.quertBrandByNames(productObj.get("brand").toString());
-							if (CollectionUtils.isEmpty(brands)) {
-								brand.setName(productObj.get("brand").toString());
-								apiBrandMapper.save(brand);
-								good.setBrand_id(brand.getId());
-							}
-						}
-						
-						good.setIs_delete(good.getIs_delete());
-						good.setList_pic_url(
-								productObj.get("thumbnailImage") == null ? "" : productObj.get("thumbnailImage").toString());
-						good.setCategory_id(Integer.parseInt(productObj.get("productCate").toString()));
-						if (productObj.get("status") != null) {
-							Integer[] ids = new Integer[good.getId()];
-							if ("undercarriage".equals(productObj.get("status").toString())) {
-								apiGoodsService.unSaleBatch(ids);
-							} else {
-								good.setIs_on_sale(good.getIs_on_sale());
-							}
-						}
-						good.setMarket_price(productObj.get("marketPrice") == null ? BigDecimal.ZERO : new BigDecimal(productObj.get("marketPrice").toString()));
-						good.setRetail_price(productObj.get("retailPrice") == null ? BigDecimal.ZERO : new BigDecimal(productObj.get("retailPrice").toString()));
-						good.setGoods_brief(productObj.get("features") == null ? "" : productObj.get("features").toString());
-						good.setIs_hot(good.getIs_hot());
-							
-						good.setGoods_desc(resultDate.get("PRODUCT_DESCRIPTION") == null ? null : resultDate.get("PRODUCT_DESCRIPTION").toString());
-						good.setAdd_time(good.getAdd_time());
-						good.setUpdate_time(new Date());
-						good.setSource("JD");
-						Map<String, Object> param = stock(productObj.get("productId").toString(), 100, DEFAULT_ADDRESS);
-						if (param.get("num") != null) {
-							good.setGoods_number(Integer.parseInt(param.get("num").toString()));
-						}
-						apiGoodsMapper.update(good);
-						updateProduct(good);
-						updateGoodsPureInterestRate(good); //更新毛利率
-					}
-				}
-				if (resultDate.get("PRODUCT_IMAGE") != null) {
-					JSONArray imgattr = JSONArray.parseArray(resultDate.get("PRODUCT_IMAGE").toString());
-					if (!CollectionUtils.isEmpty(imgattr)) {
-						for (int t = 0; t < imgattr.size(); t++) {
-							GoodsGalleryVo galleryVo = new GoodsGalleryVo();
-							JSONObject imgObj = JSONObject.parseObject(imgattr.get(t).toString());
-							galleryVo.setImg_url(imgObj.get("imageUrl").toString());
-							galleryVo.setGoods_id(vo.getId());
-							galleryVo.setSort_order(Integer.parseInt(imgObj.get("orderSort").toString()));
-							apiGoodsGalleryMapper.save(galleryVo);
-						}
-					}
-				}
-
-			} catch (Exception e) {
-				logger.error("[商品入库/更新异常]",e);
-			}
-			
-		}
-		if (!CollectionUtils.isEmpty(goodsPureInterestRateVoList)) {
-			// 执行批量保存商品毛利率
-			apiGoodsPureInterestRateService.saveBatch(goodsPureInterestRateVoList);
-		}
 		resultObj.put("status", "success");
 		return resultObj;
 		

@@ -1,5 +1,6 @@
 package com.platform.api;
 
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,7 +19,10 @@ import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.github.pagehelper.util.StringUtil;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.platform.annotation.IgnoreAuth;
 import com.platform.annotation.LoginUser;
 import com.platform.dao.ApiBrandMapper;
@@ -51,6 +55,7 @@ import com.platform.youle.entity.RequestChildsEntity;
 import com.platform.youle.entity.RequestOrderSubmitEntity;
 import com.platform.youle.entity.RequestProductStockEntity;
 import com.platform.youle.entity.RequestSkuDetailEntity;
+import com.platform.youle.entity.ResponseAllProductEntity;
 import com.platform.youle.entity.ResponseBaseEntity;
 import com.platform.youle.entity.ResponseCancelEntity;
 import com.platform.youle.entity.ResponseOrderSubmitEntity;
@@ -743,18 +748,33 @@ public class ApiTestController extends ApiBaseAction {
 	
 	@IgnoreAuth
 	@ApiOperation(value = "1.3")
-	@PostMapping("queryGoodsDetail")
-	public Object queryGoodsDetail(String productId) {
-		String result = "";
-		RequestSkuDetailEntity entity = new RequestSkuDetailEntity();
+	@PostMapping("queryAllProducts")
+	public Object queryAllProducts(String productId) {
+		String resultObj = "";
+		ResponseAllProductEntity response = null;
+		RequestBaseEntity entity = new RequestBaseEntity();
 		initRequestParam(entity);
-		entity.setPid(Long.parseLong(productId));
 		try {
-			result = HttpUtil.post(Urls.base_test_url + Urls.detial, objectToMap(entity));
-			System.out.println(result);
+			String result = HttpUtil.post(Urls.base_test_url + Urls.getAllProductIdsUrl, objectToMap(entity));
+//			if (!StringUtil.isEmpty(result)) {
+//				JSONObject dateObj = JSONObject.parseObject(result);
+//				resultObj = dateObj.get("RESULT_DATA").toString();
+//			}
+			response = JSON.parseObject(result,new TypeReference<ResponseAllProductEntity>(){});
+			if(response.isRESPONSE_STATUS()){
+				List array = response.getRESULT_DATA();
+				if(!CollectionUtils.isEmpty(array)){
+					for(int i = 0;i<array.size();i++){
+						JSONObject json = JSONObject.parseObject(array.get(i).toString());
+						
+						System.out.println(json.get((i+1)+""));
+					}
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return result;
+		return resultObj;
 	}
+	
 }
