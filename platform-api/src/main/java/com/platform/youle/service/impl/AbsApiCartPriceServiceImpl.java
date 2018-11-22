@@ -103,6 +103,12 @@ public class AbsApiCartPriceServiceImpl implements AbsApiCartPriceService {
 					continue;
 				}
 				JSONObject resultDate = JSONObject.parseObject(resObj);
+				if(resultDate.get("PRODUCT_DATA") == null){
+					resultObj.put("status", "false");
+					resultObj.put("msg", "[1.3获取单个商品详情]为空");
+					logger.info("[定时查询购物车商品]为空,productId:" + Long.parseLong(jdProductId));
+					continue;
+				}
 				String productDate = resultDate.get("PRODUCT_DATA").toString();
 				if (!StringUtils.isEmpty(productDate)) {
 					JSONObject productObj = JSONObject.parseObject(productDate);

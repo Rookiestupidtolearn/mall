@@ -45,4 +45,11 @@ public interface ApiCartMapper extends BaseDao<CartVo> {
 	 * @return
 	 */
 	List<CartVo> quertAllCarts();
+	/**
+	 * 批量查询购物车信息_下架
+	 * @param userId
+	 * @param cartEntityIds
+	 * @return
+	 */
+	List<CartVo> queryRollbackUserCarts(@Param("cartEntityIds")Integer[] cartEntityIds,@Param("userId") Long userId);
 }

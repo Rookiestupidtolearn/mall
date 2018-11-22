@@ -739,4 +739,22 @@ public class ApiTestController extends ApiBaseAction {
 		JSONObject obj = apiJDGoodsService.saveCategory();
 		return obj;
 	}
+	
+	
+	@IgnoreAuth
+	@ApiOperation(value = "1.3")
+	@PostMapping("queryGoodsDetail")
+	public Object queryGoodsDetail(String productId) {
+		String result = "";
+		RequestSkuDetailEntity entity = new RequestSkuDetailEntity();
+		initRequestParam(entity);
+		entity.setPid(Long.parseLong(productId));
+		try {
+			result = HttpUtil.post(Urls.base_test_url + Urls.detial, objectToMap(entity));
+			System.out.println(result);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
 }

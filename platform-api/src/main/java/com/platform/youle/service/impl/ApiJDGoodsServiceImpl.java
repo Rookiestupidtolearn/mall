@@ -267,13 +267,11 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService{
 		if(!CollectionUtils.isEmpty(goodsVos)){
 			for(GoodsVo good : goodsVos){
 				if(!Arrays.asList(attr).contains(good.getGoods_sn().substring(2, good.getGoods_sn().length()))){
-					List<GoodsVo> jdGood = apiGoodsMapper.queryGoodsBySn(good.getGoods_sn());
-					jdGood.get(0).setIs_on_sale(0);
-					apiGoodsMapper.update(jdGood.get(0));
+					Integer[] ids = new Integer[good.getId()];
+					apiGoodsService.unSaleBatch(ids);
 				}
 			}
 		}
-		
 		
 		for (int j = 0; j < attr.length; j++) {
 			RequestSkuDetailEntity entity = new RequestSkuDetailEntity();
@@ -370,7 +368,6 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService{
 						if (productObj.get("status") != null) {
 							Integer[] ids = new Integer[good.getId()];
 							if ("undercarriage".equals(productObj.get("status").toString())) {
-//								good.setIs_on_sale(0);
 								apiGoodsService.unSaleBatch(ids);
 							} else {
 								good.setIs_on_sale(good.getIs_on_sale());
