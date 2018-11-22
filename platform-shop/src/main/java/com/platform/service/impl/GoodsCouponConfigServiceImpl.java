@@ -5,11 +5,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.platform.dao.GoodsCouponConfigDao;
+import com.platform.dao.GoodsDao;
 import com.platform.entity.GoodsCouponConfigEntity;
+import com.platform.entity.GoodsEntity;
 import com.platform.entity.SysUserEntity;
 import com.platform.service.GoodsCouponConfigService;
 import com.platform.utils.RRException;
@@ -28,6 +31,9 @@ public class GoodsCouponConfigServiceImpl implements GoodsCouponConfigService {
 	
     @Autowired
     private GoodsCouponConfigDao goodsCouponConfigDao;
+    @Autowired
+    private GoodsDao goodDao;
+    private Logger log = Logger.getLogger(GoodsCouponConfigServiceImpl.class);
 
     @Override
     public GoodsCouponConfigEntity queryObject(Integer id) {
@@ -86,8 +92,8 @@ public class GoodsCouponConfigServiceImpl implements GoodsCouponConfigService {
     }
 
 	@Override
-	public List<GoodsCouponConfigEntity> selectGoodsIdsById(Integer[] ids) {
-		return goodsCouponConfigDao.selectGoodsIdsById(ids);
+	public List<GoodsCouponConfigEntity> selectGoodsIdsByGoodsId(Integer[] ids) {
+		return goodsCouponConfigDao.selectGoodsIdsByGoodsId(ids);
 	}
 
 	@Override
@@ -95,28 +101,44 @@ public class GoodsCouponConfigServiceImpl implements GoodsCouponConfigService {
 		try{
 			SysUserEntity user = ShiroUtils.getUserEntity();
 			//校验商品是否存在规格参数
-			List<GoodsCouponConfigEntity>  goodsCouponConfigEntity = goodsCouponConfigDao.selectGoodsIdsById(goodsIds);
-			if (CollectionUtils.isNotEmpty(goodsCouponConfigEntity)) {
-				Integer[] goodsIDS = new Integer[goodsCouponConfigEntity.size()];
-				for(int i=0;i<goodsCouponConfigEntity.size();i++){
-					goodsIDS[i] = goodsCouponConfigEntity.get(i).getGoodsId();
-				}
-				if(goodsIDS.length>0){ //存在有配比的商品
-					return goodsIDS;
-		        }
-			}
-			//保存配比信息
 			for(int i =0;i<goodsIds.length;i++){
-				GoodsCouponConfigEntity gccf = new GoodsCouponConfigEntity();
-				gccf.setGoodsId(goodsIds[i]);
-				gccf.setNormalMatching(Double.parseDouble(normalMatching));
-				gccf.setActivityMatching(Double.parseDouble(activityMatching));
-				gccf.setDelFlag("0");
-				gccf.setCreateUserDeptId(user.getDeptId());
-				gccf.setCreateUserId(user.getUserId());
-				gccf.setUpdateUserId(user.getUserId());
-				gccf.setUpdateTime(new Date());
-				goodsCouponConfigDao.save(gccf);
+				//重置配比需先下架商品
+				GoodsEntity goodsEntity = null;
+				GoodsEntity goods = goodDao.queryObject(goodsIds[i]);
+				if(null == goods){
+					log.info("【商品重置/新增 配比】为获取到商品id:"+goodsIds[i]+"的商品");
+				}
+				if(goods.getIsOnSale() == 1 ||goods.getIsOnSale() == 3){
+					goodsEntity = goods;
+					goodsEntity.setIsOnSale(0);
+					goodDao.update(goodsEntity);
+				}
+				List<GoodsCouponConfigEntity> goodsCouponConfigEntityList = goodsCouponConfigDao.selectGoodsIdsByGoodsId(new Integer[]{goodsIds[i]});
+				if(CollectionUtils.isEmpty(goodsCouponConfigEntityList)){
+					GoodsCouponConfigEntity gccf = new GoodsCouponConfigEntity();
+					gccf.setGoodsId(goodsIds[i]);
+					gccf.setNormalMatching(Double.parseDouble(normalMatching));
+					gccf.setActivityMatching(Double.parseDouble(activityMatching));
+					gccf.setDelFlag("0");
+					gccf.setCreateUserDeptId(user.getDeptId());
+					gccf.setCreateUserId(user.getUserId());
+					gccf.setUpdateUserId(user.getUserId());
+					gccf.setUpdateTime(new Date());
+					goodsCouponConfigDao.save(gccf);
+				}else{
+					for(GoodsCouponConfigEntity goodsCouponConfigEntity : goodsCouponConfigEntityList){
+						goodsCouponConfigEntity.setNormalMatching(Double.parseDouble(normalMatching));
+						goodsCouponConfigEntity.setActivityMatching(Double.parseDouble(activityMatching));
+						goodsCouponConfigEntity.setUpdateTime(new Date());
+						goodsCouponConfigEntity.setUpdateUserId(user.getUserId());
+						goodsCouponConfigDao.update(goodsCouponConfigEntity);
+					}
+				}
+				//设置完规格，将操作下架的商品更新为申请上架的状态
+				if(null != goodsEntity){
+					goodsEntity.setIsOnSale(2);
+					goodDao.update(goodsEntity);
+				}
 			}
 			return new Integer[0]; //返回空表示成功
 		}catch(Exception e){

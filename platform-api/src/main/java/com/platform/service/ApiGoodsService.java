@@ -79,7 +79,7 @@ public class ApiGoodsService {
 			return 0;
 		}
 		for(GoodsVo goodsVo : goodsList){
-			if(1 == goodsVo.getIs_on_sale()){ //不是上架中的商品处理上架
+			if(1 == goodsVo.getIs_on_sale() || 3 == goodsVo.getIs_on_sale()){ 
 				//商品下架,删除购物车中对应的商品信息。并且回滚平台币和删除优惠券
 				//查询购物车中对应的商品信息。
 				List<CartVo> checkedCartList = cartDao.queryCartListByGoodsId(goodsVo.getId(),1); //购物车中是选中状态的商品数据

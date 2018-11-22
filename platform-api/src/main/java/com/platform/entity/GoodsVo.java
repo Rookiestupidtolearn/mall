@@ -32,7 +32,7 @@ public class GoodsVo implements Serializable {
     //商品描述
     private String goods_desc;
     //上架
-    private Integer is_on_sale;
+    private Integer is_on_sale; //0 下架  1上架 2 申请上架  3申请下架  -1编辑状态
     //添加时间
     private Date add_time;
     //添加时间
