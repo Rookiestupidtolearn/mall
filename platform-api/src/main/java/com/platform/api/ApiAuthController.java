@@ -3,6 +3,7 @@ package com.platform.api;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.platform.annotation.IgnoreAuth;
+import com.platform.cache.J2CacheUtils;
 import com.platform.entity.FullUserInfo;
 import com.platform.entity.UserInfo;
 import com.platform.entity.UserVo;
@@ -22,12 +23,17 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * API登录授权
@@ -132,6 +138,74 @@ public class ApiAuthController extends ApiBaseAction {
 
         resultObj.put("token", token);
         resultObj.put("userInfo", userInfo);
+        resultObj.put("userId", userVo.getUserId());
+        return toResponsSuccess(resultObj);
+    }
+    
+
+    /**
+     * 根据手机号登录
+     */
+    @ApiOperation(value = "根据手机号登录")
+    @IgnoreAuth
+    @PostMapping("login_by_mobile")
+    public Object loginByMobile(@RequestParam Map<String, String> params) {
+    	   //校验手机号格式
+    	if (params.get("mobile").equals("")) {
+       	 return R.error("手机号不能为空！");
+		}
+      String mobile =  params.get("mobile");
+		String regex = "^((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(166)|(17[0,1,3,5,6,7,8])|(18[0-9])|(19[8|9]))\\d{8}$";
+		if (mobile.length() != 11) {
+			 return R.error("手机号错误");
+		}
+		Pattern p = Pattern.compile(regex);
+		Matcher m = p.matcher(mobile);
+		boolean isMatch = m.matches();
+
+		if (!isMatch) {
+			 return R.error("手机号错误");
+		}
+    	//校验验证码
+		if (params.get("code")==null) {
+	       	 return R.error("验证码不能为空！");
+	    }
+		//校验验证码的有效性
+		Object codeSmsValue = J2CacheUtils.get(J2CacheUtils.CHECK_CACHE, "DOUBAO:"+mobile);
+    	if (codeSmsValue== null) {
+    	  	 return R.error("验证码不正确！");
+		}
+		if (!params.get("code").equals(codeSmsValue)) {
+			 return R.error("验证码不正确！");
+		}
+		UserVo userVo = userService.queryByMobile(mobile);
+       if (userVo== null) {
+		 //新注册
+    	   userVo = new UserVo();
+           userVo.setUsername("微信用户" + CharUtil.getRandomString(12));
+           userVo.setPassword(mobile);
+           userVo.setRegister_time(new Date());
+           userVo.setRegister_ip(this.getClientIp());
+           userVo.setLast_login_ip(userVo.getRegister_ip());
+           userVo.setLast_login_time(userVo.getRegister_time());
+           userService.save(userVo);
+    	   
+	   }else {
+		    userVo.setLast_login_ip(this.getClientIp());
+            userVo.setLast_login_time(new Date());
+            userService.update(userVo);
+	}
+       J2CacheUtils.remove(J2CacheUtils.CHECK_CACHE, "DOUBAO:"+mobile);
+      
+        Map<String, Object> tokenMap = tokenService.createToken(userVo.getUserId());
+        String token = MapUtils.getString(tokenMap, "token");
+        if (null == userVo || StringUtils.isNullOrEmpty(token)) {
+            return toResponsFail("登录失败");
+        }
+        Map<String, Object> resultObj = new HashMap<String, Object>();
+
+        resultObj.put("token", token);
+        resultObj.put("userInfo", userVo);
         resultObj.put("userId", userVo.getUserId());
         return toResponsSuccess(resultObj);
     }

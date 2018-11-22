@@ -42,7 +42,9 @@
         <result property="createTime" column="create_time"/>
     </resultMap>
     
-    
+      <select id="queryByMobile" parameterType="java.lang.String" resultMap="userMap">
+		select * from nideshop_user where  mobile = #{mobile}
+	</select>
     
 
     <select id="queryObject" resultMap="userMap">
