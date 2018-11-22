@@ -284,11 +284,20 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService{
 			List<GoodsPureInterestRateVo> goodsPureInterestRateVoList = new ArrayList<>(); // 批量保存毛利率
 			List<GoodsVo> goodsVos = apiGoodsMapper.queryAllJDGoods();
 			if(!CollectionUtils.isEmpty(goodsVos)){
-				for(GoodsVo good : goodsVos){
-					if(!Arrays.asList(attr).contains(good.getGoods_sn().substring(2, good.getGoods_sn().length()))){
-						Integer[] ids = new Integer[good.getId()];
-						apiGoodsService.unSaleBatch(ids);
+				List<String> arrayStr =  Arrays.asList(attr);
+				List<Integer> list = new ArrayList<>();
+				for(int j = 0;j<goodsVos.size();j++){
+					String goodsn = goodsVos.get(j).getGoods_sn();
+					if(!arrayStr.contains(goodsn.substring(2, goodsn.length()))){
+						list.add(goodsVos.get(j).getId());
 					}
+				}
+				if(!CollectionUtils.isEmpty(list)){
+					Integer[] ids = new Integer[list.size()];
+					for(int t = 0;t<list.size();t++){
+						ids[t] = list.get(t);
+					}
+					apiGoodsService.unSaleBatch(ids);
 				}
 			}
 			
