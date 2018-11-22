@@ -159,4 +159,7 @@
 	<select id = "queryChildCategory" resultMap = "categoryMap">
 		select * from nideshop_category where name = #{0} and parent_id = #{1}
 	</select>
+	<select id="quertSubCategorys" resultMap = "categoryMap">
+		select * from nideshop_category where parent_id = #{id}
+	</select>
 </mapper>

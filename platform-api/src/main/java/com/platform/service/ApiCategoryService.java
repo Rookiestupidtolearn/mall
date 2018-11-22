@@ -53,4 +53,7 @@ public class ApiCategoryService {
 		return categoryDao.quertOtherIds();
 	}
 	
+	public List<CategoryVo> quertSubCategorys(Integer id){
+		return categoryDao.quertSubCategorys(id);
+	}
 }

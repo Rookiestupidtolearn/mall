@@ -1,22 +1,28 @@
 package com.platform.api;
 
-import com.platform.annotation.IgnoreAuth;
-import com.platform.entity.CategoryVo;
-import com.platform.service.ApiCategoryService;
-import com.platform.util.ApiBaseAction;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.shiro.util.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.platform.annotation.IgnoreAuth;
+import com.platform.dao.ApiGoodsMapper;
+import com.platform.entity.CategoryVo;
+import com.platform.entity.GoodsVo;
+import com.platform.service.ApiCategoryService;
+import com.platform.util.ApiBaseAction;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * 作者: @author Harmon <br>
@@ -29,6 +35,8 @@ import java.util.Map;
 public class ApiCatalogController extends ApiBaseAction {
     @Autowired
     private ApiCategoryService categoryService;
+    @Autowired
+    private ApiGoodsMapper apiGoodsMapper;
 
     /**
      * 获取分类栏目数据
@@ -50,14 +58,33 @@ public class ApiCatalogController extends ApiBaseAction {
         params.put("order", "asc");
         params.put("parent_id", 0);
         //查询列表数据
+        List<CategoryVo> newData = new ArrayList<>();
         List<CategoryVo> data = categoryService.queryList(params);
+        List<CategoryVo> newCategorys = new ArrayList<>();
+        if(!CollectionUtils.isEmpty(data)){
+        	for(CategoryVo vo : data){
+        		List<CategoryVo> subData = categoryService.quertSubCategorys(vo.getId());
+        		if(!CollectionUtils.isEmpty(subData)){
+        			for(CategoryVo sub : subData){
+        				List<GoodsVo> goods = apiGoodsMapper.quertGoodsByCategory(sub.getId().toString());
+                		if(!CollectionUtils.isEmpty(goods)){
+                			newData.add(vo);
+                			break;
+                		}
+                		if("热销".equals(sub.getName()) && "其他".equals(vo.getName())){
+                			newData.add(vo);
+                		}
+        			}
+        		}
+        	}
+        }
         //
         CategoryVo currentCategory = null;
         if (null != id) {
             currentCategory = categoryService.queryObject(id);
         }
-        if (null == currentCategory && null != data && data.size() != 0) {
-            currentCategory = data.get(0);
+        if (null == currentCategory && null != newData && newData.size() != 0) {
+            currentCategory = newData.get(0);
         } else {
             currentCategory = new CategoryVo();
         }
@@ -65,10 +92,19 @@ public class ApiCatalogController extends ApiBaseAction {
         //获取子分类数据
         if (null != currentCategory && null != currentCategory.getId()) {
             params.put("parent_id", currentCategory.getId());
-            currentCategory.setSubCategoryList(categoryService.queryList(params));
+            List<CategoryVo> subCategorys = categoryService.queryList(params);
+            if(!CollectionUtils.isEmpty(subCategorys)){
+            	for(CategoryVo vo : subCategorys){
+            		List<GoodsVo> goods = apiGoodsMapper.quertGoodsByCategory(vo.getId().toString());
+            		if(!CollectionUtils.isEmpty(goods)){
+            			newCategorys.add(vo);
+            		}
+            	}
+            }
+            currentCategory.setSubCategoryList(newCategorys);
         }
 
-        resultObj.put("categoryList", data);
+        resultObj.put("categoryList", newData);
         resultObj.put("currentCategory", currentCategory);
         return toResponsSuccess(resultObj);
     }
@@ -83,6 +119,7 @@ public class ApiCatalogController extends ApiBaseAction {
         Map<String, Object> resultObj = new HashMap();
         Map params = new HashMap();
         params.put("parent_id", 0);
+        List<CategoryVo> newCategorys = new ArrayList<>();
         CategoryVo currentCategory = null;
         if (null != id) {
             currentCategory = categoryService.queryObject(id);
@@ -90,7 +127,20 @@ public class ApiCatalogController extends ApiBaseAction {
         //获取子分类数据
         if (null != currentCategory && null != currentCategory.getId()) {
             params.put("parent_id", currentCategory.getId());
-            currentCategory.setSubCategoryList(categoryService.queryList(params));
+            List<CategoryVo> subCategorys = categoryService.queryList(params);
+            if(!CollectionUtils.isEmpty(subCategorys)){
+            	for(CategoryVo vo : subCategorys){
+            		if("热销".equals(vo.getName()) && "其他".equals(currentCategory.getName())){
+            			newCategorys.add(vo);
+            		}else{
+            			List<GoodsVo> goods = apiGoodsMapper.quertGoodsByCategory(vo.getId().toString());
+            			if(!CollectionUtils.isEmpty(goods)){
+            				newCategorys.add(vo);
+            			}
+            		}
+            	}
+            }
+            currentCategory.setSubCategoryList(newCategorys);
         }
         resultObj.put("currentCategory", currentCategory);
         return toResponsSuccess(resultObj);
