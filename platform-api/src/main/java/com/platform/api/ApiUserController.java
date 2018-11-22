@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
+import com.platform.annotation.IgnoreAuth;
 import com.platform.annotation.LoginUser;
 import com.platform.entity.QzMoneyRecordEntity;
 import com.platform.entity.QzUserAccountEntity;
@@ -52,6 +53,7 @@ public class ApiUserController extends ApiBaseAction {
     /**
      * 发送短信
      */
+    @IgnoreAuth
     @ApiOperation(value = "发送短信")
     @PostMapping("smscode")
     public Object smscode(@LoginUser UserVo loginUser) {
