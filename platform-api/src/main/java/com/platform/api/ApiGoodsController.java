@@ -374,7 +374,6 @@ public class ApiGoodsController extends ApiBaseAction {
             @ApiImplicitParam(name = "brandId", value = "品牌Id", paramType = "path", required = true),
             @ApiImplicitParam(name = "isNew", value = "新商品", paramType = "path", required = true),
             @ApiImplicitParam(name = "isHot", value = "热卖商品", paramType = "path", required = true)})
-    @IgnoreAuth
     @PostMapping(value = "list")
     public Object list(@LoginUser UserVo loginUser, Integer categoryId,
                        Integer brandId, String keyword, Integer isNew, Integer isHot,
@@ -449,14 +448,7 @@ public class ApiGoodsController extends ApiBaseAction {
             }
         }
         //加入分类条件
-        //查询子分类
-        CategoryVo subCategorys = apiCategoryMapper.queryObject(categoryId);
-        //查询父节点
-        CategoryVo parentCategorys = apiCategoryMapper.queryObject(subCategorys.getParent_id());
-        if("热销".equals(subCategorys.getName()) && "其他".equals(parentCategorys.getName())){
-        	List<Integer> categoryIds  = categoryService.quertOtherIds();
-    		params.put("categoryIds", categoryIds);
-        }else{
+        if(0 == categoryId){
         	List<Integer> categoryIds = new ArrayList();
     		Map categoryParam = new HashMap();
     		categoryParam.put("parent_id", categoryId);
@@ -467,6 +459,26 @@ public class ApiGoodsController extends ApiBaseAction {
     		}
     		categoryIds.add(categoryId);
     		params.put("categoryIds", categoryIds);
+        }else{
+        	 //查询子分类
+            CategoryVo subCategorys = apiCategoryMapper.queryObject(categoryId);
+            //查询父节点
+            CategoryVo parentCategorys = apiCategoryMapper.queryObject(subCategorys.getParent_id());
+            if("热销".equals(subCategorys.getName()) && "其他".equals(parentCategorys.getName())){
+            	List<Integer> categoryIds  = categoryService.quertOtherIds();
+        		params.put("categoryIds", categoryIds);
+            }else{
+            	List<Integer> categoryIds = new ArrayList();
+        		Map categoryParam = new HashMap();
+        		categoryParam.put("parent_id", categoryId);
+        		categoryParam.put("fields", "id");
+        		List<CategoryVo> childIds = categoryService.queryList(categoryParam);
+        		for (CategoryVo categoryEntity : childIds) {
+        			categoryIds.add(categoryEntity.getId());
+        		}
+        		categoryIds.add(categoryId);
+        		params.put("categoryIds", categoryIds);
+            }
         }
         //查询列表数据
         params.put("fields", "nideshop_goods.id as id,nideshop_goods.name as name, nideshop_goods.list_pic_url as list_pic_url, nideshop_goods.market_price as market_price, nideshop_goods.retail_price, nideshop_goods.goods_brief,case when min(nideshop_product.market_price) != '' then min(nideshop_product.market_price) else 0 end product_market_price");

@@ -298,7 +298,7 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 					for (int t = 0; t < list.size(); t++) {
 						ids[t] = list.get(t);
 					}
-					apiGoodsService.unSaleBatch(ids);
+					apiGoodsService.unSaleBatch(ids,2);
 				}
 			}
 
@@ -404,7 +404,7 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 							if (productObj.get("status") != null) {
 								Integer[] ids = new Integer[good.getId()];
 								if ("undercarriage".equals(productObj.get("status").toString())) {
-									apiGoodsService.unSaleBatch(ids);
+									apiGoodsService.unSaleBatch(ids,2);
 								} else {
 									good.setIs_on_sale(good.getIs_on_sale());
 								}

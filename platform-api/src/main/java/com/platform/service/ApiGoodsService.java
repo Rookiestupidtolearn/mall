@@ -73,7 +73,7 @@ public class ApiGoodsService {
      * @param ids
      * @return
      */
-    public int unSaleBatch(Integer[] ids) {
+    public int unSaleBatch(Integer[] ids,Integer type) {
 		List<GoodsVo> goodsList = goodsDao.queryGoodsList(ids);
 		if(CollectionUtils.isEmpty(goodsList)){
 			return 0;
@@ -90,7 +90,7 @@ public class ApiGoodsService {
 					for(int i = 0;i<checkedCartList.size();i++){
 						CartEntityIds[i] = checkedCartList.get(i).getId();
 					}
-					Boolean boo = apiCartService.roolbackAllCartsCoupons(CartEntityIds); //请求退回平台币并删除优惠券
+					Boolean boo = apiCartService.roolbackAllCartsCoupons(CartEntityIds,type); //请求退回平台币并删除优惠券
 					if(boo){
 						//开始清除购物车中的商品信息
 						int delNum = cartDao.deleteBatch(CartEntityIds);

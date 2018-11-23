@@ -1,23 +1,27 @@
 package com.platform.api;
 
-import com.platform.annotation.IgnoreAuth;
-import com.platform.entity.SmsLogVo;
-import com.platform.entity.SysSmsLogEntity;
-import com.platform.service.ApiUserService;
-import com.platform.service.SysSmsLogService;
-import com.platform.utils.*;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-
-import java.util.Date;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.platform.annotation.IgnoreAuth;
+import com.platform.cache.J2CacheUtils;
+import com.platform.entity.SmsLogVo;
+import com.platform.entity.SysSmsLogEntity;
+import com.platform.service.ApiUserService;
+import com.platform.service.SysSmsLogService;
+import com.platform.utils.CharUtil;
+import com.platform.utils.DateUtils;
+import com.platform.utils.R;
+import com.platform.utils.StringUtils;
 
 /**
  * 发送短信接口Controller
@@ -48,7 +52,7 @@ public class ApiSmsController {
 //        if (ResourceUtil.getConfigByName("sms.validIp").indexOf(validIP) < 0) {
 //        	 return R.error("非法IP请求！");
 //        }
-        if (params.get("mobile").equals("")) {
+        if (params.get("mobile")== null ||params.get("mobile").equals("") ) {
         	 return R.error("手机号不能为空！");
 		}
         //校验手机号格式
@@ -64,7 +68,10 @@ public class ApiSmsController {
 		if (!isMatch) {
 			 return R.error("手机号错误");
 		}
-		
+        Object va = J2CacheUtils.get(J2CacheUtils.CHECK_CACHE, "DOUBAO:"+mobile);
+    	if (va != null) {
+    		 return R.error("操作频繁");
+		}
         String sms_code = CharUtil.getRandomNum(4);
         String msgContent = "您的验证码是：" + sms_code + "，请在页面中提交验证码完成验证。";
         smsLog.setMobile(params.get("mobile"));
@@ -73,8 +80,24 @@ public class ApiSmsController {
         if (StringUtils.isNotEmpty(stime)) {
             smsLog.setStime(DateUtils.convertStringToDate(stime));
         }
+
         SysSmsLogEntity sysSmsLogEntity = smsLogService.sendSms(smsLog);
         if (sysSmsLogEntity.getType()!=null && sysSmsLogEntity.getType().equals(("pt"))) {
+        	Object codeSmsValue = J2CacheUtils.get(J2CacheUtils.CHECK_CACHE, "DOUBAO:"+mobile);
+        	if (codeSmsValue != null) {
+        		J2CacheUtils.remove(J2CacheUtils.CHECK_CACHE,"DOUBAO:"+mobile);
+    		}
+        	//验证码放入缓存
+        	  int  num = J2CacheUtils.check(J2CacheUtils.CHECK_CACHE,"DOUBAO:"+mobile);
+          	J2CacheUtils.putExire(J2CacheUtils.CHECK_CACHE,"DOUBAO:"+mobile, sms_code, 120l);
+
+        	SmsLogVo  userSms = new SmsLogVo();
+        	userSms.setLog_date(System.currentTimeMillis() / 1000);
+        	userSms.setPhone(mobile);
+        	userSms.setSms_code(sms_code);
+        	userSms.setSms_text(msgContent);
+        	userSms.setSend_status(1); //1成功   0失败
+              userService.saveSmsCodeLog(userSms);
         	SmsLogVo smsLogVo = new SmsLogVo();
                smsLogVo.setLog_date(System.currentTimeMillis() / 1000);
                smsLogVo.setPhone(mobile);
@@ -84,6 +107,6 @@ public class ApiSmsController {
                userService.saveSmsCodeLog(smsLogVo);
 		}
         
-        return R.ok().put("result", sysSmsLogEntity);
+        return R.ok().put("result", "发送成功");
     }
 }
