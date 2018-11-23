@@ -1,7 +1,6 @@
 package com.platform.dao;
 
 import com.platform.entity.CartVo;
-import com.platform.entity.UserCouponVo;
 
 import java.util.List;
 import java.util.Map;
@@ -33,4 +32,24 @@ public interface ApiCartMapper extends BaseDao<CartVo> {
 	 * @return
 	 */
 	List<CartVo> queryCartsByCartId(Integer[] cartEntityIds);
+
+	/**
+	 * 根据条件查询购物车中的商品数据
+	 * @param id
+	 * @param i
+	 * @return
+	 */
+	List<CartVo> queryCartListByGoodsId(Integer id, int i);
+	/**
+	 * 查询所有购物车
+	 * @return
+	 */
+	List<CartVo> quertAllCarts();
+	/**
+	 * 批量查询购物车信息_下架
+	 * @param userId
+	 * @param cartEntityIds
+	 * @return
+	 */
+	List<CartVo> queryRollbackUserCarts(@Param("cartEntityIds")Integer[] cartEntityIds,@Param("userId") Long userId);
 }

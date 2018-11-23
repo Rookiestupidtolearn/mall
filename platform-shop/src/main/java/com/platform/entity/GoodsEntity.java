@@ -288,6 +288,7 @@ public class GoodsEntity implements Serializable {
 
     /**
      * 设置：上架
+     * //0 下架  1上架 2 申请上架  3申请下架  -1编辑状态
      */
     public void setIsOnSale(Integer isOnSale) {
         this.isOnSale = isOnSale;
@@ -295,6 +296,7 @@ public class GoodsEntity implements Serializable {
 
     /**
      * 获取：上架
+     * //0 下架  1上架 2 申请上架  3申请下架  -1编辑状态
      */
     public Integer getIsOnSale() {
         return isOnSale;

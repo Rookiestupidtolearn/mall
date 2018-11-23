@@ -21,7 +21,7 @@ var vm = new Vue({
         },
         q: {
             name: '',
-            sortOrder:''
+            sortOrder:1
         }
     },
     methods: {
@@ -49,7 +49,7 @@ var vm = new Vue({
                 type: "POST",
                 url: url,
                 contentType: "application/json",
-                params: JSON.stringify(vm.specification),
+                params: JSON.stringify(vm.q),
                 successCallback: function (r) {
                     alert('操作成功', function (index) {
                         vm.reload();

@@ -3,6 +3,7 @@ const root = '/platform/api/';
 // const API_BASE_URL = 'http://fly2you.cn' + root;
 
 
+
 // const API_BASE_URL = 'http://localhost:8080' + root;
 //  const API_BASE_URL = 'http://192.168.0.11:6101' + root;
 //外网访问地址

@@ -38,8 +38,9 @@
         <result property="is_hot" column="is_hot"/>
         <result property="product_id" column="product_id"/>
         <result property="product_market_price" column="product_market_price"/>
-         <result property="is_7_ToReturn" column="is_7_ToReturn"/>
-          <result property="source" column="source"/>
+        <result property="is_7_ToReturn" column="is_7_ToReturn"/>
+        <result property="source" column="source"/>
+        <result property="update_time" column="update_time"/>
     </resultMap>
 
 	 <insert id="save" parameterType="com.platform.entity.GoodsVo" useGeneratedKeys="true" keyProperty="id">
@@ -74,7 +75,7 @@
 			`is_limited`,
 			`is_hot`,
 			`market_price`,
-			`is_7_ToReturn`,source)
+			`is_7_ToReturn`,source,update_time)
 		values(
 			#{category_id},
 			#{goods_sn},
@@ -106,11 +107,16 @@
 			#{is_limited},
 			#{is_hot},
 			#{market_price},
-			#{is_7_ToReturn},#{source}
+			#{is_7_ToReturn},#{source},#{update_time}
 		)
 	</insert>
 
-
+	<select id="queryGoodsList" resultMap="goodsMap">
+		select * from nideshop_goods where id in
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</select>
 
 
     <select id="queryObject" resultMap="goodsMap">
@@ -304,5 +310,53 @@
 		select * from
 	    nideshop_goods where category_id = #{categoryId}
 	</select>
+	<select id = "queryGoodsBySn" resultMap="goodsMap"> 
+		select * from
+	    nideshop_goods where goods_sn = #{goodsn}
+	</select>
 	
+	
+	<update id="update" parameterType="com.platform.entity.GoodsVo">
+        update nideshop_goods
+        <set>
+            <if test="category_id != null">`category_id` = #{category_id},</if>
+            <if test="goods_sn != null">`goods_sn` = #{goods_sn},</if>
+            <if test="name != null">`name` = #{name},</if>
+            <if test="brand_id != null">`brand_id` = #{brand_id},</if>
+            <if test="retail_price != null">`retail_price` = #{retail_price},</if>
+            <if test="market_price != null">`market_price` = #{market_price},</if>
+            <if test="goods_number != null">`goods_number` = #{goods_number},</if>
+            <if test="keywords != null">`keywords` = #{keywords},</if>
+            <if test="goods_brief != null">`goods_brief` = #{goods_brief},</if>
+            <if test="goods_desc != null">`goods_desc` = #{goods_desc},</if>
+            <if test="is_on_sale != null">`is_on_sale` = #{is_on_sale},</if>
+            <if test="add_time != null">`add_time` = #{add_time},</if>
+            <if test="sort_order != null">`sort_order` = #{sort_order},</if>
+            <if test="is_delete != null">`is_delete` = #{is_delete},</if>
+            <if test="attribute_category != null">`attribute_category` = #{attribute_category},</if>
+            <if test="counter_price != null">`counter_price` = #{counter_price},</if>
+            <if test="extra_price != null">`extra_price` = #{extra_price},</if>
+            <if test="is_new != null">`is_new` = #{is_new},</if>
+            <if test="goods_unit != null">`goods_unit` = #{goods_unit},</if>
+            <if test="primary_pic_url != null">`primary_pic_url` = #{primary_pic_url},</if>
+            <if test="list_pic_url != null">`list_pic_url` = #{list_pic_url},</if>
+            <if test="sell_volume != null">`sell_volume` = #{sell_volume},</if>
+            <if test="primary_product_id != null">`primary_product_id` = #{primary_product_id},</if>
+            <if test="unit_price != null">`unit_price` = #{unit_price},</if>
+            <if test="promotion_desc != null">`promotion_desc` = #{promotion_desc},</if>
+            <if test="promotion_tag != null">`promotion_tag` = #{promotion_tag},</if>
+            <if test="app_exclusive_price != null">`app_exclusive_price` = #{app_exclusive_price},</if>
+            <if test="is_app_exclusive != null">`is_app_exclusive` = #{is_app_exclusive},</if>
+            <if test="is_limited != null">`is_limited` = #{is_limited},</if>
+            <if test="is_hot != null">`is_hot` = #{is_hot},</if>
+            <if test="product_id != null">`product_id` = #{product_id},</if>
+            <if test="is_7_ToReturn != null">`is_7_ToReturn` = #{is_7_ToReturn},</if>
+            <if test="source != null">`source` = #{source},</if>
+            <if test="update_time != null">`update_time` = #{update_time}</if>
+        </set>
+        where id = #{id}
+    </update>
+    <select id="queryAllJDGoods" resultMap="goodsMap">
+    	select * from nideshop_goods where source = 'JD'
+    </select>
 </mapper>

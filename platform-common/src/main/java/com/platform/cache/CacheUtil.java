@@ -15,8 +15,8 @@ import com.platform.utils.StringUtils;
  * 时间: 2017-08-16 10:14<br>
  * 描述: CacheUtil <br>
  */
-public class CacheUtil implements InitializingBean {
 
+public class CacheUtil implements InitializingBean {
     public  void init() {
         SysMacroDao macroDao = SpringContextUtils.getBean(SysMacroDao.class);
         if (null != macroDao) {

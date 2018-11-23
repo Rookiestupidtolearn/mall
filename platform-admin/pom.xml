@@ -18,6 +18,11 @@
             <artifactId>platform-common</artifactId>
             <version>1.0.0</version>
         </dependency>
+<!--         <dependency> -->
+<!--             <groupId>com.platform</groupId> -->
+<!--             <artifactId>platform-shop</artifactId> -->
+<!--             <version>1.0.0</version> -->
+<!--         </dependency> -->
         <!--验证码生成工具-->
         <dependency>
             <groupId>com.github.penggle</groupId>

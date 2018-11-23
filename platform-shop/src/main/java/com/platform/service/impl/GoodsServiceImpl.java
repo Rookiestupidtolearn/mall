@@ -177,7 +177,7 @@ public class GoodsServiceImpl implements GoodsService {
 				goodsGalleryDao.save(galleryEntity);
 			}
 		}
-		//校验如果修改了商品价格，则需更新商品毛利率
+		//校验如果修改了商品价格，则需更新商品毛利率、商品规格表(sku)
 		GoodsEntity goodsEntity = goodsDao.queryObject(goods.getId());
 		if(!goodsEntity.getMarketPrice().toString().equals(goods.getMarketPrice().toString()) || !goodsEntity.getRetailPrice().toString().equals(goods.getRetailPrice().toBigInteger())){
 			//查出商品规格对应的毛利率
@@ -193,6 +193,18 @@ public class GoodsServiceImpl implements GoodsService {
         		goodsPureInterestRateService.update(goodsPureInterestRateEntity);
         	}else{
         		throw new RuntimeException("【修改商品价格】获取商品毛利率异常");
+        	}
+        	
+        	//更新商品规格
+        	paramMap = new HashMap<>();
+        	paramMap.put("goodsSpecificationIds","");
+        	paramMap.put("goodsId",goods.getId());
+        	List<ProductEntity> productList =  productDao.queryList(paramMap);
+        	for(ProductEntity productEntity :productList){
+        		productEntity.setMarketPrice(goods.getMarketPrice());
+        		productEntity.setRetailPrice(goods.getRetailPrice());
+        		productEntity.setGoodsNumber(goods.getGoodsNumber());
+        		productDao.update(productEntity);
         	}
 		}
 		return goodsDao.update(goods);
@@ -346,15 +358,111 @@ public class GoodsServiceImpl implements GoodsService {
 	@Override
 	public int enSaleBatch(Integer[] ids) {
 		SysUserEntity user = ShiroUtils.getUserEntity();
-		Map<String,Object> paramMap = new HashMap<>();
-		
-		
-		//paramMap.put(key, value)
-		return goodsDao.enSaleBatch(ids);		
+		List<GoodsEntity> goodsList = goodsDao.queryGoodsList(ids);
+		if(CollectionUtils.isEmpty(goodsList)){
+			return 0;
+		}
+		for(GoodsEntity goodsEntity : goodsList){
+			if(1 != goodsEntity.getIsOnSale()){ //不是上架中的商品处理上架
+				/*if(!"".equals(goodsEntity.getGoodsSn()) && goodsEntity.getIsOnSale() == 0){ //jd是下架状态的商品不能上架
+					continue;
+					//
+				}*/
+				goodsEntity.setIsOnSale(1);
+				goodsEntity.setUpdateTime(new Date());
+				goodsEntity.setUpdateUserId(user.getUserId());
+				goodsDao.update(goodsEntity);
+			}
+		}
+		return 1;		
 	}
+	
 	@Override
 	public int unSaleBatch(Integer[] ids) {
-		return goodsDao.unSaleBatch(ids);
-		
+		SysUserEntity user = ShiroUtils.getUserEntity();
+		List<GoodsEntity> goodsList = goodsDao.queryGoodsList(ids);
+		if(CollectionUtils.isEmpty(goodsList)){
+			return 0;
+		}
+		for(GoodsEntity goodsEntity : goodsList){
+			if(1 == goodsEntity.getIsOnSale()){ //不是上架中的商品处理上架
+				//商品下架,删除购物车中对应的商品信息。并且回滚平台币和删除优惠券
+				//查询购物车中对应的商品信息。
+				List<CartEntity> checkedCartList = cartDao.queryCartListByGoodsId(goodsEntity.getId(),1); //购物车中是选中状态的商品数据
+				List<CartEntity> noCheckedCartList = cartDao.queryCartListByGoodsId(goodsEntity.getId(),0); //购物车中非选中状态的商品数据
+				if(CollectionUtils.isNotEmpty(checkedCartList)){
+					//遍历集合，当购物车的商品为勾选状态则请求 接口，否则直接下架不给予退回平台币
+					Integer[] CartEntityIds = new Integer[checkedCartList.size()];
+					for(int i = 0;i<checkedCartList.size();i++){
+						CartEntityIds[i] = checkedCartList.get(i).getId();
+					}
+					Boolean boo = apiCartService.roolbackAllCartsCoupons(CartEntityIds); //请求退回平台币并删除优惠券
+					if(boo){
+						//开始清除购物车中的商品信息
+						int delNum = cartDao.deleteBatch(CartEntityIds);
+						Log.info("【批量商品下架】回滚平台币并删除购物车中对应商品id为"+goodsEntity.getId()+"的商品共"+delNum+"条");
+					}else{
+						Log.info("【批量商品下架】退回平台币并删除优惠券失败");
+					}
+				}else{
+					Log.info("【批量商品下架】购物车中没有查找到选中状态商品id为"+goodsEntity.getId()+"的商品");
+				}
+				
+				//非选中商品不回滚平台币，直接清除购物车并下架
+				if(CollectionUtils.isNotEmpty(noCheckedCartList)){
+					Integer[] CartEntityIds = new Integer[noCheckedCartList.size()];
+					for(int i = 0;i<noCheckedCartList.size();i++){
+						CartEntityIds[i] = noCheckedCartList.get(i).getId();
+					}
+					//开始清除购物车中的商品信息
+					int delNum = cartDao.deleteBatch(CartEntityIds);
+					Log.info("【批量商品下架】删除购物车中未选中商品-对应商品id为"+goodsEntity.getId()+"的商品共"+delNum+"条");
+				}else{
+					Log.info("【批量商品下架】购物车中没有查找到未选中状态商品id为"+goodsEntity.getId()+"的商品");
+				}
+				
+				goodsEntity.setIsOnSale(0);
+				goodsEntity.setUpdateTime(new Date());
+				goodsEntity.setUpdateUserId(user.getUserId());
+				goodsDao.update(goodsEntity);
+			}
+		}
+		return 1;
+	}
+	
+	@Override
+	public int applyUnSaleBatch(Integer[] ids) {
+		SysUserEntity user = ShiroUtils.getUserEntity();
+		List<GoodsEntity> goodsList = goodsDao.queryGoodsList(ids);
+		if(CollectionUtils.isEmpty(goodsList)){
+			return 0;
+		}
+		for(GoodsEntity goodsEntity : goodsList){
+			if(0 != goodsEntity.getIsOnSale() && 3 != goodsEntity.getIsOnSale() && -1 != goodsEntity.getIsOnSale()){
+				goodsEntity.setIsOnSale(3);
+				goodsEntity.setUpdateUserId(user.getUserId());
+				goodsEntity.setUpdateTime(new Date());
+				goodsDao.update(goodsEntity);
+			}
+		}
+		return 1;
+	}
+	
+	@Override
+	public int applySaleBatch(Integer[] ids) {
+		SysUserEntity user = ShiroUtils.getUserEntity();
+		List<GoodsEntity> goodsList = goodsDao.queryGoodsList(ids);
+		if(CollectionUtils.isEmpty(goodsList)){
+			return 0;
+		}
+		for(GoodsEntity goodsEntity : goodsList){
+			if(1 != goodsEntity.getIsOnSale() && 2 != goodsEntity.getIsOnSale() && -1 != goodsEntity.getIsOnSale()){
+				goodsEntity.setIsOnSale(2);
+				goodsEntity.setUpdateUserId(user.getUserId());	
+				goodsEntity.setUpdateTime(new Date());
+				goodsDao.update(goodsEntity);
+			}
+		}
+		return 1;
 	}
 }

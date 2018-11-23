@@ -52,4 +52,13 @@ public class ApiGoodsPureInterestRateService {
 	public void saveBatch(List<GoodsPureInterestRateVo> goodsPureInterestRateVoList) {
 		apiGoodsPureInterestRateDao.saveBatch(goodsPureInterestRateVoList);
 	}
+	
+	/**
+	 * 根据毛利率和商品上架状态查询商品
+	 * @param map
+	 * @return
+	 */
+	public List<GoodsPureInterestRateVo> queryGoodsByPureInterestRate(Map<String, Object> map){
+		return apiGoodsPureInterestRateDao.queryGoodsByPureInterestRate(map);
+	}
 }

@@ -39,13 +39,15 @@
         from nideshop_product
         LEFT JOIN nideshop_goods ON nideshop_product.goods_id = nideshop_goods.id
         WHERE 1=1
-        <if test="goodsId != null and goodsId.trim() != ''">
+        <if test="goodsId != null">
             AND nideshop_product.goods_id = #{goodsId}
         </if>
         <if test="goodsName != null and goodsName.trim() != ''">
             AND nideshop_goods.name LIKE concat('%',#{goodsName},'%')
         </if>
-        
+        <if test="goodsSpecificationIds != null and goodsSpecificationIds.trim() != ''">
+            AND nideshop_product.goods_specification_ids = #{goodsSpecificationIds}
+ 		</if>
          <if test="deptId != null">
             AND nideshop_goods.create_user_dept_id = #{deptId}
  		</if>
@@ -66,7 +68,7 @@
         select count(*) from nideshop_product
         LEFT JOIN nideshop_goods ON nideshop_product.goods_id = nideshop_goods.id
         WHERE 1=1
-        <if test="goodsId != null and goodsId.trim() != ''">
+        <if test="goodsId != null">
             AND nideshop_product.goods_id = #{goodsId}
         </if>
         <if test="goodsName != null and goodsName.trim() != ''">
@@ -106,7 +108,7 @@
         update nideshop_product
         <set>
             <if test="goodsId != null">`goods_id` = #{goodsId},</if>
-            <if test="goodsSpecificationIds != null">`goods_specification_ids` = #{goodsSpecificationIds},</if>
+            <if test="goodsSpecificationIds != null and goodsSpecificationIds.trim() != ''">`goods_specification_ids` = #{goodsSpecificationIds},</if>
             <if test="goodsSn != null">`goods_sn` = #{goodsSn},</if>
             <if test="goodsNumber != null">`goods_number` = #{goodsNumber},</if>
             <if test="retailPrice != null">`retail_price` = #{retailPrice},</if>

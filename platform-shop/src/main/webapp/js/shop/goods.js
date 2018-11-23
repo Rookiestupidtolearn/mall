@@ -80,11 +80,14 @@ var setting = {
         key: {
             url: "nourl"
         }
+       
+        
     }
 };
 var vm = new Vue({
     el: '#rrapp',
     data: {
+    	 aaaa:false,
         showList: true,
         showData: false,
         isTrue:false,
@@ -93,6 +96,7 @@ var vm = new Vue({
         showMatching:true,
         title: null,
         uploadList: [],
+        msg:'',
         imgName: '',
         visible: false,
         goods: {
@@ -124,6 +128,17 @@ var vm = new Vue({
         attributeCategories: []//属性类别
     },
     methods: {
+    	 ok () {
+    		 vm.isTrue = false;
+         	vm.normalMatching=0;
+             vm.activityMatching=0;
+             vm.showList=false;
+             vm.showData=false;
+             vm.title = "配比设置";
+         	vm.showMatching = false;
+         },
+         cancel () {
+         },
         query: function () {
             vm.reload();
         },
@@ -146,7 +161,14 @@ var vm = new Vue({
                 url: "../goodscouponconfig/verify/"+ids,
                 async: true,
                 successCallback: function (r) {
-                	if(r.code === 0){
+                	if(r != ''){
+                    	vm.msg = r.str;
+                    	vm.aaaa = true;
+                		return;
+                	}
+                	
+                	
+                	if(r === ''){
                 		vm.isTrue = true;
                 	}
                 	if(!vm.isTrue){
@@ -293,15 +315,20 @@ var vm = new Vue({
              });
         },
         enSale: function () {
-        	 var id = getSelectedRow("#jqGrid");
+        	 /*var id = getSelectedRow("#jqGrid");
              if (id == null) {
                  return;
-             }
+             }*/
+        	var ids = $("#jqGrid").getGridParam("selarrrow");
+        	if(ids.length<=0){
+        		alert("请选择需要上架的商品");
+        		return;
+        	}
             confirm('确定要上架选中的商品？', function () {
                 Ajax.request({
                     type: "POST",
                     url: "../goods/enSale",
-                    params: JSON.stringify(id),
+                    params: JSON.stringify(ids),
                     contentType: "application/json",
                     type: 'POST',
                     successCallback: function () {
@@ -314,15 +341,20 @@ var vm = new Vue({
         },
         //申请上架
         applyEnSale:function() {
-            var id = getSelectedRow("#jqGrid");
+        	var ids = $("#jqGrid").getGridParam("selarrrow");
+        	if(ids.length<=0){
+        		alert("请选择需要申请上架的商品");
+        		return;
+        	}
+            /*var id = getSelectedRow("#jqGrid");
             if (id == null) {
                 return;
-            }
+            }*/
             confirm('确定要申请上架选中的商品？', function () {
                 Ajax.request({
                     type: "POST",
                     url: "../goods/applyEnSale",
-                    params: JSON.stringify(id),
+                    params: JSON.stringify(ids),
                     contentType: "application/json",
                     type: 'POST',
                     successCallback: function () {
@@ -336,15 +368,16 @@ var vm = new Vue({
         
         //申请上架
         applyUnSale:function() {
-            var id = getSelectedRow("#jqGrid");
-            if (id == null) {
-                return;
-            }
+        	var ids = $("#jqGrid").getGridParam("selarrrow");
+        	if(ids.length<=0){
+        		alert("请选择需要申请下架的商品");
+        		return;
+        	}
             confirm('确定要申请下架选中的商品？', function () {
                 Ajax.request({
                     type: "POST",
                     url: "../goods/applyUnSale",
-                    params: JSON.stringify(id),
+                    params: JSON.stringify(ids),
                     contentType: "application/json",
                     type: 'POST',
                     successCallback: function () {
@@ -380,17 +413,17 @@ var vm = new Vue({
             });
         },
         unSale: function () {
-            var id = getSelectedRow("#jqGrid");
-            if (id == null) {
-                return;
-            }
+        	var ids = $("#jqGrid").getGridParam("selarrrow");
+        	if(ids.length<=0){
+        		alert("请选择需要下架的商品");
+        		return;
+        	}
             confirm('确定要下架选中的商品？', function () {
-
                 Ajax.request({
                     type: "POST",
                     url: "../goods/unSale",
                     contentType: "application/json",
-                    params: JSON.stringify(id),
+                    params: JSON.stringify(ids),
                     successCallback: function (r) {
                         alert('操作成功', function (index) {
                             vm.reload();;
@@ -437,6 +470,10 @@ var vm = new Vue({
             vm.showMatching = true;
             vm.showData = false;
             console.log(vm.q.min_retail_price+","+vm.q.max_retail_price+","+vm.q.min_pure_interest_rate+","+vm.q.max_pure_interest_rate);
+            if(parseInt(vm.q.min_retail_price) < 0 || parseInt(vm.q.max_retail_price) < 0){
+        		alert("结算价不能小于0");
+        		return;
+        	}
             if(vm.q.min_retail_price !== '' && vm.q.max_retail_price !== ''){
             	if(parseInt(vm.q.min_retail_price) > parseInt(vm.q.max_retail_price)){
             		alert("请设置正确查询条件");

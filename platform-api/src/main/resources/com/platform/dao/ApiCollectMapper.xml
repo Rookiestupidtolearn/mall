@@ -30,9 +30,10 @@
 				 g.goods_brief as goods_brief,
 				 g.retail_price as retail_price,
 				 g.market_price as market_price,
-				 case when min(p.market_price) != '' then min(p.market_price) else 0 end product_market_price
+			     case when p.market_price != '' then p.market_price else 0 end product_market_price
         from nideshop_collect c
         left join nideshop_goods g on c.value_id = g.id left join nideshop_product p on g.id = p.goods_id
+        WHERE 1=1 
         <if test="user_id != null and user_id != ''">
             and c.user_id = #{user_id}
         </if>

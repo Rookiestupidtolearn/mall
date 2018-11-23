@@ -16,6 +16,7 @@ public class GoodsPureInterestRateVo {
 	private BigDecimal marketPrice; //指导价(市场价)
 	private double pureInterestRate; //毛利率
 	private Date createTime;
+	private Date updateTime;
 	private Long createUserId; //创建人id
 	private String memo; //备注
 	
@@ -74,7 +75,13 @@ public class GoodsPureInterestRateVo {
 	public void setMemo(String memo) {
 		this.memo = memo;
 	}
-
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
+	}
+	
 	
 	
 

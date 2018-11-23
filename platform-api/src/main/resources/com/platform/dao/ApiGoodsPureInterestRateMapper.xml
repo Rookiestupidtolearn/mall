@@ -7,7 +7,8 @@
         <result property="productId" column="product_id"/>
         <result property="retailPrice" column="retail_price"/>
         <result property="pureInterestRate" column="pure_interest_rate"/>
-        <result property="createTime" column="icreate_timed"/>
+        <result property="createTime" column="create_timed"/>
+        <result property="updateTime" column="update_timed"/>
         <result property="createUserId" column="create_user_id"/>
         <result property="memo" column="memo"/>
     </resultMap>
@@ -29,6 +30,25 @@
     		</foreach>
     	</if>
     	order by goods_id desc
+    </select>
+    
+    <select id="queryGoodsByPureInterestRate" resultType="com.platform.entity.GoodsPureInterestRateVo">
+	    select * from goods_pure_interest_rate gpir left join nideshop_goods ng 
+	    	on gpir.goods_id = ng.id
+	    	where ng.source = 'JD' 
+	    	<if test="pureInterestRate=='greaterThan'.toString()">
+	    		and pure_interest_rate &gt; 0
+	    	</if>
+	    	<if test="pureInterestRate=='lessThan'.toString()">
+	    		and pure_interest_rate &lt;= 0
+	    	</if>
+	    	<if test="isOnSale!=null">
+	    		and is_on_sale in
+	    		<foreach collection="isOnSale" item="isOnSale" open="(" separator="," close=")">
+	    			#{isOnSale}
+	    		</foreach>
+	    	</if>
+	    	group by gpir.goods_id
     </select>
     
     <select id="queryAll" resultType="com.platform.entity.GoodsPureInterestRateVo">
@@ -111,6 +131,7 @@
     		<if test="marketPrice != null">market_price = #{marketPrice},</if>
     		<if test="pureInterestRate != null">pure_interest_rate = #{pureInterestRate},</if>
     		<if test="createTime != null">create_time = #{createTime},</if>
+    		<if test="updateTime != null">update_time = #{updateTime},</if>
     		<if test="createUserId != null">create_user_id = #{createUserId},</if>
     		<if test="memo != null and memo.trim() != ''">memo = #{memo},</if>
 		</set>

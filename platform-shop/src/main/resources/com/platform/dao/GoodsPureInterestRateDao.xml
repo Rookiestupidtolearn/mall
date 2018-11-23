@@ -17,18 +17,22 @@
     </select>
     
     <select id="queryGoodsIdsByPrice" resultType="java.lang.Integer">
-    	select goods_id from goods_pure_interest_rate where 1=1
-    	<if test="min_retail_price != null and min_retail_price.trim() != ''"> and retail_price >= #{min_retail_price}</if>
-    	<if test="max_retail_price != null and max_retail_price.trim() != ''"  > and #{max_retail_price} >= retail_price</if>
-    	<if test="min_pure_interest_rate != null and min_pure_interest_rate.trim() != ''"> and pure_interest_rate >= #{min_pure_interest_rate}</if>
-    	<if test="max_pure_interest_rate != null and max_pure_interest_rate.trim() != ''"> and #{max_pure_interest_rate} >= pure_interest_rate</if>
+    	select a.goods_id from (
+		select goods_id,max(retail_price) as retail_price,min(pure_interest_rate) as pure_interest_rate from goods_pure_interest_rate where goods_id not in (select goods_id from (select count(goods_id) cou,goods_id from goods_pure_interest_rate GROUP BY goods_id) b where b.cou > 1) GROUP BY goods_id
+			UNION all
+			select goods_id,max(retail_price) as retail_price,min(pure_interest_rate) from goods_pure_interest_rate where product_id > 0 and goods_id in (select goods_id from (select count(goods_id) cou,goods_id from goods_pure_interest_rate GROUP BY goods_id) b where b.cou > 1) GROUP BY goods_id
+		) a where 1=1
+    	<if test="min_retail_price != null and min_retail_price.trim() != ''"> and a.retail_price >= #{min_retail_price}</if>
+    	<if test="max_retail_price != null and max_retail_price.trim() != ''"  > and #{max_retail_price} >= a.retail_price</if>
+    	<if test="min_pure_interest_rate != null and min_pure_interest_rate.trim() != ''"> and a.pure_interest_rate >= #{min_pure_interest_rate}</if>
+    	<if test="max_pure_interest_rate != null and max_pure_interest_rate.trim() != ''"> and #{max_pure_interest_rate} >= a.pure_interest_rate</if>
     	<if test="goodsIds != null">
-    	 and goods_id in
+    	 and a.goods_id in
     		<foreach collection="goodsIds" item="ids"  open="(" separator="," close=")">
     			#{ids}
     		</foreach>
     	</if>
-    	order by goods_id desc
+    	
     </select>
     
     <select id="queryAll" resultType="com.platform.entity.GoodsPureInterestRateEntity">
@@ -52,6 +56,22 @@
             limit #{offset}, #{limit}
         </if>
     </select>
+    
+    <select id="queryGoodsByPureInterestRate" resultType="com.platform.entity.GoodsPureInterestRateEntity">
+    	select * from goods_pure_interest_rate gpir left join nideshop_goods ng 
+    	on gpir.goods_id = ng.id
+    	where 1=1 
+    	<if test="pureInterestRate=='greaterThan'.toString()">
+    		and pure_interest_rate &gt;= 0
+    	</if>
+    	<if test="pureInterestRate=='lessThan'.toString()">
+    		and pure_interest_rate &lt;= 0
+    	</if>
+    	<if test="isOnSale!=null">
+    		and ng.is_on_sale = #{isOnSale};
+    	</if>
+    </select>
+    
     
     <insert id="save" parameterType="com.platform.entity.GoodsPureInterestRateEntity" >
 		insert into goods_pure_interest_rate (

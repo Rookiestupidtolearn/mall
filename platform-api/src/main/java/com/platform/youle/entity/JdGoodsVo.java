@@ -49,16 +49,12 @@ public class JdGoodsVo implements Serializable {
     private String productDecription;
     //移动端商品详情信息（图文说明信息， 包含HTML代码）
     private String mobileProductDecription;
-    //评价详情id
-    private Long goodsCommentsId;
     //商品类别
     private Long goodsCategoryId;
-    //图片地址
-    private Long goodsImagePathId;
     //关键字
     private String keywords;
     //删除标识 0 ：未删除 1:删除
-    private Long deleteFlag;
+    private Integer deleteFlag;
     //创建时间
     private Date createTime;
     //创建者
@@ -275,19 +271,7 @@ public class JdGoodsVo implements Serializable {
     public String getMobileProductDecription() {
         return mobileProductDecription;
     }
-    /**
-     * 设置：评价详情id
-     */
-    public void setGoodsCommentsId(Long goodsCommentsId) {
-        this.goodsCommentsId = goodsCommentsId;
-    }
 
-    /**
-     * 获取：评价详情id
-     */
-    public Long getGoodsCommentsId() {
-        return goodsCommentsId;
-    }
     /**
      * 设置：商品类别
      */
@@ -304,8 +288,6 @@ public class JdGoodsVo implements Serializable {
     /**
      * 设置：主图地址
      */
-  
-    
     
     /**
      * 设置：关键字
@@ -314,13 +296,6 @@ public class JdGoodsVo implements Serializable {
         this.keywords = keywords;
     }
 
-    public Long getGoodsImagePathId() {
-		return goodsImagePathId;
-	}
-
-	public void setGoodsImagePathId(Long goodsImagePathId) {
-		this.goodsImagePathId = goodsImagePathId;
-	}
 
 	/**
      * 获取：关键字
@@ -328,19 +303,7 @@ public class JdGoodsVo implements Serializable {
     public String getKeywords() {
         return keywords;
     }
-    /**
-     * 设置：删除标识 0 ：未删除 1:删除
-     */
-    public void setDeleteFlag(Long deleteFlag) {
-        this.deleteFlag = deleteFlag;
-    }
-
-    /**
-     * 获取：删除标识 0 ：未删除 1:删除
-     */
-    public Long getDeleteFlag() {
-        return deleteFlag;
-    }
+ 
     /**
      * 设置：创建时间
      */
@@ -389,5 +352,12 @@ public class JdGoodsVo implements Serializable {
 		this.productId = productId;
 	}
 
+	public Integer getDeleteFlag() {
+		return deleteFlag;
+	}
+
+	public void setDeleteFlag(Integer deleteFlag) {
+		this.deleteFlag = deleteFlag;
+	}
     
 }

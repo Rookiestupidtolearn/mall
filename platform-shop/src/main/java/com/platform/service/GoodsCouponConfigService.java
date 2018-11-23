@@ -81,5 +81,5 @@ public interface GoodsCouponConfigService {
 	 * @param ids
 	 * @return
 	 */
-	List<GoodsCouponConfigEntity> selectGoodsIdsById(Integer[] ids);
+	List<GoodsCouponConfigEntity> selectGoodsIdsByGoodsId(Integer[] ids);
 }

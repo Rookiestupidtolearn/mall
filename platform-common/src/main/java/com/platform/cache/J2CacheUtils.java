@@ -1,9 +1,10 @@
 package com.platform.cache;
 
-import net.oschina.j2cache.CacheChannel;
-import net.oschina.j2cache.J2Cache;
-
 import java.util.Collection;
+
+import net.oschina.j2cache.CacheChannel;
+import net.oschina.j2cache.CacheProvider;
+import net.oschina.j2cache.J2Cache;
 
 /**
  * 作者: @author 李鹏军 <br>
@@ -14,11 +15,13 @@ public class J2CacheUtils {
     /**
      * 商城业务缓存
      */
-    public static String SHOP_CACHE_NAME = "shopCache";
+    public static  final String SHOP_CACHE_NAME = "shopCache";
     /**
      * 系统缓存
      */
     private static String SYS_CACHE_NAME = "sysCache";
+    
+    public  static  final String CHECK_CACHE = "checkCache";
 
     private static CacheChannel cache = J2Cache.getChannel();
     
@@ -78,7 +81,7 @@ public class J2CacheUtils {
     public static void put(String cacheName, String key, Object value) {
         cache.set(cacheName, key, value);
     }
-
+  
     public static void putExire(String cacheName, String key, Object value,Long time) {
         cache.set(cacheName, key, value,time);
     }
@@ -142,4 +145,8 @@ public class J2CacheUtils {
     public static int check(String region, String key) {
         return cache.check(region, key);
     }
+
+    
+
+  
 }

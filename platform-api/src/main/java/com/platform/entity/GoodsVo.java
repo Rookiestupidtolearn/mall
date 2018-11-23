@@ -32,9 +32,11 @@ public class GoodsVo implements Serializable {
     //商品描述
     private String goods_desc;
     //上架
-    private Integer is_on_sale;
+    private Integer is_on_sale; //0 下架  1上架 2 申请上架  3申请下架  -1编辑状态
     //添加时间
     private Date add_time;
+    //添加时间
+    private Date update_time;
     //排序
     private Integer sort_order;
     //删除状态
@@ -374,5 +376,15 @@ public class GoodsVo implements Serializable {
 	public void setSource(String source) {
 		this.source = source;
 	}
+
+	public Date getUpdate_time() {
+		return update_time;
+	}
+
+	public void setUpdate_time(Date update_time) {
+		this.update_time = update_time;
+	}
+	
+	
     
 }
