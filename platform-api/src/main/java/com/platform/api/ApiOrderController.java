@@ -202,10 +202,10 @@ public class ApiOrderController extends ApiBaseAction {
     	    try {
             	logger.info("订单提交，用户id:"+loginUser.getUserId());
             	logger.info("订单提交，redis锁:orderSubmitLock"+loginUser.getUserId());
-            	  resultObj = orderService.submit(getJsonRequest(), loginUser);
-                  if (null != resultObj) {
-                      return toResponsObject(MapUtils.getInteger(resultObj, "errno"), MapUtils.getString(resultObj, "errmsg"), resultObj.get("data"));
-                  }
+	        	resultObj = orderService.submit(getJsonRequest(), loginUser);
+	            if (null != resultObj) {
+	                return toResponsObject(MapUtils.getInteger(resultObj, "errno"), MapUtils.getString(resultObj, "errmsg"), resultObj.get("data"));
+	            }
             } catch (Exception e) {
             	logger.error("订单提交,处理订单失败",e);
             }
