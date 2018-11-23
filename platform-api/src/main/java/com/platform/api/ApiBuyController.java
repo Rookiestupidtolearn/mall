@@ -139,11 +139,11 @@ public class ApiBuyController extends ApiBaseAction {
         		//购物车发生修改  原有优惠券临时作废，重新生成优惠券
         		userCouponVo.setCoupon_status(7);
         		apiUserCouponMapper.update(userCouponVo);
-        		saveTranInfoRecord(userId, "1", "2", userCouponVo.getCoupon_price(), userCouponVo.getCoupon_price(), "购物车发生修改  原有优惠券作废");
+        		saveTranInfoRecord(userId, "1", "2", userCouponVo.getCoupon_price(), userCouponVo.getCoupon_price(), "【立即购买】购物车发生修改  原有优惠券作废");
         		//回滚平台币
         		userAmountVo.setAmount(userAmountVo.getAmount().add(userCouponVo.getCoupon_price()).subtract(couponCartTotalPrice));
         		qzUserAccountMapper.updateUserAccount(userAmountVo);
-        		saveTranInfoRecord(userId, "2", "1", userCouponVo.getCoupon_price(), userAmountVo.getAmount(), "原有优惠券作废,原优惠券金额回滚到平台币");
+        		saveTranInfoRecord(userId, "2", "1", userCouponVo.getCoupon_price(), userAmountVo.getAmount(), "【立即购买】原有优惠券作废,原优惠券金额回滚到平台币");
         	}
         	
         	//获取产品配比值
@@ -168,7 +168,7 @@ public class ApiBuyController extends ApiBaseAction {
         	qzUserAccountMapper.updateUserAccount(userAmountVo);
         	
         	getUserCouponTotalPrice(userId,couponTotalPrice);
-        	saveTranInfoRecord(userId, "2", "2", couponTotalPrice, userAmountVo.getAmount(), "回滚平台币后扣减购物车中生成优惠券金额");
+        	saveTranInfoRecord(userId, "2", "2", couponTotalPrice, userAmountVo.getAmount(), "【立即购买】回滚平台币后扣减购物车中生成优惠券金额");
         }
         return this.toResponsObject(0, "执行成功", "");
    }
@@ -205,7 +205,7 @@ public class ApiBuyController extends ApiBaseAction {
      	userCouponVo.setCoupon_price(userCouponVo.getCoupon_price().add(couponTotalPrice));
      	userCouponVo.setCoupon_status(1);
      	apiUserCouponMapper.update(userCouponVo);
-     	saveTranInfoRecord(userId, "1", "1", couponTotalPrice, userCouponVo.getCoupon_price(), "原有优惠券作废,重新更新新优惠券");
+     	saveTranInfoRecord(userId, "1", "1", couponTotalPrice, userCouponVo.getCoupon_price(), "【立即购买】原有优惠券作废,重新更新新优惠券");
      }
   	return this.toResponsObject(0, "优惠券发送成功", "");
   }
@@ -258,11 +258,11 @@ public class ApiBuyController extends ApiBaseAction {
         		//购物车发生修改  原有优惠券临时作废，重新生成优惠券
         		userCouponVo.setCoupon_status(7);
         		apiUserCouponMapper.update(userCouponVo);
-        		saveTranInfoRecord(userId, "1", "2", userCouponVo.getCoupon_price(), userCouponVo.getCoupon_price(), "购物车发生修改  原有优惠券作废");
+        		saveTranInfoRecord(userId, "1", "2", userCouponVo.getCoupon_price(), userCouponVo.getCoupon_price(), "【立即购买】购物车发生修改  原有优惠券作废");
         		//回滚平台币
         		userAmountVo.setAmount(userAmountVo.getAmount().add(userCouponVo.getCoupon_price()));
         		qzUserAccountMapper.updateUserAccount(userAmountVo);
-        		saveTranInfoRecord(userId, "2", "1", userCouponVo.getCoupon_price(), userAmountVo.getAmount(), "原有优惠券作废,原优惠券金额回滚到平台币");
+        		saveTranInfoRecord(userId, "2", "1", userCouponVo.getCoupon_price(), userAmountVo.getAmount(), "【立即购买】原有优惠券作废,原优惠券金额回滚到平台币");
         	}
         	getUserCouponTotalPrice(userId,couponCartTotalPrice);
         }

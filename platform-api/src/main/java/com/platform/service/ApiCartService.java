@@ -222,11 +222,11 @@ public class ApiCartService {
     				 logger.info("【更新用户优惠券】原有优惠券作废，原有优惠券金额" + userCouponVo.getCoupon_price()+"原用户平台币" + userAmountVo.getAmount());
     				 apiUserCouponMapper.update(userCouponVo);
     				 
-    				 saveTranInfoRecord(userId, "1", "2", userCouponVo.getCoupon_price(), userCouponVo.getCoupon_price(), "购物车发生修改  原有优惠券作废");//回滚平台币
+    				 saveTranInfoRecord(userId, "1", "2", userCouponVo.getCoupon_price(), userCouponVo.getCoupon_price(), "【购物车删除商品】原有优惠券作废");//回滚平台币
     				 userAmountVo.setAmount(userAmountVo.getAmount().add(userCouponVo.getCoupon_price()));
     				 qzUserAccountMapper.updateUserAccount(userAmountVo);
     				 
-    				 saveTranInfoRecord(userId, "2", "1", userCouponVo.getCoupon_price(), userAmountVo.getAmount(), "原有优惠券作废,原优惠券金额回滚到平台币");
+    				 saveTranInfoRecord(userId, "2", "1", userCouponVo.getCoupon_price(), userAmountVo.getAmount(), "【购物车删除商品】原有优惠券作废,原优惠券金额回滚到平台币");
     				 logger.info("更新用户平台币,更新后平台币金额" + userAmountVo.getAmount() );
     			 }
     		 }
@@ -263,7 +263,7 @@ public class ApiCartService {
         	 userAmountVo.setAmount(userAmountVo.getAmount().subtract(couponTotalPrice));
         	 qzUserAccountMapper.updateUserAccount(userAmountVo);
         	 
-        	 saveTranInfoRecord(userId, "2", "2", couponTotalPrice, userAmountVo.getAmount(), "回滚平台币后扣减购物车中生成优惠券金额");
+        	 saveTranInfoRecord(userId, "2", "2", couponTotalPrice, userAmountVo.getAmount(), "【购物车删除商品】回滚平台币后扣减购物车中生成优惠券金额");
         	 
         	 getUserCouponTotalPrice(userId,couponTotalPrice);
         	 
@@ -332,12 +332,12 @@ public class ApiCartService {
         		userCouponVo.setCoupon_status(7);
         		logger.info("【更新用户优惠券】原有优惠券作废，原有优惠券金额" + userCouponVo.getCoupon_price()+"原用户平台币" + userAmountVo.getAmount());
         		apiUserCouponMapper.update(userCouponVo);
-        		saveTranInfoRecord(userId, "1", "2", userCouponVo.getCoupon_price(), userCouponVo.getCoupon_price(), "购物车发生修改  原有优惠券作废");
+        		saveTranInfoRecord(userId, "1", "2", userCouponVo.getCoupon_price(), userCouponVo.getCoupon_price(), "【是否选择商品】购物车发生修改  原有优惠券作废");
         		//回滚平台币
         		userAmountVo.setAmount(userAmountVo.getAmount().add(userCouponVo.getCoupon_price()));
         		qzUserAccountMapper.updateUserAccount(userAmountVo);
         		logger.info("更新用户平台币,更新后平台币金额" + userAmountVo.getAmount() );
-        		saveTranInfoRecord(userId, "2", "1", userCouponVo.getCoupon_price(), userAmountVo.getAmount(), "原有优惠券作废,原优惠券金额回滚到平台币");
+        		saveTranInfoRecord(userId, "2", "1", userCouponVo.getCoupon_price(), userAmountVo.getAmount(), "【是否选择商品】原有优惠券作废,原优惠券金额回滚到平台币");
         	}
         	if(!CollectionUtils.isEmpty(carts)){
         		for(CartVo cart : carts){
@@ -372,7 +372,7 @@ public class ApiCartService {
         	 * */  
         	userAmountVo.setAmount(userAmountVo.getAmount().subtract(couponTotalPrice));
         	qzUserAccountMapper.updateUserAccount(userAmountVo);
-        	saveTranInfoRecord(userId, "2", "2", couponTotalPrice, userAmountVo.getAmount(), "回滚平台币后扣减购物车中生成优惠券金额");
+        	saveTranInfoRecord(userId, "2", "2", couponTotalPrice, userAmountVo.getAmount(), "【是否选择商品】回滚平台币后扣减购物车中生成优惠券金额");
         	getUserCouponTotalPrice(userId,couponTotalPrice);
         }
         return this.toResponsObject(0, "执行成功", "");
@@ -410,7 +410,7 @@ public class ApiCartService {
 		     	userCouponVo.setCoupon_price(userCouponVo.getCoupon_price().add(couponTotalPrice));
 		     	userCouponVo.setCoupon_status(1);
 		     	apiUserCouponMapper.update(userCouponVo);
-		     	saveTranInfoRecord(userId, "1", "1", couponTotalPrice, userCouponVo.getCoupon_price(), "原有优惠券作废,重新更新新优惠券");
+		     	saveTranInfoRecord(userId, "1", "1", couponTotalPrice, userCouponVo.getCoupon_price(), "【是否选择商品】原有优惠券作废,重新更新新优惠券");
 		     }
 			 return this.toResponsObject(0, "优惠券发送成功", "");
 	  	
@@ -443,11 +443,11 @@ public class ApiCartService {
         		   //购物车发生修改  原有优惠券作废，重新生成优惠券
         		   userCouponVo.setCoupon_status(7);
         		   apiUserCouponMapper.update(userCouponVo);
-        		   saveTranInfoRecord(userId, "1", "2", userCouponVo.getCoupon_price(), userCouponVo.getCoupon_price(), "购物车发生修改  原有优惠券作废");
+        		   saveTranInfoRecord(userId, "1", "2", userCouponVo.getCoupon_price(), userCouponVo.getCoupon_price(), "【是否选择商品】购物车发生修改  原有优惠券作废");
         		   //回滚平台币
         		   userAmountVo.setAmount(userAmountVo.getAmount().add(userCouponVo.getCoupon_price()));
         		   qzUserAccountMapper.updateUserAccount(userAmountVo);
-        		   saveTranInfoRecord(userId, "2", "1", userCouponVo.getCoupon_price(), userAmountVo.getAmount(), "原有优惠券作废,原优惠券金额回滚到平台币");
+        		   saveTranInfoRecord(userId, "2", "1", userCouponVo.getCoupon_price(), userAmountVo.getAmount(), "【是否选择商品】原有优惠券作废,原优惠券金额回滚到平台币");
         	   }
         	   if(!CollectionUtils.isEmpty(carts)){
         		   for(CartVo cart : carts){
@@ -477,7 +477,7 @@ public class ApiCartService {
         	   }
         	   userAmountVo.setAmount(userAmountVo.getAmount().add(couponTotalPrice));
         	   qzUserAccountMapper.updateUserAccount(userAmountVo);
-        	   saveTranInfoRecord(userId, "2", "2", couponTotalPrice, userAmountVo.getAmount(), "回滚平台币后扣减购物车中生成优惠券金额");
+        	   saveTranInfoRecord(userId, "2", "2", couponTotalPrice, userAmountVo.getAmount(), "【是否选择商品】回滚平台币后扣减购物车中生成优惠券金额");
         	   getUserCouponTotalPrice(userId,couponTotalPrice);
            }
            return this.toResponsObject(0, "执行成功", "");
@@ -499,7 +499,7 @@ public class ApiCartService {
     	if(!CollectionUtils.isEmpty(carts)){
     		for(CartVo cart :carts){
     			try {
-    				rollbackUserCouponPrice(cart.getGoods_id(), cart.getNumber(), cart.getUser_id(),CartEntityIds);
+    				rollbackUserCouponPrice(cart.getGoods_id(), cart.getNumber(), cart.getUser_id(),CartEntityIds,type);
     			} catch (Exception e) {
 					return false;
 				}
@@ -529,7 +529,7 @@ public class ApiCartService {
     	 tranInfo.setRemark(remark);
     	 apiTranInfoRecordMapper.save(tranInfo);
     }
-    public synchronized Object rollbackUserCouponPrice(Integer goodsId,Integer number,Long userId,Integer[] CartEntityIds){
+    public synchronized Object rollbackUserCouponPrice(Integer goodsId,Integer number,Long userId,Integer[] CartEntityIds,Integer type){
    	 BigDecimal couponTotalPrice = BigDecimal.ZERO;//优惠券总价值
        
         Map<String,Object> map = new HashMap<>();
@@ -556,16 +556,26 @@ public class ApiCartService {
             if(userCouponVo != null && userAmountVo != null){
            	 //购物车发生修改  原有优惠券作废，重新生成优惠券
            	 userCouponVo.setCoupon_status(7);
-           	 logger.info("【更新用户优惠券】原有优惠券作废，原有优惠券金额" + userCouponVo.getCoupon_price()+"原用户平台币" + userAmountVo.getAmount());
            	 apiUserCouponMapper.update(userCouponVo);
-           	 
-           	 saveTranInfoRecord(userId, "1", "2", userCouponVo.getCoupon_price(), userCouponVo.getCoupon_price(), "购物车发生修改  原有优惠券作废");
+           	 if(type == 0){
+           		saveTranInfoRecord(userId, "1", "2", userCouponVo.getCoupon_price(), userCouponVo.getCoupon_price(), "【商城后台操作下架】三方商品下架,本地商品下架并清购物车,原有优惠券作废");
+           	 }else if(type == 1){
+           		saveTranInfoRecord(userId, "1", "2", userCouponVo.getCoupon_price(), userCouponVo.getCoupon_price(), "【毛利率任务自动下架jd商品】三方商品下架,本地商品下架并清购物车,原有优惠券作废");
+           	 }else if(type == 2){
+           		 saveTranInfoRecord(userId, "1", "2", userCouponVo.getCoupon_price(), userCouponVo.getCoupon_price(), "【商品入库定时任务】三方商品下架,本地商品下架并清购物车,原有优惠券作废");
+           	 }
            	 //回滚平台币
            	 userAmountVo.setAmount(userAmountVo.getAmount().add(userCouponVo.getCoupon_price()));
            	 qzUserAccountMapper.updateUserAccount(userAmountVo);
            	
            	 logger.info("更新用户平台币,更新后平台币金额" + userAmountVo.getAmount());
-           	 saveTranInfoRecord(userId, "2", "1", userCouponVo.getCoupon_price(), userAmountVo.getAmount(), "原有优惠券作废,原优惠券金额回滚到平台币");
+           	 if(type == 0){
+           		 saveTranInfoRecord(userId, "2", "1", userCouponVo.getCoupon_price(), userAmountVo.getAmount(), "【商城后台操作下架】三方商品下架,本地商品下架并清购物车,原有优惠券作废,优惠券金额回滚到平台币");
+           	 }else if(type == 1){
+           		 saveTranInfoRecord(userId, "2", "1", userCouponVo.getCoupon_price(), userAmountVo.getAmount(), "【毛利率任务自动下架jd商品】三方商品下架,本地商品下架并清购物车,原有优惠券作废,优惠券金额回滚到平台币");
+           	 }else if(type == 2){
+           		 saveTranInfoRecord(userId, "2", "1", userCouponVo.getCoupon_price(), userAmountVo.getAmount(), "【商品入库定时任务】三方商品下架,本地商品下架并清购物车,原有优惠券作废,优惠券金额回滚到平台币");
+           	 }
             }
             if(!CollectionUtils.isEmpty(carts)){
            	for(CartVo cart : carts){
@@ -596,7 +606,13 @@ public class ApiCartService {
            	 userAmountVo.setAmount(userAmountVo.getAmount().subtract(couponTotalPrice));
            	 qzUserAccountMapper.updateUserAccount(userAmountVo);
            	 logger.info("更新用户平台币,更新后平台币金额" + userAmountVo.getAmount());
-           	 saveTranInfoRecord(userId, "2", "2", couponTotalPrice, userAmountVo.getAmount(), "回滚平台币后扣减购物车中生成优惠券金额");
+           	 if(type == 0){
+           		saveTranInfoRecord(userId, "2", "2", couponTotalPrice, userAmountVo.getAmount(), "【商城后台操作下架】三方商品下架,本地商品下架并清购物车,扣减新购物车中优惠券后平台币金额");
+           	 }else if(type == 1){
+           		saveTranInfoRecord(userId, "2", "2", couponTotalPrice, userAmountVo.getAmount(), "【毛利率任务自动下架jd商品】三方商品下架,本地商品下架并清购物车,扣减新购物车中优惠券后平台币金额");
+           	 }else if(type == 2){
+           		 saveTranInfoRecord(userId, "2", "2", couponTotalPrice, userAmountVo.getAmount(), "【商品入库定时任务】三方商品下架,本地商品下架并清购物车,扣减新购物车中优惠券后平台币金额");
+           	 }
             }
             getUserCouponTotalPrice(userId,couponTotalPrice);
         }

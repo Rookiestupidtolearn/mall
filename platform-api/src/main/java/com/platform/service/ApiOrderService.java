@@ -364,14 +364,14 @@ public class ApiOrderService {
 						userCouponVo.setCoupon_status(3);// 作废
 						apiUserCouponMapper.update(userCouponVo);
 						saveTranInfoRecord(order.getUser_id(), "1", "2", userCouponVo.getCoupon_price(),
-								userCouponVo.getCoupon_price(), "订单失效，原优惠券作废");
+								userCouponVo.getCoupon_price(), "【订单失效定时任务】原优惠券作废");
 						amount = amount.add(userCouponVo.getCoupon_price());
 					}
 					if (userAmountVo != null && userCouponVo != null) {
 						userAmountVo.setAmount(amount);
 						qzUserAccountMapper.updateUserAccount(userAmountVo);
 						saveTranInfoRecord(order.getUser_id(), "2", "1", userCouponVo.getCoupon_price(),
-								userAmountVo.getAmount(), "订单失效，原优惠券金额回滚平台币中");
+								userAmountVo.getAmount(), "【订单失效定时任务】原优惠券金额回滚平台币中");
 					}
 					order.setOrder_status(103);// 订单失效
 					apiOrderMapper.update(order);

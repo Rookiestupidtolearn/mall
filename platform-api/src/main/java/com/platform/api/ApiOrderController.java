@@ -277,10 +277,10 @@ public class ApiOrderController extends ApiBaseAction {
                 	   if (userCoupon != null) {
                 		   userCoupon.setCoupon_status(3);
                 		   apiUserCouponMapper.update(userCoupon);
-                		   saveTranInfoRecord(orderVo.getUser_id(), "1", "2", userCoupon.getCoupon_price(), userCoupon.getCoupon_price(), "取消订单，原优惠券作废");
+                		   saveTranInfoRecord(orderVo.getUser_id(), "1", "2", userCoupon.getCoupon_price(), userCoupon.getCoupon_price(), "【取消订单】原优惠券作废");
                 		   userAmountVo.setAmount(userAmountVo.getAmount().add(userCoupon.getCoupon_price()));
                 		   qzUserAccountMapper.updateUserAccount(userAmountVo);
-                		   saveTranInfoRecord(orderVo.getUser_id(), "2", "1", userCoupon.getCoupon_price(), userAmountVo.getAmount(), "取消订单，原优惠券回滚到平台币");
+                		   saveTranInfoRecord(orderVo.getUser_id(), "2", "1", userCoupon.getCoupon_price(), userAmountVo.getAmount(), "【取消订单】原优惠券回滚到平台币");
                 	   }
                    }
           
