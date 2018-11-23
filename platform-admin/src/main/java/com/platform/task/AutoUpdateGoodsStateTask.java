@@ -45,7 +45,7 @@ public class AutoUpdateGoodsStateTask {
 					goodsIds[i] = onSalelist.get(i).getGoodsId();
 				}
 				//调用下架接口处理商品
-				ApigoodsService.unSaleBatch(goodsIds);
+				ApigoodsService.unSaleBatch(goodsIds,1);
 				logger.info("【jd商品根据毛利率自动更新上下架状态】--下架毛利率为0且为上架状态的商品共"+goodsIds.length+"条成功");
 			}
 			/*map.put("pureInterestRate","greaterThan");

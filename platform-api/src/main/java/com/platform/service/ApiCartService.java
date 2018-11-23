@@ -485,7 +485,12 @@ public class ApiCartService {
     
     
     
-    public boolean roolbackAllCartsCoupons(Integer[] CartEntityIds){
+    /**
+     * @param CartEntityIds
+     * @param type --> 0:商城后台操作下架   1:毛利率任务自动下架jd商品   2:获取jd商品任务下架
+     * @return
+     */
+    public boolean roolbackAllCartsCoupons(Integer[] CartEntityIds,Integer type){
     	if(CartEntityIds.length < 1){
     		Log.info("【回滚平台币并删除优惠券】购物车id为空");
     		return false;
