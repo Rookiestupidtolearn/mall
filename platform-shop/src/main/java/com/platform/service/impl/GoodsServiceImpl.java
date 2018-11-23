@@ -456,7 +456,7 @@ public class GoodsServiceImpl implements GoodsService {
 			return 0;
 		}
 		for(GoodsEntity goodsEntity : goodsList){
-			if(1 != goodsEntity.getIsOnSale() && 2 != goodsEntity.getIsOnSale() && -1 != goodsEntity.getIsOnSale()){
+			if(1 != goodsEntity.getIsOnSale() && 2 != goodsEntity.getIsOnSale() && -1 != goodsEntity.getIsOnSale() && 3 != goodsEntity.getIsOnSale()){
 				goodsEntity.setIsOnSale(2);
 				goodsEntity.setUpdateUserId(user.getUserId());	
 				goodsEntity.setUpdateTime(new Date());
