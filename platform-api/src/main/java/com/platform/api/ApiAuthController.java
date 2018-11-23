@@ -183,11 +183,11 @@ public class ApiAuthController extends ApiBaseAction {
 		 //新注册
     	   userVo = new UserVo();
            userVo.setUsername("微信用户" + CharUtil.getRandomString(12));
-           userVo.setPassword(mobile);
            userVo.setRegister_time(new Date());
            userVo.setRegister_ip(this.getClientIp());
            userVo.setLast_login_ip(userVo.getRegister_ip());
            userVo.setLast_login_time(userVo.getRegister_time());
+           userVo.setMobile(mobile);
            userService.save(userVo);
     	   
 	   }else {
