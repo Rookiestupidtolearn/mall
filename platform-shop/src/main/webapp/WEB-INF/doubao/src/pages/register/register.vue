@@ -21,6 +21,7 @@
 </template>
 
 <script>
+	import { setCookie,getCookie,delCookie } from '@/assets/cookie';
 		
 	export default {
 	  name: 'coupon',
@@ -34,23 +35,11 @@
 	    }
 	  },
 	  methods:{
-	  	ccd(){
-	  		console.log(this);
-//	  		this.$router.go(-1);
-//			this.$router.beforeEach((to, from, next) => {
-//			  	console.log(to);
-//				console.log(from);
-//				console.log(next);
-//				next(vm => {
-//				    // 通过 `vm` 访问组件实例
-//				    console.log(vm)
-//				  })
-//			})
-	  	},
 	  	fwxieyi(){
 	  		this.$router.push('/pages/xieyi/ptfwxy');
 	  	},
 	  	submit(){
+	  		let that = this;
 	  		let reg = /^1\d{10}$/ ;
 	  		let reg2 = /^1\d{3}$/ ;
 	  		if(this.phone == ''){
@@ -67,44 +56,38 @@
 	  		if(this.captcha == ''){
 	  			this.$toast({message:'请输入验证码',duration:1500});
 	  			return false;
-	  		}else if( !reg2.test(this.captcha)){
-	  			this.$toast('验证码格式不正确');
-                return false;
 	  		}
 	  		
 	  		if(this.checked == false){
 	  			this.$toast({message:'请阅读平台服务协议',duration:1500});
 	  			return false;
 	  		}
-//	  		this.$http({
-//		        method: 'post',
-//		        url:that.$url+ 'sendSms',
-//		        params:{
-//		        	mobile:this.phone,
-//		        	send:this.captcha
-//		        }
-//	    	}).then(function (res) {
-//	    		var res = res.data;
-//	    		if(res.data.errno == '1'){
-//                  that.disabled = true;
-//			  		let i = 60;
-//			  		let countDown = setInterval(function(){
-//			  			i -- ;
-//			  			if( i<10){
-//			  				that.count = '0'+i +'s';
-//			  			}else{
-//			  				that.count =i +'s';
-//			  			}
-//			  			if(i<=0){
-//			  				clearInterval(countDown);
-//			  				that.count = '获取验证码';
-//			  				that.disabled = false;
-//			  			}
-//			  		}, 1000);
-//		    	}else{
-//		    		Toast({message:res.msg,duration:3000});
-//		    	}
-//			})
+	  		this.$http({
+		        method: 'post',
+		        url:that.$url+ 'auth/login_by_mobile',
+		        params:{
+		        	mobile:this.phone,
+		        	code:this.captcha
+		        }
+	    	}).then(function (res) {
+	    		if(getCookie('userId') == undefined || getCookie('userId') == null || getCookie('userId') == ''){
+					setCookie('userId',res.data.data.userId);
+				}
+				if(getCookie('userInfo') == undefined || getCookie('userInfo') == null || getCookie('userInfo') == ''){
+					setCookie('userInfo', JSON.stringify(res.data.data.userInfo));
+				}
+				var code = res.data.data.token;
+	    		var userInfo = res.data.data.userInfo;
+	    		var data = {code:code,userInfo:userInfo}
+				that.$http({
+			        method: 'post',
+			        url:that.$url+ 'auth/login_by_weixin',
+			        params:JSON.stringify(data)
+		    	}).then(function (res) {
+		    		console.log(res);
+				})
+		    	that.$router.go(-1);
+			})
 	  	},
 	  	yzm(){
 	  		let that = this;

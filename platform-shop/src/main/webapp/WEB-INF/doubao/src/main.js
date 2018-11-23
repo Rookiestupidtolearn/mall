@@ -8,6 +8,7 @@ import MintUI from 'mint-ui'
 import 'mint-ui/lib/style.css'
 import axios from 'axios'  //ajax
 import fontSize from './assets/fontSize.js' //字号适配js
+import cookie from './assets/cookie.js' //字号适配js
 import './assets/css/reset.css' //公用样式引入
 
 Vue.use(MintUI)

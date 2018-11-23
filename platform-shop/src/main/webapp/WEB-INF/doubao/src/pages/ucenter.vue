@@ -4,8 +4,8 @@
   	<!--<headbar :headFont = "headFont"></headbar>-->
   	
    <div class="viewTop ">
-   		<img class="userinfo-avatar" src="https://platform-wxmall.oss-cn-beijing.aliyuncs.com/upload/20180727/150547696d798c.png"/>
-   		<p class="userinfo-nickname">Hi,游客</p>
+   		<img class="userinfo-avatar" :src="avatarImg"/>
+   		<p class="userinfo-nickname">{{userName}}</p>
    		<router-link class="userinfo-availMoney" :to="availUrl" :style="{display:[availResult?'block':'none']}">
 	      <p class="userinfo-title">平台币可用余额</p>
 	      <p class="money">{{ availMoney }}</p>
@@ -80,7 +80,7 @@
 </template>
 
 <script>
-	
+	import { setCookie,getCookie,delCookie } from '@/assets/cookie';
 	import tabbar from '@/components/tabbar.vue'
 //	import headbar from '@/components/headbar.vue'
 	
@@ -89,8 +89,10 @@ export default {
   name: 'ucenter',
   data () {
     return {
+    	avatarImg:'https://platform-wxmall.oss-cn-beijing.aliyuncs.com/upload/20180727/150547696d798c.png',
       category:[],
-      availResult:true,
+      userName:'Hi,游客',
+      availResult:false,
       availUrl:'/pages/ucenter/amountMoney',
       availMoney:'',
 //    headFont:'个人中心',
@@ -100,18 +102,23 @@ export default {
     }
   },
   mounted(){
-  	var that = this;    
-    	that.$http({
-        method: 'post',
-        url:that.$url+ 'user/userAccount',
-    	}).then(function (response) {
-    		response = {"code":1,"data":"13.23"};
-    		if(response.data.errno == '401' || response.data.errno == '请先登录'){
-    			return false;
-    		}else{
-    			that.availMoney = response.data;
-    		}
-		  })
+  	let that = this;
+    var userInfo =  JSON.parse(getCookie('userInfo'));
+//  console.log(getCookie('userInfo'));
+//  if(userInfo !== null){
+			this.availResult = true;
+    	this.avatarImg = userInfo.avatar;
+	    this.userName = userInfo.nickname;
+	    this.availMoney = userInfo.availMoney;
+//	    this.$http({
+//		        method: 'post',
+//		        url:that.$url+ 'user/userAccount',
+//	    	}).then(function (res) {
+//	    		debugger;
+//					console.log(res);
+//			})
+//  }
+    
   }
 }
 </script>
