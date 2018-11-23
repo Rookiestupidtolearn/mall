@@ -27,6 +27,7 @@
 
 <script>
 	import { MessageBox } from 'mint-ui';
+	import { setCookie,getCookie,delCookie } from '@/assets/cookie';
 //	import headbar from '@/components/headbar.vue';
 		
 export default {
@@ -39,16 +40,16 @@ export default {
     }
   },
   mounted(){
-  	var that = this;    
+  	var that = this;
     	that.$http({
         method: 'post',
         url:that.$url+ 'coupon/list',
+        headers: {'X-Nideshop-Token':getCookie('token')},
     	}).then(function (response) {
     		if(response.data.errno == '401' || response.data.errno == '请先登录'){
     			that.fontSize.goLogin()
     		}else{
-    			console.log(response)
-    			that.couponList = response.data;
+    			that.couponList = response.data.data;
     		}
 		  })
   },

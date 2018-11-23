@@ -76,6 +76,9 @@
 				if(getCookie('userInfo') == undefined || getCookie('userInfo') == null || getCookie('userInfo') == ''){
 					setCookie('userInfo', JSON.stringify(res.data.data.userInfo));
 				}
+				if(getCookie('token') == undefined || getCookie('token') == null || getCookie('token') == ''){
+					setCookie('token', res.data.data.token);
+				}
 //				var code = res.data.data.token;
 //	    		var userInfo = res.data.data.userInfo;
 //	    		var data = {code:code,userInfo:userInfo}
@@ -86,7 +89,7 @@
 //		    	}).then(function (res) {
 //		    		console.log(res);
 //				})
-//		    	that.$router.go(-1);
+		    	that.$router.go(-1);
 			})
 	  	},
 	  	yzm(){

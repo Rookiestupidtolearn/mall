@@ -202,6 +202,8 @@ public class ApiAuthController extends ApiBaseAction {
         if (null == userVo || StringUtils.isNullOrEmpty(token)) {
             return toResponsFail("登录失败");
         }
+        request.setAttribute("LOGIN_USER_KEY", token);
+        
         Map<String, Object> resultObj = new HashMap<String, Object>();
 
         resultObj.put("token", token);

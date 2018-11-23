@@ -48,7 +48,7 @@ Page({
           minPriceList: res.data.minPriceList
         });
         //购物车下架至灰
-        if (that.data.undercarriage == '0' || that.data.undercarriage == '2'){
+        if (that.data.undercarriage == '0' || that.data.undercarriage == '0'){
           that.setData({
             undercarriage:true,
             undercarriName: '商品已下架'
