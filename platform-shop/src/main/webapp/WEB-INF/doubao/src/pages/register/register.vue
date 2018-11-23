@@ -76,17 +76,17 @@
 				if(getCookie('userInfo') == undefined || getCookie('userInfo') == null || getCookie('userInfo') == ''){
 					setCookie('userInfo', JSON.stringify(res.data.data.userInfo));
 				}
-				var code = res.data.data.token;
-	    		var userInfo = res.data.data.userInfo;
-	    		var data = {code:code,userInfo:userInfo}
-				that.$http({
-			        method: 'post',
-			        url:that.$url+ 'auth/login_by_weixin',
-			        params:JSON.stringify(data)
-		    	}).then(function (res) {
-		    		console.log(res);
-				})
-		    	that.$router.go(-1);
+//				var code = res.data.data.token;
+//	    		var userInfo = res.data.data.userInfo;
+//	    		var data = {code:code,userInfo:userInfo}
+//				that.$http({
+//			        method: 'post',
+//			        url:that.$url+ 'auth/login_by_weixin',
+//			        params:JSON.stringify(data)
+//		    	}).then(function (res) {
+//		    		console.log(res);
+//				})
+//		    	that.$router.go(-1);
 			})
 	  	},
 	  	yzm(){
