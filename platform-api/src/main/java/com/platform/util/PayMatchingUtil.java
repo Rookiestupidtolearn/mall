@@ -47,7 +47,7 @@ public class PayMatchingUtil {
 		BigDecimal normalMatching =  new BigDecimal(productVo.getNormal_matching()); //正常配比 Z
 		
 		//计算支付配比 : 公式 S={M*Z-(Z-H)*N}/M*100%
-		BigDecimal PayMatching =marketPrice.multiply(normalMatching).subtract(normalMatching.subtract(activityMatching).multiply(retailPrice)).divide(marketPrice,4, BigDecimal.ROUND_DOWN);
+		BigDecimal PayMatching =marketPrice.multiply(normalMatching).subtract(normalMatching.subtract(activityMatching).multiply(retailPrice)).divide(marketPrice,4, BigDecimal.ROUND_HALF_UP);
 		logger.info("【计算支付配比】--- 支付配比值"+PayMatching);
 		
 		//计算抵扣金额
