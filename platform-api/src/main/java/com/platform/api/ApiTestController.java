@@ -60,6 +60,7 @@ import com.platform.youle.entity.ResponseBaseEntity;
 import com.platform.youle.entity.ResponseCancelEntity;
 import com.platform.youle.entity.ResponseOrderSubmitEntity;
 import com.platform.youle.entity.ResponseOrderTrackEntity;
+import com.platform.youle.entity.ResponseSkuDetailEntity;
 import com.platform.youle.entity.ResponseSystemOrderTrackEntity;
 import com.platform.youle.service.AbsApiGoodsService;
 import com.platform.youle.service.AbsApiOrderService;
@@ -792,33 +793,19 @@ public class ApiTestController extends ApiBaseAction {
 	@IgnoreAuth
 	@ApiOperation(value = "1.3")
 	@PostMapping("queryAllProducts")
-	public Object queryAllProducts(Integer productId) {
+	public Object queryAllProducts(Long productId) {
 		String resultObj = "";
-		RequestBaseEntity entity = new RequestBaseEntity();
+		ResponseSkuDetailEntity reponse = null;
+		RequestSkuDetailEntity entity = new RequestSkuDetailEntity();
 		initRequestParam(entity);
-		String result = "";
+		entity.setPid(productId);
 		try {
-			result = HttpUtil.post(Urls.base_test_url + Urls.rootCate, objectToMap(entity));
-//			if (!StringUtil.isEmpty(result)) {
-//				JSONObject dateObj = JSONObject.parseObject(result);
-//				resultObj = dateObj.get("RESULT_DATA").toString();
-//			}
-//			response = JSON.parseObject(result,new TypeReference<ResponseAllProductEntity>(){});
-//			if(response.isRESPONSE_STATUS()){
-//				List array = response.getRESULT_DATA();
-//				if(!CollectionUtils.isEmpty(array)){
-//					for(int i = 0;i<array.size();i++){
-//						JSONObject json = JSONObject.parseObject(array.get(i).toString());
-//						
-//						System.out.println(json.get((i+1)+""));
-//					}
-//				}
-//			}
-			System.out.println(result);
+			resultObj = HttpUtil.post(Urls.base_test_url + Urls.detial, objectToMap(entity));
+			System.out.println(resultObj);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return result;
+		return resultObj;
 	}
 	
 }

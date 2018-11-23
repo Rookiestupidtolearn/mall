@@ -487,7 +487,7 @@ public class ApiCartService {
     
     /**
      * @param CartEntityIds
-     * @param type --> 0:商城后台操作下架   1:毛利率任务自动下架jd商品   2:获取jd商品任务下架
+     * @param type --> 0:商城后台操作下架   1:毛利率任务自动下架jd商品   2:获取jd商品任务下架3定时任务扫描购物车商品下架
      * @return
      */
     public boolean roolbackAllCartsCoupons(Integer[] CartEntityIds,Integer type){
@@ -563,6 +563,8 @@ public class ApiCartService {
            		saveTranInfoRecord(userId, "1", "2", userCouponVo.getCoupon_price(), userCouponVo.getCoupon_price(), "【毛利率任务自动下架jd商品】三方商品下架,本地商品下架并清购物车,原有优惠券作废");
            	 }else if(type == 2){
            		 saveTranInfoRecord(userId, "1", "2", userCouponVo.getCoupon_price(), userCouponVo.getCoupon_price(), "【商品入库定时任务】三方商品下架,本地商品下架并清购物车,原有优惠券作废");
+           	 }else if(type == 3){
+           		saveTranInfoRecord(userId, "1", "2", userCouponVo.getCoupon_price(), userCouponVo.getCoupon_price(), "【定时任务扫描购物车】三方商品下架,本地商品下架并清购物车,原有优惠券作废");
            	 }
            	 //回滚平台币
            	 userAmountVo.setAmount(userAmountVo.getAmount().add(userCouponVo.getCoupon_price()));
@@ -575,6 +577,8 @@ public class ApiCartService {
            		 saveTranInfoRecord(userId, "2", "1", userCouponVo.getCoupon_price(), userAmountVo.getAmount(), "【毛利率任务自动下架jd商品】三方商品下架,本地商品下架并清购物车,原有优惠券作废,优惠券金额回滚到平台币");
            	 }else if(type == 2){
            		 saveTranInfoRecord(userId, "2", "1", userCouponVo.getCoupon_price(), userAmountVo.getAmount(), "【商品入库定时任务】三方商品下架,本地商品下架并清购物车,原有优惠券作废,优惠券金额回滚到平台币");
+           	 }else if(type == 3){
+           		 saveTranInfoRecord(userId, "2", "1", userCouponVo.getCoupon_price(), userAmountVo.getAmount(), "【定时任务扫描购物车】三方商品下架,本地商品下架并清购物车,原有优惠券作废,优惠券金额回滚到平台币");
            	 }
             }
             if(!CollectionUtils.isEmpty(carts)){
@@ -612,6 +616,8 @@ public class ApiCartService {
            		saveTranInfoRecord(userId, "2", "2", couponTotalPrice, userAmountVo.getAmount(), "【毛利率任务自动下架jd商品】三方商品下架,本地商品下架并清购物车,扣减新购物车中优惠券后平台币金额");
            	 }else if(type == 2){
            		 saveTranInfoRecord(userId, "2", "2", couponTotalPrice, userAmountVo.getAmount(), "【商品入库定时任务】三方商品下架,本地商品下架并清购物车,扣减新购物车中优惠券后平台币金额");
+           	 }else if(type == 3){
+           		saveTranInfoRecord(userId, "2", "2", couponTotalPrice, userAmountVo.getAmount(), "【定时任务扫描购物车】三方商品下架,本地商品下架并清购物车,扣减新购物车中优惠券后平台币金额");
            	 }
             }
             getUserCouponTotalPrice(userId,couponTotalPrice);

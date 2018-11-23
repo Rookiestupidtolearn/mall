@@ -34,6 +34,7 @@ import com.platform.entity.ProductVo;
 import com.platform.entity.QzUserAccountVo;
 import com.platform.entity.UserCouponVo;
 import com.platform.service.ApiGoodsPureInterestRateService;
+import com.platform.service.ApiGoodsService;
 import com.platform.util.PayMatchingUtil;
 import com.platform.youle.constant.Constants.Urls;
 import com.platform.youle.entity.RequestBaseEntity;
@@ -65,6 +66,8 @@ public class AbsApiCartPriceServiceImpl implements AbsApiCartPriceService {
 	private ApiTranInfoRecordMapper apiTranInfoRecordMapper;
 	@Autowired
 	private ApiGoodsPureInterestRateService goodsPureInterestRateService;
+	@Autowired
+	private ApiGoodsService apiGoodsService;
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -95,6 +98,13 @@ public class AbsApiCartPriceServiceImpl implements AbsApiCartPriceService {
 					continue;
 				}
 				JSONObject dateObj = JSONObject.parseObject(result);
+				if(dateObj.get("ERROR_CODE") != null){
+					if("200".equals(dateObj.get("ERROR_CODE").toString()) && !Boolean.parseBoolean(dateObj.get("RESPONSE_STATUS").toString())){
+						Integer[] ids  = {cart.getGoods_id()};
+						apiGoodsService.unSaleBatch(ids,3);
+						continue;
+					}
+				}
 				if(dateObj.get("RESULT_DATA")  == null){
 					resultObj.put("status", "false");
 					resultObj.put("msg", "[1.3获取单个商品详情]为空");
