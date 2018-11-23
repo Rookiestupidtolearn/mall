@@ -87,7 +87,7 @@ public class ApiBuyController extends ApiBaseAction {
     	return this.toResponsObject(0, "执行成功", "");
     }
     
-    public Object updateUserCouponPrice(Integer goodsId,Integer productId,Integer number,Long userId){
+    public  synchronized Object updateUserCouponPrice(Integer goodsId,Integer productId,Integer number,Long userId){
     	BigDecimal couponTotalPrice = BigDecimal.ZERO;//立即购买优惠券总价值
     	BigDecimal couponCartTotalPrice = BigDecimal.ZERO;//购物车优惠券总价值
         BigDecimal couponlPrice = BigDecimal.ZERO;//优惠券临时总价值
