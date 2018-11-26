@@ -88,11 +88,15 @@ export default {
     }
   },
   mounted(){
-	var that = this;   
-	//index
-		that.$http({
+		this.index();
+  },
+  methods:{
+  		index(){
+  			var that = this;   
+  			that.$http({
         method: 'post',
         url: that.$url+'cart/index',
+        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
     	}).then(function (response) {
     		if(response.data.errno == '401' || response.data.errno == '请先登录'){
     				that.fontSize.goLogin()
@@ -101,8 +105,7 @@ export default {
 				    that.cartTotal = response.data.data.cartTotal;
 			  }
 		  })
-  },
-  methods:{
+  		},
 	  	deleteCart(){
 	  			//获取已选择的商品
 			    let that = this;
@@ -125,14 +128,18 @@ export default {
 			      }
 			    });
 			
-			  that.$http({
+		  that.$http({
 	        method: 'post',
 	        url: that.$url+'cart/delete',
-	        params:{productIds: productIds.join(',')}
+	        headers: {
+	        	'X-Nideshop-Token':that.$cookie.getCookie('token'),
+	        	'Content-Type':'application/json'
+        	},
+	        data:{productIds: productIds.join(',')}
         }).then(function (res) {
-        	res ={"errno":0,"data":{"cartTotal":{"goodsCount":0,"checkedGoodsCount":0,"goodsAmount":0,"checkedGoodsAmount":0},"couponInfoList":[{"msg":"满￥88.00元免配送费","type":0},{"msg":"满20元减1元，还差20.00元","type":1}],"cartList":[]},"errmsg":"执行成功"};
+        		var res = res.data;
 			      if (res.errno === 0) {
-			        console.log(res.data);
+//			        console.log(res.data);
 			        let cartList = res.data.cartList.map(v => {
 			          console.log(v);
 			          v.checked = false;
@@ -172,10 +179,12 @@ export default {
 			     that.$http({
 			        method: 'post',
 			        url: that.$url+'cart/checked',
-			        params:{ productIds: productIds.join(','), isChecked: that.isCheckedAll() ? 0 : 1 }
+			        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
+			        data:{ productIds: productIds.join(','), isChecked: that.isCheckedAll() ? 0 : 1 }
 			     }).then(function (res) {
+			     	var res = res.data;
 			        if (res.errno === 0) {
-			          console.log(res.data);
+//			          console.log(res.data);
 			            that.cartGoods = res.data.cartList,
 			            that.cartTotal = res.data.cartTotal
 			        }else{
@@ -201,16 +210,20 @@ export default {
 			    let that = this;
 			    if (!this.isEditCart) {
 			      that.$http({
-		        method: 'post',
-		        url: that.$url+'cart/checked',
-		        params:{ 
-			        	productIds: that.cartGoods[itemIndex].product_id, 
-			        	isChecked: that.cartGoods[itemIndex].checked ? 0 : 1 
-		      	 }
+			        method: 'post',
+			        url: that.$url+'cart/checked',
+			        headers: {
+			        	'X-Nideshop-Token':that.$cookie.getCookie('token'),
+			        	'Content-Type':'application/json'
+		        	},
+			        data:{ 
+				        	productIds: that.cartGoods[itemIndex].product_id, 
+				        	isChecked: that.cartGoods[itemIndex].checked ? 0 : 1 
+			      	 }
 		        }).then(function (res) {
-		        	res = {"errno":0,"data":{"cartTotal":{"goodsCount":1,"checkedGoodsCount":1,"goodsAmount":1000.00,"checkedGoodsAmount":1000.00},"couponInfoList":[{"msg":"满￥88.00元免配送费","type":0},{"msg":"可使用满减券满1000减20元","type":0}],"cartList":[{"id":1094,"user_id":28,"session_id":"1","goods_id":1181025,"goods_sn":"001","product_id":307,"goods_name":"测试使用001","market_price":1000.00,"retail_price":1000.00,"retail_product_price":1000.00,"number":1,"goods_specifition_name_value":"白色","goods_specifition_ids":"43","checked":1,"crash_save_price":0.00,"list_pic_url":"http://aoss.huaqianyueshang.com/wall/20181026/1400011555eb77.jpg","good_url":"/pages/category/goods?id=1181025"}]},"errmsg":"执行成功"};
+		        		var res = res.data;
 				        if (res.errno === 0) {
-				          console.log(res.data);
+//				          console.log(res.data);
 				            that.cartGoods = res.data.cartList;
 				            that.cartTotal = res.data.cartTotal
 				        }
@@ -226,7 +239,7 @@ export default {
 			      });
 			
 			        that.cartGoods = tmpCartData;
-			        that.checkedAllStatu =  that.isCheckedAll();
+			        that.checkedAllStatus =  that.isCheckedAll();
 			        that.cartTotal.checkedGoodsCount = that.getCheckedGoodsCount()
 			    }
   	},
@@ -249,26 +262,27 @@ export default {
 		    }
   	},
   	getCartList(){
-	  		let that = this;
-		    that.$http({
-		    	 method: 'post',
-        	url: that.$url+'cart/index',
-		    }).then(function (res) {
-		      if (res.errno === 0) {
-		        console.log(res.data);
-		          that.cartGoods = res.data.cartList;
-		          that.cartTotal = res.data.cartTotal;
-		      }
-		        that.checkedAllStatus = that.isCheckedAll();
-		    });
+  		let that = this;
+	    that.$http({
+	    	 method: 'post',
+    		url: that.$url+'cart/index',
+    		headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
+	    }).then(function (res) {
+	    	var res = res.data;
+	      	if (res.errno === 0) {
+		        that.cartGoods = res.data.cartList;
+		        that.cartTotal = res.data.cartTotal;
+	      	}
+	        that.checkedAllStatus = that.isCheckedAll();
+	    });
   	},
   	isCheckedAll(){
-	  		return this.cartGoods.every(function (element, index, array) {
-	      if (element.checked == true) {
-	        return true;
-	      } else {
-	        return false;
-	      }
+	  	return this.cartGoods.every(function (element, index, array) {
+		    if (element.checked == true) {
+		        return true;
+		    } else {
+		        return false;
+		    }
 	    });
   	},
   	getCheckedGoodsCount(){
@@ -285,7 +299,11 @@ export default {
 		    that.$http({
 		    	 method: 'post',
         	url: that.$url+'cart/update',
-		      params:{
+        	headers: {
+        		'X-Nideshop-Token':that.$cookie.getCookie('token'),
+        		'Content-Type':'application/json'
+        	},
+		      data:{
 		      	productId: productId,
 			      goodsId: goodsId,
 			      number: number,

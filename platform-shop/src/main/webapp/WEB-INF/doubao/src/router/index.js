@@ -95,7 +95,7 @@ export default new Router({
       name: 'categoryPages',
       component: categoryPages
     },{
-      path: '/pages/category/goods',
+      path: '/pages/goods/goods',
       name: 'goods',
       component: goods
     },{

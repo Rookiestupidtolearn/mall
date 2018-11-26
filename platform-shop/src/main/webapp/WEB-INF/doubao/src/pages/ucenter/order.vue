@@ -3,8 +3,8 @@
   	<!--公用头部-->
   		<!--<headbar :headFont = "headFont"></headbar>-->
   		
-  	<ul class="" v-infinite-scroll="loadMore" infinite-scroll-disabled="loading" infinite-scroll-distance="10">
- 			 <li v-for="(item,index) in orderList">
+  	<ul class="" v-if="orderList.length>0" v-infinite-scroll="loadMore" infinite-scroll-disabled="loading" infinite-scroll-distance="10">
+ 			 <li v-for="(item,index) in orderList" >
 				<router-link  :to = "'/views/ucenter/orderDetail?id='+item.id" class="order" >
 	            <div class="h">
 	                <div class="l">订单编号：{{item.order_sn}}</div>
@@ -19,6 +19,7 @@
 	        </router-link>
 	        </li>
         </ul>
+        <div v-else class="noData">没有更多数据了</div>
   </div>
 </template>
 
@@ -42,15 +43,20 @@ export default {
     	that.$http({
         method: 'post',
         url:that.$url+ 'order/list',
-        params:{
+        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
+        data:{
         	page:1,
         	size:10
         }
     	}).then(function (response) {
     		if(response.data.errno == '401' || response.data.errno == '请先登录'){
-    			that.fontSize.goLogin();
+		    			that.$toast(response.data.errmsg);
+		    			that.$cookie.delCookie('userId');
+		    			that.$cookie.delCookie('userInfo');
+		    			that.$cookie.delCookie('token');
+		    			that.fontSize.goLogin()
     		}else{
-	    		that.orderList = response.data.data;
+	    		that.orderList = response.data.data.data;
     		}
 		  })
   },
@@ -60,14 +66,14 @@ export default {
 	    	this.$router.push( '/pages/pay/pay?orderId=' + order.id + '&actualPrice=' + order.actual_price);
   	},
   	loadMore() {
-		  this.loading = true;
-		  setTimeout(() => {
-		    let last = this.orderList[this.orderList.length - 1];
-		    for (let i = 1; i <= 10; i++) {
-		      this.orderList.push(last + i);
-		    }
-		    this.loading = false;
-		  }, 2500);
+//		  this.loading = true;
+//		  setTimeout(() => {
+//		    let last = this.orderList[this.orderList.length - 1];
+//		    for (let i = 1; i <= 10; i++) {
+//		      this.orderList.push(last + i);
+//		    }
+//		    this.loading = false;
+//		  }, 2500);
 		}
   }
 }
@@ -114,5 +120,8 @@ float:right;
 color:#b4282d;
 font-size:.24rem;
 }
-
+.noData{
+	font-size:.29rem;
+	margin-top:1rem;
+}
 </style>

@@ -54,6 +54,7 @@
 	    	that.$http({
 		        method: 'post',
 		        url:that.$url+ 'brand/detail',
+		        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
 		        params:{id:that.idm}
 	    	}).then(function (response) {
 	    		that.brand = response.data.data.brand;

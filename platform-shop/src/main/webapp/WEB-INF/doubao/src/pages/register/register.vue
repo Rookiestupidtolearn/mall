@@ -21,8 +21,6 @@
 </template>
 
 <script>
-	import { setCookie,getCookie,delCookie } from '@/assets/cookie';
-		
 	export default {
 	  name: 'coupon',
 	  data () {
@@ -70,26 +68,20 @@
 		        	code:this.captcha
 		        }
 	    	}).then(function (res) {
-	    		if(getCookie('userId') == undefined || getCookie('userId') == null || getCookie('userId') == ''){
-					setCookie('userId',res.data.data.userId);
+	    		if(res.data.code !== 500){
+		    		if(that.$cookie.getCookie('userId') == undefined || that.$cookie.getCookie('userId') == null || that.$cookie.getCookie('userId') == ''){
+						that.$cookie.setCookie('userId',res.data.data.userId);
+					}
+					if(that.$cookie.getCookie('userInfo') == undefined || that.$cookie.getCookie('userInfo') == null || that.$cookie.getCookie('userInfo') == ''){
+						that.$cookie.setCookie('userInfo', JSON.stringify(res.data.data.userInfo));
+					}
+					if(that.$cookie.getCookie('token') == undefined || that.$cookie.getCookie('token') == null || that.$cookie.getCookie('token') == ''){
+						that.$cookie.setCookie('token', res.data.data.token);
+					}
+					that.$router.go(-1);
+				}else{
+					that.$toast({message:res.data.msg,duration:1500});
 				}
-				if(getCookie('userInfo') == undefined || getCookie('userInfo') == null || getCookie('userInfo') == ''){
-					setCookie('userInfo', JSON.stringify(res.data.data.userInfo));
-				}
-				if(getCookie('token') == undefined || getCookie('token') == null || getCookie('token') == ''){
-					setCookie('token', res.data.data.token);
-				}
-//				var code = res.data.data.token;
-//	    		var userInfo = res.data.data.userInfo;
-//	    		var data = {code:code,userInfo:userInfo}
-//				that.$http({
-//			        method: 'post',
-//			        url:that.$url+ 'auth/login_by_weixin',
-//			        params:JSON.stringify(data)
-//		    	}).then(function (res) {
-//		    		console.log(res);
-//				})
-		    	that.$router.go(-1);
 			})
 	  	},
 	  	yzm(){

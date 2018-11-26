@@ -28,7 +28,6 @@
 
 <script>
 import { MessageBox } from 'mint-ui';
-import { setCookie,getCookie,delCookie } from '@/assets/cookie';
 //import headbar from '@/components/headbar.vue'
 		
 export default {
@@ -50,18 +49,17 @@ export default {
 	    	that.$http({
 		        method: 'post',
 		        url:that.$url+ 'address/list',
+		        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
 	    	}).then(function (response) {
-	      		  	response = {"errno":0,"data":[{"id":102,"userId":28,"userName":"2323","telNumber":"asdds","postalCode":null,"nationalCode":null,"province":"1","provinceName":"北京","city":"2800","cityName":"海淀区","county":"2848","countyName":"三环以内","town":"","townName":null,"detailInfo":"asd","isDefault":1,"createTime":"2018-11-14","isDelete":null,"full_region":"北京海淀区三环以内"},{"id":101,"userId":28,"userName":"mn","telNumber":"151580464311","postalCode":null,"nationalCode":null,"province":"2","provinceName":"上海","city":"2813","cityName":"徐汇区","county":"51976","countyName":"城区","town":"","townName":null,"detailInfo":"rrrr","isDefault":1,"createTime":"2018-11-14","isDelete":null,"full_region":"上海徐汇区城区"}],"errmsg":"执行成功"};
 	    		if(response.data.errno == '401' || response.data.errno == '请先登录'){
-	    			MessageBox({
-						  title: ' ',
-						  message: '请先登录 ',
-						  showCancelButton: true
-						});
-	    			return false;
+	    			that.$cookie.delCookie('userId');
+		    			that.$cookie.delCookie('userInfo');
+		    			that.$cookie.delCookie('token');
+		    			that.fontSize.goLogin()
+		    			return false;
 	    		}else{
-	    			console.log(response)
-	    			that.addressList = response.data;
+	    			that.addressList = response.data.data;
+	    			console.log(response.data.data)
 	    		}
 			  })
 	  	},
@@ -71,7 +69,7 @@ export default {
 		selectAddress(setId){
 		    //选择该收货地址
 //		    var _day = 60 * 60 * 24 *1;
-  			setCookie('addressId',setId); //缓存地址id
+  			this.$cookie.setCookie('addressId',setId); //缓存地址id
 		    this.$router.push('/pages/category/checkout');
 		},
 		 addressAddOrUpdate (setId) {
@@ -88,7 +86,7 @@ export default {
 					that.$http({
 				        method: 'post',
 				        url:that.$url+ 'address/delete',
-				        headers:{'Content-Type':'application/x-www-form-urlencoded'	},
+				        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
 				        params:{id:deleteId}
 			    	}).then(function (res) {
 			    		res = {"errno":0,"data":"","errmsg":"执行成功"};

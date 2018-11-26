@@ -13,7 +13,7 @@
 		</div>
 		<div class="h">
 			<p class="txt">人气推荐</p>
-			<router-link class="itemhot" v-for="item in hotGoods" :to="'/pages/category/goods?id='+item.id">
+			<router-link class="itemhot" v-for="item in hotGoods" :to="'/pages/goods/goods?id='+item.id">
 				<img :src="item.list_pic_url"/>
 				<div class="right">
 					<p class="name">{{item.name}}</p>
@@ -65,7 +65,7 @@ export default {
   	//banner
   		that.$http({
         method: 'post',
-        url: that.$url+'index/banner',
+        url: that.$url+'index/banner'
     	}).then(function (response) {
     		console.log(response);
 		    that.banner = response.data.data.banner
@@ -73,7 +73,7 @@ export default {
     //channel
   		that.$http({
         method: 'post',
-        url:that.$url+ 'index/channel',
+        url:that.$url+ 'index/channel'
     	}).then(function (response) {
 		    that.channel = response.data.data.channel
 		  })
@@ -81,7 +81,7 @@ export default {
     Indicator.open();
     that.$http({
         method: 'post',
-        url:that.$url+ 'index/hotGoods',
+        url:that.$url+ 'index/hotGoods'
     	}).then(function (response) {
     		Indicator.close();
 		    that.hotGoods = response.data.data.hotGoodsList
@@ -89,7 +89,7 @@ export default {
     	//category
     	that.$http({
         method: 'post',
-        url:that.$url+ 'index/category',
+        url:that.$url+ 'index/category'
     	}).then(function (response) {
 		    that.category = response.data.data.categoryList
 		  })

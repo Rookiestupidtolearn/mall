@@ -160,6 +160,7 @@
 			    that.$http({
 	    		method: 'post',
 		        url:that.$url+ 'order/submit',
+		        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
 		        params:{ 
 		        	addressId: this.addressId, 
 		        	couponId: this.couponId, 
@@ -195,13 +196,13 @@
 		    that.$http({
 	    		method: 'post',
 		        url:that.$url+ 'cart/checkout',
+		        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
 		        params:{ 
 		        	addressId: that.addressId,
 		        	couponId: that.couponId, 
 		        	type: buyType
 		        }
 	        }).then(function (res) {
-	        	res = {"errno":0,"data":{"checkedAddress":{"id":null,"userId":null,"userName":null,"telNumber":null,"postalCode":null,"nationalCode":null,"province":null,"provinceName":null,"city":null,"cityName":null,"county":null,"countyName":null,"town":null,"townName":null,"detailInfo":null,"isDefault":null,"createTime":null,"isDelete":null,"full_region":"nullnullnull"},"actualPrice":1000.00,"orderTotalPrice":1000.00,"couponPrice":0.00,"freightPrice":0,"checkedGoodsList":[{"id":1094,"user_id":28,"session_id":"1","goods_id":1181025,"goods_sn":"001","product_id":307,"goods_name":"测试使用001","market_price":1000.00,"retail_price":1000.00,"retail_product_price":1000.00,"number":1,"goods_specifition_name_value":"白色","goods_specifition_ids":"43","checked":1,"crash_save_price":0.00,"list_pic_url":"http://aoss.huaqianyueshang.com/wall/20181026/1400011555eb77.jpg","good_url":"/pages/goods/goods?id=1181025"}],"goodsTotalPrice":1000.00},"errmsg":"执行成功"};
 		      if (res.errno === 0) {
 		          that.checkedGoodsList = res.data.checkedGoodsList;
 		          that.checkedAddress = res.data.checkedAddress;
@@ -231,7 +232,7 @@
 					}));
 		        }
 		      }else{
-		        Toast(res.data.errmsg);
+		        Toast(res.data.msg);
 		      }
 		    });
 		}

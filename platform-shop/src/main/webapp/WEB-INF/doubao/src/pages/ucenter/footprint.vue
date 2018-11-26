@@ -7,7 +7,7 @@
 	    <div class="day-item" v-for="item in footprintList" >
 	      <div class="day-hd">{{item[0].add_time}}</div>
 	      <div class="day-list">
-	        <router-link :to="'/pages/category/goods?id='+iitem.id" class="item"  v-for = "iitem in item" >
+	        <router-link :to="'/pages/goods/goods?id='+iitem.goods_id" class="item"  v-for = "iitem in item" >
 	          <img class="img" :src="iitem.list_pic_url"/>
 	          <div class="info">
 	            <div class="name">{{iitem.name}}</div>
@@ -39,12 +39,13 @@ name: 'footprint',
     	that.$http({
 	        method: 'post',
 	        url:that.$url+ 'footprint/list',
+	        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
     	}).then(function (response) {
     		if(response.data.errno == '401' || response.data.errno == '请先登录'){
     			that.fontSize.goLogin()
     		}else{
     			console.log(response)
-    			that.footprintList = response.data.data;
+    			that.footprintList = response.data.data.data;
     		}
 		  })
  	 }

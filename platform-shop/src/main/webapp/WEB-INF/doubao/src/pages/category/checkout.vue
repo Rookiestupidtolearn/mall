@@ -28,7 +28,16 @@
 	    </div>
 	    
 	    <div class="coupon-box" @click='tapCoupon'>
-	        <div class="coupon-item">
+	    	 <div class="coupon-item" v-if="couponPrice">
+	            <div class="l">
+	            	<span class="name">优惠券金额</span>
+	                <span class="txt">{{couponPrice}}</span>
+	            </div>
+	            <div class="r">
+	                <img src="../../../static/images/address_right.png"/>
+	            </div>
+	        </div>
+	         <div class="coupon-item" v-else>
 	            <div class="l">
 	                <span class="name">请选择优惠券</span>
 	                <span class="txt">{{couponDesc}}</span>
@@ -38,7 +47,7 @@
 	            </div>
 	        </div>
 	    </div>
-    
+	       
      <div class="order-box">
         <div class="order-item">
             <div class="l">
@@ -91,7 +100,6 @@
 </template>
 
 <script>
-	import { setCookie,getCookie,delCookie } from '@/assets/cookie';
 	import { MessageBox } from 'mint-ui';
 	import { Toast } from 'mint-ui';
 //	import headbar from '@/components/headbar.vue'
@@ -121,17 +129,18 @@
 	    }
 	  },
 	  mounted(){
+	  		let that = this;
   			this.isBuyType = this.$route.query.isBuy;
 //			var _day = 60 * 60 * 24 *1;
-			if(getCookie('addressId') == undefined || getCookie('addressId') == null || getCookie('addressId') == ''){
-				setCookie('addressId','0');
+			if(that.$cookie.getCookie('addressId') == undefined || that.$cookie.getCookie('addressId') == null || that.$cookie.getCookie('addressId') == ''){
+				that.$cookie.setCookie('addressId','0');
 			}else{
-				this.addressId = getCookie('addressId');
+				this.addressId = that.$cookie.getCookie('addressId');
 			}
-  			if(getCookie('couponId') == undefined || getCookie('couponId') == null || getCookie('couponId') == ''){
-  				setCookie('couponId','');
+  			if(that.$cookie.getCookie('couponId') == undefined || that.$cookie.getCookie('couponId') == null || that.$cookie.getCookie('couponId') == ''){
+  				that.$cookie.setCookie('couponId','');
   			}else{
-  				this.couponId = getCookie('couponId');
+  				this.couponId = that.$cookie.getCookie('couponId');
   			}
   			
 		    // 页面初始化 options为页面跳转所带来的参数
@@ -173,7 +182,11 @@
 			    that.$http({
 	    		method: 'post',
 		        url:that.$url+ 'order/submit',
-		        params:{ 
+		        headers: {
+						'X-Nideshop-Token':that.$cookie.getCookie('token'),
+						'Content-Type':'application/json'
+					},
+			    data:{ 
 		        	addressId: this.addressId, 
 		        	couponId: this.couponId, 
 		        	type: this.buyType 
@@ -196,7 +209,7 @@
 			      }
 			    });
 	 	},
-	 	  getCouponData () {
+	 	getCouponData () {
 //			        this.couponDesc = app.globalData.courseCouponCode.name;
 //			        this.couponId = app.globalData.courseCouponCode.user_coupon_id;
 			        this.couponDesc =  "平台抵扣券";
@@ -208,13 +221,16 @@
 		    that.$http({
 	    		method: 'post',
 		        url:that.$url+ 'cart/checkout',
-		        params:{ 
+		        headers: {
+					'X-Nideshop-Token':that.$cookie.getCookie('token'),
+					'Content-Type':'application/json'
+				},
+		        data:{ 
 		        	addressId: that.addressId,
 		        	couponId: that.couponId, 
 		        	type: buyType
 		        }
 	        }).then(function (res) {
-	        	res = {"data":{"errno":0,"data":{"checkedAddress":{"id":101,"userId":28,"userName":"mn","telNumber":"151580464311","postalCode":null,"nationalCode":null,"province":"2","provinceName":"上海","city":"2813","cityName":"徐汇区","county":"51976","countyName":"城区","town":"","townName":null,"detailInfo":"rrrr","isDefault":1,"createTime":"2018-11-14","isDelete":null,"full_region":"上海徐汇区城区"},"actualPrice":2.00,"orderTotalPrice":2.00,"couponPrice":0.00,"freightPrice":0,"checkedGoodsList":[{"id":1127,"user_id":28,"session_id":"1","goods_id":1183172,"goods_sn":"JD298970","product_id":587,"goods_name":"维仕蓝组合TG-WR6026+TG-WA8019-B","market_price":2.00,"retail_price":290.00,"retail_product_price":null,"number":1,"goods_specifition_name_value":null,"goods_specifition_ids":"","checked":1,"crash_save_price":null,"list_pic_url":"http://img.fygift.com//2016/1/8833537719968799190.jpg","good_url":"/pages/goods/goods?id=1183172"}],"goodsTotalPrice":2.00},"errmsg":"执行成功"}};
 		      if (res.data.errno === 0) {
 		          that.checkedGoodsList = res.data.data.checkedGoodsList;
 		          that.checkedAddress = res.data.data.checkedAddress;
@@ -244,7 +260,7 @@
 					}));
 		        }
 		      }else{
-		        Toast(res.data.errmsg);
+		        Toast(res.data.msg);
 		      }
 		    });
 		}

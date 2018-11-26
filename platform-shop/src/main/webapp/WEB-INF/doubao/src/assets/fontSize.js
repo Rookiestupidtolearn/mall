@@ -1,6 +1,6 @@
   import { MessageBox } from 'mint-ui';
   import router from '@/router/index.js'
-  import { setCookie,getCookie,delCookie } from '@/assets/cookie';
+  import cookie from '@/assets/cookie.js' 
   
   var html = document.getElementsByTagName("html")[0];
     function getFontSize(){
@@ -19,16 +19,16 @@
         },100)
     };
 
-/*去登录*/
+/*登录公用方法*/
 function userId(){
-	if(getCookie('userId') == undefined || getCookie('userId') == null || getCookie('userId') == ''){
+	if(cookie.getCookie('userId') == undefined || cookie.getCookie('userId') == null || cookie.getCookie('userId') == ''){
 		return true;
 	}else{
 		return false;
 	}
 }
 function userInfo(){
-	if(getCookie('userInfo') == undefined || getCookie('userInfo') == null || getCookie('userInfo') == ''){
+	if(cookie.getCookie('userInfo') == undefined || cookie.getCookie('userInfo') == null || cookie.getCookie('userInfo') == ''){
 		return true;
 	}else{
 		return false;

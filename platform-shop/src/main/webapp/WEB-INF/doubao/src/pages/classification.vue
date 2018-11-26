@@ -56,6 +56,7 @@ export default {
   		that.$http({
         method: 'post',
         url: that.$url+'catalog/index',
+        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
     	}).then(function (response) {
 		    that.categoryList = response.data.data.categoryList,
 		    that.currentCategory = response.data.data.currentCategory
@@ -70,7 +71,8 @@ export default {
 	    that.$http({
         method: 'post',
         url: that.$url+'catalog/current',
-				params: { id : eventId }
+        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
+				params:{ id : eventId  }
     	}).then(function (response) {
 		    that.currentCategory = response.data.data.currentCategory
 		  })

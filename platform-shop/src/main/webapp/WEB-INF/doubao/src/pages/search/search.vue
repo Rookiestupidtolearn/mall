@@ -6,7 +6,7 @@
 	 	<div class="searchTop" >
 	  		<mt-search v-model="value"  @keyup.enter.native="showList" @input="inputFocus" cancel-text="取消"  placeholder="商品搜索" class="wusearch" ></mt-search>
 	  	</div>
-	  	<div class="no-search" :style="{display: [value || historyKeyword? 'none' : 'block']}">
+	  	<div class="no-search" :style="{display: [value || defaultKeyword? 'none' : 'block']}">
 	  		<!--:style="{display: [value ? 'none' : 'block']}"-->
 		     <div class="serach-keywords search-history" >
 			    <div class="h" >
@@ -140,19 +140,21 @@ export default {
 	  		that.$http({
 	        method: 'post',
 	        url: that.$url+'search/index',
+	        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
 	    	}).then(function (response) {
-	    			response = {"errno":0,"data":{"defaultKeyword":null,"hotKeywordList":[],"historyKeywordList":["as"]},"errmsg":"执行成功"};
-	    			console.log(response);
-	    			that.historyKeyword = response.data.historyKeywordList,
-          			that.defaultKeyword = response.data.defaultKeyword,
-          			that.hotKeyword =  response.data.hotKeywordList
+	    		var  response = response.data;
+    			that.historyKeyword = response.data.historyKeywordList,
+      			that.defaultKeyword = response.data.defaultKeyword,
+      			that.hotKeyword =  response.data.hotKeywordList
 			})
 	  	},
 	  	clearHistory(){
+	  		let that = this;
 	  		 this.historyKeyword =  [],
 	  		   this.$http({
 			        method: 'post',
-			        url: this.$url+'search/clearhistory'
+			        url: this.$url+'search/clearhistory',
+			        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')}
 		    	}).then(function (response) {
 		    			console.log(response.data);
 		    			console.log('清除成功');
@@ -164,6 +166,7 @@ export default {
 			   that.$http({
 			        method: 'post',
 			        url: that.$url+'search/helper',
+			        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
 			        params:{keyword:that.value}
 		    	}).then(function (response) {
 		    			console.log(response.data);
@@ -175,6 +178,7 @@ export default {
 	  		that.$http({
 		        method: 'post',
 		        url: that.$url+'goods/list',
+		        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
 		        params:{
 		        	keyword:that.value,
 		        	page:that.page,
@@ -184,7 +188,7 @@ export default {
 		        	categoryId:that.categoryId
 		        }
 	    	}).then(function (response) {
-	    		response = {"errno":0,"data":{"count":1,"numsPerPage":1,"totalPages":1,"currentPage":1,"data":null,"filterCategory":[{"id":0,"name":"全部","keywords":null,"front_desc":null,"parent_id":null,"sort_order":null,"show_index":null,"is_show":null,"banner_url":null,"icon_url":null,"img_url":null,"wap_banner_url":null,"level":null,"type":null,"front_name":null,"checked":true,"subCategoryList":null},{"id":1008000,"name":"配件","keywords":null,"front_desc":null,"parent_id":null,"sort_order":null,"show_index":null,"is_show":null,"banner_url":null,"icon_url":null,"img_url":null,"wap_banner_url":null,"level":null,"type":null,"front_name":null,"checked":false,"subCategoryList":null}],"goodsList":[{"id":1181003,"category_id":null,"goods_sn":null,"name":"手机","brand_id":null,"goods_number":null,"keywords":null,"goods_brief":"这是一个好的手机--吴明龙","goods_desc":null,"is_on_sale":null,"add_time":null,"sort_order":null,"is_delete":null,"attribute_category":null,"counter_price":null,"extra_price":null,"is_new":null,"goods_unit":null,"primary_pic_url":null,"list_pic_url":"http://aoss.huaqianyueshang.com/wall/20181011/175250871aede0.jpg","market_price":100.00,"retail_price":1998.00,"sell_volume":null,"primary_product_id":null,"unit_price":null,"promotion_desc":null,"promotion_tag":null,"app_exclusive_price":null,"is_app_exclusive":null,"is_limited":null,"is_hot":null,"cart_num":0,"product_id":null,"product_market_price":100.00}]},"errmsg":"执行成功"};
+	    		var response = response.data;
 	    		 that.searchStatus = true;
 		          that.categoryFilter = false;
 		          that.goodsList = response.data.goodsList;

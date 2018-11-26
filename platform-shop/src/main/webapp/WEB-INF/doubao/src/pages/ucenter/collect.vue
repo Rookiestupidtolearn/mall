@@ -3,7 +3,7 @@
  		<!--公用头部-->
   		<!--<headbar :headFont = "headFont"></headbar>-->
   	<div class="">
-	    <router-link :to="'/pages/category/goods?id='+item.id" class="item" v-for="item in collectList" >
+	    <router-link :to="'/pages/goods/goods?id='+item.value_id" class="item" v-for="item in collectList" >
 	      <img class="img" :src="item.list_pic_url"/>
 	      <div class="info">
 	        <div class="name">{{item.name}}</div>
@@ -33,13 +33,16 @@ export default {
     	that.$http({
 	        method: 'post',
 	        url:that.$url+ 'collect/list',
-	        params:{typeId:0}
+	       headers: {
+				'X-Nideshop-Token':that.$cookie.getCookie('token'),
+				'Content-Type':'application/json'
+			},
+	        data:{typeId:0}
     	}).then(function (response) {
     		if(response.data.errno == '401' || response.data.errno == '请先登录'){
     			that.fontSize.goLogin()
     		}else{
-    			console.log(response)
-    			that.collectList = response.data;
+    			that.collectList = response.data.data;
     		}
 		  })
   },

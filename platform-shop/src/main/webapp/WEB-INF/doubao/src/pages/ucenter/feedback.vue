@@ -16,7 +16,7 @@
 	  <div class="fb-mobile">
 	    <div class="label">手机号码</div>
 	    <div class="mobile-box">
-	      <input class="mobile"  v-model="inputValue" oninput="if(value.length > 11)value = value.slice(0, 11)"  type="number"  placeholder="方便我们与你联系"  @input ="mobileInput" />
+	      <input class="mobile"  v-model="inputValue" oninput="if(value.length > 11)value = value.slice(0, 11)"  type="number"  placeholder="方便我们与你联系"  />
 	    </div>
 	  </div>
 		  <div class="fb-btn" @click="sbmitFeedback">提交</div>
@@ -68,9 +68,6 @@
 	   contentInput(){
 	   		this.introductLength = this.introduct.length;
 	   },
-	   mobileInput(){
-	   		
-	   },
 	   sbmitFeedback(){
 	   	    let  that  = this;
 		    if (this.values == '请选择反馈类型'){
@@ -84,7 +81,7 @@
 		    }
 		
 		    if (this.inputValue == '') {
-		      Toast('请输入手机号码');s
+		      Toast('请输入手机号码');
 		      return false;
 		    }else{
 		      if(this.inputValue.length != 11){
@@ -95,24 +92,25 @@
 		    that.$http({
 			        method: 'post',
 			        url:that.$url+ 'feedback/save',
-			       headers:{
+					headers: {
+						'X-Nideshop-Token':that.$cookie.getCookie('token'),
 						'Content-Type':'application/json'
 					},
-			        params:{
+			        data:{
 			        	content:this.introduct,
 			        	index:this.values,
 			        	mobile:this.inputValue
 			        }
 		    	}).then(function (response) {
 		    		if(response.data.errno == '401' || response.data.errno == '请先登录'){
+		    			that.$cookie.delCookie('userId');
+		    			that.$cookie.delCookie('userInfo');
+		    			that.$cookie.delCookie('token');
 		    			that.fontSize.goLogin()
-		    		}else{
-		    			if(response.errno == '0'){
-		    				Toast(response.data);
-		    				that.values= '请选择反馈类型';
-		    				that.introduct= '';
-		    				that.inputValue= '';
-		    			}
+		    		}else if(response.data.errno == '1' ){
+		    			that.$toast(response.data.errmsg);
+		    		}else if(response.data.code == 500 ){
+		    			that.$toast(response.data.msg);
 		    		}
 			 })
 	   }

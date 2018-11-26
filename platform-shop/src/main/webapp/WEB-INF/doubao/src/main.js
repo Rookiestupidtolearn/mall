@@ -8,18 +8,27 @@ import MintUI from 'mint-ui'
 import 'mint-ui/lib/style.css'
 import axios from 'axios'  //ajax
 import fontSize from './assets/fontSize.js' //字号适配js
-import cookie from './assets/cookie.js' //字号适配js
+import cookie from './assets/cookie.js'  //cookie.js公用方法
+//import qs from 'qs';
+//import axiosDeal from './assets/axios.js' //拦截器
 import './assets/css/reset.css' //公用样式引入
 
-Vue.use(MintUI)
+Vue.use(MintUI);
+
+//Vue.prototype.$qs = qs
+//Vue.prototype.$http= axiosDeal
 Vue.prototype.$http= axios
+Vue.prototype.$cookie= cookie
 Vue.prototype.fontSize = fontSize
 Vue.config.productionTip = false
+
 
 //接口配置
 //Vue.prototype.$url='http://localhost:8080/platform/api/'  //本地
 //Vue.prototype.$url='http://192.168.0.11:6101/platform/api/'  //本地
-Vue.prototype.$url= 'http://106.75.99.126:6302/platform/api/'; //外网
+//Vue.prototype.$url='http://192.168.1.244:6101/platform/api/'  //吴明龙
+//Vue.prototype.$url= 'http://106.75.99.126:6302/platform/api/'; //外网
+Vue.prototype.$url= '/platform/api/'; //外网
 
 
 /* eslint-disable no-new */

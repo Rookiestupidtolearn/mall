@@ -64,17 +64,18 @@
 	  		that.$http({
 	        method: 'post',
 	        url:that.$url+ 'user/userInfo',
+	        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
 	    	}).then(function (response) {
     		if(response.data.errno == '401' || response.data.errno == '请先登录'){
     			that.fontSize.goLogin()
     		}else{
-    			that.mobileInfo = response.data;
-    			console.log(that.mobileInfo);
-    			if (response.data.mobile == null || response.data.mobile == '') {
+    			that.mobileInfo = response.data.data;
+    			var res = response.data.data;
+    			if (res.mobile == null || res.mobile == '') {
 		            that.bindResult = true;
 		        }else{
 		        	that.bindResult = false;
-		        	that.telephone = that.validateMobile(response.data.mobile);
+		        	that.telephone = that.validateMobile(res.mobile);
 		        }
     		}
 		  })
@@ -102,15 +103,18 @@
   				this.$http({
 			        method: 'post',
 			        url:that.$url+ 'user/smscode',
+			        headers: {
+						'X-Nideshop-Token':that.$cookie.getCookie('token'),
+						'Content-Type':'application/json'
+					},
+					data:{
+						phone:this.telephone
+					}
 		    	}).then(function (response) {
-		    		response = {"errno":0,"data":"短信发送成功","errmsg":"执行成功"};
-		    		if(response.data.errno == '401' || response.data.errno == '请先登录'){
-		    			MessageBox({
-							  title: ' ',
-							  message: '请先登录 ',
-							  showCancelButton: true
-							});
-		    			return false;
+		    		if (response.data.code = 500){
+		    			that.$toast(response.data.msg);
+		    		}else if(response.data.data.errno == '401' || response.data.data.errno == '请先登录'){
+		    			that.$fontSize.goLogin();
 		    		}else{
 						Toast('发送成功');
 	                    var i = 60;
@@ -139,9 +143,9 @@
   				this.$http({
 			        method: 'post',
 			        url:that.$url+ 'user/bindMobile',
-			        params:{ mobile_code: this.teleyzm, mobile: this.telephone }
+			        params:{ mobile_code: this.teleyzm, mobile: this.telephone },
+			        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
 		    	}).then(function (response) {
-		    		response = {"errno":0,"data":"短信发送成功","errmsg":"执行成功"};
 		    		if(response.data.data.errno == '0'){
 						that.$router.push('/')	
 					}else{

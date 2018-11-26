@@ -59,7 +59,8 @@
 	  		that.$http({
 		        method: 'post',
 		        url:that.$url+ 'goods/list',
-		        params:{categoryId:that.idm,page:1,size:20}
+		        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
+		        params:{categoryId:that.idm,page:1,size:20},
 	    	}).then(function (response) {
 				that.goodsList = response.data.data.goodsList;
 				if(that.goodsList.length < 1){
@@ -72,6 +73,7 @@
 	    	that.$http({
 		        method: 'post',
 		        url:that.$url+ 'goods/category',
+		        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
 		        params:{id:that.idm}
 	    	}).then(function (response) {
 				that.brotherCategory = response.data.data.brotherCategory;

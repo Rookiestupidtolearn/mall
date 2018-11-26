@@ -4,10 +4,10 @@
   		<!--<headbar :headFont = "headFont"></headbar>-->
   		
 	    <div class="address-list "  v-if="addressList.length > 0" >
-	        <div class="item" v-for="item in addressList" @click="addressAddOrUpdate('1')" >
+	        <div class="item" v-for="item in addressList" @click="addressAddOrUpdate(item.id)" >
 	            <div class="l">
 	                <div class="name">{{item.userName}}</div>
-	                <div class="default" v-if="item.is_default">默认</div>
+	                <div class="default" v-if="item.isDefault">默认</div>
 	            </div>
 	            <div class="c">
 	                <div class="mobile">{{item.telNumber}}</div>
@@ -40,28 +40,32 @@ export default {
     	deleteList:[]
     }
   },
-  created(){
-  	 this.showaddressList();
+  mounted(){
+  	this.showaddressList();
   },
   methods:{
-		showaddressList:function(){
-	  		var that = this;    
-	    	that.$http({
+  		showaddressList(){
+  			var that = this;    
+			that.$http({
 		        method: 'post',
 		        url:that.$url+ 'address/list',
-	    	}).then(function (response) {
-	    		if(response.data.errno == '401' || response.data.errno == '请先登录'){
-	    			that.fontSize.goLogin()
-	    		}else{
-	    			console.log(response)
-	    			that.addressList = response.data;
-	    		}
+		        headers: {
+						'X-Nideshop-Token':that.$cookie.getCookie('token'),
+				},
+			}).then(function (response) {
+				var response=response.data;
+				if(response.data.errno == '401' || response.data.errno == '请先登录'){
+					that.fontSize.goLogin()
+				}else{
+					console.log(response)
+					that.addressList = response.data;
+				}
 			  })
-	  	},
-		addressAddOrUpdate:function(setId){
+  	},
+		addressAddOrUpdate(setId){
 		    this.$router.push({ path: '/pages/ucenter/addressAdd', query: { id: setId }})
 		},
-		deleteAddress:function(deleteId){
+		deleteAddress(deleteId){
 			MessageBox({
 			  title: ' ',
 			  message: '确定要删除地址? ',
@@ -72,14 +76,14 @@ export default {
 					that.$http({
 				        method: 'post',
 				        url:that.$url+ 'address/delete',
-				        headers:{'Content-Type':'application/x-www-form-urlencoded'	},
-				        params:{id:deleteId}
+				        headers: {
+							'X-Nideshop-Token':that.$cookie.getCookie('token'),
+							'Content-Type':'application/json'
+						},
+				        data:{id:deleteId}
 			    	}).then(function (res) {
-			    		res = {"errno":0,"data":"","errmsg":"执行成功"};
-			    		console.log(res.data);
 			    		if( res.errno = '0'){
 			    			that.showaddressList();
-			    			console.log('用户点击确定');
 			    		}
 			        });
 				}
@@ -105,17 +109,14 @@ export default {
 
 .address-list .l{
     width: 1.55rem;
-    height: .80rem;
     overflow: hidden;
     text-align: left;
     float:left;
-    margin-top: .45rem;
 }
 
 .address-list .name{
-    margin-top: -.05rem;
+    margin-top: .45rem;
     width: 1.55rem;
-    height: .43rem;
     font-size: .29rem;
     color: #333;
     text-overflow: ellipsis;

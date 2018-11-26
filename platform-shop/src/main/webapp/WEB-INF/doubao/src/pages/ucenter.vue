@@ -50,10 +50,12 @@
 	      </router-link >
 	    </div>
 	      <div class="item">
-	      <router-link  to="/ucenter" class="a">
-	        <p class="icon kefu"></p>
-	        <p class="txt">联系客服</p>
-	      </router-link >
+	      	<div class="a">
+	      <!--<router-link  to="/ucenter" class="a">-->
+		        <p class="icon kefu"></p>
+		        <p class="txt">联系客服</p>
+	        </div>
+	      <!--</router-link >-->
 	    </div>
 	      <div class="item">
 	      <router-link  to="/pages/ucenter/helpCenter" class="a">
@@ -80,7 +82,6 @@
 </template>
 
 <script>
-	import { setCookie,getCookie,delCookie } from '@/assets/cookie';
 	import tabbar from '@/components/tabbar.vue'
 //	import headbar from '@/components/headbar.vue'
 	
@@ -103,21 +104,20 @@ export default {
   },
   mounted(){
   	let that = this;
-    var userInfo =  JSON.parse(getCookie('userInfo'));
-//  console.log(getCookie('userInfo'));
-//  if(userInfo !== null){
+    var userInfo =  JSON.parse(that.$cookie.getCookie('userInfo'));
+    if(userInfo !== null){
 			this.availResult = true;
     	this.avatarImg = userInfo.avatar;
 	    this.userName = userInfo.nickname;
 	    this.availMoney = userInfo.availMoney;
-//	    this.$http({
-//		        method: 'post',
-//		        url:that.$url+ 'user/userAccount',
-//	    	}).then(function (res) {
-//	    		debugger;
-//					console.log(res);
-//			})
-//  }
+	    that.$http({
+		        method: 'post',
+		        url:that.$url+ 'user/userAccount',
+		         headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
+	    	}).then(function (res) {
+					that.availMoney = res.data.data;
+			})
+    }
     
   }
 }

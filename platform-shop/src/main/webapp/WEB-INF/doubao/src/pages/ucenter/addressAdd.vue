@@ -1,21 +1,24 @@
 <template>
  	<div class="container">
+ 		<!--公用头部-->
+  		<!--<headbar :headFont = "headFont"></headbar>-->
+  		
  		<div class="add-address">
 		   <div class="add-form">
 		        <div class="form-item">
-		            <input class="input"  placeholder="姓名" v-model="address.userName" />
+		            <input class="input"  placeholder="姓名" value="address.userName" v-model="address.userName" />
 		        </div>
 		        <div class="form-item">
-		            <input class="input"    v-model="address.telNumber" oninput="if(value.length > 11)value = value.slice(0, 11)" type="number" placeholder="手机号码"/>
+		            <input class="input"  value="address.telNumber"  v-model="address.telNumber" oninput="if(value.length > 11)value = value.slice(0, 11)" type="number" placeholder="手机号码"/>
 		        </div>
 		        <div class="form-item">
-		            <input class="input" v-model="address.full_region" readonly @click="chooseRegion" placeholder="省份、城市、区县"/>
+		            <input class="input" value="address.full_region" v-model="address.full_region" readonly @click="chooseRegion" placeholder="省份、城市、区县"/>
 		        </div>
 		        <div class="form-item">
-		            <input class="input"  v-model="address.detailInfo" placeholder="详细地址, 如街道、楼盘号等"/>
+		            <input class="input"  value="address.detailInfo"  v-model="address.detailInfo" placeholder="详细地址, 如街道、楼盘号等"/>
 		        </div>
 		        <div class="form-default">
-		            <span @click="bindIsDefault"  class="default-input" :class=" address.is_default == 1 ? 'selected' : ''">设为默认地址</span>
+		            <span @click="bindIsDefault"  class="default-input" :class=" address.isDefault == 1 ? 'selected' : ''">设为默认地址</span>
 		        </div>
 		    </div>
 		
@@ -44,11 +47,14 @@
 <script>
 	import { Toast } from 'mint-ui';
 	import { MessageBox } from 'mint-ui';
+//	import headbar from '@/components/headbar.vue'
 		
 	export default {
 	  name: 'addressAdd',
+//	  components:{headbar},
 	  data () {
 	    return {
+//	    	headFont:'商品详情',
 	    	address: {
 		      id:0,
 		      province_id: 0,
@@ -248,6 +254,7 @@
 		    that.$http({
 		    	method:'post',
 		    	url:that.$url + 'region/list',
+		    	headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
 		    	params:{parentId: regionId }
 		    }).then(function (res) {
 		    	var res = res.data;
@@ -306,11 +313,12 @@
 		    that.$http({
 		    	method:'post',
 		    	url:that.$url + 'address/detail',
+		    	headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
 		    	params:{
 		    		id: that.addressId
 		    	}
 		    }).then(function (res) {
-//		    	res = {"errno":0,"data":{"id":105,"userId":28,"userName":"xt","telNumber":"121212121212121","postalCode":null,"nationalCode":null,"province":"2","provinceName":"上海","city":"2815","cityName":"长宁区","county":"51975","countyName":"城区","town":"","townName":null,"detailInfo":"sdfsdfsdsdfsdfsd","isDefault":1,"createTime":"2018-11-15","isDelete":null,"full_region":"上海长宁区城区"},"errmsg":"执行成功"};
+		    	var res=res.data;
 		      if (res.errno == 0) {
 		        if(res.data){
 		             that.address = res.data;
@@ -346,7 +354,11 @@
 		    that.$http({
 		    	method:'post',
 		    	url:that.$url + 'address/save',
-		    	params:{
+		    	headers: {
+					'X-Nideshop-Token':that.$cookie.getCookie('token'),
+					'Content-Type':'application/json'
+				},
+		    	data:{
 				      id: address.id,
 				      userName: address.userName,
 				      telNumber: address.telNumber,
@@ -367,7 +379,7 @@
 		    }).then(function (res) {
 		    	var res=res.data;
 		      if (res.errno === 0) {
-		        this.$router.push('/pages/category/addressList');
+		        that.$router.push('/pages/ucenter/addressList');
 		      }
 		    });
 
@@ -530,7 +542,7 @@
 
 .region-select {
   height: auto;
-  overflow: scroll;
+  overflow: hidden;
 }
 
 .region-list{

@@ -14,7 +14,7 @@
 		  <div class="titleBottom">
 		    <span>绑定手机号</span>
 		    <span class='mobile'  data-c="cee" v-if="telephone">{{telephone}}</span>
-			<span class='mobile'  data-c="cdd" v-else @click="bindPhone">去绑定</span>
+			<router-link to="/pages/ucenter/mobile/" class='mobile'  v-else >去绑定</router-link>
 		  </div>
 		  <div class="logout" @click="exitLogin">退出登录</div>
 	  </div>
@@ -40,17 +40,20 @@ export default {
     	that.$http({
 	        method: 'post',
 	        url:that.$url+ 'user/userInfo',
+	        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
 	        params:{typeId:0}
     	}).then(function (response) {
     		if(response.data.errno == '401' || response.data.errno == '请先登录'){
+    			that.$cookie.delCookie('userId');
+    			that.$cookie.delCookie('userInfo');
+    			that.$cookie.delCookie('token');
     			that.fontSize.goLogin()
     		}else{
-	    			console.log(response.data)
-	    			that.accountSecurity = response.data;
-	    			if(response.data.mobile == null || response.data.mobile ==''){
-	    				that.telephone = response.data.mobile;
+	    			that.accountSecurity = response.data.data;
+	    			if(response.data.data.mobile == null || response.data.data.mobile ==''){
+	    				that.telephone = response.data.data.mobile;
     				}else{
-	    				that.telephone = that.validateMobile(response.data.mobile);
+	    				that.telephone = that.validateMobile(response.data.data.mobile);
     				}
     			}
 		  })
@@ -63,11 +66,20 @@ export default {
 	    var finalPhone = first + '****' + last;
 	    return finalPhone;
 	},
-  	bindPhone(){
-  		console.log('aaaa');
-  	},
   	exitLogin(){
-  		console.log('退出登录接口');
+  		let that = this;
+		MessageBox({
+		  title: ' ',
+		  message: '确定退出登录？ ',
+		  showCancelButton: true
+		},function(params){
+			if(params == 'confirm'){
+					that.$cookie.delCookie('userId');
+	    			that.$cookie.delCookie('userInfo');
+	    			that.$cookie.delCookie('token');
+					that.$router.push('/pages/ucenter');
+			}
+		});
   	}
   }
 }

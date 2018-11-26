@@ -32,7 +32,6 @@
 </template>
 
 <script>
-import { setCookie,getCookie,delCookie } from '@/assets/cookie';
 //import headbar from '@/components/headbar.vue'
 
 export default {
@@ -54,9 +53,9 @@ export default {
     		 that.$http({
 			   	method:'post',
 			   	url:that.$url+'coupon/listByGoods',
+			   	headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
 			   params:{ type: this.buyType }
 		   }).then(function (res) {
-		   		res = {"data":{"errno":0,"data":[{"id":11,"user_coupon_id":3703,"name":"平台抵扣券","type_money":0.00,"send_type":8,"min_amount":0.00,"max_amount":0.00,"send_start_date":"2018.10.12","send_end_date":"2018.10.12","use_start_date":"2018.10.12","use_end_date":"2018年10月12日","min_goods_amount":0.00,"coupon_txt":null,"user_id":"28","coupon_number":"1","enabled":1,"min_transmit_num":null,"coupon_status":1,"coupon_price":7.00}],"errmsg":"执行成功"}};
 		   		console.log(res);
 			    if (res.data.errno == 0) {
 			        that.couponList = res.data.data;
@@ -68,7 +67,7 @@ export default {
 		    if (enabled==0) {
 		      return
 		    }
-		    setCookie('couponId',couponId); //缓存优惠券id
+		    this.$cookie.setCookie('couponId',couponId); //缓存优惠券id
 		    console.log(this.isBuy);
 		    this.$router.push('/pages/category/checkout');
 	  	}

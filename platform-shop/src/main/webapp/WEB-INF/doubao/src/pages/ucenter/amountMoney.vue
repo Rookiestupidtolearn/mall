@@ -36,16 +36,11 @@ export default {
     	that.$http({
 	        method: 'post',
 	        url:that.$url+ 'user/userAccountDetail',
+	        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
     	}).then(function (res) {
-      		 res = {"data":{"code":1,"data":[]}};
       		 var res = res.data;
     		if(res.errno == '401' || res.errno == '请先登录'){
-    			MessageBox({
-					  title: ' ',
-					  message: '请先登录 ',
-					  showCancelButton: true
-					});
-    			return false;
+				that.fontSize.goLogin()
     		}else{
     			for(var i=0; i<res.data.length; i++){
 		          res.data[i].createTime = that.timestampToTime(res.data[i].createTime);

@@ -60,6 +60,7 @@
 		    	that.$http({
 			        method: 'post',
 			        url:that.$url+ 'pay/prepay',
+			        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
 			        params:{ orderId: that.data.orderId, payType: 1 }
 		    	}).then(function (response) {
 				 })
