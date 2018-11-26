@@ -413,7 +413,7 @@ export default {
   overflow: hidden;
   font-size: .30rem;
   color: #333;
-  padding-bottom:.15rem
+  margin-bottom:.15rem
 }
 
 .cate-item .item .price{
