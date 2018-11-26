@@ -64,11 +64,7 @@
 	  		that.$http({
 	        method: 'post',
 	        url:that.$url+ 'user/userInfo',
-	        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
 	    	}).then(function (response) {
-    		if(response.data.errno == '401' || response.data.errno == '请先登录'){
-    			that.fontSize.goLogin()
-    		}else{
     			that.mobileInfo = response.data.data;
     			var res = response.data.data;
     			if (res.mobile == null || res.mobile == '') {
@@ -77,7 +73,6 @@
 		        	that.bindResult = false;
 		        	that.telephone = that.validateMobile(res.mobile);
 		        }
-    		}
 		  })
 	  },
 	  methods:{
@@ -113,8 +108,6 @@
 		    	}).then(function (response) {
 		    		if (response.data.code = 500){
 		    			that.$toast(response.data.msg);
-		    		}else if(response.data.data.errno == '401' || response.data.data.errno == '请先登录'){
-		    			that.$fontSize.goLogin();
 		    		}else{
 						Toast('发送成功');
 	                    var i = 60;
@@ -144,7 +137,6 @@
 			        method: 'post',
 			        url:that.$url+ 'user/bindMobile',
 			        params:{ mobile_code: this.teleyzm, mobile: this.telephone },
-			        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
 		    	}).then(function (response) {
 		    		if(response.data.data.errno == '0'){
 						that.$router.push('/')	

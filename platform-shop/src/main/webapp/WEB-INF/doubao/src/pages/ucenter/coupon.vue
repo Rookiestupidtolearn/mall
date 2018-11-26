@@ -44,14 +44,9 @@ export default {
     	that.$http({
         method: 'post',
         url:that.$url+ 'coupon/list',
-        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
     	}).then(function (response) {
-    		if(response.data.errno == '401' || response.data.errno == '请先登录'){
-    			that.fontSize.goLogin()
-    		}else{
     			that.couponList = response.data.data;
-    		}
-		  })
+	  })
   },
   methods:{
   	

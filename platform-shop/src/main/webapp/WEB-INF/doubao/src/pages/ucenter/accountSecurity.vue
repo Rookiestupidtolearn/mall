@@ -40,22 +40,14 @@ export default {
     	that.$http({
 	        method: 'post',
 	        url:that.$url+ 'user/userInfo',
-	        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
 	        params:{typeId:0}
     	}).then(function (response) {
-    		if(response.data.errno == '401' || response.data.errno == '请先登录'){
-    			that.$cookie.delCookie('userId');
-    			that.$cookie.delCookie('userInfo');
-    			that.$cookie.delCookie('token');
-    			that.fontSize.goLogin()
-    		}else{
-	    			that.accountSecurity = response.data.data;
-	    			if(response.data.data.mobile == null || response.data.data.mobile ==''){
-	    				that.telephone = response.data.data.mobile;
-    				}else{
-	    				that.telephone = that.validateMobile(response.data.data.mobile);
-    				}
-    			}
+    			that.accountSecurity = response.data.data;
+    			if(response.data.data.mobile == null || response.data.data.mobile ==''){
+    				that.telephone = response.data.data.mobile;
+				}else{
+    				that.telephone = that.validateMobile(response.data.data.mobile);
+				}
 		  })
   },
   methods:{

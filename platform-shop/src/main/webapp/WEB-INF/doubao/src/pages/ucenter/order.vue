@@ -43,21 +43,12 @@ export default {
     	that.$http({
         method: 'post',
         url:that.$url+ 'order/list',
-        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
         data:{
         	page:1,
         	size:10
         }
     	}).then(function (response) {
-    		if(response.data.errno == '401' || response.data.errno == '请先登录'){
-		    			that.$toast(response.data.errmsg);
-		    			that.$cookie.delCookie('userId');
-		    			that.$cookie.delCookie('userInfo');
-		    			that.$cookie.delCookie('token');
-		    			that.fontSize.goLogin()
-    		}else{
 	    		that.orderList = response.data.data.data;
-    		}
 		  })
   },
   methods:{

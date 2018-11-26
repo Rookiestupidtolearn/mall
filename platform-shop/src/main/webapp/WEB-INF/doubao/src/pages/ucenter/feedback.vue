@@ -92,22 +92,13 @@
 		    that.$http({
 			        method: 'post',
 			        url:that.$url+ 'feedback/save',
-					headers: {
-						'X-Nideshop-Token':that.$cookie.getCookie('token'),
-						'Content-Type':'application/json'
-					},
 			        data:{
 			        	content:this.introduct,
 			        	index:this.values,
 			        	mobile:this.inputValue
 			        }
 		    	}).then(function (response) {
-		    		if(response.data.errno == '401' || response.data.errno == '请先登录'){
-		    			that.$cookie.delCookie('userId');
-		    			that.$cookie.delCookie('userInfo');
-		    			that.$cookie.delCookie('token');
-		    			that.fontSize.goLogin()
-		    		}else if(response.data.errno == '1' ){
+		    		if(response.data.errno == '1' ){
 		    			that.$toast(response.data.errmsg);
 		    		}else if(response.data.code == 500 ){
 		    			that.$toast(response.data.msg);

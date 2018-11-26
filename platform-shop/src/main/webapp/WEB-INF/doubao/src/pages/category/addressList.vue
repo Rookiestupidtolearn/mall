@@ -51,16 +51,8 @@ export default {
 		        url:that.$url+ 'address/list',
 		        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
 	    	}).then(function (response) {
-	    		if(response.data.errno == '401' || response.data.errno == '请先登录'){
-	    			that.$cookie.delCookie('userId');
-		    			that.$cookie.delCookie('userInfo');
-		    			that.$cookie.delCookie('token');
-		    			that.fontSize.goLogin()
-		    			return false;
-	    		}else{
 	    			that.addressList = response.data.data;
 	    			console.log(response.data.data)
-	    		}
 			  })
 	  	},
 		addressAddOrUpdate:function(setId){

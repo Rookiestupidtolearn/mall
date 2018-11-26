@@ -49,17 +49,9 @@ export default {
 			that.$http({
 		        method: 'post',
 		        url:that.$url+ 'address/list',
-		        headers: {
-						'X-Nideshop-Token':that.$cookie.getCookie('token'),
-				},
 			}).then(function (response) {
 				var response=response.data;
-				if(response.data.errno == '401' || response.data.errno == '请先登录'){
-					that.fontSize.goLogin()
-				}else{
-					console.log(response)
 					that.addressList = response.data;
-				}
 			  })
   	},
 		addressAddOrUpdate(setId){

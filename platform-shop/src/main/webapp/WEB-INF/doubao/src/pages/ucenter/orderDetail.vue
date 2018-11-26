@@ -96,26 +96,16 @@ export default {
         url:that.$url+ 'order/detail',
         params:{orderId:id}
     	}).then(function (response) {
-    		response = {"errno":0,"data":{"orderInfo":{"id":130,"order_sn":"20181107131002467713534","user_id":28,"order_status":0,"shipping_status":0,"pay_status":0,"consignee":"张然","country":null,"province":"北京市","city":"市辖区","district":"朝阳区","address":"金隅泰和园2403","mobile":"18310528362","postscript":null,"shipping_id":0,"shipping_code":null,"shipping_name":null,"shipping_no":null,"pay_id":null,"pay_name":null,"shipping_fee":0.00,"actual_price":6.30,"integral":0,"integral_money":0.00,"order_price":9.00,"goods_price":9.00,"add_time":"2018-11-07 13:10:02","confirm_time":null,"pay_time":null,"freight_price":0,"coupon_id":3650,"parent_id":null,"coupon_price":2.70,"callback_status":null,"goodsCount":null,"order_status_text":"未付款","handleOption":{"cancel":true,"confirm":false,"delivery":false,"buy":false,"pay":true,"comment":false,"delete":false,"return":false},"full_cut_price":null,"full_region":"北京市 市辖区 朝阳区 ","order_type":null},"orderGoods":[{"id":162,"order_id":130,"goods_id":1181022,"goods_name":"sjmBB测试勿动001","goods_sn":"136","product_id":279,"number":1,"market_price":9.00,"retail_price":20.00,"goods_specifition_name_value":null,"is_real":null,"goods_specifition_ids":"","list_pic_url":"http://aoss.huaqianyueshang.com/wall/20181023/10323836475fd3.png"}],"handleOption":{"cancel":true,"confirm":false,"delivery":false,"buy":false,"pay":true,"comment":false,"delete":false,"return":false}},"errmsg":"执行成功"};
-    		if(response.data.errno == '401' || response.data.errno == '请先登录'){
-    			MessageBox({
-					  title: ' ',
-					  message: '请先登录 ',
-					  showCancelButton: true
-					});
-    			return false;
-    		}else{
-	    		console.log(response)
-	    		that.orderInfo = response.data.orderInfo;
-	    		that.orderGoods =  response.data.orderGoods;
-          that.handleOption =  response.data.handleOption;
-          
+    		console.log(response)
+    		that.orderInfo = response.data.orderInfo;
+    		that.orderGoods =  response.data.orderGoods;
+      		that.handleOption =  response.data.handleOption;
+      
           //101取消订单   301已完成订单   103订单失效
 	        if (response.data.orderInfo.order_status == '101' || response.data.orderInfo.order_status == '301' || response.data.orderInfo.order_status == '103') {
 	          	that.cancelBtnShow = true
 	      	}
-    		}
-		  })
+		})
   },
   methods:{
   	payOrder(){

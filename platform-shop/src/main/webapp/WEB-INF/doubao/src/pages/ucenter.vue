@@ -113,7 +113,6 @@ export default {
 	    that.$http({
 		        method: 'post',
 		        url:that.$url+ 'user/userAccount',
-		         headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
 	    	}).then(function (res) {
 					that.availMoney = res.data.data;
 			})

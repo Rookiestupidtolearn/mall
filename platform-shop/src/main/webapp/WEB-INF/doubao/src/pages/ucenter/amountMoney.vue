@@ -36,12 +36,8 @@ export default {
     	that.$http({
 	        method: 'post',
 	        url:that.$url+ 'user/userAccountDetail',
-	        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
     	}).then(function (res) {
       		 var res = res.data;
-    		if(res.errno == '401' || res.errno == '请先登录'){
-				that.fontSize.goLogin()
-    		}else{
     			for(var i=0; i<res.data.length; i++){
 		          res.data[i].createTime = that.timestampToTime(res.data[i].createTime);
 		          if (res.data[i].tranFlag == 1){
@@ -51,7 +47,6 @@ export default {
 		          }
 		        }
     			that.userAccountDetail = res.data;
-    		}
 		  })
   },
   methods:{

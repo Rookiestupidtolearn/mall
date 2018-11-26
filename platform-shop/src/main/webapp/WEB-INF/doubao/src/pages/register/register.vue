@@ -121,7 +121,7 @@
 			  			}
 			  		}, 1000);
 		    	}else{
-		    		this.$toast({message:res.msg,duration:3000});
+		    		that.$toast({message:res.data.msg,duration:3000});
 		    	}
 			})
 	  	}

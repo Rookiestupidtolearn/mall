@@ -33,17 +33,9 @@ export default {
     	that.$http({
 	        method: 'post',
 	        url:that.$url+ 'collect/list',
-	       headers: {
-				'X-Nideshop-Token':that.$cookie.getCookie('token'),
-				'Content-Type':'application/json'
-			},
 	        data:{typeId:0}
     	}).then(function (response) {
-    		if(response.data.errno == '401' || response.data.errno == '请先登录'){
-    			that.fontSize.goLogin()
-    		}else{
     			that.collectList = response.data.data;
-    		}
 		  })
   },
   methods:{

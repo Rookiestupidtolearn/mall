@@ -39,14 +39,8 @@ name: 'footprint',
     	that.$http({
 	        method: 'post',
 	        url:that.$url+ 'footprint/list',
-	        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
     	}).then(function (response) {
-    		if(response.data.errno == '401' || response.data.errno == '请先登录'){
-    			that.fontSize.goLogin()
-    		}else{
-    			console.log(response)
     			that.footprintList = response.data.data.data;
-    		}
 		  })
  	 }
 }
