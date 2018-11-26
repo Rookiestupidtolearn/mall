@@ -65,11 +65,15 @@ public class ApiCatalogController extends ApiBaseAction {
         	for(CategoryVo vo : data){
         		List<CategoryVo> subData = categoryService.quertSubCategorys(vo.getId());
         		if(!CollectionUtils.isEmpty(subData)){
-        			for(CategoryVo sub : subData){
+        			bgm:for(CategoryVo sub : subData){
         				List<GoodsVo> goods = apiGoodsMapper.quertGoodsByCategory(sub.getId().toString());
                 		if(!CollectionUtils.isEmpty(goods)){
-                			newData.add(vo);
-                			break;
+                			for(GoodsVo goodsVo : goods){
+                				if(goodsVo.getIs_on_sale() == 1 || goodsVo.getIs_on_sale() == 3){
+                					newData.add(vo);
+                					break bgm;
+                				}
+                			}
                 		}
                 		if("热销".equals(sub.getName()) && "其他".equals(vo.getName())){
                 			newData.add(vo);
