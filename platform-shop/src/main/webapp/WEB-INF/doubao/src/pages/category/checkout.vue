@@ -28,10 +28,10 @@
 	    </div>
 	    
 	    <div class="coupon-box" @click='tapCoupon'>
-	    	 <div class="coupon-item" v-if="couponPrice">
-	            <div class="l">
-	            	<span class="name">优惠券金额</span>
-	                <span class="txt">{{couponPrice}}</span>
+	    	 <div class="coupon-item" v-if="couponPrice==0">
+	    	 	 <div class="l">
+	                <!--<span class="name">请选择优惠券</span>-->
+	                <span class="txt">无可用优惠券</span>
 	            </div>
 	            <div class="r">
 	                <img src="../../../static/images/address_right.png"/>
@@ -39,8 +39,8 @@
 	        </div>
 	         <div class="coupon-item" v-else>
 	            <div class="l">
-	                <span class="name">请选择优惠券</span>
-	                <span class="txt">{{couponDesc}}</span>
+	            	<!--<span class="name">优惠券金额</span>-->
+	                <span class="txt">平台币抵扣券</span>
 	            </div>
 	            <div class="r">
 	                <img src="../../../static/images/address_right.png"/>
