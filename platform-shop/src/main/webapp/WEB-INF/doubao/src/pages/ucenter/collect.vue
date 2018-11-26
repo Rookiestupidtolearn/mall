@@ -2,7 +2,7 @@
  	<div class="collect-list">
  		<!--公用头部-->
   		<!--<headbar :headFont = "headFont"></headbar>-->
-  	<div class="">
+  	<div >
 	    <router-link :to="'/pages/goods/goods?id='+item.value_id" class="item" v-for="item in collectList" >
 	      <img class="img" :src="item.list_pic_url"/>
 	      <div class="info">
@@ -34,8 +34,8 @@ export default {
 	        method: 'post',
 	        url:that.$url+ 'collect/list',
 	        data:{typeId:0}
-    	}).then(function (response) {
-    			that.collectList = response.data.data;
+    	}).then(function (res) {
+    			that.collectList = res.data.data;
 		  })
   },
   methods:{
@@ -46,6 +46,10 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.noData{
+	font-size:.29rem;
+	text-align: center;
+}
 .collect-list{
   width: 100%;
   height: auto;

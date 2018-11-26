@@ -3,7 +3,7 @@
  		<!--公用头部-->
   		<!--<headbar :headFont = "headFont"></headbar>-->
   		
-  		<div class="">
+  		<div v-if = "couponList.length>0">
 	 		<div class="item" v-for = "item in couponList"  :style="{background: [ item.coupon_status==1 || item.coupon_status==4  ? 'linear-gradient(to right,#cfa568,#e3bf79)' : 'linear-gradient(to right,#999,#DDDDDD)']}">
 	         <!-- <div class="tag">新人专享</div>  -->
 	        <div class="content">
@@ -21,6 +21,10 @@
 	        </div>
 	        <div class="condition">抵扣￥{{item.coupon_price}}</div>
 	      </div>
+	     </div>
+	     <div v-else class="noData">
+	     	<img src="../../../static/images/my_course_empty.png" alt="" />
+	     	<p>您还没有优惠券~</p>
 	     </div>
  	</div>
 </template>
@@ -56,6 +60,15 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.noData img{
+	width:6.4rem;
+	margin:0 auto;
+	margin-top: 1rem;
+}
+.noData p{
+	font-size:.29rem;
+	font-weight: bold;
+}
 .coupon-list {
 height:auto;
 overflow:hidden;

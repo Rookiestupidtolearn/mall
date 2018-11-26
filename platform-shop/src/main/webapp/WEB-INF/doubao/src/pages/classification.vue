@@ -117,6 +117,7 @@ export default {
 		height:2.16rem;
 		width:1.44rem;
 		margin-right:.34rem;
+    margin-top: .06rem;
 }
 .bd a img {
 	width:1.44rem;
@@ -178,8 +179,9 @@ width:auto;
 		}
 		.content{
 			overflow: hidden;
-	    margin-top: 1.2rem;
-	    height: 11rem;
+   	 	padding-top: 1.2rem;
+    	height: 11rem;
+    	background-color: #fff;
 		}
 		.content .catalog{
 			float:left;
