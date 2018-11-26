@@ -14,7 +14,7 @@
 			      <img class="icon"  @click="clearHistory"  src="http://nos.netease.com/mailpub/hxm/yanxuan-wap/p/20150730/style/img/icon-normal/del1-93f0a4add4.png"></image>
 			    </div>
 			    <div class="b">
-			      <div class="item"  v-for="item in historyKeyword" hover-class="navigator-hover">{{item}}</div>
+			      <div class="item"  v-for="item in historyKeyword" @click="onKeywordTap(item)" hover-class="navigator-hover">{{item}}</div>
 			    </div>
 	 	 	</div>
  		</div>
@@ -91,6 +91,17 @@ export default {
 			this.getKeyWordList();
 	  },
 	  methods:{
+	  	onKeywordTap(keyword){
+	  		this.getSearchResult(keyword);
+	  	},
+	  	getSearchResult(keyword) {
+		    this.value = keyword;
+		    this.page = 1;
+		    this.categoryId = 0;
+		    this.goodsList = [];
+		
+		    this.showList();
+		  },
 	  	selectCategory(currentIndex){
 		    let filterCategory = this.filterCategory;
 		    let currentCategory = null;
