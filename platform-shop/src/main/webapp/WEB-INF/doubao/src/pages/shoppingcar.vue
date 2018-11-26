@@ -96,14 +96,9 @@ export default {
   			that.$http({
         method: 'post',
         url: that.$url+'cart/index',
-        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
     	}).then(function (response) {
-    		if(response.data.errno == '401' || response.data.errno == '请先登录'){
-    				that.fontSize.goLogin()
-    		}else{
 				    that.cartGoods = response.data.data.cartList;
 				    that.cartTotal = response.data.data.cartTotal;
-			  }
 		  })
   		},
 	  	deleteCart(){
@@ -131,10 +126,6 @@ export default {
 		  that.$http({
 	        method: 'post',
 	        url: that.$url+'cart/delete',
-	        headers: {
-	        	'X-Nideshop-Token':that.$cookie.getCookie('token'),
-	        	'Content-Type':'application/json'
-        	},
 	        data:{productIds: productIds.join(',')}
         }).then(function (res) {
         		var res = res.data;
@@ -179,7 +170,6 @@ export default {
 			     that.$http({
 			        method: 'post',
 			        url: that.$url+'cart/checked',
-			        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
 			        data:{ productIds: productIds.join(','), isChecked: that.isCheckedAll() ? 0 : 1 }
 			     }).then(function (res) {
 			     	var res = res.data;
@@ -212,10 +202,6 @@ export default {
 			      that.$http({
 			        method: 'post',
 			        url: that.$url+'cart/checked',
-			        headers: {
-			        	'X-Nideshop-Token':that.$cookie.getCookie('token'),
-			        	'Content-Type':'application/json'
-		        	},
 			        data:{ 
 				        	productIds: that.cartGoods[itemIndex].product_id, 
 				        	isChecked: that.cartGoods[itemIndex].checked ? 0 : 1 
@@ -266,7 +252,6 @@ export default {
 	    that.$http({
 	    	 method: 'post',
     		url: that.$url+'cart/index',
-    		headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
 	    }).then(function (res) {
 	    	var res = res.data;
 	      	if (res.errno === 0) {
@@ -299,10 +284,6 @@ export default {
 		    that.$http({
 		    	 method: 'post',
         	url: that.$url+'cart/update',
-        	headers: {
-        		'X-Nideshop-Token':that.$cookie.getCookie('token'),
-        		'Content-Type':'application/json'
-        	},
 		      data:{
 		      	productId: productId,
 			      goodsId: goodsId,
