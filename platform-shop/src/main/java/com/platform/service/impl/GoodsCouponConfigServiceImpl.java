@@ -15,6 +15,7 @@ import com.platform.entity.GoodsCouponConfigEntity;
 import com.platform.entity.GoodsEntity;
 import com.platform.entity.SysUserEntity;
 import com.platform.service.GoodsCouponConfigService;
+import com.platform.service.GoodsService;
 import com.platform.utils.RRException;
 import com.platform.utils.ShiroUtils;
 
@@ -33,6 +34,10 @@ public class GoodsCouponConfigServiceImpl implements GoodsCouponConfigService {
     private GoodsCouponConfigDao goodsCouponConfigDao;
     @Autowired
     private GoodsDao goodDao;
+    @Autowired
+    private GoodsService goodService;
+    
+    
     private Logger log = Logger.getLogger(GoodsCouponConfigServiceImpl.class);
 
     @Override
@@ -110,8 +115,7 @@ public class GoodsCouponConfigServiceImpl implements GoodsCouponConfigService {
 				}
 				if(goods.getIsOnSale() == 1 ||goods.getIsOnSale() == 3){
 					goodsEntity = goods;
-					goodsEntity.setIsOnSale(0);
-					goodDao.update(goodsEntity);
+					goodService.unSaleBatch(new Integer[]{goodsEntity.getId()});
 				}
 				List<GoodsCouponConfigEntity> goodsCouponConfigEntityList = goodsCouponConfigDao.selectGoodsIdsByGoodsId(new Integer[]{goodsIds[i]});
 				if(CollectionUtils.isEmpty(goodsCouponConfigEntityList)){
