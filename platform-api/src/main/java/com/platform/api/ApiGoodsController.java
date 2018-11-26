@@ -388,15 +388,10 @@ public class ApiGoodsController extends ApiBaseAction {
         params.put("is_hot", isHot);
         params.put("page", page);
         params.put("limit", size);
-        params.put("order", sort);
-        params.put("sidx", order);
         //
         if (null != sort && sort.equals("price")) {
             params.put("sidx", "retail_price");
             params.put("order", order);
-        } else {
-            params.put("sidx", "nideshop_goods.id");
-            params.put("order", "desc");
         }
         //添加到搜索历史
         if (!StringUtils.isNullOrEmpty(keyword)) {
@@ -416,9 +411,10 @@ public class ApiGoodsController extends ApiBaseAction {
         rootCategory.setChecked(false);
         filterCategory.add(rootCategory);
         //
-        params.put("fields", "category_id");
+        params.put("fields", "category_id,nideshop_goods.id");
         List<GoodsVo> categoryEntityList = goodsService.queryList(params);
         params.remove("fields");
+        params.put("group", "a.id");
         if (null != categoryEntityList && categoryEntityList.size() > 0) {
             List<Integer> categoryIds = new ArrayList();
             for (GoodsVo goodsVo : categoryEntityList) {
@@ -448,19 +444,8 @@ public class ApiGoodsController extends ApiBaseAction {
             }
         }
         //加入分类条件
-        if(0 == categoryId){
-        	List<Integer> categoryIds = new ArrayList();
-    		Map categoryParam = new HashMap();
-    		categoryParam.put("parent_id", categoryId);
-    		categoryParam.put("fields", "id");
-    		List<CategoryVo> childIds = categoryService.queryList(categoryParam);
-    		for (CategoryVo categoryEntity : childIds) {
-    			categoryIds.add(categoryEntity.getId());
-    		}
-    		categoryIds.add(categoryId);
-    		params.put("categoryIds", categoryIds);
-        }else{
-        	 //查询子分类
+        if (null != categoryId && categoryId > 0) {
+        	//查询子分类
             CategoryVo subCategorys = apiCategoryMapper.queryObject(categoryId);
             //查询父节点
             CategoryVo parentCategorys = apiCategoryMapper.queryObject(subCategorys.getParent_id());
@@ -482,6 +467,8 @@ public class ApiGoodsController extends ApiBaseAction {
         }
         //查询列表数据
         params.put("fields", "nideshop_goods.id as id,nideshop_goods.name as name, nideshop_goods.list_pic_url as list_pic_url, nideshop_goods.market_price as market_price, nideshop_goods.retail_price, nideshop_goods.goods_brief,case when min(nideshop_product.market_price) != '' then min(nideshop_product.market_price) else 0 end product_market_price");
+        params.put("sidx", "a.id ");
+        params.put("order", "desc");
         Query query = new Query(params);
         PageHelper.startPage(query.getPage(), query.getLimit());
         List<GoodsVo> goodsList = goodsService.queryList(query);
