@@ -152,9 +152,9 @@
 	    	cartGoodsCount:0,
 	    	userHasCollect: 0,
 	    	openAttr: false,
-	    	noCollectImage: "../../static/images/icon_collect.png",
-		    hasCollectImage: "../../static/images/icon_collect_checked.png",
-		    collectBackImage: "../../static/images/icon_collect.png"
+	    	noCollectImage: "../../../static/images/icon_collect.png",
+		    hasCollectImage: "../../../static/images/icon_collect_checked.png",
+		    collectBackImage: "../../../static/images/icon_collect.png"
 	    }
 	  },
 	  mounted(){
@@ -165,7 +165,6 @@
 	  		that.$http({
 	    		method: 'post',
 		        url:that.$url+ 'cart/goodscount',
-		        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
 	    	}).then(function (response) {
 	    		if(response.data.errno==0){
 	    			let _res = response.data.data;
@@ -177,7 +176,6 @@
 	    	that.$http({
 	    		method: 'post',
 		        url:that.$url+ 'goods/related',
-		        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
 		        params:{id:that.idm}
 	    	}).then(function (response) {
 		          that.relatedGoods = response.data.data.goodsList;
@@ -187,7 +185,6 @@
 	    	that.$http({
 		        method: 'post',
 		        url:that.$url+ 'goods/detail',
-		        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
 		        params:{id:that.idm}
 	    	}).then(function (response) {
 	    		var res = response.data;
@@ -214,7 +211,7 @@
 		        }
 		        //设置默认值
 		        that.setDefSpecInfo(that.specificationList);
-		        if (res.userHasCollect == 1) {
+		        if (res.data.userHasCollect == 1) {
 		           that.collectBackImage = that.hasCollectImage;
 		        } else {
 		            that.collectBackImage = that.noCollectImage;
@@ -435,7 +432,6 @@
 		      that.$http({
 		    		method: 'post',
 			        url:that.$url+ 'cart/add',
-			        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
 			        data:{ goodsId:that.goods.id, number:that.number, productId: checkedProduct[0].id }
 		    	}).then(function (response) {
 			          let _res = response;
@@ -476,14 +472,14 @@
 	    	that.$http({
 	    		method: 'post',
 		        url:that.$url+ 'collect/addordelete',
-		        params:{ typeId: 0, valueId: this.idm}
+		        data:{ typeId: 0, valueId: this.idm}
 	    	}).then(function (response) {
-		          let _res = response;
+		          let _res = response.data;
 		          if (_res.errno == 0) {
 			            if ( _res.data.type == 'add') {
-			                this.collectBackImage =  this.hasCollectImage;
+			                that.collectBackImage =  that.hasCollectImage;
 			            } else {
-			              	this.collectBackImage =  this.noCollectImage;
+			              	that.collectBackImage = that.noCollectImage;
 			            }
 		          } else {
 		          		Toast({message: _res.data.errmsg,duration: 1500});

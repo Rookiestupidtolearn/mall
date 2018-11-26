@@ -160,7 +160,6 @@
 			    that.$http({
 	    		method: 'post',
 		        url:that.$url+ 'order/submit',
-		        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
 		        params:{ 
 		        	addressId: this.addressId, 
 		        	couponId: this.couponId, 
@@ -196,7 +195,6 @@
 		    that.$http({
 	    		method: 'post',
 		        url:that.$url+ 'cart/checkout',
-		        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
 		        params:{ 
 		        	addressId: that.addressId,
 		        	couponId: that.couponId, 

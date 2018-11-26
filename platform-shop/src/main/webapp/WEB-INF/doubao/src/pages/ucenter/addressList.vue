@@ -68,10 +68,6 @@ export default {
 					that.$http({
 				        method: 'post',
 				        url:that.$url+ 'address/delete',
-				        headers: {
-							'X-Nideshop-Token':that.$cookie.getCookie('token'),
-							'Content-Type':'application/json'
-						},
 				        data:{id:deleteId}
 			    	}).then(function (res) {
 			    		if( res.errno = '0'){

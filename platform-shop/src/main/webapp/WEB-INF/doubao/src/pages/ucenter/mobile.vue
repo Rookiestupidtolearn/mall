@@ -99,7 +99,6 @@
 			        method: 'post',
 			        url:that.$url+ 'user/smscode',
 			        headers: {
-						'X-Nideshop-Token':that.$cookie.getCookie('token'),
 						'Content-Type':'application/json'
 					},
 					data:{

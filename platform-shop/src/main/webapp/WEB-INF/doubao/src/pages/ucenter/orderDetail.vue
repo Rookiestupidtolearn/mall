@@ -187,21 +187,12 @@ export default {
 						        params:{orderId:id}
 						    	}).then(function (response) {
 						    		response = {"errno":0,"data":"取消成功","errmsg":"执行成功"};
-						    		if(response.data.errno == '401' || response.data.errno == '请先登录'){
-						    			MessageBox({
-											  title: ' ',
-											  message: '请先登录 ',
-											  showCancelButton: true
-											});
-						    			return false;
-						    		}else{
 							    		MessageBox({
 											  title: ' ',
 											  message: response.data
 											},function(action){
 													that.$router.push('/views/ucenter/order');
 											});
-						    		}
 								  })
 							}
 					});

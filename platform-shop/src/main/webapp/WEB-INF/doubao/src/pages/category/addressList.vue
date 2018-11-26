@@ -49,7 +49,6 @@ export default {
 	    	that.$http({
 		        method: 'post',
 		        url:that.$url+ 'address/list',
-		        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
 	    	}).then(function (response) {
 	    			that.addressList = response.data.data;
 	    			console.log(response.data.data)
@@ -78,7 +77,6 @@ export default {
 					that.$http({
 				        method: 'post',
 				        url:that.$url+ 'address/delete',
-				        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
 				        params:{id:deleteId}
 			    	}).then(function (res) {
 			    		res = {"errno":0,"data":"","errmsg":"执行成功"};

@@ -140,7 +140,6 @@ export default {
 	  		that.$http({
 	        method: 'post',
 	        url: that.$url+'search/index',
-	        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
 	    	}).then(function (response) {
 	    		var  response = response.data;
     			that.historyKeyword = response.data.historyKeywordList,
@@ -154,7 +153,6 @@ export default {
 	  		   this.$http({
 			        method: 'post',
 			        url: this.$url+'search/clearhistory',
-			        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')}
 		    	}).then(function (response) {
 		    			console.log(response.data);
 		    			console.log('清除成功');
@@ -166,7 +164,6 @@ export default {
 			   that.$http({
 			        method: 'post',
 			        url: that.$url+'search/helper',
-			        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
 			        params:{keyword:that.value}
 		    	}).then(function (response) {
 		    			console.log(response.data);
@@ -178,7 +175,6 @@ export default {
 	  		that.$http({
 		        method: 'post',
 		        url: that.$url+'goods/list',
-		        headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
 		        params:{
 		        	keyword:that.value,
 		        	page:that.page,

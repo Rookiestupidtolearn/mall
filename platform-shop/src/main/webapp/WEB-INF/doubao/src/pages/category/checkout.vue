@@ -183,7 +183,6 @@
 	    		method: 'post',
 		        url:that.$url+ 'order/submit',
 		        headers: {
-						'X-Nideshop-Token':that.$cookie.getCookie('token'),
 						'Content-Type':'application/json'
 					},
 			    data:{ 
@@ -222,7 +221,6 @@
 	    		method: 'post',
 		        url:that.$url+ 'cart/checkout',
 		        headers: {
-					'X-Nideshop-Token':that.$cookie.getCookie('token'),
 					'Content-Type':'application/json'
 				},
 		        data:{ 

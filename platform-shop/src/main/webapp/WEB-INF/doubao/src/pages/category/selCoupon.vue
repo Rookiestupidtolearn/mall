@@ -53,7 +53,6 @@ export default {
     		 that.$http({
 			   	method:'post',
 			   	url:that.$url+'coupon/listByGoods',
-			   	headers: {'X-Nideshop-Token':that.$cookie.getCookie('token')},
 			   params:{ type: this.buyType }
 		   }).then(function (res) {
 		   		console.log(res);
