@@ -60,7 +60,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only  active -->
 <style>
 	.mint-tabbar > .mint-tab-item.is-selected{
-		color:#b4282d;
+		color:#b4282d !important;
 	}
 	.mint-tabbar.is-fixed{
 		height:1.2rem;
