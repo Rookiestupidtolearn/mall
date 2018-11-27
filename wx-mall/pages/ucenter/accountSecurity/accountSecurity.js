@@ -96,12 +96,12 @@ Page({
           name: '未认证>'
         })
       } else {
-        // that.setData({
-        //   name: '未认证>'
-        // })
         that.setData({
-          name: that.validatename(name)
+          name: '未认证>'
         })
+        // that.setData({
+        //   name: that.validatename(name)
+        // })
       }
       if (idCard == null || idCard == '') {
         that.setData({
