@@ -19,6 +19,7 @@ Page({
     this.setData({ idcard: e.detail.value })
   },
   confirm: function () {
+    
     var name = this.data.name;
     var idcard = this.data.idcard;
     if(name == ""){
@@ -34,8 +35,17 @@ Page({
       return false;
     }
 
+    let that = this;
     //调用接口
-    console.log('验证成功');
+    util.request(api.bindUserIdcard, {
+      username: that.data.name,
+      idcard: that.data.idcard
+    },'post','application/json').then(function (res) {
+      console.log(res);
+      wx.switchTab({ //跳转到tabbar页面
+        url: '/pages/ucenter/index/index',
+      })
+    })
 
   },
   /**

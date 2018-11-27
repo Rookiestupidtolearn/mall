@@ -12,8 +12,8 @@ Page({
     loginName:'',
     loginUrl:'',
     telephone:'',
-    name:'未认证>',
-    idCard:'未认证>'
+    name:'',
+    idCard:''
   },
   exitLogin: function () {
     wx.showModal({
@@ -39,6 +39,19 @@ Page({
     var finalPhone = first + '****' + last;
     return finalPhone;
   },
+  validatename: function (name) {
+    /*姓名加密处理*/
+    var last = name.substr(name.length - 4, 1);
+    var finalname = '*' + last;
+    return finalname;
+  },
+  validateidCard: function (idcard) {
+    /*身份证号加密处理*/
+    var first = idcard.substr(0, 1);
+    var last = idcard.substr(idcard.length - 4, 1);
+    var finalidcard = first + '***********' + last;
+    return finalidcard;
+  },
   bindPhone:function(){
     wx.navigateTo({
       url: '/pages/auth/mobile/mobile',
@@ -63,8 +76,8 @@ Page({
     /*获取手机号*/
     util.request(api.UserMobile).then(function (res) {
       var mobile = res.data.mobile; //绑定手机号
-      var name = res.data.name; //姓名 
-      var idCard = res.data.idCard; //身份证号
+      var name = res.data.username; //姓名 
+      var idCard = res.data.idcard; //身份证号
       that.setData({
         loginName: res.data.nickname,
         loginUrl: res.data.avatar
@@ -83,8 +96,11 @@ Page({
           name: '未认证>'
         })
       } else {
+        // that.setData({
+        //   name: '未认证>'
+        // })
         that.setData({
-          name:name
+          name: that.validatename(name)
         })
       }
       if (idCard == null || idCard == '') {
@@ -93,7 +109,7 @@ Page({
         })
       } else {
         that.setData({
-          idCard:idCard
+          idCard: that.validateidCard(idCard)
         })
       }
     })

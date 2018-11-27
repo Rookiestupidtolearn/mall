@@ -30,7 +30,7 @@ page{
   text-align: left;
   vertical-align: text-top;
   font-size:29rpx;
-  border:1rpx solid #b1b1b1;
+  /* border:1rpx solid #b1b1b1; */
   padding-left:15rpx;
 }
 .col5e5e5e{
