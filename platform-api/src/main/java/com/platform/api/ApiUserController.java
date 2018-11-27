@@ -23,6 +23,7 @@ import com.platform.service.ApiUserCouponService;
 import com.platform.service.ApiUserService;
 import com.platform.service.SysConfigService;
 import com.platform.util.ApiBaseAction;
+import com.platform.util.IdcardUtils;
 import com.platform.utils.CharUtil;
 import com.platform.utils.Constant;
 import com.platform.utils.DateUtils;
@@ -227,9 +228,53 @@ public class ApiUserController extends ApiBaseAction {
     	}else{
     		UserVo userInfo = loginUser;
     		userInfo.setPassword("");
+    		UserVo vo = userService.queryObject(loginUser.getUserId());
+    		userInfo.setIdcard(vo.getIdcard());
     		obj.put("data",userInfo);
     		return obj;
     	}
     }
+    
+    @ApiOperation(value = "绑定用户的身份证信息")
+    @PostMapping("bind_user_idcard")
+    public Object bindUserIdcard(@LoginUser UserVo loginUser) {
+    	JSONObject jsonParams = getJsonRequest();
+    	Map<String, Object> obj = new HashMap<String, Object>();
+    	if(loginUser == null){
+    		obj.put("data","查询用户信息异常");
+    		obj.put("code","500");
+    		return obj;
+    	}else{
+    		//校验姓名
+    		  String username = jsonParams.getString("username");
+    	      String idcard = jsonParams.getString("idcard");
+    		if (org.apache.commons.lang.StringUtils.isEmpty(username)) {
+    			obj.put("data","姓名不能为空");
+    			obj.put("code","500");
+        		return obj;
+			}
+    		//校验身份证号
+    		if (org.apache.commons.lang.StringUtils.isEmpty(idcard)) {
+    			obj.put("data","身份证号不能为空");
+    			obj.put("code","500");
+        		return obj;
+			}
+    		if (!IdcardUtils.cardCodeVerify(idcard)) {
+    			obj.put("data","身份证号不正确");
+    			obj.put("code","500");
+        		return obj;
+			}
+    		
+    		UserVo vo = userService.queryObject(loginUser.getUserId());
+    		vo.setIdcard(idcard);
+    		vo.setUsername(username);
+    		userService.update(vo);
+    		
+    		obj.put("code", 200);
+    		obj.put("msg", "操作成功");
+    		return obj;
+    	}
+    }
+    
     
 }

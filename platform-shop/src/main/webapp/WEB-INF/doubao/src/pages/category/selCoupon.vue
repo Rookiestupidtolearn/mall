@@ -1,14 +1,16 @@
 <template>
  	<div class="container">
- 		
- 	<div class="no-course" v-if="couponList.length <= 0" >
+ 		<!--公用头部-->
+  		<!--<headbar :headFont = "headFont"></headbar>-->
+  		
+ 	<div class="no-course " v-if="couponList.length <= 0" >
  		<img src="../../../static/images/my_course_empty.png"/>
  		<p class="desc">您还没有优惠券~</p>
  	</div>
  	
-	  <div v-else class="coupon-list">
+	  <div v-else class="coupon-list ">
 	    <div v-for="item in couponList" >
-	    <div  @click='tapCoupon(item.enabled)' class="item" :style="{background: [item.enabled==1?'linear-gradient(to right,#cfa568,#e3bf79)':'linear-gradient(to right,#999,#DDDDDD)']}">
+	    <div  @click='tapCoupon(item.enabled,item.user_coupon_id)' class="item" :style="{background: [item.enabled==1?'linear-gradient(to right,#cfa568,#e3bf79)':'linear-gradient(to right,#999,#DDDDDD)']}">
 	        <div class="content">
 	          <div class="left">
 	            <div class="name">{{item.name}}</div>
@@ -30,24 +32,29 @@
 </template>
 
 <script>
-		
-	export default {
+//import headbar from '@/components/headbar.vue'
+
+export default {
 	  name: 'selCoupon',
+//	  components:{headbar},
 	  data () {
 	    return {
 	    	couponList: '',
-    		buyType: ''
+    		buyType: '',
+    		isBuy:'',
+//  		headFont:'选择优惠券'
 	    }
 	  },
 	  mounted(){
 	  		let that = this;
 	  		this.buyType = this.$route.query.buyType;
+	  		this.isBuy = this.$route.query.isBuy;
+	  		console.log(this.isBuy)
     		 that.$http({
 			   	method:'post',
 			   	url:that.$url+'coupon/listByGoods',
 			   params:{ type: this.buyType }
 		   }).then(function (res) {
-		   		res = {"data":{"errno":0,"data":[{"id":11,"user_coupon_id":3703,"name":"平台抵扣券","type_money":0.00,"send_type":8,"min_amount":0.00,"max_amount":0.00,"send_start_date":"2018.10.12","send_end_date":"2018.10.12","use_start_date":"2018.10.12","use_end_date":"2018年10月12日","min_goods_amount":0.00,"coupon_txt":null,"user_id":"28","coupon_number":"1","enabled":1,"min_transmit_num":null,"coupon_status":1,"coupon_price":7.00}],"errmsg":"执行成功"}};
 		   		console.log(res);
 			    if (res.data.errno == 0) {
 			        that.couponList = res.data.data;
@@ -55,14 +62,13 @@
 		   });	    
 	  },
 	  methods:{
-	  	tapCoupon(enabled){
+	  	tapCoupon(enabled,couponId){
 		    if (enabled==0) {
 		      return
 		    }
-		    app.globalData.userCoupon = 'USE_COUPON'
-		    app.globalData.courseCouponCode = item
-		    wx.navigateBack({
-		    })
+		    this.$cookie.setCookie('couponId',couponId); //缓存优惠券id
+		    console.log(this.isBuy);
+		    this.$router.push('/pages/category/checkout');
 	  	}
 	  }
 	}

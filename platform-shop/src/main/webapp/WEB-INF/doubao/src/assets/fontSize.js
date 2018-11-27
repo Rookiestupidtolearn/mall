@@ -1,4 +1,4 @@
-   var html = document.getElementsByTagName("html")[0];
+  var html = document.getElementsByTagName("html")[0];
     function getFontSize(){
         var width=document.documentElement.clientWidth
             ||document.body.clientWidth+"px";
@@ -14,4 +14,3 @@
             html.style.fontSize=getFontSize()+"px";
         },100)
     };
-

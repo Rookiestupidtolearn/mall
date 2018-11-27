@@ -38,7 +38,6 @@ Page({
     app.globalData.userCoupon = 'NO_USE_COUPON'
     app.globalData.courseCouponCode = {}
   },
-  
   getCheckoutInfo: function () {
     let that = this;
     var url = api.CartCheckout
@@ -106,7 +105,6 @@ Page({
     wx.showLoading({
       title: '加载中...',
     })
-    this.getCheckoutInfo();
     
     try {
       var addressId = wx.getStorageSync('addressId');
@@ -118,6 +116,7 @@ Page({
     } catch (e) {
       // Do something when catch error
     }
+    this.getCheckoutInfo();
   },
 
   /**

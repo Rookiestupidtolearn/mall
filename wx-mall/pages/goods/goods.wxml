@@ -16,9 +16,9 @@
         <!-- <text class="desc">{{goods.goods_brief}}</text> -->
         <text class="price">￥{{goods.market_price}}</text>
         <view class="brand" wx:if="{{brand.name}}">
-          <navigator url="../brandDetail/brandDetail?id={{brand.id}}">
+          <!-- <navigator url="../brandDetail/brandDetail?id={{brand.id}}"> -->
             <text>{{brand.name}}</text>
-          </navigator>
+          <!-- </navigator> -->
         </view>
       </view>
     </view>
@@ -69,7 +69,7 @@
         </view>
       </view>
     </view>
-
+ 
     <view class="detail">
       <import src="../../lib/wxParse/wxParse.wxml" />
       <template is="wxParse" data="{{wxParseData:goodsDetail.nodes}}" />

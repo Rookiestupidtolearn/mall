@@ -2,6 +2,9 @@
 page{
   background:#f4f4f4;
 }
+.nomore {
+  text-align: center
+}
 .list { 
   padding: 20rpx 50rpx;
   background-color: #fff;

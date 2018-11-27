@@ -1,0 +1,38 @@
+/* pages/ucenter/namecardSecurity/namecard.wxss */
+page{
+  background-color:#f4f4f4 
+}
+.titleBottom{
+  background-color:#fff;
+  display: flex;
+  padding:30rpx;
+  margin-top:5rpx;
+}
+.confirm{
+  width:560rpx;
+  height:80rpx;
+  line-height:80rpx;
+  background: #c9c9c9;
+  color:#333;
+  border-radius:10rpx;
+  text-align: center;
+  margin:0 auto;
+  font-weight: bold;
+  font-size:30rpx;
+  margin-top:210rpx;
+}
+.titleBottom text{
+  width:180rpx;
+  padding-top:5rpx;
+}
+.titleBottom input{
+  width:400rpx;
+  text-align: left;
+  vertical-align: text-top;
+  font-size:29rpx;
+  /* border:1rpx solid #b1b1b1; */
+  padding-left:15rpx;
+}
+.col5e5e5e{
+  color:#5e5e5e;
+}
