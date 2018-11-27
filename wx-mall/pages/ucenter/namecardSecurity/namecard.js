@@ -42,9 +42,13 @@ Page({
       idcard: that.data.idcard
     },'post','application/json').then(function (res) {
       console.log(res);
-      wx.switchTab({ //跳转到tabbar页面
-        url: '/pages/ucenter/index/index',
-      })
+      if(res.code == '500'){
+        util.showErrorToast(res.msg);
+      }else{
+        wx.switchTab({ //跳转到tabbar页面
+          url: '/pages/ucenter/index/index',
+        })
+      }  
     })
 
   },

@@ -97,11 +97,8 @@ Page({
         })
       } else {
         that.setData({
-          name: '未认证>'
+          name: that.validatename(name)
         })
-        // that.setData({
-        //   name: that.validatename(name)
-        // })
       }
       if (idCard == null || idCard == '') {
         that.setData({
