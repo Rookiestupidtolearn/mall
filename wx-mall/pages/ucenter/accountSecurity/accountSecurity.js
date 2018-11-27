@@ -41,7 +41,7 @@ Page({
   },
   validatename: function (name) {
     /*姓名加密处理*/
-    var last = name.substr(name.length - 4, 1);
+    var last = name.substr(name.length-1);
     var finalname = '*' + last;
     return finalname;
   },
