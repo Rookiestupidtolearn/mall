@@ -138,7 +138,7 @@
             <if test="mobile != null">`mobile` = #{mobile},</if>
             <if test="register_ip != null">`register_ip` = #{register_ip},</if>
             <if test="avatar != null">`avatar` = #{avatar},</if>
-            <if test="weixin_openid != null">`weixin_openid` = #{weixin_openid}</if>
+            <if test="weixin_openid != null">`weixin_openid` = #{weixin_openid},</if>
             <if test="idcard != null">`idcard` = #{idcard}</if>
         </set>
         where id = #{userId}
