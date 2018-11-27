@@ -19,6 +19,7 @@
         <result property="register_ip" column="register_ip"/>
         <result property="avatar" column="avatar"/>
         <result property="weixin_openid" column="weixin_openid"/>
+        <result property="idcard" column="idcard"/>
     </resultMap>
     
     <!-- 用户资金流水实体 -->
@@ -90,38 +91,36 @@
 	</select>
 
     <insert id="save" parameterType="com.platform.entity.UserVo" useGeneratedKeys="true" keyProperty="userId">
-		insert into nideshop_user
-		(
-			`username`, 
-			`password`, 
-			`gender`, 
-			`birthday`, 
-			`register_time`, 
-			`last_login_time`, 
-			`last_login_ip`, 
-			`user_level_id`, 
-			`nickname`, 
-			`mobile`, 
-			`register_ip`, 
-			`avatar`, 
-			`weixin_openid`
-		)
-		values
-		(
-			#{username}, 
-			#{password}, 
-			#{gender}, 
-			#{birthday}, 
-			#{register_time},
-			#{last_login_time},
-			#{last_login_ip},
-			#{user_level_id},
+	insert into nideshop_user(
+			`username`,
+			`password`,
+			`gender`,
+			`birthday`,
+			`register_time`,
+			`last_login_time`,
+			`last_login_ip`,
+			`user_level_id`,
+			`nickname`,
+			`mobile`,
+			`register_ip`,
+			`avatar`,
+			`weixin_openid`,
+			`idcard`)
+		values(
+			#{username},
+			#{password},
+			#{gender},
+			#{birthday},
+			#{registerTime},
+			#{lastLoginTime},
+			#{lastLoginIp},
+			#{userLevelId},
 			#{nickname},
 			#{mobile},
-			#{register_ip},
+			#{registerIp},
 			#{avatar},
-			#{weixin_openid}
-		)
+			#{weixinOpenid},
+			#{idcard})
 	</insert>
 
     <update id="update" parameterType="com.platform.entity.UserVo">

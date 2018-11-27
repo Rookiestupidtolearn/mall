@@ -46,15 +46,21 @@ public class PayMatchingUtil {
 		BigDecimal activityMatching = new BigDecimal(productVo.getActivity_matching()); //活动配比 H
 		BigDecimal normalMatching =  new BigDecimal(productVo.getNormal_matching()); //正常配比 Z
 		
+		BigDecimal money = BigDecimal.ZERO;
+		/*if(0 >= marketPrice.subtract(retailPrice).divide(retailPrice).compareTo(BigDecimal.ZERO)){
+			goodsPayMatching.put(productVo.getGoods_id(), money);
+			return goodsPayMatching;
+		}*/
+		
 		//计算支付配比 : 公式 S={M*Z-(Z-H)*N}/M*100%
-		BigDecimal PayMatching =marketPrice.multiply(normalMatching).subtract(normalMatching.subtract(activityMatching).multiply(retailPrice)).divide(marketPrice,4, BigDecimal.ROUND_DOWN);
+		BigDecimal PayMatching =marketPrice.multiply(normalMatching).subtract(normalMatching.subtract(activityMatching).multiply(retailPrice)).divide(marketPrice,4, BigDecimal.ROUND_HALF_UP);
 		logger.info("【计算支付配比】--- 支付配比值"+PayMatching);
 		
 		//计算抵扣金额
-		BigDecimal Money = marketPrice.multiply(PayMatching).setScale(2, BigDecimal.ROUND_HALF_UP);
+		money = marketPrice.multiply(PayMatching).setScale(2, BigDecimal.ROUND_HALF_UP);
 		
-		logger.info("【计算支付配比】--- 抵扣金额"+Money);
-		goodsPayMatching.put(productVo.getGoods_id(), Money);
+		logger.info("【计算支付配比】--- 抵扣金额"+money);
+		goodsPayMatching.put(productVo.getGoods_id(), money);
 		return goodsPayMatching;
 	}
 }

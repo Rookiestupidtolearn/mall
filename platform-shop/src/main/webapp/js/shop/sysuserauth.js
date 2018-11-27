@@ -112,10 +112,10 @@ let vm = new Vue({
 		},
 		saveOrUpdate: function (event) {
 		
-			if(checkcode=!vm.sysUserAuth.checkCode){
+			/*if(checkcode=!vm.sysUserAuth.checkCode){
 				alert("验证码有误!")
 				return ;
-			}
+			}*/
 				
             let url = vm.sysUserAuth.id == null ? "../sysuserauth/save" : "../sysuserauth/update";
             Ajax.request({
