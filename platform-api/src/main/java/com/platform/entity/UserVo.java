@@ -40,7 +40,8 @@ public class UserVo implements Serializable {
     private String avatar;
     //微信Id
     private String weixin_openid;
-
+    //身份证号
+    private String idcard;
     public Long getUserId() {
         return userId;
     }
@@ -152,4 +153,13 @@ public class UserVo implements Serializable {
     public void setWeixin_openid(String weixin_openid) {
         this.weixin_openid = weixin_openid;
     }
+
+	public String getIdcard() {
+		return idcard;
+	}
+
+	public void setIdcard(String idcard) {
+		this.idcard = idcard;
+	}
+    
 }

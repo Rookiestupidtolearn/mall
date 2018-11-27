@@ -227,6 +227,8 @@ public class ApiUserController extends ApiBaseAction {
     	}else{
     		UserVo userInfo = loginUser;
     		userInfo.setPassword("");
+    		UserVo vo = userService.queryObject(loginUser.getUserId());
+    		userInfo.setIdcard(vo.getIdcard());
     		obj.put("data",userInfo);
     		return obj;
     	}
