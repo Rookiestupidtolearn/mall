@@ -11,7 +11,9 @@ Page({
   data: {
     loginName:'',
     loginUrl:'',
-    telephone:''
+    telephone:'',
+    name:'未认证>',
+    idCard:'未认证>'
   },
   exitLogin: function () {
     wx.showModal({
@@ -42,6 +44,16 @@ Page({
       url: '/pages/auth/mobile/mobile',
     })
   },
+  bindname:function(){
+    wx.navigateTo({
+      url: '/pages/ucenter/namecardSecurity/namecard',
+    })
+  },
+  bindcard:function(){
+    wx.navigateTo({
+      url: '/pages/ucenter/namecardSecurity/namecard',
+    })
+  },
   /**
    * 生命周期函数--监听页面加载
    */
@@ -50,18 +62,38 @@ Page({
 
     /*获取手机号*/
     util.request(api.UserMobile).then(function (res) {
-      var mobile = res.data.mobile;
+      var mobile = res.data.mobile; //绑定手机号
+      var name = res.data.name; //姓名 
+      var idCard = res.data.idCard; //身份证号
       that.setData({
         loginName: res.data.nickname,
         loginUrl: res.data.avatar
       })
       if (mobile == null || mobile == ''){
         that.setData({
-          telephone: '去绑定'
+          telephone: '去绑定>'
         })
       }else{
         that.setData({
           telephone: that.validateMobile(mobile)
+        })
+      }
+      if (name == null || name == '') {
+        that.setData({
+          name: '未认证>'
+        })
+      } else {
+        that.setData({
+          name:name
+        })
+      }
+      if (idCard == null || idCard == '') {
+        that.setData({
+          idCard: '未认证>'
+        })
+      } else {
+        that.setData({
+          idCard:idCard
         })
       }
     })

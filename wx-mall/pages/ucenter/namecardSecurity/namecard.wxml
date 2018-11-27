@@ -1,0 +1,12 @@
+<!--pages/ucenter/namecardSecurity/namecard.wxml-->
+<view>
+  <view class="titleBottom">
+    <text>姓名</text>
+    <input type='text' placeholder="请输入用户姓名" maxlength="5" value="{{name}}" bindinput="bindname"></input>
+  </view>
+  <view class="titleBottom">
+    <text>身份证件号</text>
+    <input type='idcard' placeholder="请输入用户身份证号" maxlength="18" value="{{idcard}}" bindinput="bindidcard"></input>
+  </view>
+  <view class="confirm" bindtap="confirm">确认</view>
+</view>
