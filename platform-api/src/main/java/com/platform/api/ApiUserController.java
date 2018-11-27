@@ -238,6 +238,7 @@ public class ApiUserController extends ApiBaseAction {
     @ApiOperation(value = "绑定用户的身份证信息")
     @PostMapping("bind_user_idcard")
     public Object bindUserIdcard(@LoginUser UserVo loginUser) {
+    	JSONObject jsonParams = getJsonRequest();
     	Map<String, Object> obj = new HashMap<String, Object>();
     	if(loginUser == null){
     		obj.put("data","查询用户信息异常");
@@ -245,26 +246,28 @@ public class ApiUserController extends ApiBaseAction {
     		return obj;
     	}else{
     		//校验姓名
-    		if (org.apache.commons.lang.StringUtils.isEmpty(loginUser.getUsername())) {
+    		  String username = jsonParams.getString("username");
+    	      String idcard = jsonParams.getString("idcard");
+    		if (org.apache.commons.lang.StringUtils.isEmpty(username)) {
     			obj.put("data","姓名不能为空");
     			obj.put("code","500");
         		return obj;
 			}
     		//校验身份证号
-    		if (org.apache.commons.lang.StringUtils.isEmpty(loginUser.getIdcard())) {
+    		if (org.apache.commons.lang.StringUtils.isEmpty(idcard)) {
     			obj.put("data","身份证号不能为空");
     			obj.put("code","500");
         		return obj;
 			}
-    		if (IdcardUtils.cardCodeVerify(loginUser.getIdcard())) {
+    		if (!IdcardUtils.cardCodeVerify(idcard)) {
     			obj.put("data","身份证号不正确");
     			obj.put("code","500");
         		return obj;
 			}
     		
     		UserVo vo = userService.queryObject(loginUser.getUserId());
-    		vo.setIdcard(loginUser.getIdcard());
-    		vo.setUsername(loginUser.getUsername());
+    		vo.setIdcard(idcard);
+    		vo.setUsername(username);
     		userService.update(vo);
     		
     		obj.put("code", 200);
