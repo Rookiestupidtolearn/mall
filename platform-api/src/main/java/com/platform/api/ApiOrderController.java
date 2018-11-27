@@ -38,6 +38,7 @@ import com.platform.service.ApiOrderService;
 import com.platform.service.JdOrderService;
 import com.platform.util.ApiBaseAction;
 import com.platform.util.ApiPageUtils;
+import com.platform.util.ApiUpdateUserCouponPriceUtils;
 import com.platform.util.wechat.WechatRefundApiResult;
 import com.platform.util.wechat.WechatUtil;
 import com.platform.utils.Query;
@@ -72,7 +73,8 @@ public class ApiOrderController extends ApiBaseAction {
     private ApiTranInfoRecordMapper apiTranInfoRecordMapper;
     @Autowired
     private JdOrderService JdOrderService;
-    
+    @Autowired
+    private ApiUpdateUserCouponPriceUtils apiUpdateUserCouponPriceUtils;
 
    
     
@@ -277,10 +279,10 @@ public class ApiOrderController extends ApiBaseAction {
                 	   if (userCoupon != null) {
                 		   userCoupon.setCoupon_status(3);
                 		   apiUserCouponMapper.update(userCoupon);
-                		   saveTranInfoRecord(orderVo.getUser_id(), "1", "2", userCoupon.getCoupon_price(), userCoupon.getCoupon_price(), "【取消订单】原优惠券作废");
+                		   apiUpdateUserCouponPriceUtils.saveTranInfoRecord(orderVo.getUser_id(), "1", "2", userCoupon.getCoupon_price(), userCoupon.getCoupon_price(), "【取消订单】原优惠券作废");
                 		   userAmountVo.setAmount(userAmountVo.getAmount().add(userCoupon.getCoupon_price()));
                 		   qzUserAccountMapper.updateUserAccount(userAmountVo);
-                		   saveTranInfoRecord(orderVo.getUser_id(), "2", "1", userCoupon.getCoupon_price(), userAmountVo.getAmount(), "【取消订单】原优惠券回滚到平台币");
+                		   apiUpdateUserCouponPriceUtils.saveTranInfoRecord(orderVo.getUser_id(), "2", "1", userCoupon.getCoupon_price(), userAmountVo.getAmount(), "【取消订单】原优惠券回滚到平台币");
                 	   }
                    }
           
@@ -312,26 +314,4 @@ public class ApiOrderController extends ApiBaseAction {
         }
         return toResponsFail("提交失败");
     }
-    /**
-     * 生成平台币、优惠券流水
-     * @param userId
-     * @param tranType
-     * @param TranFlag
-     * @param tranAmount
-     * @param currentAmount
-     * @param remark
-     */
-    public void saveTranInfoRecord(Long userId,String tranType,String TranFlag,BigDecimal tranAmount,BigDecimal currentAmount
-    		,String remark){
-    	 ApiTranInfoRecordVo tranInfo = new ApiTranInfoRecordVo();
-    	 tranInfo.setUser_id(userId);
-    	 tranInfo.setTran_type(tranType);//1优惠券 2 平台币
-    	 tranInfo.setTran_flag(TranFlag);//1收入 2支出
-    	 tranInfo.setTran_amount(tranAmount);
-    	 tranInfo.setCurrent_amount(currentAmount);
-    	 tranInfo.setCreate_time(new Date());
-    	 tranInfo.setRemark(remark);
-    	 apiTranInfoRecordMapper.save(tranInfo);
-    }
-    
 }

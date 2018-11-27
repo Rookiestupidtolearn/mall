@@ -37,6 +37,8 @@ import com.platform.entity.ProductVo;
 import com.platform.entity.QzUserAccountVo;
 import com.platform.entity.UserCouponVo;
 import com.platform.entity.UserVo;
+import com.platform.util.ApiUpdateUserCouponPriceUtils;
+import com.platform.util.PayMatchingUtil;
 import com.platform.utils.GenerateCodeUtil;
 
 @Service
@@ -59,14 +61,17 @@ public class ApiOrderService {
 	private ApiUserCouponMapper apiUserCouponMapper;
 	@Autowired
 	private QzUserAccountMapper qzUserAccountMapper;
-	@Autowired
-	private ApiTranInfoRecordMapper apiTranInfoRecordMapper;
 
 	@Autowired
 	private JdOrderService jdOrderService;
 	@Autowired
 	private ApiGoodsService apiGoodsService;
+    @Autowired
+    private ApiUpdateUserCouponPriceUtils apiUpdateUserCouponPriceUtils;
 
+    @Autowired
+    private PayMatchingUtil payMatchingUtils;
+    
 	public OrderVo queryObject(Integer id) {
 		return orderDao.queryObject(id);
 	}
@@ -223,9 +228,6 @@ public class ApiOrderService {
 		orderInfo.setFreight_price(freightPrice);
 		// 留言
 		orderInfo.setPostscript(postscript);
-		
-
-
 
 		/**
 		 * 订单问题 1.拆分渠道 1.1 渠道增加 1.2 状态
@@ -294,14 +296,11 @@ public class ApiOrderService {
 			couponPrice = userCoupon.getCoupon_price();
 			orderInfo.setCoupon_id(userCoupon.getId());
 			orderInfo.setCoupon_price(couponPrice);
+			userCoupon.setCoupon_status(4);//支付中
+			apiUserCouponMapper.updateUserOrderCoupon(userCoupon);
 		}
 		//#####################以上是库存优惠券的信息#############################################
-		//重新计算优惠券的信息
-		/*
-		 * 回滚平台币，
-		 * 重新生成优惠券信息
-		 * 
-		 */
+		
 //		 BigDecimal couponTotalPrice = BigDecimal.ZERO;//优惠券总价值
 //		for (CartVo cart : orderGoodsList) {
 //			BigDecimal payMatching = BigDecimal.ZERO;
@@ -322,12 +321,8 @@ public class ApiOrderService {
 //				userCoupon.setCoupon_status(4);// 支付中
 //				apiUserCouponMapper.updateUserOrderCoupon(userCoupon);
 //			}
-//		}else {
-//			 //重新计算优惠券
-//			//回滚资金
+//		}
 //		
-//		 }
-		
 
 		
 		// 减去其它支付的金额后，要实际支付的金额
@@ -406,14 +401,14 @@ public class ApiOrderService {
 					if (userCouponVo != null) {
 						userCouponVo.setCoupon_status(3);// 作废
 						apiUserCouponMapper.update(userCouponVo);
-						saveTranInfoRecord(order.getUser_id(), "1", "2", userCouponVo.getCoupon_price(),
+						apiUpdateUserCouponPriceUtils.saveTranInfoRecord(order.getUser_id(), "1", "2", userCouponVo.getCoupon_price(),
 								userCouponVo.getCoupon_price(), "【订单失效定时任务】原优惠券作废");
 						amount = amount.add(userCouponVo.getCoupon_price());
 					}
 					if (userAmountVo != null && userCouponVo != null) {
 						userAmountVo.setAmount(amount);
 						qzUserAccountMapper.updateUserAccount(userAmountVo);
-						saveTranInfoRecord(order.getUser_id(), "2", "1", userCouponVo.getCoupon_price(),
+						apiUpdateUserCouponPriceUtils.saveTranInfoRecord(order.getUser_id(), "2", "1", userCouponVo.getCoupon_price(),
 								userAmountVo.getAmount(), "【订单失效定时任务】原优惠券金额回滚平台币中");
 					}
 					order.setOrder_status(103);// 订单失效
@@ -446,26 +441,5 @@ public class ApiOrderService {
 		return obj;
 	}
 
-	/**
-	 * 生成平台币、优惠券流水
-	 * 
-	 * @param userId
-	 * @param tranType
-	 * @param TranFlag
-	 * @param tranAmount
-	 * @param currentAmount
-	 * @param remark
-	 */
-	public void saveTranInfoRecord(Long userId, String tranType, String TranFlag, BigDecimal tranAmount,
-			BigDecimal currentAmount, String remark) {
-		ApiTranInfoRecordVo tranInfo = new ApiTranInfoRecordVo();
-		tranInfo.setUser_id(userId);
-		tranInfo.setTran_type(tranType);// 1优惠券 2 平台币
-		tranInfo.setTran_flag(TranFlag);// 1收入 2支出
-		tranInfo.setTran_amount(tranAmount);
-		tranInfo.setCurrent_amount(currentAmount);
-		tranInfo.setCreate_time(new Date());
-		tranInfo.setRemark(remark);
-		apiTranInfoRecordMapper.save(tranInfo);
-	}
+
 }

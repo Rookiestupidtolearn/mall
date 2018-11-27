@@ -55,4 +55,23 @@ public interface ApiUserCouponMapper extends BaseDao<UserCouponVo> {
     List<CouponVo> queryUsernewCoupons(Map<String, Object> params);
     
     int  updateUserOrderCoupon(UserCouponVo userCouponVo);
+    /**
+     * 根据父id查询所有子优惠券
+     * @param id
+     * @return
+     */
+    List<UserCouponVo> querySubCoupons(Integer id);
+    /**
+     * 根据goodId查询用户优惠券
+     * @param goodId
+     * @return
+     */
+    List<UserCouponVo> quertUserCouponByGoodId(Long goodId);
+    /**
+     * 根据id查询所有子优惠券
+     * @param id
+     * @return
+     */
+    List<UserCouponVo> quertSubUserCoupons(Integer id);
+    
 }
