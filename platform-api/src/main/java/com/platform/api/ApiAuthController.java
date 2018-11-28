@@ -114,18 +114,18 @@ public class ApiAuthController extends ApiBaseAction {
             userVo = new UserVo();
             userVo.setUsername("微信用户" + CharUtil.getRandomString(12));
             userVo.setPassword(sessionData.getString("openid"));
-            userVo.setRegister_time(nowTime);
-            userVo.setRegister_ip(this.getClientIp());
-            userVo.setLast_login_ip(userVo.getRegister_ip());
-            userVo.setLast_login_time(userVo.getRegister_time());
-            userVo.setWeixin_openid(sessionData.getString("openid"));
+            userVo.setRegisterTime(nowTime);
+            userVo.setRegisterIp(this.getClientIp());
+            userVo.setLastLoginIp(userVo.getRegisterIp());
+            userVo.setLastLoginTime(userVo.getRegisterTime());
+            userVo.setWeixinOpenid(sessionData.getString("openid"));
             userVo.setAvatar(userInfo.getAvatarUrl());
             userVo.setGender(userInfo.getGender()); // //性别 0：未知、1：男、2：女
             userVo.setNickname(userInfo.getNickName());
             userService.save(userVo);
         } else {
-            userVo.setLast_login_ip(this.getClientIp());
-            userVo.setLast_login_time(nowTime);
+            userVo.setLastLoginIp(this.getClientIp());
+            userVo.setLastLoginTime(nowTime);
             userService.update(userVo);
         }
 
@@ -183,16 +183,16 @@ public class ApiAuthController extends ApiBaseAction {
 		 //新注册
     	   userVo = new UserVo();
            userVo.setUsername("微信用户" + CharUtil.getRandomString(12));
-           userVo.setRegister_time(new Date());
-           userVo.setRegister_ip(this.getClientIp());
-           userVo.setLast_login_ip(userVo.getRegister_ip());
-           userVo.setLast_login_time(userVo.getRegister_time());
+           userVo.setRegisterTime(new Date());
+           userVo.setRegisterIp((this.getClientIp()));
+           userVo.setRegisterIp(userVo.getRegisterIp());
+           userVo.setLastLoginTime(userVo.getRegisterTime());
            userVo.setMobile(mobile);
            userService.save(userVo);
     	   
 	   }else {
-		    userVo.setLast_login_ip(this.getClientIp());
-            userVo.setLast_login_time(new Date());
+		    userVo.setLastLoginIp(this.getClientIp());
+            userVo.setLastLoginTime(new Date());
             userService.update(userVo);
 	}
        J2CacheUtils.remove(J2CacheUtils.CHECK_CACHE, "DOUBAO:"+mobile);
