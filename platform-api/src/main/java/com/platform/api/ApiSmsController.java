@@ -88,7 +88,7 @@ public class ApiSmsController {
         
      	J2CacheUtils.put(J2CacheUtils.INVALID_CACHE,"DOUBAO_SMS_COUNT:"+mobile, count);
         //ip地址
-        Integer countIP = (Integer) J2CacheUtils.get(J2CacheUtils.INVALID_CACHE, "DOUBAO_SMS_COUNT:"+validIP);
+        Integer countIP = (Integer) J2CacheUtils.get(J2CacheUtils.INVALID_CACHE, "DOUBAO_SMS_IP_COUNT:"+validIP);
         
         if (countIP!=null) {
         	  if (countIP>10) {
@@ -98,7 +98,7 @@ public class ApiSmsController {
 		 }else {
 			 countIP = 1;
 		}
-    	J2CacheUtils.put(J2CacheUtils.INVALID_CACHE,"DOUBAO_SMS_COUNT:"+validIP, countIP);	
+    	J2CacheUtils.put(J2CacheUtils.INVALID_CACHE,"DOUBAO_SMS_IP_COUNT:"+validIP, countIP);	
     	
         String sms_code = CharUtil.getRandomNum(4);
         String msgContent = "您的验证码是：" + sms_code + "，请在页面中提交验证码完成验证。";

@@ -91,7 +91,7 @@ public class ApiUserController extends ApiBaseAction {
      	J2CacheUtils.put(J2CacheUtils.INVALID_CACHE,"DOUBAO_SMS_COUNT:"+phone, count);
         //ip地址
      	String validIP = RequestUtil.getIpAddrByRequest(request);
-        Integer countIP = (Integer) J2CacheUtils.get(J2CacheUtils.INVALID_CACHE, "DOUBAO_SMS_COUNT:"+validIP);
+        Integer countIP = (Integer) J2CacheUtils.get(J2CacheUtils.INVALID_CACHE, "DOUBAO_SMS_IP_COUNT:"+validIP);
         
         if (countIP!=null) {
         	  if (countIP>10) {
@@ -101,7 +101,7 @@ public class ApiUserController extends ApiBaseAction {
 		 }else {
 			 countIP = 1;
 		}
-    	J2CacheUtils.put(J2CacheUtils.INVALID_CACHE,"DOUBAO_SMS_COUNT:"+validIP, countIP);	
+    	J2CacheUtils.put(J2CacheUtils.INVALID_CACHE,"DOUBAO_SMS_IP_COUNT:"+validIP, countIP);	
     	
        
         //生成验证码
