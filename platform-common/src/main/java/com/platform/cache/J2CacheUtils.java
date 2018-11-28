@@ -22,6 +22,8 @@ public class J2CacheUtils {
     private static String SYS_CACHE_NAME = "sysCache";
     
     public  static  final String CHECK_CACHE = "checkCache";
+    
+    public static final String INVALID_CACHE = "invalidCache";
 
     private static CacheChannel cache = J2Cache.getChannel();
     

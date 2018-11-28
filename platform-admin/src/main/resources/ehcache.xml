@@ -73,4 +73,12 @@
            overflowToDisk="false">
     </cache>
     
+        <cache name="invalidCache"
+           maxElementsInMemory="50000"
+           eternal="false"
+           timeToIdleSeconds="86400"
+           timeToLiveSeconds="86400"
+           overflowToDisk="false">
+    </cache>
+    
 </ehcache>
