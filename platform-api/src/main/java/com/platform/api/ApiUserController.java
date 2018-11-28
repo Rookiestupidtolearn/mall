@@ -54,7 +54,6 @@ public class ApiUserController extends ApiBaseAction {
     /**
      * 发送短信
      */
-    @IgnoreAuth
     @ApiOperation(value = "发送短信")
     @PostMapping("smscode")
     public Object smscode(@LoginUser UserVo loginUser) {
