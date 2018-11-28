@@ -155,11 +155,11 @@
 		color: royalblue;
 	}
 	.picker-items{
-		position: fixed;
+		position: fixed !important;
 		bottom: 0;
 		width:100%;	
 		background-color: #fff;
-		padding:.25rem 0;
+		padding:.25rem 0 !important;
 	}
 	.picker-slot-wrapper{
 		text-align: center;
