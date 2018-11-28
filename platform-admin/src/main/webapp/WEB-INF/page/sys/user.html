@@ -34,8 +34,9 @@
         <p slot="title">{{title}}</p>
         <i-form ref="formValidate" :model="user" :rules="ruleValidate" :label-width="80">
             <Form-item label="用户名" prop="username">
-                <i-input v-model="user.username" placeholder="登录账号"/>
+                <i-input v-model="user.username" placeholder="登录账号" @on-change="usernameVerify" />
             </Form-item>
+            <p style="color: red; margin-left: 77px; ">{{usernameMsg}}</p>
             <Form-item label="所属部门" prop="deptName">
                 <i-input type="text" v-model="user.deptName" icon="eye" readonly="readonly"
                          @on-click="deptTree" readonly="readonly" placeholder="所属部门"/>

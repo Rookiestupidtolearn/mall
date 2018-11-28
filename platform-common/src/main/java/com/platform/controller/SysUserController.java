@@ -1,22 +1,35 @@
 package com.platform.controller;
 
-import com.platform.annotation.SysLog;
-import com.platform.entity.SysUserEntity;
-import com.platform.service.SysUserRoleService;
-import com.platform.service.SysUserService;
-import com.platform.utils.*;
-import com.platform.validator.Assert;
-import com.platform.validator.ValidatorUtils;
-import com.platform.validator.group.AddGroup;
-import com.platform.validator.group.UpdateGroup;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.Map;
+import com.platform.annotation.SysLog;
+import com.platform.entity.SysUserEntity;
+import com.platform.service.SysUserRoleService;
+import com.platform.service.SysUserService;
+import com.platform.utils.Constant;
+import com.platform.utils.PageUtils;
+import com.platform.utils.Query;
+import com.platform.utils.R;
+import com.platform.utils.RRException;
+import com.platform.utils.ResourceUtil;
+import com.platform.utils.ShiroUtils;
+import com.platform.utils.StringUtils;
+import com.platform.validator.Assert;
+import com.platform.validator.ValidatorUtils;
+import com.platform.validator.group.AddGroup;
+import com.platform.validator.group.UpdateGroup;
 
 /**
  * 系统用户
@@ -105,6 +118,26 @@ public class SysUserController extends AbstractController {
         return R.ok().put("user", user);
     }
 
+    /**
+     * 校验用户名
+     */
+    @SysLog("校验用户名")
+    @RequestMapping("/usernameVerify")
+    public R usernameVerify(@RequestBody String username) {
+    	R result = new R();
+    	if(StringUtils.isNotEmpty(username)){
+    		SysUserEntity userEntity = sysUserService.queryByUserName(username);
+    		if(null != userEntity){
+    			result.put("isExist",true);
+    		}else{
+    			result.put("isExist",false);
+    		}
+    	}else{
+    		throw new RuntimeException("【用户名校验】传入的用户名为空");
+    	}
+    	return result;
+    }
+    
     /**
      * 保存用户
      */
