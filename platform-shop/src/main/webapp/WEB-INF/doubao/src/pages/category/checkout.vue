@@ -219,7 +219,7 @@
 		    let buyType = this.isBuy ? 'buy' : 'cart';
 		    that.$http({
 	    		method: 'post',
-		        url:that.$url+ 'cart/checkout',
+		        url:that.$url+ 'cart/checkout.options',
 		        headers: {
 					'Content-Type':'application/json'
 				},

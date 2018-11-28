@@ -431,7 +431,7 @@
 		      //添加到购物车
 		      that.$http({
 		    		method: 'post',
-			        url:that.$url+ 'cart/add',
+			        url:that.$url+ 'cart/add.options',
 			        data:{ goodsId:that.goods.id, number:that.number, productId: checkedProduct[0].id }
 		    	}).then(function (response) {
 			          let _res = response;
@@ -471,7 +471,7 @@
 		      //关联
 	    	that.$http({
 	    		method: 'post',
-		        url:that.$url+ 'collect/addordelete',
+		        url:that.$url+ 'collect/addordelete.options',
 		        data:{ typeId: 0, valueId: this.idm}
 	    	}).then(function (response) {
 		          let _res = response.data;

@@ -6,8 +6,8 @@
  		</div>
  		<div class="form">
  			<p>快速登录</p>
- 			<mt-field label="手机号码"  placeholder="请输入手机号码" type="tel" v-model="phone" :attr="{ maxlength: 11 }" ></mt-field>
- 			<mt-field label="验证码" placeholder="请输入验证码" v-model="captcha" :attr="{ maxlength: 4}" >
+ 			<mt-field label="手机号码"  placeholder="请输入手机号码" type="tel" v-model="phone"  :attr="{ maxlength: 11 }" ></mt-field>
+ 			<mt-field label="验证码" placeholder="请输入验证码" v-model="captcha"  :attr="{ maxlength: 4}" >
 			<mt-button type="primary" size="small" :disabled="disabled" @click="yzm" >{{count}}</mt-button>
 			</mt-field>
  		</div>
@@ -29,12 +29,26 @@
 	    	captcha:'',
 	    	count:'获取验证码',
 	    	disabled:false,
-	    	checked:false
+	    	checked:false,
 	    }
+	  },
+	  mounted(){
+	  		let that = this;
+	  		var phone =  that.$cookie.getCookie('phone');
+	  		var captcha =  that.$cookie.getCookie('captcha');
+	  		if(phone !=="" || phone !==null ){
+	  			that.phone = phone;
+	  		}
+	  		if(captcha !=="" || captcha !==null ){
+	  			that.captcha = captcha;
+	  		}
 	  },
 	  methods:{
 	  	fwxieyi(){
-	  		this.$router.push('/pages/xieyi/ptfwxy');
+	  		let that = this;
+	  		that.$cookie.setCookie('phone',this.phone);
+	  		that.$cookie.setCookie('captcha',this.captcha);
+	  		that.$router.push('/pages/xieyi/ptfwxy');
 	  	},
 	  	submit(){
 	  		let that = this;

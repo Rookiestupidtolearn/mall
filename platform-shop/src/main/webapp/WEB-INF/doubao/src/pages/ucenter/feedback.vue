@@ -38,6 +38,7 @@
 	    	values:'请选择反馈类型',
 	    	values2:'',
 	    	introduct:'',
+	    	paramIndex:0,
 	    	index:'',
 	    	introductLength:'0',
 		    contentLength:0,
@@ -89,12 +90,27 @@
 		        return false;
 		      }
 		    }
+		    if(this.values == "商品相关"){
+		    	this.paramIndex=1;
+		    }else if(this.values == "物流状况"){
+		    	this.paramIndex=2;
+		    }else if(this.values == "客户服务"){
+		    	this.paramIndex=3;
+		    }else if(this.values == "优惠活动"){
+		    	this.paramIndex=4;
+		    }else if(this.values == "功能异常"){
+		    	this.paramIndex=5;
+		    }else if(this.values == "产品建议"){
+		    	this.paramIndex=6;
+		    }else if(this.values == "其他"){
+		    	this.paramIndex=7;
+		    }
 		    that.$http({
 			        method: 'post',
-			        url:that.$url+ 'feedback/save',
+			        url:that.$url+ 'feedback/save.options',
 			        data:{
 			        	content:this.introduct,
-			        	index:this.values,
+			        	index:this.paramIndex,
 			        	mobile:this.inputValue
 			        }
 		    	}).then(function (response) {
@@ -102,6 +118,13 @@
 		    			that.$toast(response.data.errmsg);
 		    		}else if(response.data.code == 500 ){
 		    			that.$toast(response.data.msg);
+		    		}else if(response.data.errno == 0 ){
+		    			that.$toast(response.data.data);
+		    			that.values = '请选择反馈类型';
+			            that.introduct = '';
+			            that.contentLength = 0;
+			            that.inputValue =  '';
+			            that.paramIndex=0;
 		    		}
 			 })
 	   }

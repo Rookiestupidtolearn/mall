@@ -4,7 +4,7 @@
   	<!--<headbar :headFont = "headFont"></headbar>-->
   	
    <div class="viewTop ">
-   		<img class="userinfo-avatar" :src="avatarImg"/>
+   		<img class="userinfo-avatar" :src="avatarImg" @click="gologin"/>
    		<p class="userinfo-nickname">{{userName}}</p>
    		<router-link class="userinfo-availMoney" :to="availUrl" :style="{display:[availResult?'block':'none']}">
 	      <p class="userinfo-title">平台币可用余额</p>
@@ -118,6 +118,17 @@ export default {
 			})
     }
     
+  },
+  methods:{
+  	gologin(){
+  		let that = this;
+  		that.$http({
+		        method: 'post',
+		        url:that.$url+ 'user/userAccount',
+	    	}).then(function (res) {
+					that.availMoney = res.data.data;
+			})
+  	}
   }
 }
 </script>

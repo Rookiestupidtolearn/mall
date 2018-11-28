@@ -3,6 +3,7 @@
  		<!--公用头部-->
   		<!--<headbar :headFont = "headFont"></headbar>-->
   	<div >
+  		<!--v-if="collectList"-->
 	    <router-link :to="'/pages/goods/goods?id='+item.value_id" class="item" v-for="item in collectList" >
 	      <img class="img" :src="item.list_pic_url"/>
 	      <div class="info">
@@ -12,6 +13,9 @@
 	      </div>
 	    </router-link>
     </div>
+    <!--<div v-else class="noData" :data-c="collectList">
+	   	没有更多数据了
+    </div>-->
   </div>
 </template>
 
