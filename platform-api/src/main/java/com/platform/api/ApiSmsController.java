@@ -21,6 +21,7 @@ import com.platform.service.SysSmsLogService;
 import com.platform.utils.CharUtil;
 import com.platform.utils.DateUtils;
 import com.platform.utils.R;
+import com.platform.utils.RequestUtil;
 import com.platform.utils.StringUtils;
 
 /**
@@ -48,7 +49,7 @@ public class ApiSmsController {
     @PostMapping("/sendSms")
     public R sendSms(HttpServletRequest request, @RequestParam Map<String, String> params) {
         SysSmsLogEntity smsLog = new SysSmsLogEntity();
-//        String validIP = RequestUtil.getIpAddrByRequest(request);
+       String validIP = RequestUtil.getIpAddrByRequest(request);
 //        if (ResourceUtil.getConfigByName("sms.validIp").indexOf(validIP) < 0) {
 //        	 return R.error("非法IP请求！");
 //        }
@@ -72,6 +73,33 @@ public class ApiSmsController {
     	if (va != null) {
     		 return R.error("操作频繁");
 		}
+    	
+        //手机号
+        Integer count = (Integer) J2CacheUtils.get(J2CacheUtils.INVALID_CACHE, "DOUBAO_SMS_COUNT:"+mobile);
+        
+        if (count!=null) {
+        	  if (count>10) {
+        		   return R.error("操作频繁，明天再试");
+			  }
+        	  count +=1;
+		 }else {
+			 count = 1;
+		}
+        
+     	J2CacheUtils.put(J2CacheUtils.INVALID_CACHE,"DOUBAO_SMS_COUNT:"+mobile, count);
+        //ip地址
+        Integer countIP = (Integer) J2CacheUtils.get(J2CacheUtils.INVALID_CACHE, "DOUBAO_SMS_IP_COUNT:"+validIP);
+        
+        if (countIP!=null) {
+        	  if (countIP>10) {
+        		   return R.error("操作频繁，明天再试");
+			  }
+        	  countIP +=1;
+		 }else {
+			 countIP = 1;
+		}
+    	J2CacheUtils.put(J2CacheUtils.INVALID_CACHE,"DOUBAO_SMS_IP_COUNT:"+validIP, countIP);	
+    	
         String sms_code = CharUtil.getRandomNum(4);
         String msgContent = "您的验证码是：" + sms_code + "，请在页面中提交验证码完成验证。";
         smsLog.setMobile(params.get("mobile"));
