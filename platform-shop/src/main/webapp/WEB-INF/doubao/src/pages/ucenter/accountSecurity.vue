@@ -11,16 +11,6 @@
 		      <img  class="image" :src="accountSecurity.avatar"/>
 		    </div>
 		  </div>
-		   <div class="titleBottom">
-		    <span>姓名</span>
-		    <span class='mobile'  data-c="cee" v-if="name">{{name}}</span>
-			<router-link to="/pages/ucenter/namecard/" class='mobile'  v-else >去认证</router-link>
-		  </div>
-		   <div class="titleBottom">
-		    <span>身份证件号</span>
-		    <span class='mobile'  data-c="cee" v-if="idCard">{{idCard}}</span>
-			<router-link to="/pages/ucenter/namecard/" class='mobile'  v-else >去认证</router-link>
-		  </div>
 		  <div class="titleBottom">
 		    <span>绑定手机号</span>
 		    <span class='mobile'  data-c="cee" v-if="telephone">{{telephone}}</span>
@@ -41,8 +31,6 @@ export default {
   data () {
     return {
 //		headFont:'账户安全',
-		name:'',
-		idCard:'',
     	accountSecurity:[],
     	telephone:''
     }
@@ -55,23 +43,10 @@ export default {
 	        params:{typeId:0}
     	}).then(function (response) {
     			that.accountSecurity = response.data.data;
-    			
     			if(response.data.data.mobile == null || response.data.data.mobile ==''){
     				that.telephone = response.data.data.mobile;
 				}else{
     				that.telephone = that.validateMobile(response.data.data.mobile);
-				}
-				
-				if(response.data.data.name == null || response.data.data.name ==''){
-    				that.name = response.data.data.name;
-				}else{
-    				that.name = that.validatename(response.data.data.name);
-				}
-				
-				if(response.data.data.idCard == null || response.data.data.idCard ==''){
-    				that.idCard = response.data.data.idCard;
-				}else{
-    				that.idCard = that.validateidCard(response.data.data.idCard);
 				}
 		  })
   },
@@ -83,19 +58,6 @@ export default {
 	    var finalPhone = first + '****' + last;
 	    return finalPhone;
 	},
-	validatename(name) {
-	    /*姓名加密处理*/
-	    var last = name.substr(name.length-1);
-	    var finalname = '*' + last;
-	    return finalname;
-	  },
-	  validateidCard(idcard) {
-	    /*身份证号加密处理*/
-	    var first = idcard.substr(0, 1);
-	    var last = idcard.substr(idcard.length - 4, 1);
-	    var finalidcard = first + '***********' + last;
-	    return finalidcard;
-	  },
   	exitLogin(){
   		let that = this;
 		MessageBox({
