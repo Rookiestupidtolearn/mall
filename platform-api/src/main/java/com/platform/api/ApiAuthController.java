@@ -112,7 +112,7 @@ public class ApiAuthController extends ApiBaseAction {
         UserVo userVo = userService.queryByOpenId(sessionData.getString("openid"));
         if (null == userVo) {
             userVo = new UserVo();
-            userVo.setUsername("微信用户" + CharUtil.getRandomString(12));
+            userVo.setUsername("");
             userVo.setPassword(sessionData.getString("openid"));
             userVo.setRegisterTime(nowTime);
             userVo.setRegisterIp(this.getClientIp());
@@ -182,7 +182,7 @@ public class ApiAuthController extends ApiBaseAction {
        if (userVo== null) {
 		 //新注册
     	   userVo = new UserVo();
-           userVo.setUsername("微信用户" + CharUtil.getRandomString(12));
+           userVo.setUsername("");
            userVo.setRegisterTime(new Date());
            userVo.setRegisterIp((this.getClientIp()));
            userVo.setRegisterIp(userVo.getRegisterIp());
