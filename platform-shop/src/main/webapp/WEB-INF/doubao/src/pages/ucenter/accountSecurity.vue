@@ -39,7 +39,7 @@ export default {
   	var that = this;    
     	that.$http({
 	        method: 'post',
-	        url:that.$url+ 'user/userInfo',
+	        url:that.$url+ 'user/userInfo.options',
 	        params:{typeId:0}
     	}).then(function (response) {
     			that.accountSecurity = response.data.data;

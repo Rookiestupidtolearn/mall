@@ -36,7 +36,7 @@ export default {
   	var that = this;    
     	that.$http({
 	        method: 'post',
-	        url:that.$url+ 'collect/list',
+	        url:that.$url+ 'collect/list.options',
 	        data:{typeId:0}
     	}).then(function (res) {
     			that.collectList = res.data.data;

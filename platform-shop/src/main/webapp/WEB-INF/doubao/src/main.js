@@ -1,7 +1,6 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
-//zr minui 组件使用页面单独引要使用的组件   举例:order.vue import { InfiniteScroll } from 'mint-ui';
-
+//接口后加.options是因为后台对于请求参数的接口进行的跨域特殊处理
 import Vue from 'vue'
 import App from './App'
 import router from './router'

@@ -42,7 +42,7 @@ export default {
   	var that = this;    
     	that.$http({
         method: 'post',
-        url:that.$url+ 'order/list',
+        url:that.$url+ 'order/list.options',
         data:{
         	page:1,
         	size:10

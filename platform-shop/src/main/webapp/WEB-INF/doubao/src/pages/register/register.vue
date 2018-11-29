@@ -1,7 +1,7 @@
 <template>
  	<div class="container">
  		<div class="icon">
- 			<img src="../../../static/images/logo.png"/>
+ 			<img :src="logo"/>
  			<h3>斗宝商城</h3>
  		</div>
  		<div class="form">
@@ -30,24 +30,30 @@
 	    	count:'获取验证码',
 	    	disabled:false,
 	    	checked:false,
+	    	logo:require('../../../static/images/logo.png')
 	    }
 	  },
 	  mounted(){
 	  		let that = this;
 	  		var phone =  that.$cookie.getCookie('phone');
 	  		var captcha =  that.$cookie.getCookie('captcha');
-	  		if(phone !=="" || phone !==null ){
+	  		var checked =  that.$cookie.getCookie('checked');
+	  		if(phone !=="" ){
 	  			that.phone = phone;
 	  		}
-	  		if(captcha !=="" || captcha !==null ){
+	  		if(captcha !=="" ){
 	  			that.captcha = captcha;
 	  		}
+	  		if(checked !==""){
+	  			that.checked = JSON.parse(checked);
+	  		} 
 	  },
 	  methods:{
 	  	fwxieyi(){
 	  		let that = this;
 	  		that.$cookie.setCookie('phone',this.phone);
 	  		that.$cookie.setCookie('captcha',this.captcha);
+	  		that.$cookie.setCookie('checked',this.checked);
 	  		that.$router.push('/pages/xieyi/ptfwxy');
 	  	},
 	  	submit(){

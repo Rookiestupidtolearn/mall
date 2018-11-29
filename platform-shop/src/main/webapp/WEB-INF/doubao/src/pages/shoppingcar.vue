@@ -169,7 +169,7 @@ export default {
 			      });
 			     that.$http({
 			        method: 'post',
-			        url: that.$url+'cart/checked',
+			        url: that.$url+'cart/checked.options',
 			        data:{ productIds: productIds.join(','), isChecked: that.isCheckedAll() ? 0 : 1 }
 			     }).then(function (res) {
 			     	var res = res.data;

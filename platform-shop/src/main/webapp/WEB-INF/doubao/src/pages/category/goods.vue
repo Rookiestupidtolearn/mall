@@ -152,9 +152,9 @@
 	    	cartGoodsCount:0,
 	    	userHasCollect: 0,
 	    	openAttr: false,
-	    	noCollectImage: "../../../static/images/icon_collect.png",
-		    hasCollectImage: "../../../static/images/icon_collect_checked.png",
-		    collectBackImage: "../../../static/images/icon_collect.png"
+	    	noCollectImage: require("../../../static/images/icon_collect.png"),
+		    hasCollectImage: require("../../../static/images/icon_collect_checked.png"),
+		    collectBackImage: require("../../../static/images/icon_collect.png")
 	    }
 	  },
 	  mounted(){
