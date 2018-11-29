@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.code.kaptcha.Constants;
 import com.platform.annotation.IgnoreAuth;
 import com.platform.cache.J2CacheUtils;
 import com.platform.entity.SmsLogVo;
@@ -22,6 +23,7 @@ import com.platform.utils.CharUtil;
 import com.platform.utils.DateUtils;
 import com.platform.utils.R;
 import com.platform.utils.RequestUtil;
+import com.platform.utils.ShiroUtils;
 import com.platform.utils.StringUtils;
 
 /**
@@ -102,6 +104,20 @@ public class ApiSmsController {
 			 countIP = 1;
 		}
     	J2CacheUtils.put(J2CacheUtils.INVALID_CACHE,"DOUBAO_SMS_IP_COUNT:"+validIP, countIP);	
+    	//校验图形验证码
+    	if (count >=5) {
+            String kaptcha = ShiroUtils.getKaptcha(Constants.KAPTCHA_SESSION_KEY);
+            if(null == kaptcha){
+                return R.error("验证码已失效");
+            }
+            String captcha =  params.get("code");
+            if (captcha == null) {
+            	   return R.error("请传入图形验证码");
+			}
+            if (!captcha.equalsIgnoreCase(kaptcha)) {
+                return R.error("验证码不正确");
+            }
+		}
     	
         String sms_code = CharUtil.getRandomNum(4);
         String msgContent = "您的验证码是：" + sms_code + "，请在页面中提交验证码完成验证。";
