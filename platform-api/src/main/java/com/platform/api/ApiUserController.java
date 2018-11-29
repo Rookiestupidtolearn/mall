@@ -81,7 +81,7 @@ public class ApiUserController extends ApiBaseAction {
         
         if (count!=null) {
         	  if (count>10) {
-        		   return toResponsFail("操作频繁，明天再试");
+        		//   return toResponsFail("操作频繁，明天再试");
 			  }
         	  count +=1;
 		 }else {
@@ -95,7 +95,7 @@ public class ApiUserController extends ApiBaseAction {
         
         if (countIP!=null) {
         	  if (countIP>10) {
-        		   return toResponsFail("操作频繁，明天再试");
+        		  // return toResponsFail("操作频繁，明天再试");
 			  }
         	  countIP +=1;
 		 }else {

@@ -79,7 +79,7 @@ public class ApiSmsController {
         
         if (count!=null) {
         	  if (count>10) {
-        		   return R.error("操作频繁，明天再试");
+        		 //  return R.error("操作频繁，明天再试");
 			  }
         	  count +=1;
 		 }else {
@@ -95,7 +95,7 @@ public class ApiSmsController {
         
         if (countIP!=null) {
         	  if (countIP>10) {
-        		   return R.error("操作频繁，明天再试");
+        		  // return R.error("操作频繁，明天再试");
 			  }
         	  countIP +=1;
 		 }else {
