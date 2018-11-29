@@ -1,5 +1,20 @@
 package com.platform.api;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.collections.MapUtils;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.platform.annotation.IgnoreAuth;
@@ -16,24 +31,9 @@ import com.platform.utils.CharUtil;
 import com.platform.utils.R;
 import com.platform.validator.Assert;
 import com.qiniu.util.StringUtils;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.collections.MapUtils;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * API登录授权
@@ -112,20 +112,20 @@ public class ApiAuthController extends ApiBaseAction {
         UserVo userVo = userService.queryByOpenId(sessionData.getString("openid"));
         if (null == userVo) {
             userVo = new UserVo();
-            userVo.setUsername("微信用户" + CharUtil.getRandomString(12));
+            userVo.setUsername("");
             userVo.setPassword(sessionData.getString("openid"));
-            userVo.setRegister_time(nowTime);
-            userVo.setRegister_ip(this.getClientIp());
-            userVo.setLast_login_ip(userVo.getRegister_ip());
-            userVo.setLast_login_time(userVo.getRegister_time());
-            userVo.setWeixin_openid(sessionData.getString("openid"));
+            userVo.setRegisterTime(nowTime);
+            userVo.setRegisterIp(this.getClientIp());
+            userVo.setLastLoginIp(userVo.getRegisterIp());
+            userVo.setLastLoginTime(userVo.getRegisterTime());
+            userVo.setWeixinOpenid(sessionData.getString("openid"));
             userVo.setAvatar(userInfo.getAvatarUrl());
             userVo.setGender(userInfo.getGender()); // //性别 0：未知、1：男、2：女
             userVo.setNickname(userInfo.getNickName());
             userService.save(userVo);
         } else {
-            userVo.setLast_login_ip(this.getClientIp());
-            userVo.setLast_login_time(nowTime);
+            userVo.setLastLoginIp(this.getClientIp());
+            userVo.setLastLoginTime(nowTime);
             userService.update(userVo);
         }
 
@@ -182,17 +182,17 @@ public class ApiAuthController extends ApiBaseAction {
        if (userVo== null) {
 		 //新注册
     	   userVo = new UserVo();
-           userVo.setUsername("微信用户" + CharUtil.getRandomString(12));
-           userVo.setRegister_time(new Date());
-           userVo.setRegister_ip(this.getClientIp());
-           userVo.setLast_login_ip(userVo.getRegister_ip());
-           userVo.setLast_login_time(userVo.getRegister_time());
+           userVo.setUsername("");
+           userVo.setRegisterTime(new Date());
+           userVo.setRegisterIp((this.getClientIp()));
+           userVo.setRegisterIp(userVo.getRegisterIp());
+           userVo.setLastLoginTime(userVo.getRegisterTime());
            userVo.setMobile(mobile);
            userService.save(userVo);
     	   
 	   }else {
-		    userVo.setLast_login_ip(this.getClientIp());
-            userVo.setLast_login_time(new Date());
+		    userVo.setLastLoginIp(this.getClientIp());
+            userVo.setLastLoginTime(new Date());
             userService.update(userVo);
 	}
        J2CacheUtils.remove(J2CacheUtils.CHECK_CACHE, "DOUBAO:"+mobile);

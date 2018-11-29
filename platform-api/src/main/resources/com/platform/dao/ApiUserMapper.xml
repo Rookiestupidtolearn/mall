@@ -6,19 +6,19 @@
     <!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="com.platform.entity.UserVo" id="userMap">
         <result property="userId" column="id"/>
-        <result property="username" column="username"/>
+          <result property="username" column="username"/>
         <result property="password" column="password"/>
         <result property="gender" column="gender"/>
         <result property="birthday" column="birthday"/>
-        <result property="register_time" column="register_time"/>
-        <result property="last_login_time" column="last_login_time"/>
-        <result property="last_login_ip" column="last_login_ip"/>
-        <result property="user_level_id" column="user_level_id"/>
+        <result property="registerTime" column="register_time"/>
+        <result property="lastLoginTime" column="last_login_time"/>
+        <result property="lastLoginIp" column="last_login_ip"/>
+        <result property="userLevelId" column="user_level_id"/>
         <result property="nickname" column="nickname"/>
         <result property="mobile" column="mobile"/>
-        <result property="register_ip" column="register_ip"/>
+        <result property="registerIp" column="register_ip"/>
         <result property="avatar" column="avatar"/>
-        <result property="weixin_openid" column="weixin_openid"/>
+        <result property="weixinOpenid" column="weixin_openid"/>
         <result property="idcard" column="idcard"/>
     </resultMap>
     
@@ -60,7 +60,7 @@
 		<if test="gender != null"> and gender = #{gender} </if>
 		<if test="nickname != null and nickname.trim() != ''"> and nickname = #{nickname}</if>
 		<if test="mobile != null and mobile.trim() != ''"> and mobile = #{mobile}</if>
-		<if test="weixin_openid != null and weixin_openid.trim() != ''"> and weixin_openid = #{weixin_openid}</if>
+		<if test="weixinOpenid != null and weixinOpenid.trim() != ''"> and weixinOpenid = #{weixinOpenid}</if>
 	</select>
 
     <select id="queryByOpenId" resultMap="userMap">
@@ -126,20 +126,20 @@
     <update id="update" parameterType="com.platform.entity.UserVo">
         update nideshop_user
         <set>
-            <if test="username != null">`username` = #{username},</if>
-            <if test="password != null">`password` = #{password},</if>
-            <if test="gender != null">`gender` = #{gender},</if>
-            <if test="birthday != null">`birthday` = #{birthday},</if>
-            <if test="register_time != null">`register_time` = #{register_time},</if>
-            <if test="last_login_time != null">`last_login_time` = #{last_login_time},</if>
-            <if test="last_login_ip != null">`last_login_ip` = #{last_login_ip},</if>
-            <if test="user_level_id != null">`user_level_id` = #{user_level_id},</if>
-            <if test="nickname != null">`nickname` = #{nickname},</if>
-            <if test="mobile != null">`mobile` = #{mobile},</if>
-            <if test="register_ip != null">`register_ip` = #{register_ip},</if>
-            <if test="avatar != null">`avatar` = #{avatar},</if>
-            <if test="weixin_openid != null">`weixin_openid` = #{weixin_openid},</if>
-            <if test="idcard != null">`idcard` = #{idcard}</if>
+           <if test="username != null">`username` = #{username}, </if>
+			<if test="password != null">`password` = #{password}, </if>
+			<if test="gender != null">`gender` = #{gender}, </if>
+			<if test="birthday != null">`birthday` = #{birthday}, </if>
+			<if test="registerTime != null">`register_time` = #{registerTime}, </if>
+			<if test="lastLoginTime != null">`last_login_time` = #{lastLoginTime}, </if>
+			<if test="lastLoginIp != null">`last_login_ip` = #{lastLoginIp}, </if>
+			<if test="userLevelId != null">`user_level_id` = #{userLevelId}, </if>
+			<if test="nickname != null">`nickname` = #{nickname}, </if>
+			<if test="mobile != null">`mobile` = #{mobile}, </if>
+			<if test="registerIp != null">`register_ip` = #{registerIp}, </if>
+			<if test="avatar != null">`avatar` = #{avatar}, </if>
+			<if test="weixinOpenid != null">`weixin_openid` = #{weixinOpenid}, </if>
+			<if test="idcard != null">`idcard` = #{idcard}</if>
         </set>
         where id = #{userId}
     </update>

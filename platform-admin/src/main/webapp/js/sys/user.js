@@ -43,6 +43,7 @@ var vm = new Vue({
         q: {
             username: null
         },
+        usernameMsg:"",
         showList: true,
         title: null,
         roleList: {},
@@ -135,7 +136,34 @@ var vm = new Vue({
                 });
             });
         },
+        usernameVerify: function () {
+        	var than = this;
+        	var username = vm.user.username;
+        	if(username.trim() == ''|| null == username){
+        		vm.usernameMsg="用户名不能为空";
+        		return;
+        	}else{
+        		vm.usernameMsg="";
+        	}
+            Ajax.request({
+                url: "../sys/user/usernameVerify",
+                params: username,
+                contentType: "application/json",
+                type: 'POST',
+                successCallback: function (r) {
+                	if(r.isExist == true){
+                		vm.usernameMsg="用户名已存在";
+                	}else{
+                		vm.usernameMsg="";
+                	}
+                }
+            });
+        },
         saveOrUpdate: function (event) {
+        	if(vm.usernameMsg!=""){
+        		alert("用户名已存在");
+        		return;
+        	}
             var url = vm.user.userId == null ? "../sys/user/save" : "../sys/user/update";
             Ajax.request({
                 url: url,

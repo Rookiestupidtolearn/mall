@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
-import com.platform.annotation.IgnoreAuth;
 import com.platform.annotation.LoginUser;
+import com.platform.cache.J2CacheUtils;
 import com.platform.entity.QzMoneyRecordEntity;
 import com.platform.entity.QzUserAccountEntity;
 import com.platform.entity.SmsConfig;
@@ -28,6 +30,7 @@ import com.platform.utils.CharUtil;
 import com.platform.utils.Constant;
 import com.platform.utils.DateUtils;
 import com.platform.utils.RRException;
+import com.platform.utils.RequestUtil;
 import com.platform.utils.SmsUtil;
 import com.platform.utils.StringUtils;
 
@@ -54,10 +57,9 @@ public class ApiUserController extends ApiBaseAction {
     /**
      * 发送短信
      */
-    @IgnoreAuth
     @ApiOperation(value = "发送短信")
     @PostMapping("smscode")
-    public Object smscode(@LoginUser UserVo loginUser) {
+    public Object smscode(HttpServletRequest request,@LoginUser UserVo loginUser) {
         JSONObject jsonParams = getJsonRequest();
         String phone = jsonParams.getString("phone");
         // 一分钟之内不能重复发送短信
@@ -73,7 +75,35 @@ public class ApiUserController extends ApiBaseAction {
         if(CollectionUtils.isNotEmpty(userLi)){
         	return toResponsFail("该手机号已被绑定");
         }
+         
+        //手机号
+        Integer count = (Integer) J2CacheUtils.get(J2CacheUtils.INVALID_CACHE, "DOUBAO_SMS_COUNT:"+phone);
         
+        if (count!=null) {
+        	  if (count>10) {
+        		   return toResponsFail("操作频繁，明天再试");
+			  }
+        	  count +=1;
+		 }else {
+			 count = 1;
+		}
+        
+     	J2CacheUtils.put(J2CacheUtils.INVALID_CACHE,"DOUBAO_SMS_COUNT:"+phone, count);
+        //ip地址
+     	String validIP = RequestUtil.getIpAddrByRequest(request);
+        Integer countIP = (Integer) J2CacheUtils.get(J2CacheUtils.INVALID_CACHE, "DOUBAO_SMS_IP_COUNT:"+validIP);
+        
+        if (countIP!=null) {
+        	  if (countIP>10) {
+        		   return toResponsFail("操作频繁，明天再试");
+			  }
+        	  countIP +=1;
+		 }else {
+			 countIP = 1;
+		}
+    	J2CacheUtils.put(J2CacheUtils.INVALID_CACHE,"DOUBAO_SMS_IP_COUNT:"+validIP, countIP);	
+    	
+       
         //生成验证码
         String sms_code = CharUtil.getRandomNum(4);
         String msgContent = "您的验证码是：" + sms_code + "，请在页面中提交验证码完成验证。";
@@ -116,7 +146,9 @@ public class ApiUserController extends ApiBaseAction {
             smsLogVo.setSms_text(msgContent);
             smsLogVo.setSend_status(1); //1成功   0失败
             userService.saveSmsCodeLog(smsLogVo);
-            return toResponsSuccess("短信发送成功");
+            Map<String, Object> re =toResponsSuccess("短信发送成功");
+            re.put("count", count);
+            return re;
         } else {
             return toResponsFail("短信发送失败");
         }
