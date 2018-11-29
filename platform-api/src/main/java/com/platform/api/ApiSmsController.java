@@ -87,6 +87,9 @@ public class ApiSmsController {
 		}
         
      	J2CacheUtils.put(J2CacheUtils.INVALID_CACHE,"DOUBAO_SMS_COUNT:"+mobile, count);
+     	
+     	R result = R.ok().put("count", count);
+     	
         //ip地址
         Integer countIP = (Integer) J2CacheUtils.get(J2CacheUtils.INVALID_CACHE, "DOUBAO_SMS_IP_COUNT:"+validIP);
         
@@ -134,7 +137,7 @@ public class ApiSmsController {
                smsLogVo.setSend_status(1); //1成功   0失败
                userService.saveSmsCodeLog(smsLogVo);
 		}
-        
-        return R.ok().put("result", "发送成功");
+       result.put("result", "发送成功");
+        return  result;
     }
 }

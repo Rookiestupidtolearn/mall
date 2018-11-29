@@ -146,7 +146,9 @@ public class ApiUserController extends ApiBaseAction {
             smsLogVo.setSms_text(msgContent);
             smsLogVo.setSend_status(1); //1成功   0失败
             userService.saveSmsCodeLog(smsLogVo);
-            return toResponsSuccess("短信发送成功");
+            Map<String, Object> re =toResponsSuccess("短信发送成功");
+            re.put("count", count);
+            return re;
         } else {
             return toResponsFail("短信发送失败");
         }
