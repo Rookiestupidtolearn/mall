@@ -1,11 +1,13 @@
 package com.platform.controller;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.util.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +20,7 @@ import com.platform.entity.SysUserAuthEntity;
 import com.platform.entity.SysUserEntity;
 import com.platform.service.SysSmsLogService;
 import com.platform.service.SysUserAuthService;
+import com.platform.service.SysUserService;
 import com.platform.utils.PageUtils;
 import com.platform.utils.Query;
 import com.platform.utils.R;
@@ -38,6 +41,9 @@ public class SysUserAuthController {
     
     @Autowired
     private SysSmsLogService smsLogService;
+    
+    @Autowired
+    private SysUserService sysUserService;
 
     /**
      * 查看列表
@@ -172,25 +178,40 @@ public class SysUserAuthController {
      */
     @RequestMapping("/queryObjectByUserId")
     public R queryObjectByUserId() {
-    	  Long userId = null;
-    	  SysUserAuthEntity sysUserAuth =null;
-    	  SysUserEntity sysUserEntity = ShiroUtils.getUserEntity();
-          if (null != sysUserEntity) {
-              userId   = sysUserEntity.getUserId();
-          }
-    	
-	        if(userId!=null){
-	             sysUserAuth = sysUserAuthService.queryObjectByUserId(Integer.parseInt(Long.toString(userId)));
-	        }
-	     R returR  =   R.ok();
-	     returR.put("sysUserAuth",sysUserAuth);
-	     
-	     if(sysUserAuth!=null){
-	    	 returR.put("userId",sysUserAuth.getUserId());	 
-	     }else{
-	    	 returR.put("userId",null);	 
-	     }
-	     return returR;
+		Long userId = null;
+		SysUserAuthEntity sysUserAuth =null;
+		SysUserEntity sysUserEntity = ShiroUtils.getUserEntity();
+		
+	    if (null != sysUserEntity) {
+	       userId   = sysUserEntity.getUserId();
+	    }
+		if(userId!=null){
+	       sysUserAuth = sysUserAuthService.queryObjectByUserId(Integer.parseInt(Long.toString(userId)));
+	    }
+		
+	    R returR  =   R.ok();
+	    returR.put("sysUserAuth",sysUserAuth);
+	    
+	    if(null != sysUserEntity && sysUserEntity.getUserId() == 1){  //admin 账户无需完善商户信息
+	    	returR.put("userId",sysUserEntity.getUserId());	 
+	    	 return returR;
+	    }
+	    
+	    Map<String,Object> paramMap = new HashMap<>();
+	    paramMap.put("createUserId",sysUserEntity.getCreateUserId() );
+	    paramMap.put("username", sysUserEntity.getUsername());
+	    List<SysUserEntity> userList = sysUserService.queryList(paramMap);
+	    if(!CollectionUtils.isEmpty(userList)){
+	    	if(!userList.get(0).getDeptName().contains("商户")){
+	    		returR.put("userId",sysUserEntity.getUserId());	 
+		    	 return returR;
+	    	}
+	    }
+	    if(sysUserAuth!=null){
+	     returR.put("userId",sysUserAuth.getUserId());
+	    }else{
+	    	returR.put("userId",null);	 
+	    }
+	    return returR;
     }
-    
 }

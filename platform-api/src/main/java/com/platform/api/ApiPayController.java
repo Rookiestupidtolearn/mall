@@ -134,7 +134,7 @@ public class ApiPayController extends ApiBaseAction {
             // 交易类型APP
             parame.put("trade_type", ResourceUtil.getConfigByName("wx.tradeType"));
             parame.put("spbill_create_ip", getClientIp());
-            parame.put("openid", loginUser.getWeixin_openid());
+            parame.put("openid", loginUser.getWeixinOpenid());
             String sign = WechatUtil.arraySign(parame, ResourceUtil.getConfigByName("wx.paySignKey"));
             // 数字签证
             parame.put("sign", sign);

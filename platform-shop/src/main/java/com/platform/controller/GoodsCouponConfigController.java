@@ -154,6 +154,22 @@ public class GoodsCouponConfigController {
         }*/
         return R.ok();
     }
+    
+    
+    /**
+     * 保存
+     */
+    @RequestMapping("/save")
+    @RequiresPermissions("goodscouponconfig:save")
+    public R save(@RequestBody GoodsCouponConfigEntity goodsCouponConfig) {
+    	//先校验商品是否已下架(只有下架了才能新增配比)
+    	boolean boo = goodsIsoldOut(goodsCouponConfig.getGoodsId());
+    	if(!boo){
+    		return R.error("商品未下架不能新增配比值");
+    	}
+        goodsCouponConfigService.save(goodsCouponConfig);
+        return R.ok();
+    }
 
     /**
      * 修改
