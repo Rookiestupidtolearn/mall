@@ -43,7 +43,7 @@ Page({
     },'post','application/json').then(function (res) {
       console.log(res);
       if(res.code == '500'){
-        util.showErrorToast(res.msg);
+        util.showErrorToast(res.data);
       }else{
         wx.switchTab({ //跳转到tabbar页面
           url: '/pages/ucenter/index/index',
