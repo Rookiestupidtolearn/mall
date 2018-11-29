@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -84,7 +85,13 @@ public class ApiUserService {
     }
 
     public SmsLogVo querySmsCodeByUserId(Long user_id) {
-        return userDao.querySmsCodeByUserId(user_id);
+    	SmsLogVo vo = null;
+    	 List<SmsLogVo> list=  userDao.querySmsCodeByUserId(user_id);
+    	 if (CollectionUtils.isNotEmpty(list)) {
+    		 vo = list.get(0);
+		}
+    	
+        return vo;
     }
 
 

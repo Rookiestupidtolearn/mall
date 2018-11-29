@@ -79,7 +79,7 @@ public class ApiSmsController {
         
         if (count!=null) {
         	  if (count>10) {
-        		 //  return R.error("操作频繁，明天再试");
+        		   return R.error("操作频繁，明天再试");
 			  }
         	  count +=1;
 		 }else {
@@ -95,7 +95,7 @@ public class ApiSmsController {
         
         if (countIP!=null) {
         	  if (countIP>10) {
-        		  // return R.error("操作频繁，明天再试");
+        		   return R.error("操作频繁，明天再试");
 			  }
         	  countIP +=1;
 		 }else {
@@ -129,13 +129,6 @@ public class ApiSmsController {
         	userSms.setSms_text(msgContent);
         	userSms.setSend_status(1); //1成功   0失败
               userService.saveSmsCodeLog(userSms);
-        	SmsLogVo smsLogVo = new SmsLogVo();
-               smsLogVo.setLog_date(System.currentTimeMillis() / 1000);
-               smsLogVo.setPhone(mobile);
-               smsLogVo.setSms_code(sms_code);
-               smsLogVo.setSms_text(msgContent);
-               smsLogVo.setSend_status(1); //1成功   0失败
-               userService.saveSmsCodeLog(smsLogVo);
 		}
        result.put("result", "发送成功");
         return  result;

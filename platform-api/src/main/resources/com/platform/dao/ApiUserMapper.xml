@@ -155,7 +155,7 @@
         <result property="sms_text" column="sms_text"/>
     </resultMap>
 
-    <select id="querySmsCodeByUserId" resultMap="smslogMap">
+    <select id="querySmsCodeByUserId" resultType="com.platform.entity.SmsLogVo">
         select
         a.id,
         a.user_id,
