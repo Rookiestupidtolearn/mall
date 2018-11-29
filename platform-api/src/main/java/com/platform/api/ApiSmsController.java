@@ -26,6 +26,9 @@ import com.platform.utils.RequestUtil;
 import com.platform.utils.ShiroUtils;
 import com.platform.utils.StringUtils;
 
+import net.oschina.j2cache.CacheProviderHolder;
+import net.oschina.j2cache.Level2Cache;
+
 /**
  * 发送短信接口Controller
  *
@@ -88,7 +91,8 @@ public class ApiSmsController {
 			 count = 1;
 		}
         
-     	J2CacheUtils.put(J2CacheUtils.INVALID_CACHE,"DOUBAO_SMS_COUNT:"+mobile, count);
+    	Level2Cache level2 = CacheProviderHolder.getLevel2Cache(J2CacheUtils.INVALID_CACHE);
+    	level2.put("DOUBAO_SMS_COUNT:"+mobile, count,86400l);
      	
      	R result = R.ok().put("count", count);
      	
@@ -103,7 +107,8 @@ public class ApiSmsController {
 		 }else {
 			 countIP = 1;
 		}
-    	J2CacheUtils.put(J2CacheUtils.INVALID_CACHE,"DOUBAO_SMS_IP_COUNT:"+validIP, countIP);	
+    	Level2Cache levelIP = CacheProviderHolder.getLevel2Cache(J2CacheUtils.INVALID_CACHE);
+    	levelIP.put("DOUBAO_SMS_IP_COUNT:"+validIP, countIP,86400l);
     	//校验图形验证码
     	if (count >=5) {
             String kaptcha = ShiroUtils.getKaptcha(Constants.KAPTCHA_SESSION_KEY);
