@@ -78,9 +78,9 @@ public class ApiSmsController {
     	if (va != null) {
     		 return R.error("操作频繁");
 		}
-    	
+    	Level2Cache level2 = CacheProviderHolder.getLevel2Cache(J2CacheUtils.INVALID_CACHE);
         //手机号
-        Integer count = (Integer) J2CacheUtils.get(J2CacheUtils.INVALID_CACHE, "DOUBAO_SMS_COUNT:"+mobile);
+        Integer count =(Integer) level2.get("DOUBAO_SMS_COUNT:"+mobile);
         
         if (count!=null) {
         	  if (count>10) {
@@ -91,13 +91,13 @@ public class ApiSmsController {
 			 count = 1;
 		}
         
-    	Level2Cache level2 = CacheProviderHolder.getLevel2Cache(J2CacheUtils.INVALID_CACHE);
+
     	level2.put("DOUBAO_SMS_COUNT:"+mobile, count,86400l);
      	
      	R result = R.ok().put("count", count);
      	
         //ip地址
-        Integer countIP = (Integer) J2CacheUtils.get(J2CacheUtils.INVALID_CACHE, "DOUBAO_SMS_IP_COUNT:"+validIP);
+        Integer countIP =(Integer) level2.get("DOUBAO_SMS_IP_COUNT:"+validIP);
         
         if (countIP!=null) {
         	  if (countIP>10) {
@@ -107,18 +107,19 @@ public class ApiSmsController {
 		 }else {
 			 countIP = 1;
 		}
-    	Level2Cache levelIP = CacheProviderHolder.getLevel2Cache(J2CacheUtils.INVALID_CACHE);
-    	levelIP.put("DOUBAO_SMS_IP_COUNT:"+validIP, countIP,86400l);
+    
+        level2.put("DOUBAO_SMS_IP_COUNT:"+validIP, countIP,86400l);
     	//校验图形验证码
     	if (count >=5) {
-            String kaptcha = ShiroUtils.getKaptcha(Constants.KAPTCHA_SESSION_KEY);
-            if(null == kaptcha){
-                return R.error("验证码已失效");
-            }
             String captcha =  params.get("code");
             if (captcha == null) {
             	   return R.error("请传入图形验证码");
 			}
+            String kaptcha = ShiroUtils.getKaptcha(Constants.KAPTCHA_SESSION_KEY);
+            if(null == kaptcha){
+                return R.error("验证码已失效");
+            }
+
             if (!captcha.equalsIgnoreCase(kaptcha)) {
                 return R.error("验证码不正确");
             }
