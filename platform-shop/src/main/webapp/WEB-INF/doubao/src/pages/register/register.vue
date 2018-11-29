@@ -8,7 +8,10 @@
  			<p>快速登录</p>
  			<mt-field label="手机号码"  placeholder="请输入手机号码" type="tel" v-model="phone"  :attr="{ maxlength: 11 }" ></mt-field>
  			<mt-field label="验证码" placeholder="请输入验证码" v-model="captcha"  :attr="{ maxlength: 4}" >
-			<mt-button type="primary" size="small" :disabled="disabled" @click="yzm" >{{count}}</mt-button>
+				<mt-button type="primary" size="small" :disabled="disabled" @click="yzm" >{{count}}</mt-button>
+			</mt-field>
+			<mt-field placeholder="请输入图形验证码" v-model="imgcaptcha"  :attr="{ maxlength: 4}"  :style="{display:['showImg' ? 'block' : 'none']}">
+				<img :src="imgyzm" class="imgYzm"/>
 			</mt-field>
  		</div>
  		<p class="last">
@@ -27,6 +30,9 @@
 	    return {
 	    	phone:'',
 	    	captcha:'',
+	    	imgcaptcha:'',
+	    	imgyzm:require('../../../static/images/logo.png'),
+	    	showImg:false,
 	    	count:'获取验证码',
 	    	disabled:false,
 	    	checked:false,
@@ -54,6 +60,7 @@
 	  		that.$cookie.setCookie('phone',this.phone);
 	  		that.$cookie.setCookie('captcha',this.captcha);
 	  		that.$cookie.setCookie('checked',this.checked);
+//	  		that.$cookie.setCookie('imgcaptcha',this.imgcaptcha);
 	  		that.$router.push('/pages/xieyi/ptfwxy');
 	  	},
 	  	submit(){
@@ -140,6 +147,10 @@
 			  				that.disabled = false;
 			  			}
 			  		}, 1000);
+			  		/*图形验证码是否显示*/
+			  		if (res.data.count >=5){
+			  			that.showImg = true;
+			  		}
 		    	}else{
 		    		that.$toast({message:res.data.msg,duration:3000});
 		    	}
@@ -152,6 +163,10 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+	.imgYzm{
+		    padding: 0 12px;
+    		height: 33px;
+	}
 	.icon{
 		margin-top:.5rem;
 	}
