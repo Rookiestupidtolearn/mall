@@ -69,10 +69,13 @@ public class ApiUserController extends ApiBaseAction {
         String phone = jsonParams.getString("phone");
         // 一分钟之内不能重复发送短信
         SmsLogVo smsLogVo = userService.querySmsCodeByUserId(loginUser.getUserId());
-      
-        if (null != smsLogVo && (System.currentTimeMillis() / 1000 - smsLogVo.getLog_date()) < 1 * 60) {
-            return toResponsFail("一分钟内重复发送短信");
-        }
+        if (smsLogVo != null) {
+			 if (smsLogVo.getLog_date() != null) {
+			        if (null != smsLogVo && (System.currentTimeMillis() / 1000 - smsLogVo.getLog_date()) < 1 * 60) {
+			            return toResponsFail("一分钟内重复发送短信");
+			        }
+			}
+		}
         
         Map paramMap = new HashMap();
         paramMap.put("mobile", phone);
