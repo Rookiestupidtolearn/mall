@@ -13,8 +13,6 @@ const API_BASE_URL = 'http://106.75.99.126:6302' + root;
 // const API_BASE_URL = 'http://192.144.156.42:8080' + root;
 // const API_BASE_URL = 'http://192.168.0.11:6101' + root;
 
-
-
 module.exports = {
     IndexUrlNewGoods: API_BASE_URL + 'index/newGoods', //新品首发
     IndexUrlHotGoods: API_BASE_URL + 'index/hotGoods', //热卖商品
@@ -94,4 +92,5 @@ module.exports = {
 
     UserMobile: API_BASE_URL + 'user/userInfo',//获取手机号
     CancelAddBuyCoupons: API_BASE_URL + 'buy/cancelAddBuyCoupons',//区分立即购买还是加入购物车
+    bindUserIdcard: API_BASE_URL + 'user/bind_user_idcard'  //实名认证
 };
