@@ -153,7 +153,6 @@ public class ApiOrderService {
 						if (!stockMap.get("code").equals("200")) {
 							resultObj.put("errno", "100");
 							resultObj.put("errmsg", "不可出售");
-						//	apiCartService.updateUserCouponPrice(cartItem.getGoods_id(), cartItem.getProduct_id(), cartItem.getNumber(), loginUser.getUserId());
 							Integer[] arr1 = {cartItem.getGoods_id()};
 							apiGoodsService.unSaleBatch(arr1, 3);
 							continue;
@@ -163,11 +162,11 @@ public class ApiOrderService {
 						if (!saleStatusMap.get("code").equals("200")) {
 							resultObj.put("errno", "100");
 							resultObj.put("errmsg", "不可出售");
-							//apiCartService.updateUserCouponPrice(cartItem.getGoods_id(), cartItem.getProduct_id(), cartItem.getNumber(), loginUser.getUserId());
 							Integer[] arr1 = {cartItem.getGoods_id()};
 							apiGoodsService.unSaleBatch(arr1, 3);
 							continue;
 						}
+
 				}
 				if (source.equals("system")) {
 					//校验自己的库存和上下架状态
@@ -209,6 +208,30 @@ public class ApiOrderService {
 			resultObj.put("errmsg", "没可下单数据");
 			return resultObj;
 	}
+		// 查询用户优惠券信息 直接过去 平台币抵扣券
+		List<UserCouponVo> userCouponVos = apiUserCouponMapper.queryUserCouponTotalPrice(loginUser.getUserId());
+
+		List<UserCouponVo> coupons = new ArrayList<>();
+		if (!CollectionUtils.isEmpty(userCouponVos)) {
+			for (UserCouponVo vo : userCouponVos) {
+				if (vo.getCoupon_id() == 11) {
+					coupons.add(vo);
+				}
+			}
+		}
+		// 判断数据是否异常 异常抛出
+
+		if (CollectionUtils.isNotEmpty(coupons) && coupons.size() > 1) {
+			resultObj.put("errno", 1);
+			resultObj.put("errmsg", "抵扣券数据异常大于1");
+			return resultObj;
+		}
+
+		UserCouponVo userCoupon = null;
+
+		if (CollectionUtils.isNotEmpty(coupons)) {
+			userCoupon = coupons.get(0);
+		}
 
 		// 订单的总价 商品价格+运费价格
 		BigDecimal orderTotalPrice = goodsTotalPrice.add(freightPrice);
@@ -228,68 +251,6 @@ public class ApiOrderService {
 		orderInfo.setFreight_price(freightPrice);
 		// 留言
 		orderInfo.setPostscript(postscript);
-
-		/**
-		 * 订单问题 1.拆分渠道 1.1 渠道增加 1.2 状态
-		 *
-		 * 2.定时任务轮训订单状态
-		 *
-		 *
-		 */
-
-		String pidNums = "";
-		// 统计下单商品总价
-		List<OrderGoodsVo> orderGoodsData = new ArrayList<OrderGoodsVo>();//目前没用
-		for (CartVo goodsItem : orderGoodsList) {
-			OrderGoodsVo orderGoodsVo = new OrderGoodsVo();
-			orderGoodsVo.setOrder_id(orderInfo.getId());
-			orderGoodsVo.setGoods_id(goodsItem.getGoods_id());
-			orderGoodsVo.setGoods_sn(goodsItem.getGoods_sn());
-			orderGoodsVo.setProduct_id(goodsItem.getProduct_id());
-			orderGoodsVo.setGoods_name(goodsItem.getGoods_name());
-			orderGoodsVo.setList_pic_url(goodsItem.getList_pic_url());
-			orderGoodsVo.setMarket_price(goodsItem.getMarket_price());
-			orderGoodsVo.setRetail_price(goodsItem.getRetail_price());
-			orderGoodsVo.setNumber(goodsItem.getNumber());
-			orderGoodsVo.setGoods_specifition_name_value(goodsItem.getGoods_specifition_name_value());
-			orderGoodsVo.setGoods_specifition_ids(goodsItem.getGoods_specifition_ids());
-			orderGoodsVo.setChannel(soureMap.get(goodsItem.getGoods_id()+""));
-			orderGoodsVo.setGoodStatus(0);
-			orderGoodsData.add(orderGoodsVo);
-			apiOrderGoodsMapper.save(orderGoodsVo);
-			pidNums += orderGoodsVo.getGoods_sn().substring(2, orderGoodsVo.getGoods_sn().length()) + "_"
-					+ orderGoodsVo.getNumber() + ",";
-		}
-		if (StringUtils.isNotEmpty(pidNums)) {
-			pidNums = pidNums.substring(0, pidNums.length() - 1);
-		}
-		
-		//处理优惠券#####################################################信息
-		// 查询用户优惠券信息 直接过去 平台币抵扣券
-		List<UserCouponVo> userCouponVos = apiUserCouponMapper.queryUserCouponTotalPrice(loginUser.getUserId());
-
-		List<UserCouponVo> coupons = new ArrayList<>();
-		if (!CollectionUtils.isEmpty(userCouponVos)) {
-			for (UserCouponVo vo : userCouponVos) {
-				if (vo.getCoupon_id() == 11) {
-					coupons.add(vo);
-				}
-			}
-		}
-		// 判断数据是否异常 异常抛出
-		if (CollectionUtils.isNotEmpty(coupons) && coupons.size() > 1) {
-			resultObj.put("errno", 1);
-			resultObj.put("errmsg", "抵扣券数据异常大于1");
-			return resultObj;
-		}
-		
-		UserCouponVo userCoupon = null;
-
-		if (CollectionUtils.isNotEmpty(coupons)) {
-			userCoupon = coupons.get(0);
-		}
-		
-		
 		// 使用的优惠券
 		BigDecimal couponPrice = BigDecimal.ZERO;
 		if (userCoupon != null) {
@@ -299,32 +260,6 @@ public class ApiOrderService {
 			userCoupon.setCoupon_status(4);//支付中
 			apiUserCouponMapper.updateUserOrderCoupon(userCoupon);
 		}
-		//#####################以上是库存优惠券的信息#############################################
-		
-//		 BigDecimal couponTotalPrice = BigDecimal.ZERO;//优惠券总价值
-//		for (CartVo cart : orderGoodsList) {
-//			BigDecimal payMatching = BigDecimal.ZERO;
-//			BigDecimal couponlPrice = BigDecimal.ZERO;//优惠券临时总价值
-//			if(payMatchingUtils.getPayMatching(cart.getProduct_id())== null){
-//				continue;
-//			}
-//			Object value = payMatchingUtils.getPayMatching(cart.getProduct_id()).get(cart.getGoods_id());
-//			if(value != null){
-//				payMatching = new BigDecimal(value.toString());
-//			}
-//			couponlPrice = payMatching.multiply(new BigDecimal(cart.getNumber()));
-//			couponTotalPrice = couponTotalPrice.add(couponlPrice);
-//		}
-//		if (couponTotalPrice.compareTo(couponPrice)==0) {
-//			// 优惠券标记已用
-//			if (userCoupon != null && userCoupon.getCoupon_status() == 1) {
-//				userCoupon.setCoupon_status(4);// 支付中
-//				apiUserCouponMapper.updateUserOrderCoupon(userCoupon);
-//			}
-//		}
-//		
-
-		
 		// 减去其它支付的金额后，要实际支付的金额
 		BigDecimal actualPrice = orderTotalPrice.subtract(couponPrice);
 		orderInfo.setAdd_time(new Date());
@@ -355,7 +290,41 @@ public class ApiOrderService {
 			resultObj.put("errmsg", "订单提交失败");
 			return resultObj;
 		}
-		
+
+		/**
+		 * 订单问题 1.拆分渠道 1.1 渠道增加 1.2 状态
+		 *
+		 * 2.定时任务轮训订单状态
+		 *
+		 *
+		 */
+
+		String pidNums = "";
+		// 统计商品总价
+		List<OrderGoodsVo> orderGoodsData = new ArrayList<OrderGoodsVo>();//目前没用
+		for (CartVo goodsItem : orderGoodsList) {
+			OrderGoodsVo orderGoodsVo = new OrderGoodsVo();
+			orderGoodsVo.setOrder_id(orderInfo.getId());
+			orderGoodsVo.setGoods_id(goodsItem.getGoods_id());
+			orderGoodsVo.setGoods_sn(goodsItem.getGoods_sn());
+			orderGoodsVo.setProduct_id(goodsItem.getProduct_id());
+			orderGoodsVo.setGoods_name(goodsItem.getGoods_name());
+			orderGoodsVo.setList_pic_url(goodsItem.getList_pic_url());
+			orderGoodsVo.setMarket_price(goodsItem.getMarket_price());
+			orderGoodsVo.setRetail_price(goodsItem.getRetail_price());
+			orderGoodsVo.setNumber(goodsItem.getNumber());
+			orderGoodsVo.setGoods_specifition_name_value(goodsItem.getGoods_specifition_name_value());
+			orderGoodsVo.setGoods_specifition_ids(goodsItem.getGoods_specifition_ids());
+			orderGoodsVo.setChannel(soureMap.get(goodsItem.getGoods_id()+""));
+			orderGoodsVo.setGoodStatus(0);
+			orderGoodsData.add(orderGoodsVo);
+			apiOrderGoodsMapper.save(orderGoodsVo);
+			pidNums += orderGoodsVo.getGoods_sn().substring(2, orderGoodsVo.getGoods_sn().length()) + "_"
+					+ orderGoodsVo.getNumber() + ",";
+		}
+		if (StringUtils.isNotEmpty(pidNums)) {
+			pidNums = pidNums.substring(0, pidNums.length() - 1);
+		}
 
 		// 清空已购买的商品
 		apiCartMapper.deleteByCart(loginUser.getUserId(), 1, 1);
@@ -366,7 +335,11 @@ public class ApiOrderService {
 		orderInfoMap.put("orderInfo", orderInfo);
 		//
 		resultObj.put("data", orderInfoMap);
-
+		// 优惠券标记已用
+		if (userCoupon != null && userCoupon.getCoupon_status() == 1) {
+			userCoupon.setCoupon_status(4);// 支付中
+			apiUserCouponMapper.updateUserOrderCoupon(userCoupon);
+		}
 		// 创建第三方订单
 		JdOrderVo jdOrderVo = new JdOrderVo();
 		jdOrderVo.setPidNums(pidNums);

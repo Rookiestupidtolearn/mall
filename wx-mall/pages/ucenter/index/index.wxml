@@ -50,7 +50,10 @@
         <text class="txt">账号安全</text>
       </navigator>
     </view>
-    <button class='service' open-type="contact">
+    <button class='service' type="primary" 
+      size="40"
+      session-from="sobot|{{userInfo.nickName}}|{{userInfo.avatarUrl}}|{{params}}"
+      open-type="contact">
       <view class="item">
         <navigator url="url" class="a">
           <text class="icon kefu"></text>

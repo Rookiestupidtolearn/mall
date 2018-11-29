@@ -8,8 +8,16 @@
     </view>
   </view>
   <view class="titleBottom">
+    <text>姓名</text>
+    <text class='col5e5e5e' bindtap="{{name == '未认证>' ? 'bindname' : ''}}">{{name}}</text>
+  </view>
+  <view class="titleBottom">
+    <text>身份证件号</text>
+    <text class='col5e5e5e' bindtap="{{idCard == '未认证>' ? 'bindcard' : ''}}">{{idCard}}</text>
+  </view>
+   <view class="titleBottom">
     <text>绑定手机号</text>
-    <text class='col5e5e5e' bindtap="{{telephone == '去绑定' ? 'bindPhone' : ''}}">{{telephone}}</text>
+    <text class='col5e5e5e' bindtap="{{telephone == '去绑定>' ? 'bindPhone' : ''}}">{{telephone}}</text>
   </view>
   <view class="logout" bindtap="exitLogin">退出登录</view>
 </view>

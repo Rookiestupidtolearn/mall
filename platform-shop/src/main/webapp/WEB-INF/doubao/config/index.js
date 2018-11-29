@@ -6,11 +6,24 @@ const path = require('path')
 
 module.exports = {
   dev: {
-
-    // Paths
+// 	env: require('./dev.env'),
+//  port: 2000,
+//  host: '0.0.0.0',
+    autoOpenBrowser: false,
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {  //设置代理
+		//http://localhost:8080/platform'  //本地
+		//http://192.168.1.244:6101/platform'  //吴明龙
+    	'/platform': {
+				target: 'http://106.75.99.126:6302/platform',
+
+        changeOrigin: true,
+        pathRewrite: {
+          '/platform': ''
+        }
+      }
+    },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
@@ -43,7 +56,7 @@ module.exports = {
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/',
+    assetsPublicPath: './',
 
     /**
      * Source Maps

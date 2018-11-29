@@ -1,7 +1,9 @@
 <template>
  	<div class="container">
- 		
-		 <div class="address-box">
+ 		<!--公用头部-->
+  		<!--<headbar :headFont = "headFont"></headbar>-->
+  		
+		 <div class="address-box ">
 	        <div class="address-item" @click="selectAddress" v-if="checkedAddress.id > 0">
 	            <div class="l">
 	                <span class="name">{{checkedAddress.userName}}</span>
@@ -26,17 +28,26 @@
 	    </div>
 	    
 	    <div class="coupon-box" @click='tapCoupon'>
-	        <div class="coupon-item">
+	    	 <div class="coupon-item" v-if="couponPrice==0">
+	    	 	 <div class="l">
+	                <!--<span class="name">请选择优惠券</span>-->
+	                <span class="txt">无可用优惠券</span>
+	            </div>
+	            <div class="r">
+	                <img src="../../../static/images/address_right.png"/>
+	            </div>
+	        </div>
+	         <div class="coupon-item" v-else>
 	            <div class="l">
-	                <span class="name">请选择优惠券</span>
-	                <span class="txt">{{couponDesc}}</span>
+	            	<!--<span class="name">优惠券金额</span>-->
+	                <span class="txt">平台币抵扣券</span>
 	            </div>
 	            <div class="r">
 	                <img src="../../../static/images/address_right.png"/>
 	            </div>
 	        </div>
 	    </div>
-    
+	       
      <div class="order-box">
         <div class="order-item">
             <div class="l">
@@ -89,13 +100,16 @@
 </template>
 
 <script>
-	import { Toast } from 'mint-ui';
 	import { MessageBox } from 'mint-ui';
+	import { Toast } from 'mint-ui';
+//	import headbar from '@/components/headbar.vue'
 		
 	export default {
 	  name: 'checkout',
+//	  components:{headbar},
 	  data () {
 	    return {
+//	    	headFont:'去付款',
 	    	checkedGoodsList: [],
 		    checkedAddress: {},
 		    checkedCoupon: [],
@@ -106,7 +120,7 @@
 		    orderTotalPrice: 0.00,  //订单总价
 		    actualPrice: 0.00,     //实际需要支付的总价
 		    addressId: 0,
-		    couponId: 0,
+		    couponId: ' ',
 		    isBuy: false,
 		    couponDesc: '',
 		    couponCode: '',
@@ -115,7 +129,20 @@
 	    }
 	  },
 	  mounted(){
-  			this.isBuyType = this.$route.query.isBuy
+	  		let that = this;
+  			this.isBuyType = this.$route.query.isBuy;
+//			var _day = 60 * 60 * 24 *1;
+			if(that.$cookie.getCookie('addressId') == undefined || that.$cookie.getCookie('addressId') == null || that.$cookie.getCookie('addressId') == ''){
+				that.$cookie.setCookie('addressId','0');
+			}else{
+				this.addressId = that.$cookie.getCookie('addressId');
+			}
+  			if(that.$cookie.getCookie('couponId') == undefined || that.$cookie.getCookie('couponId') == null || that.$cookie.getCookie('couponId') == ''){
+  				that.$cookie.setCookie('couponId','');
+  			}else{
+  				this.couponId = that.$cookie.getCookie('couponId');
+  			}
+  			
 		    // 页面初始化 options为页面跳转所带来的参数
 		    if (this.$route.query.isBuy!="false") {
 		     	 this.isBuy = this.$route.query.isBuy
@@ -138,10 +165,10 @@
 	 },
 	 methods:{
 	 	tapCoupon(){
-	 		this.$router.push('/pages/category/selCoupon?buyType=' + this.buyType);
+	 		this.$router.push('/pages/category/selCoupon?buyType=' + this.buyType+'&isBuy='+this.isBuy);
 	 	},
 	 	selectAddress(){
-	 		this.$router.push( '/views/ucenter/addressList');
+	 		this.$router.push( '/pages/category/addressList'); //购物车选择地址
 	 	},
 	 	addAddress(){
 	 		this.$router.push( '/pages/category/addressAdd');
@@ -155,7 +182,10 @@
 			    that.$http({
 	    		method: 'post',
 		        url:that.$url+ 'order/submit',
-		        params:{ 
+		        headers: {
+						'Content-Type':'application/json'
+					},
+			    data:{ 
 		        	addressId: this.addressId, 
 		        	couponId: this.couponId, 
 		        	type: this.buyType 
@@ -178,7 +208,7 @@
 			      }
 			    });
 	 	},
-	 	  getCouponData () {
+	 	getCouponData () {
 //			        this.couponDesc = app.globalData.courseCouponCode.name;
 //			        this.couponId = app.globalData.courseCouponCode.user_coupon_id;
 			        this.couponDesc =  "平台抵扣券";
@@ -190,23 +220,25 @@
 		    that.$http({
 	    		method: 'post',
 		        url:that.$url+ 'cart/checkout',
-		        params:{ 
+		        headers: {
+					'Content-Type':'application/json'
+				},
+		        data:{ 
 		        	addressId: that.addressId,
 		        	couponId: that.couponId, 
 		        	type: buyType
 		        }
 	        }).then(function (res) {
-	        	res = {"errno":0,"data":{"checkedAddress":{"id":null,"userId":null,"userName":null,"telNumber":null,"postalCode":null,"nationalCode":null,"province":null,"provinceName":null,"city":null,"cityName":null,"county":null,"countyName":null,"town":null,"townName":null,"detailInfo":null,"isDefault":null,"createTime":null,"isDelete":null,"full_region":"nullnullnull"},"actualPrice":1000.00,"orderTotalPrice":1000.00,"couponPrice":0.00,"freightPrice":0,"checkedGoodsList":[{"id":1094,"user_id":28,"session_id":"1","goods_id":1181025,"goods_sn":"001","product_id":307,"goods_name":"测试使用001","market_price":1000.00,"retail_price":1000.00,"retail_product_price":1000.00,"number":1,"goods_specifition_name_value":"白色","goods_specifition_ids":"43","checked":1,"crash_save_price":0.00,"list_pic_url":"http://aoss.huaqianyueshang.com/wall/20181026/1400011555eb77.jpg","good_url":"/pages/goods/goods?id=1181025"}],"goodsTotalPrice":1000.00},"errmsg":"执行成功"};
-		      if (res.errno === 0) {
-		          that.checkedGoodsList = res.data.checkedGoodsList;
-		          that.checkedAddress = res.data.checkedAddress;
-		          that.actualPrice = res.data.actualPrice;
-		          that.checkedCoupon = res.data.checkedCoupon;
-		          that.couponList = res.data.couponList;
-		          that.couponPrice = res.data.couponPrice;
-		          that.freightPrice = res.data.freightPrice;
-		          that.goodsTotalPrice = res.data.goodsTotalPrice;
-		          that.orderTotalPrice = res.data.orderTotalPrice
+		      if (res.data.errno === 0) {
+		          that.checkedGoodsList = res.data.data.checkedGoodsList;
+		          that.checkedAddress = res.data.data.checkedAddress;
+		          that.actualPrice = res.data.data.actualPrice;
+		          that.checkedCoupon = res.data.data.checkedCoupon;
+		          that.couponList = res.data.data.couponList;
+		          that.couponPrice = res.data.data.couponPrice;
+		          that.freightPrice = res.data.data.freightPrice;
+		          that.goodsTotalPrice = res.data.data.goodsTotalPrice;
+		          that.orderTotalPrice = res.data.data.orderTotalPrice
 		        //设置默认收获地址
 		        if (that.checkedAddress){
 		            let addressId = that.checkedAddress.id;
@@ -226,7 +258,7 @@
 					}));
 		        }
 		      }else{
-		        Toast(res.data.errmsg);
+		        Toast(res.data.msg);
 		      }
 		    });
 		}
@@ -477,6 +509,10 @@
 .goods-items .t .name{
     display: block;
     float: left;
+    width: 4.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .goods-items .t .number{

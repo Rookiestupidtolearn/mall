@@ -185,6 +185,14 @@ public class ApiCartController extends ApiBaseAction {
         if (null == goodsInfo || goodsInfo.getIs_delete() == 1 || goodsInfo.getIs_on_sale() != 1) {
             return this.toResponsObject(400, "商品已下架", "");
         }
+        
+        //校验毛利率是否大于0,如果否   则不能添加到购物车
+        double PureInterestRate = goodsInfo.getMarket_price().subtract(goodsInfo.getRetail_price())
+				.divide(goodsInfo.getRetail_price(), 2, BigDecimal.ROUND_HALF_UP).doubleValue();
+        if(PureInterestRate <= 0d){
+        	return this.toResponsObject(400, "商品已下架,不能添加购物车", "");
+        }
+        
         //取得规格的信息,判断规格库存
         ProductVo productInfo = productService.queryObject(productId);
         if (null == productInfo || (productInfo.getGoods_number() == null ? 0 : productInfo.getGoods_number()) < number) {

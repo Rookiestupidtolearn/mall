@@ -229,7 +229,6 @@ page{
     height:  33rpx;
     line-height: 33rpx;
     margin-bottom: 10rpx;
-    overflow: hidden;
     font-size: 30rpx;
     color: #333;
 }
@@ -237,6 +236,10 @@ page{
 .goods-items .t .name{
     display: block;
     float: left;
+    width:450rpx;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
 }
 
 .goods-items .t .number{
@@ -249,7 +252,6 @@ page{
     height:  29rpx;
     overflow: hidden;
     line-height: 29rpx;
-    margin-bottom: 25rpx;
     font-size: 25rpx;
     color: #666;
 }

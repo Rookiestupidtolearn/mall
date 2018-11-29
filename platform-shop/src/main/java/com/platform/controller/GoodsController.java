@@ -216,11 +216,12 @@ public class GoodsController {
         return R.ok();
     }
     
+    
     /**
-     * 申请上架
+     * 申请上架校验
      */
-    @RequestMapping("/applyEnSale")
-    public R applySale(@RequestBody Integer[] ids) {
+    @RequestMapping("/applyEnSaleVerify")
+    public R applySaleVerify(@RequestBody Integer[] ids) {
     	List<GoodsEntity> goodsList = goodsService.queryGoodsList(ids);
 		if(CollectionUtils.isEmpty(goodsList)){
 			return R.error("未查询到对应的商品信息");
@@ -230,6 +231,23 @@ public class GoodsController {
 				return R.error("包含已上架商品,不能更新为申请上架状态");
 			}
 		}
+        return R.ok();
+    }
+    
+    /**
+     * 申请上架
+     */
+    @RequestMapping("/applyEnSale")
+    public R applySale(@RequestBody Integer[] ids) {
+    	/*List<GoodsEntity> goodsList = goodsService.queryGoodsList(ids);
+		if(CollectionUtils.isEmpty(goodsList)){
+			return R.error("未查询到对应的商品信息");
+		}
+		for(GoodsEntity goodsEntity : goodsList){
+			if(1 == goodsEntity.getIsOnSale() || 3 == goodsEntity.getIsOnSale()){
+				return R.error("包含已上架商品,不能更新为申请上架状态");
+			}
+		}*/
        int i = goodsService.applySaleBatch(ids);
        if(i == 0){
    		return R.error("未查询到对应的商品信息");
@@ -237,8 +255,14 @@ public class GoodsController {
         return R.ok();
     }
     
-    @RequestMapping("/applyUnSale")
-    public R applyUnSale(@RequestBody Integer[] ids) {
+    
+    /**
+     * 申请下架校验
+     * @param ids
+     * @return
+     */
+    @RequestMapping("/applyUnSaleVerify")
+    public R applyUnSaleVerify(@RequestBody Integer[] ids) {
     	List<GoodsEntity> goodsList = goodsService.queryGoodsList(ids);
 		if(CollectionUtils.isEmpty(goodsList)){
 			return R.error("未查询到对应的商品信息");
@@ -248,6 +272,27 @@ public class GoodsController {
 				return R.error("包含已下架商品,不能更新为申请下架状态");
 			}
 		}
+        return R.ok();
+    }
+    
+    
+    
+    /**
+     * 申请下架
+     * @param ids
+     * @return
+     */
+    @RequestMapping("/applyUnSale")
+    public R applyUnSale(@RequestBody Integer[] ids) {
+    	/*List<GoodsEntity> goodsList = goodsService.queryGoodsList(ids);
+		if(CollectionUtils.isEmpty(goodsList)){
+			return R.error("未查询到对应的商品信息");
+		}
+		for(GoodsEntity goodsEntity : goodsList){
+			if(0 == goodsEntity.getIsOnSale() || 2 == goodsEntity.getIsOnSale()){
+				return R.error("包含已下架商品,不能更新为申请下架状态");
+			}
+		}*/
         int i = goodsService.applyUnSaleBatch(ids);
         if(i == 0){
     		return R.error("未查询到对应的商品信息");

@@ -126,7 +126,7 @@ Page({
       case 'categoryFilter':
         this.setData({
           'categoryFilter': !this.data.categoryFilter,
-          'currentSortOrder': 'asc'
+          'currentSortOrder': this.data.currentSortOrder
         });
         break;
       case 'priceSort':

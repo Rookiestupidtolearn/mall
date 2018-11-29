@@ -13,7 +13,7 @@ Page({
       full_region: '',
       userName: '',
       telNumber: '',
-      is_default: 0
+      isDefault: 0
     },
     addressId: 0,
     openSelectRegion: false,
@@ -50,7 +50,7 @@ Page({
   },
   bindIsDefault(){
     let address = this.data.address;
-    address.is_default = !address.is_default;
+    address.isDefault = !address.isDefault;
     this.setData({
       address: address
     });
@@ -358,7 +358,7 @@ Page({
       province_id: address.province_id,
       city_id: address.city_id,
       district_id: address.district_id,
-      is_default: address.is_default,
+      is_default: address.isDefault,
       provinceName: address.province_name,
       cityName: address.city_name,
       countyName: address.district_name,

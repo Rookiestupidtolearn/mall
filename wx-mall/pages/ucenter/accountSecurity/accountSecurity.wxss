@@ -18,13 +18,13 @@ image{
   padding:0 30rpx;
   background-color:#fff;
   margin-top:30rpx;
-  margin-bottom:5rpx;
 }
 .titleBottom{
   background-color:#fff;
   display: flex;
   justify-content:space-between;
   padding:30rpx;
+  margin-top:5rpx;
 }
 .titleTop view text{
   font-size:26rpx;
