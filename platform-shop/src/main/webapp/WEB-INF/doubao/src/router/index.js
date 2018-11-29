@@ -28,6 +28,7 @@ import amountMoney from '@/pages/ucenter/amountMoney'  //资金明细
 import pay from '@/pages/category/pay'  //支付订单
 import register from '@/pages/register/register'  //注册页面
 import ptfwxy from '@/pages/xieyi/ptfwxy'  //平台服务协议
+import namecard from '@/pages/ucenter/namecard'  //
 
 Vue.use(Router)
 
@@ -146,6 +147,10 @@ export default new Router({
       path: '/pages/xieyi/ptfwxy',
       name: 'ptfwxy',
       component: ptfwxy
+    },{
+      path: '/pages/ucenter/namecard',
+      name: 'namecard',
+      component: namecard
     }
     
   ]

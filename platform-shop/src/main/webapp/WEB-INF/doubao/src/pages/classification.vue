@@ -5,7 +5,7 @@
   	
   	<!--主体内容-->
   	<div class="searchTop" @click="searchRoute">
-  		<mt-search v-model="value"  cancel-text="取消"  placeholder="商品搜索" class="wusearch" ></mt-search>
+  				<mt-search v-model="value"  cancel-text="取消"  placeholder="商品搜索" class="wusearch" ></mt-search>
   	</div>
   	<div class="content">
 	  	<div class="catalog" >
@@ -174,7 +174,7 @@ width:auto;
 		overflow: hidden;
 	}
 		.wusearch{
-			font-size:.28rem !important;
+			font-size:.3rem !important;
 			height:100%;
 		}
 		.content{

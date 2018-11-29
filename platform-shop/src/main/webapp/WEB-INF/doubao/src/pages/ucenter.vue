@@ -107,7 +107,11 @@ export default {
     var userInfo =  JSON.parse(that.$cookie.getCookie('userInfo'));
     if(userInfo !== null){
 			this.availResult = true;
-    	this.avatarImg = userInfo.avatar;
+			if(userInfo.avatar == null || userInfo.avatar == ""){
+				this.avatarImg = 'https://platform-wxmall.oss-cn-beijing.aliyuncs.com/upload/20180727/150547696d798c.png'
+			}else{
+				this.avatarImg = userInfo.avatar;
+			}
 	    this.userName = userInfo.nickname;
 	    this.availMoney = userInfo.availMoney;
 	    that.$http({

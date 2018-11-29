@@ -156,16 +156,22 @@
 	  float: right;
 	}
 	.pickerO{
-		position: relative;
-		z-index: 3;
+	    height: 4.5rem;
+	    position: fixed;
+	    overflow: hidden;
+	    font-size: .32rem;
+	    z-index: 2;
+	    width: 100%;
+	    background-color: #fff;
+	    bottom: 0;
 	}
 	.pickerO .top{
-		position: fixed;
-		bottom:3.4rem;
-		overflow: hidden;
-		font-size:.32rem;
-		z-index: 2;
-		width: 6rem;
+		position: relative;
+	    top:.5rem;
+	    overflow: hidden;
+	    font-size: .32rem;
+	    z-index: 2;
+	    width: 6rem;
 	    margin: 0 auto;
 	    left: 50%;
 	    margin-left: -3rem;
@@ -182,7 +188,6 @@
 		bottom: 0;
 		width:100%;	
 		background-color: #fff;
-		padding:.25rem 0 !important;
 	}
 	.picker-slot-wrapper{
 		text-align: center;

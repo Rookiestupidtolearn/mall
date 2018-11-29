@@ -7,9 +7,21 @@
  		<div class='titleTop'>
 		    <p>绑定账号</p>
 		    <div style="overflow: hidden;">
-		      <span class='col5e5e5e'>昵称:{{accountSecurity.nickname}}</span>
-		      <img  class="image" :src="accountSecurity.avatar"/>
+		      <span class='col5e5e5e' v-if="accountSecurity.nickname" :data-c="accountSecurity.nickname">昵称:{{accountSecurity.nickname}}</span>
+		      <span class='col5e5e5e' v-else></span>
+		      <img  class="image" v-if="accountSecurity.avata" :src="accountSecurity.avatar"/>
+		      <img  class="image" v-else src="https://platform-wxmall.oss-cn-beijing.aliyuncs.com/upload/20180727/150547696d798c.png"/>
 		    </div>
+		  </div>
+		   <div class="titleBottom">
+			    <span>姓名</span>
+			    <span class='mobile'  data-c="cee" v-if="name">{{name}}</span>
+				<router-link to="/pages/ucenter/namecard/" class='mobile'  v-else >去认证</router-link>
+		  </div>
+		   <div class="titleBottom">
+		    <span>身份证件号</span>
+		    <span class='mobile'  data-c="cee" v-if="idCard">{{idCard}}</span>
+			<router-link to="/pages/ucenter/namecard/" class='mobile'  v-else >去认证</router-link>
 		  </div>
 		  <div class="titleBottom">
 		    <span>绑定手机号</span>
@@ -31,6 +43,8 @@ export default {
   data () {
     return {
 //		headFont:'账户安全',
+		name:'',
+		idCard:'',
     	accountSecurity:[],
     	telephone:''
     }
@@ -40,13 +54,28 @@ export default {
     	that.$http({
 	        method: 'post',
 	        url:that.$url+ 'user/userInfo.options',
-	        params:{typeId:0}
+	        headers:{
+	        	'Content-Type':'application/json'
+	        },
+	        data:{typeId:0}
     	}).then(function (response) {
     			that.accountSecurity = response.data.data;
     			if(response.data.data.mobile == null || response.data.data.mobile ==''){
     				that.telephone = response.data.data.mobile;
 				}else{
     				that.telephone = that.validateMobile(response.data.data.mobile);
+				}
+				
+				if(response.data.data.username == null || response.data.data.username ==''){
+    				that.name = response.data.data.username;
+				}else{
+    				that.name = that.validatename(response.data.data.username);
+				}
+				
+				if(response.data.data.idcard == null || response.data.data.idcard ==''){
+    				that.idCard = response.data.data.idcard;
+				}else{
+    				that.idCard = that.validateidCard(response.data.data.idcard);
 				}
 		  })
   },
@@ -58,6 +87,19 @@ export default {
 	    var finalPhone = first + '****' + last;
 	    return finalPhone;
 	},
+	validatename(name) {
+	    /*姓名加密处理*/
+	    var last = name.substr(name.length-1);
+	    var finalname = '*' + last;
+	    return finalname;
+	  },
+	  validateidCard(idcard) {
+	    /*身份证号加密处理*/
+	    var first = idcard.substr(0, 1);
+	    var last = idcard.substr(idcard.length - 4, 1);
+	    var finalidcard = first + '***********' + last;
+	    return finalidcard;
+	  },
   	exitLogin(){
   		let that = this;
 		MessageBox({

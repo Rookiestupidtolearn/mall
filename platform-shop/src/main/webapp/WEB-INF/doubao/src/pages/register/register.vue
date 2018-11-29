@@ -10,9 +10,9 @@
  			<mt-field label="验证码" placeholder="请输入验证码" v-model="captcha"  :attr="{ maxlength: 4}" >
 				<mt-button type="primary" size="small" :disabled="disabled" @click="yzm" >{{count}}</mt-button>
 			</mt-field>
-			<mt-field placeholder="请输入图形验证码" v-model="imgcaptcha"  :attr="{ maxlength: 4}"  :style="{display:['showImg' ? 'block' : 'none']}">
+			<!--<mt-field placeholder="请输入图形验证码" v-model="imgcaptcha"  :attr="{ maxlength: 4}"  :style="{display:[ showImg ? 'block' : 'none']}">
 				<img :src="imgyzm" class="imgYzm"/>
-			</mt-field>
+			</mt-field>-->
  		</div>
  		<p class="last">
  			<input type="checkbox" id="checkbox"  v-model="checked" />
@@ -30,9 +30,9 @@
 	    return {
 	    	phone:'',
 	    	captcha:'',
-	    	imgcaptcha:'',
-	    	imgyzm:require('../../../static/images/logo.png'),
-	    	showImg:false,
+//	    	imgcaptcha:'',
+//	    	imgyzm:'',
+//	    	showImg:false,
 	    	count:'获取验证码',
 	    	disabled:false,
 	    	checked:false,
@@ -83,6 +83,11 @@
 	  			return false;
 	  		}
 	  		
+	  		if(this.imgcaptcha == ''){
+	  			this.$toast({message:'请输入图形验证码',duration:1500});
+	  			return false;
+	  		}
+	  		
 	  		if(this.checked == false){
 	  			this.$toast({message:'请阅读平台服务协议',duration:1500});
 	  			return false;
@@ -92,7 +97,8 @@
 		        url:that.$url+ 'auth/login_by_mobile',
 		        params:{
 		        	mobile:this.phone,
-		        	code:this.captcha
+		        	code:this.captcha,
+//		        	yzm:this.imgcaptcha//图形验证码需要传的参数
 		        }
 	    	}).then(function (res) {
 	    		if(res.data.code !== 500){
@@ -148,9 +154,10 @@
 			  			}
 			  		}, 1000);
 			  		/*图形验证码是否显示*/
-			  		if (res.data.count >=5){
-			  			that.showImg = true;
-			  		}
+//			  		if (res.data.count >=5){
+//			  			that.showImg = true;
+//			  			that.imgyzm = res.data.img; //后台的图片
+//			  		}
 		    	}else{
 		    		that.$toast({message:res.data.msg,duration:3000});
 		    	}

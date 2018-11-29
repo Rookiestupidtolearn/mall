@@ -4,7 +4,9 @@
   		<!--<headbar :headFont = "headFont"></headbar>-->
   		
 	 	<div class="searchTop" >
-	  		<mt-search v-model="value"  @keyup.enter.native="showList" @input="inputFocus" cancel-text="取消"  placeholder="商品搜索" class="wusearch" ></mt-search>
+	 		<form action="" target="frameFile">
+	  			<mt-search v-model="value"  @keyup.enter.native="showList" @input="inputFocus" cancel-text="取消"  placeholder="商品搜索" class="wusearch" ></mt-search>
+	  		</form>
 	  	</div>
 	  	<div class="no-search" :style="{display: [value || defaultKeyword? 'none' : 'block']}">
 	  		<!--:style="{display: [value ? 'none' : 'block']}"-->
@@ -121,11 +123,10 @@ export default {
 		      this.showList();
 	  	},
 	  	openSortFilter(currentId){
-	  		console.log(currentId);
 		    switch (currentId) {
 		      case 'categoryFilter':
 		          this.categoryFilter =  !this.categoryFilter;
-		          this.currentSortOrder = 'asc';
+		          this.currentSortOrder = this.currentSortOrder;
 		        	break;
 		      case 'priceSort':
 		        let tmpSortOrder = 'asc';
@@ -212,11 +213,11 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-	.wusearch{
-		font-size:.28rem !important;
-		height:100%;
-	}
-	.no-search{
+.wusearch{
+	font-size:.28rem !important;
+	height:100%;
+}
+.no-search{
     height: auto;
     overflow: hidden;
 }
@@ -275,7 +276,7 @@ export default {
 .shelper-list{
     width: 7.50rem;
     height: auto;
-    overflow: hidden;
+    /*overflow: hidden;*/
     background: #fff;
     padding: 0 .3125rem;
 }
@@ -358,8 +359,8 @@ export default {
 
 .cate-item{
     margin-top: .18rem;
-    height: auto;
-    overflow: hidden;
+    height: 12rem;
+    overflow-y: scroll;
 }
 
 .cate-item .h{
@@ -390,7 +391,7 @@ export default {
   width: 7.50rem;
   padding: 0 .0625rem;
   height: auto;
-  overflow: hidden;
+  /*overflow: hidden;*/
 }
 
 .cate-item .list-filter{
