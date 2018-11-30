@@ -112,21 +112,6 @@ public class ApiUserController extends ApiBaseAction {
 			 countIP = 1;
 		}
     	level2.put("DOUBAO_SMS_IP_COUNT:"+validIP, countIP,86400l);
-    	//校验图形验证码
-    	if (count >=5) {
-            String captcha =  code;
-            if (org.apache.commons.lang.StringUtils.isEmpty(code)) {
-            	   return R.error("请传入图形验证码");
-			}
-            String kaptcha = ShiroUtils.getKaptcha(Constants.KAPTCHA_SESSION_KEY);
-            if(null == kaptcha){
-                return R.error("验证码已失效");
-            }
-
-            if (!captcha.equalsIgnoreCase(kaptcha)) {
-                return R.error("验证码不正确");
-            }
-		}
         //生成验证码
         String sms_code = CharUtil.getRandomNum(4);
         String msgContent = "您的验证码是：" + sms_code + "，请在页面中提交验证码完成验证。";
