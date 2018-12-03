@@ -57,7 +57,7 @@ $(function() {
 		}, {
 			label : '会员等级',
 			name : 'levelName',
-			width : 40
+			width : 20
 		}, {
 			label : '微信名',
 			name : 'nickname',
@@ -67,8 +67,13 @@ $(function() {
 			label : '手机号码',
 			name : 'mobile',
 			index : 'mobile',
-			width : 120
-		}, {
+			width : 60
+		},{
+			label : '证件号码',
+			name : 'idCard',
+			index : 'idcard',
+			width : 80
+		},{
 			label : '注册Ip',
 			name : 'registerIp',
 			index : 'register_ip',
@@ -77,21 +82,7 @@ $(function() {
             label: '会员账户金额',
             name: 'amount',
             width: 40
-        }, {
-			label : '头像',
-			name : 'avatar',
-			index : 'avatar',
-			width : 80,
-			formatter : function(value) {
-				return transImg(value);
-			}
-		}, {
-			label : '微信Id',
-			name : 'weixinOpenid',
-			index : 'weixin_openid',
-			width : 80,
-			hidden : true
-		} ]
+        }]
 	});
 });
 
@@ -104,6 +95,7 @@ var vm = new Vue({
 		uploadList : false,
 		title : null,
 		mobiles : null,
+		idCard : null,
 		amount : null,
 		memo : null,
 		upath : '',
