@@ -96,7 +96,7 @@ export default {
 	  validateidCard(idcard) {
 	    /*身份证号加密处理*/
 	    var first = idcard.substr(0, 1);
-	    var last = idcard.substr(idcard.length - 4, 1);
+	    var last = idcard.substr(idcard.length-1);
 	    var finalidcard = first + '***********' + last;
 	    return finalidcard;
 	  },
@@ -164,6 +164,9 @@ p{
   line-height:.80rem;
   background: #c9c9c9;
   color:#333;
+  /*background: -webkit-linear-gradient(left, #FFB559, #F76B1C);
+  background: linear-gradient(left, #FFB559, #F76B1C);
+  color:#fff;*/
   border-radius:.10rem;
   text-align: center;
   margin:0 auto;

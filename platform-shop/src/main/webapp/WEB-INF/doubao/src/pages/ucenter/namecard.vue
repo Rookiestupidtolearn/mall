@@ -48,6 +48,9 @@ export default {
 	    } else if (!idcard.match(/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/)){
 	      this.$toast('身份证号不正确');
 	      return false;
+	    }else if (idcard.length == 15){
+	    	this.$toast('非18位证件号认证请联系客服');
+	      	return false;
 	    }
 	
 	    let that = this;
@@ -103,9 +106,10 @@ export default {
   width:5.60rem;
   height:.80rem;
   line-height:.80rem;
-  background: #c9c9c9;
-  color:#333;
-  border-radius:.10rem;
+  background: -webkit-linear-gradient(left, #FFB559, #F76B1C);
+  background: linear-gradient(left, #FFB559, #F76B1C);
+  color:#fff;
+  border-radius:.05rem;
   text-align: center;
   margin:0 auto;
   font-weight: bold;

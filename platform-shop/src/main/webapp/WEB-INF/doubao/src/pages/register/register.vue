@@ -7,12 +7,12 @@
  		<div class="form">
  			<p>快速登录</p>
  			<mt-field label="手机号码"  placeholder="请输入手机号码" type="tel" v-model="phone"  :attr="{ maxlength: 11 }" ></mt-field>
+ 			<mt-field placeholder="请输入图形验证码" v-model="imgcaptcha"  :attr="{ maxlength: 4}"  :style="{display:[ showImg ? 'block' : 'none']}">
+				<img :src="imgyzm" class="imgYzm"/>
+			</mt-field>
  			<mt-field label="验证码" placeholder="请输入验证码" v-model="captcha"  :attr="{ maxlength: 4}" >
 				<mt-button type="primary" size="small" :disabled="disabled" @click="yzm" >{{count}}</mt-button>
 			</mt-field>
-			<!--<mt-field placeholder="请输入图形验证码" v-model="imgcaptcha"  :attr="{ maxlength: 4}"  :style="{display:[ showImg ? 'block' : 'none']}">
-				<img :src="imgyzm" class="imgYzm"/>
-			</mt-field>-->
  		</div>
  		<p class="last">
  			<input type="checkbox" id="checkbox"  v-model="checked" />
@@ -30,9 +30,9 @@
 	    return {
 	    	phone:'',
 	    	captcha:'',
-//	    	imgcaptcha:'',
-//	    	imgyzm:'',
-//	    	showImg:false,
+	    	imgcaptcha:'',
+	    	imgyzm:'',
+	    	showImg:false,
 	    	count:'获取验证码',
 	    	disabled:false,
 	    	checked:false,
@@ -83,9 +83,11 @@
 	  			return false;
 	  		}
 	  		
-	  		if(this.imgcaptcha == ''){
-	  			this.$toast({message:'请输入图形验证码',duration:1500});
-	  			return false;
+	  		if(this.showImg == true){
+	  			if(this.imgcaptcha == ''){
+		  			this.$toast({message:'请输入图形验证码',duration:1500});
+		  			return false;
+		  		}
 	  		}
 	  		
 	  		if(this.checked == false){
@@ -98,7 +100,7 @@
 		        params:{
 		        	mobile:this.phone,
 		        	code:this.captcha,
-//		        	yzm:this.imgcaptcha//图形验证码需要传的参数
+		        	yzm:this.imgcaptcha//图形验证码需要传的参数
 		        }
 	    	}).then(function (res) {
 	    		if(res.data.code !== 500){
@@ -137,27 +139,30 @@
 		        	mobile:this.phone
 		        }
 	    	}).then(function (res) {
+//	    		var res ={"data":{"count":6,"code":0}};
 	    		if(res.data.code == 0){
-                    that.disabled = true;
-			  		let i = 60;
-			  		let countDown = setInterval(function(){
-			  			i -- ;
-			  			if( i<10){
-			  				that.count = '0'+i +'s';
-			  			}else{
-			  				that.count =i +'s';
-			  			}
-			  			if(i<=0){
-			  				clearInterval(countDown);
-			  				that.count = '获取验证码';
-			  				that.disabled = false;
-			  			}
-			  		}, 1000);
-			  		/*图形验证码是否显示*/
-//			  		if (res.data.count >=5){
-//			  			that.showImg = true;
-//			  			that.imgyzm = res.data.img; //后台的图片
-//			  		}
+	    			/*图形验证码是否显示*/
+			  		if (res.data.count >=5){
+			  			that.showImg = true;
+			  			that.$cookie.setCookie('showImg',this.showImg);
+			    		that.imgyzm = 'http://192.168.0.11:6101/platform/captcha.jpg'; //后台的图片
+			  		}else{
+	                    that.disabled = true;
+				  		let i = 60;
+				  		let countDown = setInterval(function(){
+				  			i -- ;
+				  			if( i<10){
+				  				that.count = '0'+i +'s';
+				  			}else{
+				  				that.count =i +'s';
+				  			}
+				  			if(i<=0){
+				  				clearInterval(countDown);
+				  				that.count = '获取验证码';
+				  				that.disabled = false;
+				  			}
+				  		}, 1000);
+			  		}
 		    	}else{
 		    		that.$toast({message:res.data.msg,duration:3000});
 		    	}
@@ -171,8 +176,7 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 	.imgYzm{
-		    padding: 0 12px;
-    		height: 33px;
+		width:2rem;
 	}
 	.icon{
 		margin-top:.5rem;

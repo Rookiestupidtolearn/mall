@@ -388,8 +388,8 @@ export default {
 }
 
 .cate-item .b{
-  width: 7.50rem;
-  padding: 0 .0625rem;
+  width: 7.40rem;
+	padding: .05rem;
   height: auto;
   /*overflow: hidden;*/
 }
