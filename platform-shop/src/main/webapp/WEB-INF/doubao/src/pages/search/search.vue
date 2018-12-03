@@ -414,18 +414,22 @@ export default {
 .cate-item .b .item-b{
   margin-left: .0625rem;
 }
+.cate-item .b .item:last-child{
+	margin-bottom:3.5rem !important;
+}
 .cate-item .item .img{
   width: 3.02rem;
 }
 .cate-item .item .name{
   display: block;
-  width: 3.65rem;
-  height: .35rem;
-  text-align: center;
-  overflow: hidden;
-  font-size: .30rem;
-  color: #333;
-  margin-bottom:.15rem
+    width: 3.65rem;
+    text-align: center;
+    overflow: hidden;
+    font-size: .30rem;
+    color: #333;
+    margin-bottom: .15rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .cate-item .item .price{

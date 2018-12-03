@@ -52,14 +52,32 @@ export default {
   },
   mounted(){
   	var that = this;   
-  	//index
-  		that.$http({
-        method: 'post',
-        url: that.$url+'catalog/index',
-    	}).then(function (response) {
-		    that.categoryList = response.data.data.categoryList,
-		    that.currentCategory = response.data.data.currentCategory
-		  })
+    //记录上次用户登录时查看的分类
+  	let eventId =  that.$cookie.getCookie('eventId');
+  	if( eventId != ''){
+	  		that.$http({
+	        method: 'post',
+	        url: that.$url+'catalog/current',
+					params:{ id : eventId  }
+	    	}).then(function (response) {
+			    that.currentCategory = response.data.data.currentCategory
+			  })
+	    	
+	    	that.$http({
+	        method: 'post',
+	        url: that.$url+'catalog/index',
+	    	}).then(function (response) {
+			    that.categoryList = response.data.data.categoryList
+			  })
+  	}else{
+	  		that.$http({
+	        method: 'post',
+	        url: that.$url+'catalog/index',
+	    	}).then(function (response) {
+			    that.categoryList = response.data.data.categoryList
+			    that.currentCategory = response.data.data.currentCategory
+			  })
+  	}
   },
   methods:{
   	searchRoute(){
@@ -67,6 +85,7 @@ export default {
   	},
   	switchCate(eventId){
 	    var that = this;
+	    that.$cookie.setCookie('eventId',eventId);
 	    that.$http({
         method: 'post',
         url: that.$url+'catalog/current',

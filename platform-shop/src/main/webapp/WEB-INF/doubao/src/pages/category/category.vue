@@ -183,10 +183,11 @@ margin-right: .06rem;
 .cate-item .item .name{
   display: block;
   width: 3.3rem;
-  height: .35rem;
   margin: .115rem 0 .22rem 0;
   text-align: center;
   overflow: hidden;
+  text-overflow: ellipsis;
+white-space: nowrap;
   padding: 0 .20rem;
   font-size: .30rem;
   color: #333;

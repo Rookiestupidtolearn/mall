@@ -88,19 +88,9 @@ export default {
     }
   },
   mounted(){
-		this.index();
+		this.getCartList();
   },
   methods:{
-  		index(){
-  			var that = this;   
-  			that.$http({
-        method: 'post',
-        url: that.$url+'cart/index',
-    	}).then(function (response) {
-				    that.cartGoods = response.data.data.cartList;
-				    that.cartTotal = response.data.data.cartTotal;
-		  })
-  		},
 	  	deleteCart(){
 	  			//获取已选择的商品
 			    let that = this;
@@ -186,7 +176,7 @@ export default {
 			    } else {
 			      //编辑状态
 			      let checkedAllStatus = that.isCheckedAll();
-			      let tmpCartData = this.cartGoods.map(function (v) {
+			      let tmpCartData = that.cartGoods.map(function (v) {
 			        v.checked = !checkedAllStatus;
 			        return v;
 			      });

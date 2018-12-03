@@ -107,7 +107,8 @@ export default {
   height:.80rem;
   line-height:.80rem;
   background: -webkit-linear-gradient(left, #FFB559, #F76B1C);
-  background: linear-gradient(left, #FFB559, #F76B1C);
+  /*background: -moz-linear-gradient(left, #FFB559, #F76B1C);*/
+  /*background: linear-gradient(left, #FFB559, #F76B1C);*/
   color:#fff;
   border-radius:.05rem;
   text-align: center;
