@@ -33,6 +33,17 @@ Page({
     } else if (!idcard.match(/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/)){
       util.showErrorToast('身份证号不正确');
       return false;
+    } else if (idcard.length == 15) {
+      wx.showModal({
+        title: '',
+        content: '非18位证件号认证请联系客服',
+        success: function (res) {
+          if (res.confirm) {
+            
+          }
+        }
+      });
+      return false;
     }
 
     let that = this;

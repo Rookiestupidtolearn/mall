@@ -5,6 +5,7 @@ var api = require('../../config/api.js');
 
 Page({
   data: {
+    nodes:'',
     undercarriage:'',
     undercarriName:'加入购物车',
     market_price:'',
@@ -71,7 +72,11 @@ Page({
           });
         }
 
-        WxParse.wxParse('goodsDetail', 'html', res.data.info.goods_desc, that);
+
+        that.setData({
+          nodes: res.data.info.goods_desc.replace(/\<img/gi, '<img style="width:100%;height:auto; vertical-align:top; display;block;" mode="aspectFill"')
+        })
+        // WxParse.wxParse('goodsDetail', 'html', res.data.info.goods_desc, that);
 
         that.getGoodsRelated();
 

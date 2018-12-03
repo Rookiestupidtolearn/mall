@@ -48,7 +48,7 @@ Page({
   validateidCard: function (idcard) {
     /*身份证号加密处理*/
     var first = idcard.substr(0, 1);
-    var last = idcard.substr(idcard.length - 4, 1);
+    var last = idcard.substr(idcard.length - 1);
     var finalidcard = first + '***********' + last;
     return finalidcard;
   },
@@ -96,6 +96,9 @@ Page({
           name: '未认证>'
         })
       } else {
+        // that.setData({
+        //   name: '未认证>'
+        // })
         that.setData({
           name: that.validatename(name)
         })

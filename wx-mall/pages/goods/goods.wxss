@@ -10,7 +10,10 @@
   width: 750rpx;
   height: 750rpx;
 }
-
+/* .richText img{
+  width:750rpx !important;
+  display:block;
+} */
 .service-policy{
     width: 750rpx;
     height: 73rpx;
