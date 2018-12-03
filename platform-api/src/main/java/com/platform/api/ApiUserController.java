@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.code.kaptcha.Constants;
 import com.platform.annotation.LoginUser;
 import com.platform.cache.J2CacheUtils;
 import com.platform.entity.QzMoneyRecordEntity;
@@ -29,13 +30,17 @@ import com.platform.util.IdcardUtils;
 import com.platform.utils.CharUtil;
 import com.platform.utils.Constant;
 import com.platform.utils.DateUtils;
+import com.platform.utils.R;
 import com.platform.utils.RRException;
 import com.platform.utils.RequestUtil;
+import com.platform.utils.ShiroUtils;
 import com.platform.utils.SmsUtil;
 import com.platform.utils.StringUtils;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import net.oschina.j2cache.CacheProviderHolder;
+import net.oschina.j2cache.Level2Cache;
 
 /**
  * 作者: @author Harmon <br>
@@ -59,14 +64,18 @@ public class ApiUserController extends ApiBaseAction {
      */
     @ApiOperation(value = "发送短信")
     @PostMapping("smscode")
-    public Object smscode(HttpServletRequest request,@LoginUser UserVo loginUser) {
+    public Object smscode(HttpServletRequest request,@LoginUser UserVo loginUser,String code) {
         JSONObject jsonParams = getJsonRequest();
         String phone = jsonParams.getString("phone");
         // 一分钟之内不能重复发送短信
         SmsLogVo smsLogVo = userService.querySmsCodeByUserId(loginUser.getUserId());
-        if (null != smsLogVo && (System.currentTimeMillis() / 1000 - smsLogVo.getLog_date()) < 1 * 60) {
-            return toResponsFail("一分钟内重复发送短信");
-        }
+        if (smsLogVo != null) {
+			 if (smsLogVo.getLog_date() != null) {
+			        if (null != smsLogVo && (System.currentTimeMillis() / 1000 - smsLogVo.getLog_date()) < 1 * 60) {
+			            return toResponsFail("一分钟内重复发送短信");
+			        }
+			}
+		}
         
         Map paramMap = new HashMap();
         paramMap.put("mobile", phone);
@@ -77,7 +86,8 @@ public class ApiUserController extends ApiBaseAction {
         }
          
         //手机号
-        Integer count = (Integer) J2CacheUtils.get(J2CacheUtils.INVALID_CACHE, "DOUBAO_SMS_COUNT:"+phone);
+        Level2Cache level2 = CacheProviderHolder.getLevel2Cache(J2CacheUtils.INVALID_CACHE);
+        Integer count =(Integer) level2.get("DOUBAO_SMS_COUNT:"+phone);
         
         if (count!=null) {
         	  if (count>10) {
@@ -88,10 +98,10 @@ public class ApiUserController extends ApiBaseAction {
 			 count = 1;
 		}
         
-     	J2CacheUtils.put(J2CacheUtils.INVALID_CACHE,"DOUBAO_SMS_COUNT:"+phone, count);
+    	level2.put("DOUBAO_SMS_COUNT:"+phone, count,86400l);
         //ip地址
      	String validIP = RequestUtil.getIpAddrByRequest(request);
-        Integer countIP = (Integer) J2CacheUtils.get(J2CacheUtils.INVALID_CACHE, "DOUBAO_SMS_IP_COUNT:"+validIP);
+        Integer countIP = (Integer) level2.get("DOUBAO_SMS_IP_COUNT:"+validIP);
         
         if (countIP!=null) {
         	  if (countIP>10) {
@@ -101,9 +111,7 @@ public class ApiUserController extends ApiBaseAction {
 		 }else {
 			 countIP = 1;
 		}
-    	J2CacheUtils.put(J2CacheUtils.INVALID_CACHE,"DOUBAO_SMS_IP_COUNT:"+validIP, countIP);	
-    	
-       
+    	level2.put("DOUBAO_SMS_IP_COUNT:"+validIP, countIP,86400l);
         //生成验证码
         String sms_code = CharUtil.getRandomNum(4);
         String msgContent = "您的验证码是：" + sms_code + "，请在页面中提交验证码完成验证。";

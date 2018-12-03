@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
+import com.platform.annotation.IgnoreAuth;
 import com.platform.annotation.LoginUser;
 import com.platform.cache.J2CacheUtils;
 import com.platform.dao.ApiUserCouponMapper;
@@ -35,6 +36,7 @@ import com.platform.service.ApiCouponService;
 import com.platform.service.ApiGoodsService;
 import com.platform.service.ApiGoodsSpecificationService;
 import com.platform.service.ApiProductService;
+import com.platform.service.ApiUserService;
 import com.platform.util.ApiBaseAction;
 import com.platform.util.ApiUpdateUserCouponPriceUtils;
 import com.qiniu.util.StringUtils;
@@ -68,6 +70,8 @@ public class ApiCartController extends ApiBaseAction {
     
     @Autowired
     private ApiUpdateUserCouponPriceUtils apiUpdateUserCouponPriceUtils;
+    @Autowired
+    private ApiUserService userService;
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	
     /**
@@ -423,12 +427,24 @@ public class ApiCartController extends ApiBaseAction {
 
     //  获取购物车商品的总件件数
     @ApiOperation(value = "获取购物车商品的总件件数")
+    @IgnoreAuth
     @PostMapping("goodscount")
     public Object goodscount(@LoginUser UserVo loginUser) {
-        if (null == loginUser || null == loginUser.getUserId()) {
+    	Map<String, Object> resultObj = new HashMap();
+    	Long userId = getUserId();
+    	if(null == userId){ //用户未登录，默认展示购物车数量为0
+    		resultObj.put("cartList", null);
+    		resultObj.put("cartTotal", 0);
+    		 return toResponsSuccess(resultObj);
+    	}
+    	
+        /*if (null == loginUser || null == loginUser.getUserId()) {
             return toResponsFail("未登录");
-        }
-        Map<String, Object> resultObj = new HashMap();
+        }*/
+    	loginUser = userService.queryObject(userId);
+    	if(null == loginUser){
+    		throw new RuntimeException("【商品详情页查询用户购物车数量】未查询带用户id为"+userId+"的用户");
+    	}
         //查询列表数据
         Map param = new HashMap();
         param.put("user_id", loginUser.getUserId());

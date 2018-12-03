@@ -50,6 +50,8 @@ public class GoodsController {
         //查询列表数据
         Query query = new Query(params);
         query.put("isDelete", 0);
+        query.remove("page");
+        query.remove("limit");
         List<GoodsEntity> goodsList = goodsService.queryList(query);
         //查询毛利率表
         String status = (String)params.get("status");
@@ -80,6 +82,8 @@ public class GoodsController {
         	
         	query = new Query(params);
         	query.put("isDelete", 0);
+        	/*query.put("page",Integer.parseInt(params.get("page").toString()));
+        	query.put("limit",Integer.parseInt(params.get("limit").toString()));*/
         	goodsList = goodsService.queryList(query);
         }
         
