@@ -113,7 +113,7 @@ public class ApiSmsController {
     	if (count >=5) {
             String captcha =  params.get("code");
             if (captcha == null) {
-            	   return R.error("请传入图形验证码");
+            	return result.put("msg", "请传入图形验证码");
 			}
             String kaptcha = ShiroUtils.getKaptcha(Constants.KAPTCHA_SESSION_KEY);
             if(null == kaptcha){
