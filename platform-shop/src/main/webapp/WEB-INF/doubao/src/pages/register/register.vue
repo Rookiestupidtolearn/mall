@@ -44,6 +44,7 @@
 	  		var phone =  that.$cookie.getCookie('phone');
 	  		var captcha =  that.$cookie.getCookie('captcha');
 	  		var checked =  that.$cookie.getCookie('checked');
+//	  		var showImg =  that.$cookie.getCookie('showImg');
 	  		if(phone !=="" ){
 	  			that.phone = phone;
 	  		}
@@ -53,6 +54,9 @@
 	  		if(checked !==""){
 	  			that.checked = JSON.parse(checked);
 	  		} 
+//	  		if(showImg !==""){
+//	  			that.showImg = JSON.parse(showImg);
+//	  		} 
 	  },
 	  methods:{
 	  	fwxieyi(){
@@ -136,16 +140,17 @@
 		        method: 'post',
 		        url:that.$url+ 'sendSms',
 		        params:{
-		        	mobile:this.phone
+		        	mobile:this.phone,
+		        	code:this.imgcaptcha
 		        }
 	    	}).then(function (res) {
-//	    		var res ={"data":{"count":6,"code":0}};
+//	    		var res ={"data":{"msg": "请传入图形验证码","code": 0,"count": 5}};
 	    		if(res.data.code == 0){
 	    			/*图形验证码是否显示*/
 			  		if (res.data.count >=5){
 			  			that.showImg = true;
-			  			that.$cookie.setCookie('showImg',this.showImg);
 			    		that.imgyzm = 'http://192.168.0.11:6101/platform/captcha.jpg'; //后台的图片
+//			    		that.$cookie.setCookie('showImg',that.showImg);
 			  		}else{
 	                    that.disabled = true;
 				  		let i = 60;
