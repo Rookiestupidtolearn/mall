@@ -183,7 +183,7 @@
         #{user_id},
         #{phone},
         #{log_date},
-        #{sms_code},
+        #{smsCode},
         #{send_status},
         #{sms_text}
         )
