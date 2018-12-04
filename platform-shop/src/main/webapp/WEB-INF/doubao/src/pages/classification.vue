@@ -55,6 +55,7 @@ export default {
     //记录上次用户登录时查看的分类
   	let eventId =  that.$cookie.getCookie('eventId');
   	if( eventId != ''){
+  		/*产品右侧分类*/
 	  		that.$http({
 	        method: 'post',
 	        url: that.$url+'catalog/current',
@@ -62,7 +63,7 @@ export default {
 	    	}).then(function (response) {
 			    that.currentCategory = response.data.data.currentCategory
 			  })
-	    	
+	    	/*展示左侧分类*/
 	    	that.$http({
 	        method: 'post',
 	        url: that.$url+'catalog/index',
