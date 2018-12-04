@@ -95,3 +95,7 @@ body{
 /*.mint-button--small{
 	width:2.1rem;
 }*/
+/*智齿客服*/
+#zhichiBtnBox{
+	bottom:2.5rem !important;
+}

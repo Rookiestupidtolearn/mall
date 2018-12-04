@@ -1,5 +1,5 @@
 <template>
- 	<div class="container">
+ 	<div class="container" ref="input1">
  		<!--公用头部-->
   		<!--<headbar :headFont = "headFont"></headbar>-->
   	
@@ -121,6 +121,11 @@
 			  <button :class="undercarriage ? 'disabled' : 'r'" v-if="undercarriage">{{undercarriName}}</button>
 			  <button :class="undercarriage ? 'disabled' : 'r'" v-else @click="addToCart">{{undercarriName}}</button>
 			</div>
+			<!--智齿客服-->
+			<!--<div>
+			    <button id="btn" class="zhiCustomBtn" >欢迎咨询</button>
+			</div>-->
+			<!--<router-link to="https://www.sobot.com/chat/h5/index.html?sysNum=e5ef8967b4114644a4c290bf0729f959">智齿客服</router-link>-->
   </div>
 </template>
 
@@ -158,6 +163,14 @@
 	    }
 	  },
 	  mounted(){
+	  		//	  	<!--该链接可在智齿客服工作台=>设置=>接入渠道中找到-->
+			let para=document.createElement("script");
+	        para.src = "https://www.sobot.com/chat/frame/js/entrance.js?sysNum=e5ef8967b4114644a4c290bf0729f959";
+	        para.setAttribute("id", "zhichiScript");
+        	para.setAttribute("class", "zhiCustomBtn");
+//      	para.setAttribute("data-args","属性名1=属性值1&属性名2=属性值2");
+	       	this.$refs.input1.appendChild(para);
+
 	  		var that = this;
 	  		this.idm = this.$route.query.id;
 	  		
@@ -167,8 +180,8 @@
 		        url:that.$url+ 'cart/goodscount',
 	    	}).then(function (response) {
 	    		if(response.data.errno==0){
-	    			let _res = response.data.data;
-	    			that.cartGoodsCount = _res.cartTotal.goodsCount;
+	    			let _res = response.data;
+	    			that.cartGoodsCount = _res.data.cartTotal;
 	    		}
 		    });
 	  		
@@ -222,19 +235,21 @@
 		        let _specificationList = that.specificationList;
 		        let minGoodsSpec = (that.minPriceList[0].goods_specification_ids).split('_');
 		        let specValueList = that.specificationList;
-		        for (let i = 0; i < minGoodsSpec.length; i++){
-		          for (let j = 0; j < specValueList[i].valueList.length; j++){
-		            if (minGoodsSpec[i] == specValueList[i].valueList[j].id){
-		              showArraySpec.push(specValueList[i].valueList[j].value);
-		              if (_specificationList[i].valueList[j].checked) {
-		                _specificationList[i].valueList[j].checked = false;
-		              } else {
-		                _specificationList[i].valueList[j].checked = true;
-		              }
-		            } else {
-		              _specificationList[i].valueList[j].checked = false;
-		            }
-		          }
+		        if(specValueList.length != 0){
+			        for (let i = 0; i < minGoodsSpec.length; i++){
+			          for (let j = 0; j < specValueList[i].valueList.length; j++){
+			            if (minGoodsSpec[i] == specValueList[i].valueList[j].id){
+			              showArraySpec.push(specValueList[i].valueList[j].value);
+			              if (_specificationList[i].valueList[j].checked) {
+			                _specificationList[i].valueList[j].checked = false;
+			              } else {
+			                _specificationList[i].valueList[j].checked = true;
+			              }
+			            } else {
+			              _specificationList[i].valueList[j].checked = false;
+			            }
+			          }
+			        }
 		        }
 		        that.market_price = that.minPriceList[0].market_price;
 		        that.checkedSpecText =  showArraySpec.join('　');
@@ -242,7 +257,10 @@
 		        
 	 		 })
 	  },
-	  methods:{
+		destroyed(){
+				window.location.reload();
+		},
+	methods:{
 	  	cutNumber(){
       		this.number = (this.number - 1 > 1) ? this.number - 1 : 1
 	  	},
@@ -494,19 +512,6 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <!--v-html  的标签 加样式 用 >>>-->
 <style scoped>
-
-/*商品详情*/
-	/*>>>.ssd-widget-pic{
-	width:7.5rem  !important;
-	height: auto !important;
-	}
-	>>> .ssd-module-wrap{
-		width:7.5rem !important;
-	}
-	>>> .ssd-module{
-		width:7.5rem !important;
-		background-size:
-	}*/
 /*其它*/
 div{
 	font-size:.29rem;
