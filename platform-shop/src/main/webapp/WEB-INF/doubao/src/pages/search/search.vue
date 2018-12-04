@@ -101,11 +101,14 @@ export default {
 			}else{
 				this.cookie=false;  
 			}
-			var scrollTop;
+			let that = this;
 			window.onscroll=function(){
-				scrollTop = (document.documentElement.scrollTop/1000)+'rem';
+				var scrollTop = (document.documentElement.scrollTop/1000)+'rem';
+				that.$cookie.setCookie('scrollTop',scrollTop);
 			}
-			document.documentElement.scrollTop = scrollTop;
+			if (that.$cookie.getCookie('scrollTop') != ""){
+				document.documentElement.scrollTop = that.$cookie.getCookie('scrollTop');				
+			}
 	  },
 	  methods:{
 	  	onKeywordTap(keyword){
