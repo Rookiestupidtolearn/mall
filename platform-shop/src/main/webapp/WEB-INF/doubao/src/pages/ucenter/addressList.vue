@@ -51,7 +51,9 @@ export default {
 		        url:that.$url+ 'address/list',
 			}).then(function (response) {
 				var response=response.data;
+				if(response.errno != 401){
 					that.addressList = response.data;
+				}
 			  })
   	},
 		addressAddOrUpdate(setId){

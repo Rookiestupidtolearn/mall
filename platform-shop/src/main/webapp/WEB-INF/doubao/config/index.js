@@ -16,8 +16,8 @@ module.exports = {
 		//http://localhost:8080/platform'  //本地
 		//http://192.168.1.244:6101/platform'  //吴明龙
 //  	'/platform': {
-//				target: 'http://106.75.99.126:6302/platform',
-//
+//			target: 'http://106.75.99.126:6302/platform',
+//				
 //      changeOrigin: true,
 //      pathRewrite: {
 //        '/platform': ''

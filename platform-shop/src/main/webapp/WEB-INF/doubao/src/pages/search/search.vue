@@ -8,7 +8,7 @@
 	  			<mt-search v-model="value"  @keyup.enter.native="showList" @input="inputFocus" cancel-text="取消"  placeholder="商品搜索" class="wusearch" ></mt-search>
 	  		</form>
 	  	</div>
-	  	<div class="no-search" :style="{display: [value || defaultKeyword? 'none' : 'block']}">
+	  	<div class="no-search" :style="{display: [value || defaultKeyword || cookie? 'none' : 'block']}" >
 	  		<!--:style="{display: [value ? 'none' : 'block']}"-->
 		     <div class="serach-keywords search-history" >
 			    <div class="h" >
@@ -20,7 +20,7 @@
 			    </div>
 	 	 	</div>
  		</div>
- 		<div class="serach-keywords search-hot" :style="{display: [value ? 'none' : 'block']}">
+ 		<div class="serach-keywords search-hot" :style="{display: [value|| cookie ? 'none' : 'block']}" :data-c="value">
 		    <div class="h">
 		      <p class="title">热门搜索</p>
 		    </div>
@@ -71,6 +71,7 @@ export default {
 //	  components:{headbar},
 	  data () {
 	    return {
+	    	cookie:true,
     		value:'',
     		searchStatus:false,
 //  		headFont:'搜索',
@@ -91,6 +92,20 @@ export default {
 	  },
 	  mounted(){
 			this.getKeyWordList();
+			var search = this.$cookie.getCookie('search');
+			var searchKey = this.$cookie.getCookie('searchKey');
+			if(search != ""){
+				this.value=searchKey;
+				this.cookie=true;  
+				this.showList(search);
+			}else{
+				this.cookie=false;  
+			}
+			var scrollTop;
+			window.onscroll=function(){
+				scrollTop = (document.documentElement.scrollTop/1000)+'rem';
+			}
+			document.documentElement.scrollTop = scrollTop;
 	  },
 	  methods:{
 	  	onKeywordTap(keyword){
@@ -154,9 +169,11 @@ export default {
 	        url: that.$url+'search/index',
 	    	}).then(function (response) {
 	    		var  response = response.data;
-    			that.historyKeyword = response.data.historyKeywordList,
-      			that.defaultKeyword = response.data.defaultKeyword,
-      			that.hotKeyword =  response.data.hotKeywordList
+	    		if(response.errno != 401){
+	    			that.historyKeyword = response.data.historyKeywordList,
+	      			that.defaultKeyword = response.data.defaultKeyword,
+	      			that.hotKeyword =  response.data.hotKeywordList
+	      		}
 			})
 	  	},
 	  	clearHistory(){
@@ -181,20 +198,24 @@ export default {
 		    			console.log(response.data);
 				})
 	  	},
-	  	showList(){
+	  	showList(data){
 	  		let that = this;
+	  		
+	  		var data = {
+	  			keyword:that.value,
+	        	page:that.page,
+	        	size:that.size,
+	        	sort:that.currentSortType,
+	        	order:that.currentSortOrder,
+	        	categoryId:that.categoryId
+	  		}
+	  		that.$cookie.setCookie("search",data);
+	  		that.$cookie.setCookie("searchKey",that.value);
 //	  		获取商品列表
 	  		that.$http({
 		        method: 'post',
 		        url: that.$url+'goods/list',
-		        params:{
-		        	keyword:that.value,
-		        	page:that.page,
-		        	size:that.size,
-		        	sort:that.currentSortType,
-		        	order:that.currentSortOrder,
-		        	categoryId:that.categoryId
-		        }
+		        params:data
 	    	}).then(function (response) {
 	    		var response = response.data;
 	    		 that.searchStatus = true;
@@ -213,6 +234,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.cate-item .b .item:last-child{
+	margin-bottom:.3rem !important;
+}
 .wusearch{
 	font-size:.28rem !important;
 	height:100%;
@@ -220,6 +244,7 @@ export default {
 .no-search{
     height: auto;
     overflow: hidden;
+    margin-top:1.05rem
 }
 .serach-keywords{
     background: #fff;
@@ -289,19 +314,16 @@ export default {
     border-bottom: 1px solid #f4f4f4;
 }
 .sort{
-    position: fixed;
-    top: 1rem;
     background: #fff;
     width: 100%;
-    height: .78rem;
 }
 .sort-box{
 	display: flex;
+	position: fixed;
+	top:1rem;
     background: #fff;
     width: 100%;
     height: .78rem;
-    overflow: hidden;
-    padding: 0 .30rem;
     border-bottom: 1px solid #d9d9d9;
 }
 .sort-box .item{
@@ -358,9 +380,7 @@ export default {
 }
 
 .cate-item{
-    margin-top: .18rem;
-    height: 12rem;
-    overflow-y: scroll;
+    margin-top: 1.9rem;
 }
 
 .cate-item .h{
@@ -414,9 +434,6 @@ export default {
 .cate-item .b .item-b{
   margin-left: .0625rem;
 }
-.cate-item .b .item:last-child{
-	margin-bottom:3.5rem !important;
-}
 .cate-item .item .img{
   width: 3.02rem;
 }
@@ -461,5 +478,10 @@ export default {
     font-size: .28rem;
     text-align: center;
     color: #999;
+}
+.searchTop{
+	position: fixed;
+    width: 100%;
+    top: 0;
 }
 </style>

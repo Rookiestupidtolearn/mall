@@ -104,24 +104,26 @@ export default {
   },
   mounted(){
   	let that = this;
-    var userInfo =  JSON.parse(that.$cookie.getCookie('userInfo'));
-    if(userInfo !== null){
-			this.availResult = true;
-			if(userInfo.avatar == null || userInfo.avatar == ""){
-				this.avatarImg = 'https://platform-wxmall.oss-cn-beijing.aliyuncs.com/upload/20180727/150547696d798c.png'
-			}else{
-				this.avatarImg = userInfo.avatar;
-			}
-	    this.userName = userInfo.nickname;
-	    this.availMoney = userInfo.availMoney;
-	    that.$http({
-		        method: 'post',
-		        url:that.$url+ 'user/userAccount',
-	    	}).then(function (res) {
-					that.availMoney = res.data.data;
-			})
-    }
-    
+  	var getCookieInfo = that.$cookie.getCookie('userInfo');
+  	if(getCookieInfo != ""){
+	  		var userInfo =  JSON.parse(getCookieInfo);
+	  		if(userInfo !== null){
+				this.availResult = true;
+				if(userInfo.avatar == null || userInfo.avatar == ""){
+					this.avatarImg = 'https://platform-wxmall.oss-cn-beijing.aliyuncs.com/upload/20180727/150547696d798c.png'
+				}else{
+					this.avatarImg = userInfo.avatar;
+				}
+		    this.userName = userInfo.nickname;
+		    this.availMoney = userInfo.availMoney;
+		    that.$http({
+			        method: 'post',
+			        url:that.$url+ 'user/userAccount',
+		    	}).then(function (res) {
+						that.availMoney = res.data.data;
+				})
+	    }
+  	}
   },
   methods:{
   	gologin(){

@@ -82,6 +82,9 @@ export default {
   methods:{
   	searchRoute(){
   		this.$router.push('/pages/ucenter/search');
+  		/*清除搜索记录缓存*/
+  		this.$cookie.delCookie('search');
+			this.$cookie.delCookie('searchKey');
   	},
   	switchCate(eventId){
 	    var that = this;

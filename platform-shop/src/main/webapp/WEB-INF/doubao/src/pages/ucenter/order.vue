@@ -48,7 +48,9 @@ export default {
         	size:10
         }
     	}).then(function (response) {
-	    		that.orderList = response.data.data.data;
+    		if(response.data.errno != 401){
+	    			that.orderList = response.data.data.data;
+	    	}
 		  })
   },
   methods:{

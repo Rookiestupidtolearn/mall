@@ -59,6 +59,7 @@ export default {
 	        },
 	        data:{typeId:0}
     	}).then(function (response) {
+    		if(response.data.errno != 401){
     			that.accountSecurity = response.data.data;
     			if(response.data.data.mobile == null || response.data.data.mobile ==''){
     				that.telephone = response.data.data.mobile;
@@ -77,7 +78,8 @@ export default {
 				}else{
     				that.idCard = that.validateidCard(response.data.data.idcard);
 				}
-		  })
+			}
+		})
   },
   methods:{
   	validateMobile(mobile){
@@ -108,10 +110,17 @@ export default {
 		  showCancelButton: true
 		},function(params){
 			if(params == 'confirm'){
-					that.$cookie.delCookie('userId');
-	    			that.$cookie.delCookie('userInfo');
-	    			that.$cookie.delCookie('token');
-					that.$router.push('/pages/ucenter');
+				/*清除cookie*/
+				that.$cookie.delCookie('userId');
+    			that.$cookie.delCookie('userInfo');
+    			that.$cookie.delCookie('token');
+    			/*分类记住用户选择*/
+    			that.$cookie.delCookie('eventId');
+    			that.$cookie.delCookie('inviteCount');	
+    			/*记住用记搜索商品*/
+    			that.$cookie.delCookie('search');
+    			that.$cookie.delCookie('searchKey');
+				that.$router.push('/pages/ucenter');
 			}
 		});
   	}

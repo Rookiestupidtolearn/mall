@@ -125,7 +125,6 @@
 			<!--<div>
 			    <button id="btn" class="zhiCustomBtn" >欢迎咨询</button>
 			</div>-->
-			<!--<router-link to="https://www.sobot.com/chat/h5/index.html?sysNum=e5ef8967b4114644a4c290bf0729f959">智齿客服</router-link>-->
   </div>
 </template>
 
@@ -181,7 +180,12 @@
 	    	}).then(function (response) {
 	    		if(response.data.errno==0){
 	    			let _res = response.data;
-	    			that.cartGoodsCount = _res.data.cartTotal;
+	    			var goodsCount = _res.data.cartTotal.goodsCount; //购物车数量
+	    			if (goodsCount !="" ){
+	    				that.cartGoodsCount = goodsCount;
+	    			}else{
+	    				that.cartGoodsCount = 0;
+	    			}
 	    		}
 		    });
 	  		

@@ -40,7 +40,9 @@ name: 'footprint',
 	        method: 'post',
 	        url:that.$url+ 'footprint/list',
     	}).then(function (response) {
+    		if(response.data.errno != 401){
     			that.footprintList = response.data.data.data;
+    		}
 		  })
  	 }
 }

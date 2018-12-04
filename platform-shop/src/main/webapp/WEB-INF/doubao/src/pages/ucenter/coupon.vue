@@ -49,7 +49,9 @@ export default {
         method: 'post',
         url:that.$url+ 'coupon/list',
     	}).then(function (response) {
+    		if(response.data.errno != 401){
     			that.couponList = response.data.data;
+	    	}
 	  })
   },
   methods:{
