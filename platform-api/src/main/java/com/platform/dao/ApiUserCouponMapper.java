@@ -72,6 +72,6 @@ public interface ApiUserCouponMapper extends BaseDao<UserCouponVo> {
      * @param id
      * @return
      */
-    List<UserCouponVo> quertSubUserCoupons(Integer id);
+    List<UserCouponVo> querySubUserCoupons(Integer id);
     
 }

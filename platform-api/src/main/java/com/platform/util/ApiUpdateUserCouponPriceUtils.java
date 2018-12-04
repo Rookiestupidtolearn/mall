@@ -312,9 +312,9 @@ public class ApiUpdateUserCouponPriceUtils extends ApiBaseAction{
     		//理论上优惠券价格
     		BigDecimal couponTotalPriceAbstract = userCoupon.getAbstract_coupon_status();
     		BigDecimal couponPrice = BigDecimal.ZERO; 
-    		List<UserCouponVo> subUserCoupons = apiUserCouponMapper.quertSubUserCoupons(userCoupon.getId());
+    		List<UserCouponVo> subUserCoupons = apiUserCouponMapper.querySubUserCoupons(userCoupon.getId());
     		for(UserCouponVo vo : subUserCoupons){
-    			if(vo.getId()==userCoupon.getId()){
+    			if(vo.getId()==coupons.get(0).getId()){
     				continue;
     			}
     			couponPrice = couponPrice.add(vo.getCoupon_price());

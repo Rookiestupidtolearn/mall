@@ -195,9 +195,9 @@
     	select * from nideshop_user_coupon where parent_id = #{id} and coupon_status = 1
     </select>
     <select id = "quertUserCouponByGoodId" resultMap = "userCouponMap">
-    	select * from nideshop_user_coupon where goods_id = #{goodId} and coupon_status = 1
+    	select * from nideshop_user_coupon where goods_id = #{goodId} and coupon_status = 4
     </select>
-    <select id="quertSubUserCoupons" resultMap = "userCouponMap">
+    <select id="querySubUserCoupons" resultMap = "userCouponMap">
     	select * from nideshop_user_coupon where parent_id = #{id} 
     </select>
 </mapper>

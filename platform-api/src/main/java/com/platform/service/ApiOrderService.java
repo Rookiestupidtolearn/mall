@@ -258,6 +258,13 @@ public class ApiOrderService {
 			orderInfo.setCoupon_id(userCoupon.getId());
 			orderInfo.setCoupon_price(couponPrice);
 			userCoupon.setCoupon_status(4);//支付中
+			List<UserCouponVo> userCoupons = apiUserCouponMapper.querySubUserCoupons(userCoupon.getId());
+			if(!CollectionUtils.isEmpty(userCoupons)){
+				for(UserCouponVo coupon : userCoupons){
+					coupon.setCoupon_status(4);
+					apiUserCouponMapper.updateUserOrderCoupon(coupon);
+				}
+			}
 			apiUserCouponMapper.updateUserOrderCoupon(userCoupon);
 		}
 		// 减去其它支付的金额后，要实际支付的金额

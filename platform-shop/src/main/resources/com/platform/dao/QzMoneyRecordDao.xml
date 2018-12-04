@@ -30,25 +30,29 @@
 
 	<select id="queryList" resultType="com.platform.entity.QzMoneyRecordEntity">
 		select
-    		`id`,
-    		`shop_user_id`,
-    		`tran_type`,
-    		`tran_flag`,
-    		`tarn_amount`,
-    		`current_amount`,
-    		`create_time`,
-    		`trade_no`
-		from qz_money_record
+    		mr.`id`,
+    		mr.`shop_user_id`,
+    		mr.`tran_type`,
+    		mr.`tran_flag`,
+    		mr.`tarn_amount`,
+    		mr.`current_amount`,
+    		mr.`create_time`,
+    		mr.`trade_no`,
+    		b.`username` as shopUserName,
+    		b.`mobile` as UserPhone,
+    		b.`idcard` as cardId
+		from qz_money_record mr
+		LEFT JOIN `nideshop_user` b  ON mr.`shop_user_id` = b.`id`
 		WHERE 1=1
 		<if test="name != null and name.trim() != ''">
-			AND name LIKE concat('%',#{name},'%')
+			AND b.username LIKE concat('%',#{name},'%')
 		</if>
         <choose>
             <when test="sidx != null and sidx.trim() != ''">
                 order by ${sidx} ${order}
             </when>
 			<otherwise>
-                order by id desc
+                order by mr.id desc
 			</otherwise>
         </choose>
 		<if test="offset != null and limit != null">
@@ -57,11 +61,14 @@
 	</select>
 	
  	<select id="queryTotal" resultType="int">
-		select count(*) from qz_money_record
+		select
+    		count(*)
+		from qz_money_record mr
+		LEFT JOIN `nideshop_user` b  ON mr.`shop_user_id` = b.`id`
 		WHERE 1=1
-        <if test="name != null and name.trim() != ''">
-            AND name LIKE concat('%',#{name},'%')
-        </if>
+		<if test="name != null and name.trim() != ''">
+			AND b.username LIKE concat('%',#{name},'%')
+		</if>
 	</select>
 	 
 	<insert id="save" parameterType="com.platform.entity.QzMoneyRecordEntity" useGeneratedKeys="true" keyProperty="id">
