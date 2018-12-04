@@ -105,6 +105,7 @@ public class ApiUserController extends ApiBaseAction {
         
         if (countIP!=null) {
         	  if (countIP>10) {
+        		   level2.put("DOUBAO_SMS_MOBILE_IP:"+phone+"_"+validIP, phone+"_"+validIP,86400l);
         		   return toResponsFail("操作频繁，明天再试");
 			  }
         	  countIP +=1;
@@ -150,7 +151,7 @@ public class ApiUserController extends ApiBaseAction {
             smsLogVo.setLog_date(System.currentTimeMillis() / 1000);
             smsLogVo.setUser_id(loginUser.getUserId());
             smsLogVo.setPhone(phone);
-            smsLogVo.setSms_code(sms_code);
+            smsLogVo.setSmsCode(sms_code);
             smsLogVo.setSms_text(msgContent);
             smsLogVo.setSend_status(1); //1成功   0失败
             userService.saveSmsCodeLog(smsLogVo);
@@ -195,7 +196,7 @@ public class ApiUserController extends ApiBaseAction {
         if(CollectionUtils.isNotEmpty(userLi)){
         	return toResponsFail("该手机号已被绑定");
         }
-        if (!mobile_code.equals(smsLogVo.getSms_code())) {
+        if (!mobile_code.equals(smsLogVo.getSmsCode())) {
             return toResponsFail("验证码错误");
         }
         UserVo userVo = userService.queryObject(loginUser.getUserId());

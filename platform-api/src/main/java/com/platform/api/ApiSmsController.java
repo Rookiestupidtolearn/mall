@@ -147,7 +147,7 @@ public class ApiSmsController {
         	SmsLogVo  userSms = new SmsLogVo();
         	userSms.setLog_date(System.currentTimeMillis() / 1000);
         	userSms.setPhone(mobile);
-        	userSms.setSms_code(sms_code);
+        	userSms.setSmsCode(sms_code);
         	userSms.setSms_text(msgContent);
         	userSms.setSend_status(1); //1成功   0失败
               userService.saveSmsCodeLog(userSms);
