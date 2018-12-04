@@ -203,7 +203,7 @@ public class ApiCouponController extends ApiBaseAction {
         String smscode = jsonParam.getString("smscode");
         // 校验短信码
         SmsLogVo smsLogVo = apiUserService.querySmsCodeByUserId(loginUser.getUserId());
-        if (null != smsLogVo && !smsLogVo.getSms_code().equals(smscode)) {
+        if (null != smsLogVo && !smsLogVo.getSmsCode().equals(smscode)) {
             return toResponsFail("短信校验失败");
         }
         // 更新手机号码

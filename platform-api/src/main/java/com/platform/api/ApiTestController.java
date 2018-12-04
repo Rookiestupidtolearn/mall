@@ -25,6 +25,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.platform.annotation.IgnoreAuth;
 import com.platform.annotation.LoginUser;
+import com.platform.cache.J2CacheUtils;
 import com.platform.dao.ApiBrandMapper;
 import com.platform.dao.ApiCategoryMapper;
 import com.platform.dao.ApiGoodsGalleryMapper;
@@ -71,6 +72,8 @@ import com.platform.youle.util.TokenUtil;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import net.oschina.j2cache.CacheProviderHolder;
+import net.oschina.j2cache.Level2Cache;
 
 /**
  * API测试接口
@@ -805,6 +808,19 @@ public class ApiTestController extends ApiBaseAction {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return resultObj;
+	}
+	
+	@IgnoreAuth
+	@ApiOperation(value = "1.3")
+	@PostMapping("chengeRedis")
+	public Object chengeRedis(String key,String value) {
+		String resultObj = "";
+        //手机号
+        Level2Cache level2 = CacheProviderHolder.getLevel2Cache(J2CacheUtils.INVALID_CACHE);
+     
+        
+    	level2.put(key, value,86400l);
 		return resultObj;
 	}
 	

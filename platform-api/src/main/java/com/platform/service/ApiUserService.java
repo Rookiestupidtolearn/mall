@@ -85,11 +85,8 @@ public class ApiUserService {
     }
 
     public SmsLogVo querySmsCodeByUserId(Long user_id) {
-    	SmsLogVo vo = null;
-    	 List<SmsLogVo> list=  userDao.querySmsCodeByUserId(user_id);
-    	 if (CollectionUtils.isNotEmpty(list)) {
-    		 vo = list.get(0);
-		}
+    	SmsLogVo vo=  userDao.querySmsCodeByUserId(user_id);
+
     	
         return vo;
     }
