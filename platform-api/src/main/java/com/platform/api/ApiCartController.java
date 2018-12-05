@@ -242,7 +242,6 @@ public class ApiCartController extends ApiBaseAction {
             cartInfo.setGoods_specifition_ids(productInfo.getGoods_specification_ids());
             cartInfo.setChecked(1);
             cartService.save(cartInfo);
-            apiUpdateUserCouponPriceUtils.updateUserCouponPrice(goodsId, productId, number, loginUser.getUserId(),1);
         } else {
             //如果已经存在购物车中，则数量增加
             if ((productInfo.getGoods_number() == null ? 0 : productInfo.getGoods_number()) < (number + cartInfo.getNumber())) {
@@ -250,7 +249,6 @@ public class ApiCartController extends ApiBaseAction {
             }
             cartInfo.setNumber(cartInfo.getNumber() + number);
             cartService.update(cartInfo);
-            apiUpdateUserCouponPriceUtils.updateUserCouponPrice(goodsId, productId, number,loginUser.getUserId(),1);
         }
         return toResponsSuccess(getCart(loginUser));
     }
@@ -284,11 +282,9 @@ public class ApiCartController extends ApiBaseAction {
                 cartInfo.setNumber(num);
                 cartService.update(cartInfo);
                 cart_num = cartInfo.getNumber();
-                apiUpdateUserCouponPriceUtils.updateUserCouponPrice(goodsId, productId, num, loginUser.getUserId(),2);
             } else if (cartInfo.getNumber() == 1) {
                 cartService.delete(cartInfo.getId());
                 param.put("user_id", loginUser.getUserId());
-                apiUserCouponMapper.deleteUserCouponPrice(param);
                 cart_num = 0;
             }
         }
@@ -307,7 +303,6 @@ public class ApiCartController extends ApiBaseAction {
         Integer productId = jsonParam.getInteger("productId");
         Integer number = jsonParam.getInteger("number");
         Integer id = jsonParam.getInteger("id");
-        BigDecimal couponTotalPrice = BigDecimal.ZERO;
         Long userId = loginUser.getUserId();
         Map<String,Object> param = new HashMap<>();
         //取得规格的信息,判断规格库存
@@ -322,7 +317,6 @@ public class ApiCartController extends ApiBaseAction {
             cartInfo.setNumber(number);
             cartService.update(cartInfo);
             param.put("user_id", loginUser.getUserId());
-            apiUpdateUserCouponPriceUtils.updateUserCouponPrice(goodsId, productId, number, userId,3);
             return toResponsSuccess(getCart(loginUser));
         }
         Map cartParam = new HashMap();
@@ -354,8 +348,6 @@ public class ApiCartController extends ApiBaseAction {
             }
             cartInfo.setGoods_specifition_ids(productInfo.getGoods_specification_ids());
             cartService.update(cartInfo);
-         
-            apiUpdateUserCouponPriceUtils.updateUserCouponPrice(goodsId, productId, number, loginUser.getUserId(),3);
         } else {
             //合并购物车已有的product信息，删除已有的数据
             Integer newNumber = number + newcartInfo.getNumber();
@@ -364,7 +356,6 @@ public class ApiCartController extends ApiBaseAction {
             }
             cartService.delete(newcartInfo.getId());
             param.put("user_id", loginUser.getUserId());
-            apiUserCouponMapper.deleteUserCouponPrice(param);
             //添加规格名和值
             String[] goodsSepcifitionValue = null;
             if (null != productInfo.getGoods_specification_ids()) {
@@ -387,7 +378,6 @@ public class ApiCartController extends ApiBaseAction {
             }
             cartInfo.setGoods_specifition_ids(productInfo.getGoods_specification_ids());
             cartService.update(cartInfo);
-            apiUpdateUserCouponPriceUtils.updateUserCouponPrice(goodsId, productId, number, loginUser.getUserId(),3);
         }
         return toResponsSuccess(getCart(loginUser));
     }
@@ -520,11 +510,8 @@ public class ApiCartController extends ApiBaseAction {
             }
         }
 
-
         //获取可用的优惠券信息
         BigDecimal couponPrice = new BigDecimal(0.00);
-
-//        UserCouponVo userCoupon = apiUserCouponMapper.queryUserCouponTotalPrice(loginUser.getUserId());
         
         map.put("user_id", loginUser.getUserId());
         map.put("coupon_status", 1);
