@@ -1,6 +1,5 @@
 package com.platform.api;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,8 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.google.code.kaptcha.Constants;
+import com.google.gson.Gson;
 import com.platform.annotation.LoginUser;
 import com.platform.cache.J2CacheUtils;
 import com.platform.entity.QzMoneyRecordEntity;
@@ -27,14 +27,12 @@ import com.platform.service.ApiUserService;
 import com.platform.service.SysConfigService;
 import com.platform.util.ApiBaseAction;
 import com.platform.util.IdcardUtils;
+import com.platform.util.sms.chuanglan.ChuangLanSmsUtil;
+import com.platform.util.sms.chuanglan.SmsSendRequest;
 import com.platform.utils.CharUtil;
 import com.platform.utils.Constant;
-import com.platform.utils.DateUtils;
-import com.platform.utils.R;
 import com.platform.utils.RRException;
 import com.platform.utils.RequestUtil;
-import com.platform.utils.ShiroUtils;
-import com.platform.utils.SmsUtil;
 import com.platform.utils.StringUtils;
 
 import io.swagger.annotations.Api;
@@ -118,6 +116,7 @@ public class ApiUserController extends ApiBaseAction {
         String msgContent = "您的验证码是：" + sms_code + "，请在页面中提交验证码完成验证。";
         // 发送短信
         String result = "";
+        String codeValue = "";
         //获取云存储配置信息
         SmsConfig config = sysConfigService.getConfigObject(Constant.SMS_CONFIG_KEY, SmsConfig.class);
         if (StringUtils.isNullOrEmpty(config)) {
@@ -135,18 +134,44 @@ public class ApiUserController extends ApiBaseAction {
         if (StringUtils.isNullOrEmpty(config.getSign())) {
             throw new RRException("请先配置短信平台签名");
         }
+        if (StringUtils.isNullOrEmpty(config.getDomain())) {
+            throw new RRException("请先配置短信平台域名URL");
+        }
         try {
             /**
              * 状态,发送编号,无效号码数,成功提交数,黑名单数和消息，无论发送的号码是多少，一个发送请求只返回一个sendid，如果响应的状态不是“0”，则只有状态和消息
              */
-            result = SmsUtil.crSendSms(config.getUsername(), config.getPassword(), phone, config.getSign()+msgContent, config.getEpid(),
-                    DateUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"), "");
+        	
+
+        	//短信发送的URL 请登录zz.253.com 获取完整的URL接口信息
+    		String smsSingleRequestServerUrl = "http://smssh1.253.com/msg/send/json";
+    		
+    		// 设置您要发送的内容：其中“【】”中括号为运营商签名符号，多签名内容前置添加提交
+    	    String msg = config.getSign()+msgContent;
+    		//手机号码
+    	
+    		//状态报告
+    		String report= "true";
+    		
+    		SmsSendRequest smsSingleRequest = new SmsSendRequest(config.getUsername(), config.getPassword(), msg, phone,report);
+    		
+    		String requestJson = JSON.toJSONString(smsSingleRequest);
+    		
+    		
+    		result = ChuangLanSmsUtil.sendSmsByPost(smsSingleRequestServerUrl, requestJson);
+    		Gson gson = new Gson();
+            Map<String, Object> map = new HashMap<String, Object>();
+            map = gson.fromJson(result, map.getClass());
+            codeValue=(String) map.get("code");
+          
+        	
+           // result = SmsUtil.crSendSms(config.getDomain(),config.getUsername(), config.getPassword(), phone, config.getSign()+msgContent, config.getEpid(),DateUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"), "");
         } catch (Exception e) {
 
         }
         String arr[] = result.split(",");
 
-        if ("00".equals(arr[0])) {
+        if ("0".equals(codeValue)) {
             smsLogVo = new SmsLogVo();
             smsLogVo.setLog_date(System.currentTimeMillis() / 1000);
             smsLogVo.setUser_id(loginUser.getUserId());
