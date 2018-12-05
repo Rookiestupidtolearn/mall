@@ -1,5 +1,8 @@
 <template>
   <div class="hello">
+  	<div class="searchTop" @click="searchRoute">
+  				<mt-search v-model="value"  cancel-text="取消"  placeholder="商品搜索" class="wusearch" ></mt-search>
+  	</div>
     <mt-swipe :auto="3000" class="swiper" >
 		  <mt-swipe-item v-for="item in banner">
 		  	<a :href="item.link"><img :src="item.image_url"/></a>
@@ -50,6 +53,7 @@ export default {
   name: 'home',
   data () {
     return {
+    	value:'',
       banner:[],
       channel:[],
       hotGoods:[],
@@ -87,13 +91,21 @@ export default {
 		    that.hotGoods = response.data.data.hotGoodsList
 		  })
     	//category
-    	that.$http({
-        method: 'post',
-        url:that.$url+ 'index/category'
-    	}).then(function (response) {
-		    that.category = response.data.data.categoryList
-		  })
-  }
+//  	that.$http({
+//      method: 'post',
+//      url:that.$url+ 'index/category'
+//  	}).then(function (response) {
+//		    that.category = response.data.data.categoryList
+//		  })
+ },
+ methods:{
+ 		searchRoute(){
+  		this.$router.push('/pages/ucenter/search');
+  		/*清除搜索记录缓存*/
+  		this.$cookie.delCookie('search');
+			this.$cookie.delCookie('searchKey');
+  	}
+ }
 }
 </script>
 
@@ -200,6 +212,7 @@ color:#b4282d;
 .swiper{
 	width:7.5rem;
 	height:4.17rem;
+	margin-top:.95rem;
 }
 .m-menu {
   overflow: hidden;

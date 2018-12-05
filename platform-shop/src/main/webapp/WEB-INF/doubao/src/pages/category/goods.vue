@@ -181,10 +181,10 @@
 	    		if(response.data.errno==0){
 	    			let _res = response.data;
 	    			var goodsCount = _res.data.cartTotal.goodsCount; //购物车数量
-	    			if (goodsCount !="" ){
-	    				that.cartGoodsCount = goodsCount;
-	    			}else{
+	    			if (goodsCount ==""  || goodsCount == undefined){
 	    				that.cartGoodsCount = 0;
+	    			}else{
+	    				that.cartGoodsCount = goodsCount;
 	    			}
 	    		}
 		    });

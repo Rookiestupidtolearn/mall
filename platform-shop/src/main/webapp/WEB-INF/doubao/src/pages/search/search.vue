@@ -359,11 +359,12 @@ export default {
     background-size: .15rem .21rem;
 }
 .sort-box-category{
+	position: absolute;
     background: #fff;
     width: 100%;
     height: auto;
     overflow: hidden;
-    padding: .40rem .40rem 0 0;
+    padding: .40rem 0 0 0;
     border-bottom: 1px solid #d9d9d9;
 }
 .sort-box-category .item{

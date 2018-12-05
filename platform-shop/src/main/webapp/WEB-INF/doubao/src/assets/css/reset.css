@@ -99,3 +99,21 @@ body{
 #zhichiBtnBox{
 	bottom:2.5rem !important;
 }
+/*搜索高度自适应处理*/
+.mint-searchbar-inner {
+    height: .62rem !important;
+    padding: .04rem .06rem !important;
+}
+.mint-searchbar{
+	padding: .12rem .14rem !important;
+}
+.searchTop{
+	position: fixed;
+    top: 0;
+    z-index: 2;
+    width: 7.5rem !important;
+    height:.95rem !important;
+}
+.wusearch{
+	height:.95rem !important;
+}

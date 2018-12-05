@@ -5,7 +5,7 @@
   	
   	<!--主体内容-->
   	<div class="searchTop" @click="searchRoute">
-  				<mt-search v-model="value"  cancel-text="取消"  placeholder="商品搜索" class="wusearch" ></mt-search>
+  				<mt-search v-model="value"  cancel-text="取消"  placeholder="商品搜索" class="wusearch"></mt-search>
   	</div>
   	<div class="content">
 	  	<div class="catalog" >
@@ -104,12 +104,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only  active -->
 <style scoped>
-	.searchTop{
-		position: fixed;
-    width: 100%;
-    top: 0;
-    z-index: 2;
-	}
 	.front_name {
 		position:absolute;
 		top:0rem;

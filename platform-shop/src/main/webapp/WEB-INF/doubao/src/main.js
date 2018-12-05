@@ -21,7 +21,7 @@ Vue.config.productionTip = false
 
 //接口配置
 //Vue.prototype.$url= '/platform/api/'; //本地代理
-Vue.prototype.$url= 'http://localhost:8080/platform/api/'; //本地
+Vue.prototype.$url= 'http://192.168.124.50:6101/platform/api/'; //内网
 //Vue.prototype.$url= 'http://106.75.99.126:6302/platform/api/'; //外网
 //Vue.prototype.$url= 'http://192.168.1.244:8093/platform/api/'; //外网吴明龙
 //Vue.prototype.$url= 'http://106.75.99.126:6302/platform/api/'; //外网(打正式包需要替换)

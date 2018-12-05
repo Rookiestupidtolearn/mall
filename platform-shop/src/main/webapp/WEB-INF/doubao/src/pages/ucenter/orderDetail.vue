@@ -123,7 +123,7 @@ export default {
 
   	},
   	cancelOrder(){
-	  		console.log('开始取消订单');
+	  	console.log('开始取消订单');
 	    let that = this;
 	    let id = this.$route.query.id;
 	    let orderInfo = that.orderInfo;
