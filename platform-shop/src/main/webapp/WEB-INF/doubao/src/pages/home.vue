@@ -65,7 +65,9 @@ export default {
     }
   },
   mounted(){
-  	var that = this;    
+  		let that = this;    
+  	
+  	/*记录首页页面用户滚动位置*/
   	//banner
   		that.$http({
         method: 'post',
@@ -88,8 +90,9 @@ export default {
         url:that.$url+ 'index/hotGoods'
     	}).then(function (response) {
     		Indicator.close();
-		    that.hotGoods = response.data.data.hotGoodsList
+		    that.hotGoods = response.data.data.hotGoodsList;
 		  })
+	
     	//category
 //  	that.$http({
 //      method: 'post',
@@ -98,6 +101,7 @@ export default {
 //		    that.category = response.data.data.categoryList
 //		  })
  },
+ 	
  methods:{
  		searchRoute(){
   		this.$router.push('/pages/ucenter/search');

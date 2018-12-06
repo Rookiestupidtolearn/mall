@@ -101,14 +101,6 @@ export default {
 			}else{
 				this.cookie=false;  
 			}
-			let that = this;
-			window.onscroll=function(){
-				var scrollTop = (document.documentElement.scrollTop/1000)+'rem';
-				that.$cookie.setCookie('scrollTop',scrollTop);
-			}
-			if (that.$cookie.getCookie('scrollTop') != ""){
-				document.documentElement.scrollTop = that.$cookie.getCookie('scrollTop');				
-			}
 	  },
 	  methods:{
 	  	onKeywordTap(keyword){
@@ -323,7 +315,7 @@ export default {
 .sort-box{
 	display: flex;
 	position: fixed;
-	top:1rem;
+	top:.93rem;
     background: #fff;
     width: 100%;
     height: .78rem;

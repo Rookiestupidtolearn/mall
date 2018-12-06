@@ -173,6 +173,8 @@
 	  		var that = this;
 	  		this.idm = this.$route.query.id;
 	  		
+			document.documentElement.scrollTop =0  //进页面从最上面浏览
+	  		
 	  		//获取购物车数量
 	  		that.$http({
 	    		method: 'post',

@@ -18,6 +18,10 @@
     <script src="statics/libs/html5shiv.min.js"></script>
     <script src="statics/libs/respond.min.js"></script>
     <![endif]-->
+    <style>
+	    .loginSpecial { margin-top:-30px;} 
+	    .loginSpecial .ivu-input,.loginSpecial .ivu-btn{ height:40px !important; font-size:15px } 
+    </style>
     <script>
         var _hmt = _hmt || [];
         (function () {
@@ -30,29 +34,32 @@
 </head>
 <body class="signin hold-transition login-page">
 <div class="loginscreen animated fadeInDown signinpanel" id="loginBox" v-cloak>
-    <div class="row">
-        <div class="col-md-6 col-md-offset-3">
-            <Card class="m-t text-center" style="background: rgba(109, 109, 109, 0.23);border: 0px solid #dddee1;">
-                <p style="padding: 0 20px 20px 20px;">登录到综合管理平台</p>
-                <div class="form-group has-feedback">
-                    <i-input v-model="username" @on-enter="login" placeholder="账号" style="width: 200px;" autofocus/>
+    <div class="row loginSpecial" style="border-top:none">
+        <div class="text-center">
+        	<p style="padding-bottom:40px; font-size:24px; color:#fff">登录到斗宝商铺综合管理平台</p>
+        	<div class="left col-md-6" style="background-color:#fff; padding:27px; height: 327px; width: 373px; border-radius:5px; -webkit-border-radius:5px">
+        		<img src="statics/img/middle_left.jpg"/>
+        	</div>
+            <Card class="col-md-6" style="background: rgba(250, 250, 250, 0.32);border: 0px solid #dddee1;height: 327px; width: 373px; border-radius:5px; -webkit-border-radius:5px">
+                <div class="form-group has-feedback" style="margin-top:50px;">
+                    <i-input v-model="username" @on-enter="login" placeholder="账号" style="width: 260px;" autofocus/>
                 </div>
                 <div class="form-group has-feedback">
-                    <i-input type="password" v-model="password" @on-enter="login" style="width: 200px;" 
+                    <i-input type="password" v-model="password" @on-enter="login" style="width: 260px;" 
                              placeholder="密码"/>
                 </div>
                 <div class="form-group has-feedback">
-                    <div style="display: inline-block;width: 100px;">
+                    <div style="display: inline-block;width: 116px;">
                         <i-input v-model="captcha" @on-enter="login"
                                  placeholder="验证码"/>
                     </div>
-                    <div style="display: inline-block;width: 100px;">
-                        <img style="height: 32px;width: 96px;border-radius: 4px;" alt="如果看不清楚，请单击图片刷新！" title="点击刷新"
+                    <div style="display: inline-block;width: 140px;">
+                        <img style="height: 40px;width: 120px;border-radius: 4px; margin-left:20px" alt="如果看不清楚，请单击图片刷新！" title="点击刷新"
                              class="pointer" :src="src" @click="refreshCode">
                     </div>
                 </div>
                 <div>
-                    <i-button type="primary" @click="login" style="width: 200px;">登录</i-button>
+                    <i-button type="primary" @click="login" style="width: 257px; font-size:18px;">登 录</i-button>
                 </div>
             </Card>
         </div>
