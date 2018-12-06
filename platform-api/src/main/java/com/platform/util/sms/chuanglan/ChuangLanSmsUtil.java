@@ -1,4 +1,4 @@
-﻿package com.platform.util.sms.chuanglan;
+package com.platform.util.sms.chuanglan;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -7,22 +7,9 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-/**
- * 
- * @author tianyh 
- * @Description:HTTP 请求
- */
 public class ChuangLanSmsUtil {
 	
-	/**
-	 * 
-	 * @author tianyh 
-	 * @Description 
-	 * @param path
-	 * @param postContent
-	 * @return String 
-	 * @throws
-	 */
+
 	public static String sendSmsByPost(String path, String postContent) {
 		URL url = null;
 		try {
