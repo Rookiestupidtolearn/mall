@@ -61,8 +61,6 @@ public class ApiPayController extends ApiBaseAction {
     @Autowired
     private ApiOrderGoodsService orderGoodsService;
     @Autowired
-    private  ApiUserCouponMapper apiUserCouponMapper;
-    @Autowired
     private QzUserAccountMapper qzUserAccountMapper;
     @Autowired
     private ApiMoneyRecordMapper apiMoneyRecordMapper;
@@ -147,14 +145,12 @@ public class ApiPayController extends ApiBaseAction {
             String return_msg = MapUtils.getString("return_msg", resultUn);
             //
             if (return_code.equalsIgnoreCase("FAIL")) {
-//            	saveMoneyRecord(loginUser.getUserId(),1,orderInfo);
                 return toResponsFail("支付失败," + return_msg);
             } else if (return_code.equalsIgnoreCase("SUCCESS")) {
                 // 返回数据
                 String result_code = MapUtils.getString("result_code", resultUn);
                 String err_code_des = MapUtils.getString("err_code_des", resultUn);
                 if (result_code.equalsIgnoreCase("FAIL")) {
-//                	saveMoneyRecord(loginUser.getUserId(),1,orderInfo);
                     return toResponsFail("支付失败," + err_code_des);
                 } else if (result_code.equalsIgnoreCase("SUCCESS")) {
                     String prepay_id = MapUtils.getString("prepay_id", resultUn);

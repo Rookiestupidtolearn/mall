@@ -89,7 +89,7 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 		initRequestParam(entity);
 		try {
 			logger.info("[1.1获取所有商品ID]入参：" + JSONObject.toJSONString(entity));
-			String result = HttpUtil.post(Urls.base_test_url + Urls.getAllProductIdsUrl, objectToMap(entity));
+			String result = HttpUtil.post(Urls.base_prod_url + Urls.getAllProductIdsUrl, objectToMap(entity));
 			logger.info("[1.1获取所有商品ID]出参：" + result);
 			reponse = JSON.parseObject(result, new TypeReference<ResponseAllProductEntity>() {
 			});
@@ -111,7 +111,7 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 		logger.info("[1.4单个查询商品库存]入参：" + JSONObject.toJSONString(entity));
 		String result = "";
 		try {
-			result = HttpUtil.post(Urls.base_test_url + Urls.stock, objectToMap(entity));
+			result = HttpUtil.post(Urls.base_prod_url + Urls.stock, objectToMap(entity));
 			logger.info("[1.4单个查询商品库存" + result);
 			if (result == null) {
 				param.put("msg", "三方返回数据为空");
@@ -121,6 +121,10 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 			logger.error("[1.4单个查询商品库存]异常", e);
 		}
 		JSONObject resultDate = JSONObject.parseObject(result);
+		if(resultDate.get("RESULT_DATA") == null){
+			param.put("msg", "三方返回数据为空");
+			return param;
+		}
 		String results = resultDate.get("RESULT_DATA").toString();
 		if (StringUtils.isEmpty(results)) {
 			param.put("msg", "三方返回数据为空");
@@ -301,7 +305,6 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 					apiGoodsService.unSaleBatch(ids,2);
 				}
 			}
-
 			for (int j = 0; j < attr.length; j++) {
 				RequestSkuDetailEntity entity = new RequestSkuDetailEntity();
 				initRequestParam(entity);
@@ -309,7 +312,7 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 
 				String result = "";
 				try {
-					result = HttpUtil.post(Urls.base_test_url + Urls.detial, objectToMap(entity));
+					result = HttpUtil.post(Urls.base_prod_url + Urls.detial, objectToMap(entity));
 					if (StringUtils.isEmpty(result)) {
 						resultObj.put("status", "false");
 						resultObj.put("msg", "[1.3获取单个商品详情]为空");
@@ -317,6 +320,12 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 						continue;
 					}
 					JSONObject dateObj = JSONObject.parseObject(result);
+					if(dateObj.get("RESULT_DATA") == null){
+						resultObj.put("status", "false");
+						resultObj.put("msg", "[1.3获取单个商品详情]为空");
+						logger.info("[1.3获取单个商品详情]为空,productId:" + Long.parseLong(attr[j].toString()));
+						continue;
+					}
 					String resObj = dateObj.get("RESULT_DATA").toString();
 					if (StringUtils.isEmpty(resObj)) {
 						resultObj.put("status", "false");
@@ -326,7 +335,12 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 					}
 					GoodsVo vo = new GoodsVo();
 					JSONObject resultDate = JSONObject.parseObject(resObj);
-
+					if(resultDate.get("PRODUCT_DATA") == null){
+						resultObj.put("status", "false");
+						resultObj.put("msg", "[1.3获取单个商品详情]为空");
+						logger.info("[1.3获取单个商品详情]为空,productId:" + Long.parseLong(attr[j].toString()));
+						continue;
+					}
 					String productDate = resultDate.get("PRODUCT_DATA").toString();
 					if (!StringUtils.isEmpty(productDate)) {
 						JSONObject productObj = JSONObject.parseObject(productDate);
@@ -470,13 +484,18 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 		RequestBaseEntity entity = new RequestBaseEntity();
 		initRequestParam(entity);
 		try {
-			result = HttpUtil.post(Urls.base_test_url + Urls.rootCate, objectToMap(entity));
+			result = HttpUtil.post(Urls.base_prod_url + Urls.rootCate, objectToMap(entity));
 			if (StringUtil.isEmpty(result)) {
 				resultObj.put("status", "false");
 				resultObj.put("msg", "三方返回数据为空");
 				return resultObj;
 			}
 			JSONObject dateObj = JSONObject.parseObject(result);
+			if(dateObj.get("RESULT_DATA") == null){
+				resultObj.put("status", "false");
+				resultObj.put("msg", "三方返回数据为空");
+				return resultObj;
+			}
 			String resultDate = dateObj.get("RESULT_DATA").toString();
 
 			if (StringUtil.isEmpty(resultDate)) {
@@ -538,7 +557,7 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 			initRequestParam(entity);
 			entity.setParentCate(vo.getId());
 			try {
-				String result = HttpUtil.post(Urls.base_test_url + Urls.childs, objectToMap(entity));
+				String result = HttpUtil.post(Urls.base_prod_url + Urls.childs, objectToMap(entity));
 
 				if (StringUtils.isEmpty(result)) {
 					resultObj.put("status", "false");
@@ -628,7 +647,7 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 			initRequestParam(entity);
 			entity.setParentCate(vo.getId());
 			try {
-				String result = HttpUtil.post(Urls.base_test_url + Urls.childs, objectToMap(entity));
+				String result = HttpUtil.post(Urls.base_prod_url + Urls.childs, objectToMap(entity));
 				if (StringUtils.isEmpty(result)) {
 					resultObj.put("status", "false");
 					resultObj.put("msg", "查询二级分类三方返回数据为空");

@@ -58,19 +58,13 @@ public class ApiOrderService {
 	@Autowired
 	private ApiProductService productService;
 	@Autowired
-	private ApiUserCouponMapper apiUserCouponMapper;
-	@Autowired
 	private QzUserAccountMapper qzUserAccountMapper;
-
 	@Autowired
 	private JdOrderService jdOrderService;
 	@Autowired
 	private ApiGoodsService apiGoodsService;
-    @Autowired
-    private ApiUpdateUserCouponPriceUtils apiUpdateUserCouponPriceUtils;
-
-    @Autowired
-    private PayMatchingUtil payMatchingUtils;
+	@Autowired
+	private ApiCartService apiCartService;
     
 	public OrderVo queryObject(Integer id) {
 		return orderDao.queryObject(id);
@@ -121,6 +115,8 @@ public class ApiOrderService {
 		// 统计商品总价
 		BigDecimal goodsTotalPrice = BigDecimal.ZERO;
 		List<CartVo> orderGoodsList = new ArrayList<>();
+		//订单商品优惠券价格
+		BigDecimal discountAmount = BigDecimal.ZERO;
 		Map<String, String> soureMap = new HashMap<>();
 		if (type.equals("cart")) {
 			Map<String, Object> param = new HashMap<String, Object>();
@@ -208,30 +204,7 @@ public class ApiOrderService {
 			resultObj.put("errmsg", "没可下单数据");
 			return resultObj;
 	}
-		// 查询用户优惠券信息 直接过去 平台币抵扣券
-		List<UserCouponVo> userCouponVos = apiUserCouponMapper.queryUserCouponTotalPrice(loginUser.getUserId());
-
-		List<UserCouponVo> coupons = new ArrayList<>();
-		if (!CollectionUtils.isEmpty(userCouponVos)) {
-			for (UserCouponVo vo : userCouponVos) {
-				if (vo.getCoupon_id() == 11) {
-					coupons.add(vo);
-				}
-			}
-		}
-		// 判断数据是否异常 异常抛出
-
-		if (CollectionUtils.isNotEmpty(coupons) && coupons.size() > 1) {
-			resultObj.put("errno", 1);
-			resultObj.put("errmsg", "抵扣券数据异常大于1");
-			return resultObj;
-		}
-
-		UserCouponVo userCoupon = null;
-
-		if (CollectionUtils.isNotEmpty(coupons)) {
-			userCoupon = coupons.get(0);
-		}
+		
 
 		// 订单的总价 商品价格+运费价格
 		BigDecimal orderTotalPrice = goodsTotalPrice.add(freightPrice);
@@ -251,28 +224,13 @@ public class ApiOrderService {
 		orderInfo.setFreight_price(freightPrice);
 		// 留言
 		orderInfo.setPostscript(postscript);
-		// 使用的优惠券
-		BigDecimal couponPrice = BigDecimal.ZERO;
-		if (userCoupon != null) {
-			couponPrice = userCoupon.getCoupon_price();
-			orderInfo.setCoupon_id(userCoupon.getId());
-			orderInfo.setCoupon_price(couponPrice);
-			userCoupon.setCoupon_status(4);//支付中
-			List<UserCouponVo> userCoupons = apiUserCouponMapper.querySubUserCoupons(userCoupon.getId());
-			if(!CollectionUtils.isEmpty(userCoupons)){
-				for(UserCouponVo coupon : userCoupons){
-					coupon.setCoupon_status(4);
-					apiUserCouponMapper.updateUserOrderCoupon(coupon);
-				}
-			}
-			apiUserCouponMapper.updateUserOrderCoupon(userCoupon);
-		}
+	
 		// 减去其它支付的金额后，要实际支付的金额
-		BigDecimal actualPrice = orderTotalPrice.subtract(couponPrice);
+//		BigDecimal actualPrice = orderTotalPrice.subtract(couponPrice);
 		orderInfo.setAdd_time(new Date());
 		orderInfo.setGoods_price(goodsTotalPrice);
 		orderInfo.setOrder_price(orderTotalPrice);
-		orderInfo.setActual_price(actualPrice);
+//		orderInfo.setActual_price(actualPrice);
 		/*
 		 * 0 订单创建成功等待付款， 101订单已取消， 102订单已删除 201订单已付款，等待发货 300订单已发货， 301用户确认收货
 		 * 401 没有发货，退款 402 已收货，退款退货
@@ -342,11 +300,7 @@ public class ApiOrderService {
 		orderInfoMap.put("orderInfo", orderInfo);
 		//
 		resultObj.put("data", orderInfoMap);
-		// 优惠券标记已用
-		if (userCoupon != null && userCoupon.getCoupon_status() == 1) {
-			userCoupon.setCoupon_status(4);// 支付中
-			apiUserCouponMapper.updateUserOrderCoupon(userCoupon);
-		}
+		
 		// 创建第三方订单
 		JdOrderVo jdOrderVo = new JdOrderVo();
 		jdOrderVo.setPidNums(pidNums);
@@ -369,28 +323,13 @@ public class ApiOrderService {
 		List<OrderVo> orderVos = apiOrderMapper.checkOrderValid();
 		if (!CollectionUtils.isEmpty(orderVos)) {
 			for (OrderVo order : orderVos) {
-				UserCouponVo userCouponVo = apiUserCouponMapper.queryObject(order.getCoupon_id());
-				BigDecimal amount = BigDecimal.ZERO;
 				QzUserAccountVo userAmountVo = qzUserAccountMapper.queruUserAccountInfo(order.getUser_id());
 				if (userAmountVo != null) {
-					amount = userAmountVo.getAmount();
+					
 				}
 				// 如果当前日期减掉订单创建时间大于一天则回滚平台币
 				if (System.currentTimeMillis() - order.getAdd_time().getTime() > 24 * 60 * 60 * 1000) {
 					logger.info("【定时查询订单有效性】订单标号:" + order.getId() + "" + "订单创建时间:" + order.getAdd_time());
-					if (userCouponVo != null) {
-						userCouponVo.setCoupon_status(3);// 作废
-						apiUserCouponMapper.update(userCouponVo);
-						apiUpdateUserCouponPriceUtils.saveTranInfoRecord(order.getUser_id(), "1", "2", userCouponVo.getCoupon_price(),
-								userCouponVo.getCoupon_price(), "【订单失效定时任务】原优惠券作废");
-						amount = amount.add(userCouponVo.getCoupon_price());
-					}
-					if (userAmountVo != null && userCouponVo != null) {
-						userAmountVo.setAmount(amount);
-						qzUserAccountMapper.updateUserAccount(userAmountVo);
-						apiUpdateUserCouponPriceUtils.saveTranInfoRecord(order.getUser_id(), "2", "1", userCouponVo.getCoupon_price(),
-								userAmountVo.getAmount(), "【订单失效定时任务】原优惠券金额回滚平台币中");
-					}
 					order.setOrder_status(103);// 订单失效
 					apiOrderMapper.update(order);
 				}
@@ -420,6 +359,6 @@ public class ApiOrderService {
 			obj.put("data", data);
 		return obj;
 	}
-
+	
 
 }

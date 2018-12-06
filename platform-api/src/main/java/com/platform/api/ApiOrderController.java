@@ -70,8 +70,6 @@ public class ApiOrderController extends ApiBaseAction {
     @Autowired
     private ApiOrderMapper apiOrderMapper;
     @Autowired
-    private ApiTranInfoRecordMapper apiTranInfoRecordMapper;
-    @Autowired
     private JdOrderService JdOrderService;
     @Autowired
     private ApiUpdateUserCouponPriceUtils apiUpdateUserCouponPriceUtils;
@@ -257,35 +255,14 @@ public class ApiOrderController extends ApiBaseAction {
                     orderService.update(orderVo);
                     //取消京东订单
                     JdOrderService.cancelByOrderKey(orderVo);
-                    
-//                    UserCouponVo userCoupon=  apiUserCouponMapper.queryObject(orderVo.getCoupon_id());
-//                    userCoupon.setCoupon_status(3);
-//                    apiUserCouponMapper.update(userCoupon);
-//                    saveTranInfoRecord(orderVo.getUser_id(), "1", "2", userCoupon.getCoupon_price(), BigDecimal.ZERO, "取消订单，原优惠券作废");
-//                    userAmountVo.setAmount(userAmountVo.getAmount().add(userCoupon.getCoupon_price()));
-//                    qzUserAccountMapper.update(userAmountVo);
-//                    saveTranInfoRecord(orderVo.getUser_id(), "2", "1", userCoupon.getCoupon_price(), userAmountVo.getAmount(), "取消订单，原优惠券回滚到平台币");
-//                 
                     return toResponsMsgSuccess("取消成功");
                     
                 } else {
                     return toResponsObject(400, "取消成失败", "");
                 }
             } else {
-                   orderVo.setOrder_status(101);
-                   orderService.update(orderVo);
-                   if(userAmountVo != null){
-                	   UserCouponVo userCoupon=  apiUserCouponMapper.queryObject(orderVo.getCoupon_id());
-                	   if (userCoupon != null) {
-                		   userCoupon.setCoupon_status(3);
-                		   apiUserCouponMapper.update(userCoupon);
-                		   apiUpdateUserCouponPriceUtils.saveTranInfoRecord(orderVo.getUser_id(), "1", "2", userCoupon.getCoupon_price(), userCoupon.getCoupon_price(), "【取消订单】原优惠券作废");
-                		   userAmountVo.setAmount(userAmountVo.getAmount().add(userCoupon.getCoupon_price()));
-                		   qzUserAccountMapper.updateUserAccount(userAmountVo);
-                		   apiUpdateUserCouponPriceUtils.saveTranInfoRecord(orderVo.getUser_id(), "2", "1", userCoupon.getCoupon_price(), userAmountVo.getAmount(), "【取消订单】原优惠券回滚到平台币");
-                	   }
-                   }
-          
+                orderVo.setOrder_status(101);
+                orderService.update(orderVo);
                 //取消京东订单
                 JdOrderService.cancelByOrderKey(orderVo);
                 return toResponsSuccess("取消成功");

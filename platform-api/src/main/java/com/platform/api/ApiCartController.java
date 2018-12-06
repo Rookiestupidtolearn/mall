@@ -29,6 +29,7 @@ import com.platform.entity.CouponVo;
 import com.platform.entity.GoodsSpecificationVo;
 import com.platform.entity.GoodsVo;
 import com.platform.entity.ProductVo;
+import com.platform.entity.QzUserAccountVo;
 import com.platform.entity.UserVo;
 import com.platform.service.ApiAddressService;
 import com.platform.service.ApiCartService;
@@ -65,11 +66,7 @@ public class ApiCartController extends ApiBaseAction {
     private ApiAddressService addressService;
     @Autowired
     private ApiCouponService apiCouponService;
-    @Autowired
-    private  ApiUserCouponMapper apiUserCouponMapper;
     
-    @Autowired
-    private ApiUpdateUserCouponPriceUtils apiUpdateUserCouponPriceUtils;
     @Autowired
     private ApiUserService userService;
 	private Logger logger = LoggerFactory.getLogger(getClass());
@@ -458,7 +455,7 @@ public class ApiCartController extends ApiBaseAction {
      */
     @ApiOperation(value = "订单提交前的检验和填写相关订单信息")
     @PostMapping("checkout")
-    public Object checkout(@LoginUser UserVo loginUser, Integer couponId, @RequestParam(defaultValue = "cart") String type) {
+    public Object checkout(@LoginUser UserVo loginUser, Integer addressId,Integer couponId, @RequestParam(defaultValue = "cart") String type) {
         Map<String, Object> resultObj = new HashMap();
         //根据收货地址计算运费
         
@@ -523,12 +520,25 @@ public class ApiCartController extends ApiBaseAction {
         		}
         	}
         }
-        
+        //平台币总额
+        BigDecimal userAmount = cartService.queryUserAccountAmount(loginUser.getUserId()); 
+        //购物车勾选商品 总额
+        BigDecimal disCountAmount = cartService.queryUserDisCountAmount(checkedGoodsList);
+        if(userAmount.compareTo(disCountAmount) < 0){
+        	disCountAmount = BigDecimal.ZERO;
+        }
         //订单的总价
         BigDecimal orderTotalPrice = goodsTotalPrice.add(freightPrice);
-        BigDecimal actualPrice = orderTotalPrice.subtract(couponPrice);  //减去其它支付的金额后，要实际支付的金额
+        BigDecimal actualPrice = orderTotalPrice.subtract(couponPrice).subtract(disCountAmount);  //减去其它支付的金额后，要实际支付的金额
+        
+        //校验商品是否有库存,是否下架
+        JSONObject resObj = cartService.queryJdGoodsStatus(checkedGoodsList,addressId);
+        
+        resultObj.put("unSaleCarts", resObj.get("unSaleCarts"));//下架商品
+        resultObj.put("unStoreCarts", resObj.get("unStoreCarts"));//无库存商品
+        resultObj.put("disCountAmount", disCountAmount);
+        resultObj.put("userAmount", userAmount);
         resultObj.put("freightPrice", freightPrice);
-
         resultObj.put("couponPrice", couponPrice);
         resultObj.put("checkedGoodsList", checkedGoodsList);
         resultObj.put("goodsTotalPrice", goodsTotalPrice);
@@ -569,4 +579,5 @@ public class ApiCartController extends ApiBaseAction {
             }
         return toResponsSuccess(couponVos);
     }
+    
 }
