@@ -34,11 +34,22 @@ public class YeepayDirectRefundRequestEntity implements Serializable {
      */
     private String currency;
 
+
     /**
      * 退款说明
      */
 
     private String cause;
+
+    /**
+     *
+     */
+    private String  error_code;
+    /**
+     * 错误信息
+     */
+    private String error;
+
 
     /**
      * 签名信息
@@ -101,4 +112,21 @@ public class YeepayDirectRefundRequestEntity implements Serializable {
     public void setSign(String sign) {
         this.sign = sign;
     }
+
+    public String getError_code() {
+        return error_code;
+    }
+
+    public void setError_code(String error_code) {
+        this.error_code = error_code;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
+    }
+
 }
