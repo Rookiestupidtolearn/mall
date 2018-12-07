@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 public class YeepayRefundsingleResponseEntity implements Serializable {
 
-    
+
     /**
      * 商户编号
      */
