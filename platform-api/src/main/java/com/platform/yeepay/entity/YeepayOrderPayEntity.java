@@ -1,5 +1,5 @@
 package com.platform.yeepay.entity;
 
-public class YeepayOrderPayEntity {
+public class    YeepayOrderPayEntity {
 
 }
