@@ -3,7 +3,7 @@
  			<!--公用头部-->
   		<!--<headbar :headFont = "headFont"></headbar>-->
   	
-  	<div class="">
+  	<div class="" v-if="footprintList.length >0">
 	    <div class="day-item" v-for="item in footprintList" >
 	      <div class="day-hd">{{item[0].add_time}}</div>
 	      <div class="day-list">
@@ -17,6 +17,9 @@
 	        </router-link>
 	      </div>
 	    </div>
+    </div>
+    <div v-else class="noData">
+	   	没有更多数据了
     </div>
   </div>
 </template>
@@ -50,6 +53,11 @@ name: 'footprint',
 
  <!--Add "scoped" attribute to limit CSS to this component only--> 
 <style scoped>
+.noData{
+	font-size:.29rem;
+	text-align: center;
+	margin-top:.5rem;
+}
 .footprint{
    height: auto;
   overflow: hidden;

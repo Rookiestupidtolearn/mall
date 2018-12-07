@@ -68,12 +68,10 @@
 		        <span class="title">大家都在看</span>
 		      </div>
 		      <div class="b">
-		        <div class="item" v-for="item in relatedGoods" >
-		          <router-link :to="'/pages/goods/goods?id='+item.id">
+		        <div class="item" v-for="item in relatedGoods" @click="detailHref('/pages/goods/goods?id='+item.id)">
 		            <img class="img" :src="item.list_pic_url" background-size="cover"/>
 		            <p class="name">{{item.name}}</p>
 		            <p class="price">￥{{item.market_price}}</p>
-		          </router-link>
 		        </div>
 		      </div>
 		    </div>
@@ -121,10 +119,6 @@
 			  <button :class="undercarriage ? 'disabled' : 'r'" v-if="undercarriage">{{undercarriName}}</button>
 			  <button :class="undercarriage ? 'disabled' : 'r'" v-else @click="addToCart">{{undercarriName}}</button>
 			</div>
-			<!--智齿客服-->
-			<!--<div>
-			    <button id="btn" class="zhiCustomBtn" >欢迎咨询</button>
-			</div>-->
   </div>
 </template>
 
@@ -165,7 +159,7 @@
 	  		var that = this;
 	  		this.idm = this.$route.query.id;
 	  		
-			document.documentElement.scrollTop =0  //进页面从最上面浏览
+			window.scrollTo(0,0);  
 	  		
 	  		//获取购物车数量
 	  		that.$http({
@@ -287,6 +281,13 @@
 					
 
 			}
+		},
+		detailHref(e){
+			console.log(e);
+			this.$router.push(e);
+			window.location.reload();
+			window.scrollTo(0,0);  
+			
 		},
 	  	cutNumber(){
       		this.number = (this.number - 1 > 1) ? this.number - 1 : 1

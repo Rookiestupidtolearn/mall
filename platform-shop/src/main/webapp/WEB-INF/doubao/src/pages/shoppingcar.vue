@@ -115,7 +115,7 @@ export default {
 			
 		  that.$http({
 	        method: 'post',
-	        url: that.$url+'cart/delete',
+	        url: that.$url+'cart/delete.options',
 	        data:{productIds: productIds.join(',')}
         }).then(function (res) {
         		var res = res.data;
@@ -191,7 +191,7 @@ export default {
 			    if (!this.isEditCart) {
 			      that.$http({
 			        method: 'post',
-			        url: that.$url+'cart/checked',
+			        url: that.$url+'cart/checked.options',
 			        data:{ 
 				        	productIds: that.cartGoods[itemIndex].product_id, 
 				        	isChecked: that.cartGoods[itemIndex].checked ? 0 : 1 
@@ -273,7 +273,7 @@ export default {
 	  		let that = this;
 		    that.$http({
 		    	 method: 'post',
-        	url: that.$url+'cart/update',
+        	url: that.$url+'cart/update.options',
 		      data:{
 		      	productId: productId,
 			      goodsId: goodsId,

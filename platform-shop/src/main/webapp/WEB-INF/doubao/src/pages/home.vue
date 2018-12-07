@@ -111,7 +111,7 @@ export default {
  },
  	
  methods:{
-	 	andriod(e){
+	 	andriod(e){   //与andriod和ios交互
 				var hrefD = window.location.href;
 				if(hrefD.indexOf('device')>-1){
 	    		var device = hrefD.split('?')[1].split('=')[1];
