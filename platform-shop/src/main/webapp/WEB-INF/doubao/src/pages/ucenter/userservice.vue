@@ -5,10 +5,10 @@
    			<div class="left">帮助中心</div>
    			<div class="right">></div>
 		 </router-link>
-		 <router-link class="myorder" to="" tag="div">
+		 <div class="myorder" @click="locationHref" >
    			<div class="left">在线客服</div>
    			<div class="right">></div>
-		 </router-link>
+		 </div>
    		<router-link to="/pages/ucenter/feedback" class="myorder" tag="div">
 			<div class="left">信息反馈</div>
 			<div class="right"  to="/pages/ucenter/order">></div>
@@ -16,7 +16,21 @@
    </div>
   </div>
 </template>
-
+<script>
+	export default {
+	name: 'userservice',
+	//components:{headbar},
+	  data () {
+	    return {
+	    }
+	  },
+	  methods:{
+	  	locationHref(){
+	  		window.location.href='https://www.sobot.com/chat/pc/index.html?sysNum=e5ef8967b4114644a4c290bf0729f959';
+	  	}
+	  }
+	}
+</script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 	.order{

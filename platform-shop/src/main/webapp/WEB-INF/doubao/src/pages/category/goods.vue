@@ -9,11 +9,11 @@
 			  	<img :src="item.img_url"/>
 			  </mt-swipe-item>
 			</mt-swipe>
-			<div class="service-policy">
+			<!--<div class="service-policy">
 		  		<span class="item">30天无忧退货</span>
 		  		<span class="item">48小时快速退款</span>
 		  		<span class="item">免邮费</span>
-		  	</div>
+		  	</div>-->
 		  	<div class="goods-info">
 		     <div class="c">
 		        <p class="name">{{goods.name}}</p>

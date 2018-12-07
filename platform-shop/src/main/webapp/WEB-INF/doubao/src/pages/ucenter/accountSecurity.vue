@@ -9,7 +9,7 @@
 		    <div style="overflow: hidden;">
 		      <span class='col5e5e5e' v-if="accountSecurity.nickname" :data-c="accountSecurity.nickname">昵称:{{accountSecurity.nickname}}</span>
 		      <span class='col5e5e5e' v-else></span>
-		      <img  class="image" v-if="accountSecurity.avata" :src="accountSecurity.avatar"/>
+		      <img  class="image" v-if="accountSecurity.avatar" :src="accountSecurity.avatar"/>
 		      <img  class="image" v-else src="https://platform-wxmall.oss-cn-beijing.aliyuncs.com/upload/20180727/150547696d798c.png"/>
 		    </div>
 		  </div>

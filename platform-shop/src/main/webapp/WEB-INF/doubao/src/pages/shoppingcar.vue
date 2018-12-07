@@ -3,11 +3,11 @@
   	<!--公用头部-->
   	<!--<headbar :headFont = "headFont"></headbar>-->
   	
-  	<div class="service-policy ">
+  	<!--<div class="service-policy ">
   		<span class="item">30天无忧退货</span>
   		<span class="item">48小时快速退款</span>
   		<span class="item">免邮费</span>
-  	</div>
+  	</div>-->
   	<div class="no-cart" v-if="cartGoods.length <= 0">
     <div class="c">
       <div class="title-box">购物车空空如也～</div>
