@@ -60,4 +60,5 @@ public class YeepayRefundcleardataRequestEntity implements Serializable{
     public void setSign(String sign) {
         this.sign = sign;
     }
+
 }
