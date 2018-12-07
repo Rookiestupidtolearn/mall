@@ -20,7 +20,7 @@ import com.alibaba.fastjson.TypeReference;
 public class PaymobileUtils {
 	
 	//配置文件路径
-	public static final String CONFIG_FILE_PATH			= "com/yeepay/paymobile/resources/merchantInfo";
+	public static final String CONFIG_FILE_PATH			= "yeepay";
 	
 	public static final String PAYAPI_NAME				= "PayApi";
 	public static final String QUERYORDERAPI_NAME		= "QueryOrderApi";
