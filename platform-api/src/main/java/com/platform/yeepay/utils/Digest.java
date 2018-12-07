@@ -1,4 +1,4 @@
-package com.platform.yibao.utils;
+package com.platform.yeepay.utils;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;

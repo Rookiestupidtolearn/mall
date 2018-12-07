@@ -1,7 +1,8 @@
-package com.platform.yibao.servlet;
+package com.platform.yeepay.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLEncoder;
 import java.util.TreeMap;
 
 import javax.servlet.RequestDispatcher;
@@ -10,18 +11,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.platform.yibao.utils.PaymobileUtils;
+import com.platform.yeepay.utils.PaymobileUtils;
 
 /**
- * 退款查询接口 
+ * 订单查询接口 
  * @author: yingjie.wang    
- * @since : 2015-10-10 15:45
+ * @since : 2015-10-09 13:49
  */
 
-public class QueryRefundApiServlet extends HttpServlet {
+public class QueryOrderApiServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	public QueryRefundApiServlet() {
+	public QueryOrderApiServlet() {
 		super();
 	}
 
@@ -36,11 +37,10 @@ public class QueryRefundApiServlet extends HttpServlet {
 		response.setContentType("text/html");
 		PrintWriter out	= response.getWriter();
 
-		String orderid        = formatStr(request.getParameter("orderid"));
+		String orderid      = formatStr(request.getParameter("orderid"));
 
-		//使用TreeMap
 		TreeMap<String, Object> treeMap	= new TreeMap<String, Object>();
-		treeMap.put("orderid", 		orderid);
+		treeMap.put("orderid", 	orderid);
 
 		//第一步 生成AESkey及encryptkey
 		String AESKey		= PaymobileUtils.buildAESKey();
@@ -49,11 +49,15 @@ public class QueryRefundApiServlet extends HttpServlet {
 		//第二步 生成data
 		String data			= PaymobileUtils.buildData(treeMap, AESKey);
 
-		//第三步 http请求，退款查询接口的请求方式为POST
+		//第三步 http请求，订单查询接口的请求方式为GET
 		String merchantaccount				= PaymobileUtils.getMerchantaccount();
-		String url							= PaymobileUtils.getRequestUrl(PaymobileUtils.QUERYREFUNDAPI_NAME);
+		String url							= PaymobileUtils.getRequestUrl(PaymobileUtils.QUERYORDERAPI_NAME);
 		TreeMap<String, String> responseMap	= PaymobileUtils.httpGet(url, merchantaccount, data, encryptkey);
 
+		System.out.println("请求串：" + url + "?merchantaccount=" + merchantaccount 
+							   				+ "&data=" + URLEncoder.encode(data, "utf-8") 
+							 				+ "&encryptkey=" + URLEncoder.encode(encryptkey, "utf-8"));
+		
 		//第四步 判断请求是否成功
 		if(responseMap.containsKey("error_code")) {
 			out.println(responseMap);
@@ -61,8 +65,8 @@ public class QueryRefundApiServlet extends HttpServlet {
 		}
 
 		//第五步 请求成功，则获取data、encryptkey，并将其解密
-		String data_response						= responseMap.get("data");
-		String encryptkey_response					= responseMap.get("encryptkey");
+		String data_response					= responseMap.get("data");
+		String encryptkey_response				= responseMap.get("encryptkey");
 		TreeMap<String, String> responseDataMap	= PaymobileUtils.decrypt(data_response, encryptkey_response);
 
 		System.out.println("请求返回的明文参数：" + responseDataMap);
@@ -70,7 +74,7 @@ public class QueryRefundApiServlet extends HttpServlet {
 		//第六步 sign验签
 		if(!PaymobileUtils.checkSign(responseDataMap)) {
 			out.println("sign 验签失败！");
-			out.println("<br><br>responseMap:" + responseDataMap);
+			out.println("<br><br>responseDataMap:" + responseDataMap);
 			return;
 		}
 
@@ -82,7 +86,7 @@ public class QueryRefundApiServlet extends HttpServlet {
 
 		//第八步 进行业务处理
 		request.setAttribute("responseDataMap", responseDataMap);
-		RequestDispatcher view	= request.getRequestDispatcher("jsp/45queryRefundApiResponse.jsp");
+		RequestDispatcher view	= request.getRequestDispatcher("jsp/42queryOrderApiResponse.jsp");
 		view.forward(request, response);
 	}
 

@@ -1,4 +1,4 @@
-package com.platform.yibao.utils;
+package com.platform.yeepay.utils;
 
 import java.lang.reflect.Array;
 import java.util.Collection;

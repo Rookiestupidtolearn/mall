@@ -1,4 +1,4 @@
-package com.platform.yibao.utils;
+package com.platform.yeepay.utils;
 
 public class ConfigureEncryptAndDecrypt {
 	public static final String CHAR_ENCODING = "UTF-8";

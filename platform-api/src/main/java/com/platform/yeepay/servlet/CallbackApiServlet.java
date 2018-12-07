@@ -1,4 +1,4 @@
-package com.platform.yibao.servlet;
+package com.platform.yeepay.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.platform.yibao.utils.PaymobileUtils;
+import com.platform.yeepay.utils.PaymobileUtils;
 
 /**
  * 回调 

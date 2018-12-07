@@ -1,8 +1,7 @@
-package com.platform.yibao.servlet;
+package com.platform.yeepay.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URLEncoder;
 import java.util.TreeMap;
 
 import javax.servlet.RequestDispatcher;
@@ -11,18 +10,19 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.platform.yibao.utils.PaymobileUtils;
+import com.platform.yeepay.utils.ConvertUtils;
+import com.platform.yeepay.utils.PaymobileUtils;
 
 /**
- * 订单查询接口 
+ * 退款接口 
  * @author: yingjie.wang    
- * @since : 2015-10-09 13:49
+ * @since : 2015-10-10 14:33
  */
 
-public class QueryOrderApiServlet extends HttpServlet {
+public class RefundApiServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	public QueryOrderApiServlet() {
+	public RefundApiServlet() {
 		super();
 	}
 
@@ -37,10 +37,33 @@ public class QueryOrderApiServlet extends HttpServlet {
 		response.setContentType("text/html");
 		PrintWriter out	= response.getWriter();
 
-		String orderid      = formatStr(request.getParameter("orderid"));
+		String orderid          = formatStr(request.getParameter("orderid"));
+		String origyborderid	= formatStr(request.getParameter("origyborderid"));
+		String cause			= formatStr(request.getParameter("cause"));
 
+		int amount		= -1;
+		int currency	= -1;
+
+		//transtime, amount, identitytype, terminaltype是必传参数
+		if(request.getParameter("amount") == null) {
+			out.println("[amount=" + amount + "] must be entered!");
+			return;
+		}
+		if(request.getParameter("currency") == null) {
+			out.println("[currency=" + currency + "] must be entered!");
+			return;
+		}
+		
+		amount			= ConvertUtils.objectToInt(request.getParameter("amount"));
+		currency		= ConvertUtils.objectToInt(request.getParameter("currency"));
+
+		//使用TreeMap
 		TreeMap<String, Object> treeMap	= new TreeMap<String, Object>();
-		treeMap.put("orderid", 	orderid);
+		treeMap.put("orderid", 		orderid);
+		treeMap.put("origyborderid",origyborderid);
+		treeMap.put("amount", 		amount);
+		treeMap.put("currency", 	currency);
+		treeMap.put("cause", 		cause);
 
 		//第一步 生成AESkey及encryptkey
 		String AESKey		= PaymobileUtils.buildAESKey();
@@ -49,15 +72,11 @@ public class QueryOrderApiServlet extends HttpServlet {
 		//第二步 生成data
 		String data			= PaymobileUtils.buildData(treeMap, AESKey);
 
-		//第三步 http请求，订单查询接口的请求方式为GET
+		//第三步 http请求，退款接口的请求方式为POST
 		String merchantaccount				= PaymobileUtils.getMerchantaccount();
-		String url							= PaymobileUtils.getRequestUrl(PaymobileUtils.QUERYORDERAPI_NAME);
-		TreeMap<String, String> responseMap	= PaymobileUtils.httpGet(url, merchantaccount, data, encryptkey);
+		String url							= PaymobileUtils.getRequestUrl(PaymobileUtils.REFUNDAPI_NAME);
+		TreeMap<String, String> responseMap	= PaymobileUtils.httpPost(url, merchantaccount, data, encryptkey);
 
-		System.out.println("请求串：" + url + "?merchantaccount=" + merchantaccount 
-							   				+ "&data=" + URLEncoder.encode(data, "utf-8") 
-							 				+ "&encryptkey=" + URLEncoder.encode(encryptkey, "utf-8"));
-		
 		//第四步 判断请求是否成功
 		if(responseMap.containsKey("error_code")) {
 			out.println(responseMap);
@@ -65,8 +84,8 @@ public class QueryOrderApiServlet extends HttpServlet {
 		}
 
 		//第五步 请求成功，则获取data、encryptkey，并将其解密
-		String data_response					= responseMap.get("data");
-		String encryptkey_response				= responseMap.get("encryptkey");
+		String data_response						= responseMap.get("data");
+		String encryptkey_response					= responseMap.get("encryptkey");
 		TreeMap<String, String> responseDataMap	= PaymobileUtils.decrypt(data_response, encryptkey_response);
 
 		System.out.println("请求返回的明文参数：" + responseDataMap);
@@ -74,7 +93,7 @@ public class QueryOrderApiServlet extends HttpServlet {
 		//第六步 sign验签
 		if(!PaymobileUtils.checkSign(responseDataMap)) {
 			out.println("sign 验签失败！");
-			out.println("<br><br>responseDataMap:" + responseDataMap);
+			out.println("<br><br>responseMap:" + responseDataMap);
 			return;
 		}
 
@@ -86,7 +105,7 @@ public class QueryOrderApiServlet extends HttpServlet {
 
 		//第八步 进行业务处理
 		request.setAttribute("responseDataMap", responseDataMap);
-		RequestDispatcher view	= request.getRequestDispatcher("jsp/42queryOrderApiResponse.jsp");
+		RequestDispatcher view	= request.getRequestDispatcher("jsp/44refundApiResponse.jsp");
 		view.forward(request, response);
 	}
 

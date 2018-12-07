@@ -1,4 +1,4 @@
-package com.platform.yibao.servlet;
+package com.platform.yeepay.servlet;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -27,7 +27,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
-import com.platform.yibao.utils.PaymobileUtils;
+import com.platform.yeepay.utils.PaymobileUtils;
 
 /**
  * 支付清算文件下载接口
