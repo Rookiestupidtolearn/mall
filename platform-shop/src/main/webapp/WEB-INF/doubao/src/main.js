@@ -22,10 +22,11 @@ Vue.config.productionTip = false
 //接口配置
 //Vue.prototype.$url= '/platform/api/'; //本地代理
 Vue.prototype.$url= 'http://192.168.124.50:6101/platform/api/'; //内网
-//Vue.prototype.$url= 'http://106.75.99.126:6302/platform/api/'; //外网
+//Vue.prototype.$url= 'http://117.50.60.55:6201/platform/api/'; //外网涛哥1206
 //Vue.prototype.$url= 'http://192.168.1.244:8093/platform/api/'; //外网吴明龙
 //Vue.prototype.$url= 'http://106.75.99.126:6302/platform/api/'; //外网(打正式包需要替换)
 //Vue.prototype.$url= 'http://10.10.120.123:6101/platform/api/'; //志强给的
+
 // 添加请求拦截器
 axios.interceptors.request.use(function (config) {
     // 在发送请求之前做些什么
@@ -44,6 +45,7 @@ axios.interceptors.request.use(function (config) {
 axios.interceptors.response.use(function (response) {
     // 对响应数据做点什么
     /*登录公用方法*/
+   console.log(response);
    if(response.data.errmsg == "请先登录" || response.data.errno ==401 ){
    				cookie.delCookie('userId');
     			cookie.delCookie('userInfo');

@@ -16,14 +16,14 @@
 		</div>
 		<div class="h">
 			<p class="txt">人气推荐</p>
-			<router-link class="itemhot" v-for="item in hotGoods" :to="'/pages/goods/goods?id='+item.id">
+			<div class="itemhot" v-for="item in hotGoods"  @click="andriod('/pages/goods/goods?id='+item.id)">
 				<img :src="item.list_pic_url"/>
 				<div class="right">
 					<p class="name">{{item.name}}</p>
 					<!--<p class="goods_brief">{{item.goods_brief}}</p>-->
 					<p class="market_price">￥{{item.market_price}}</p>
 				</div>
-			</router-link>
+			</div>
 		</div>
 		<!--<div class="category" v-for="item in category">
 			<p class="instr">{{item.name}}</p>
@@ -40,7 +40,7 @@
 			</div>
 		</div>-->
 		<!--公用底部导航-->
-  	<tabbar :selected="selected" :tabs='tabs'></tabbar> 
+  	<tabbar :selected="selected" :tabs='tabs' :style="{'display':[showAN ? 'none' : 'block']}"></tabbar> 
   </div>
 </template>
 
@@ -53,6 +53,7 @@ export default {
   name: 'home',
   data () {
     return {
+    	showAN:'',
     	value:'',
       banner:[],
       channel:[],
@@ -66,7 +67,7 @@ export default {
   },
   mounted(){
   		let that = this;    
-  	
+//		window.productDeatil = this.productDeatil
   	/*记录首页页面用户滚动位置*/
   	//banner
   		that.$http({
@@ -92,17 +93,42 @@ export default {
     		Indicator.close();
 		    that.hotGoods = response.data.data.hotGoodsList;
 		  })
-	
-    	//category
-//  	that.$http({
-//      method: 'post',
-//      url:that.$url+ 'index/category'
-//  	}).then(function (response) {
-//		    that.category = response.data.data.categoryList
-//		  })
+    	
+    	var hrefD = window.location.href;
+				if(hrefD.indexOf('device')>-1){
+	    		var device = hrefD.split('?')[1].split('=')[1];
+	    	}
+	//  	http://192.168.124.29:8081/#/?device=andriod;
+//				alert(device);
+	    	if(device == 'android'){
+	    			this.showAN = true;   //是否显示公用底部
+	    	}else if(device == 'ios'){
+	    			this.showAN = true;
+	    	}else{
+	    		this.showAN = false;
+	    	}
+    	
  },
  	
  methods:{
+	 	andriod(e){
+				var hrefD = window.location.href;
+				if(hrefD.indexOf('device')>-1){
+	    		var device = hrefD.split('?')[1].split('=')[1];
+	    	}
+	//  	http://192.168.124.29:8081/#/?device=andriod;
+//				alert(device);
+	    	if(device == 'android'){
+	    			window.android.productDeatil('http://192.168.124.29:8081/#'+e); //调起andriod交互方法(由app发起。浏览器会报错正常)
+	    			return false;
+	    	}else if(device == 'ios'){
+	    			var message = {'url':'http://192.168.124.29:8081/#'+e}
+						window.webkit.messageHandlers.webViewApp.postMessage(message);
+						return false;
+	    	}else{
+	    		this.$router.push(e);
+	    	}
+	 	},
  		searchRoute(){
   		this.$router.push('/pages/ucenter/search');
   		/*清除搜索记录缓存*/
@@ -194,7 +220,7 @@ color:#b4282d;
 		background-color: #fff;
 		border-top:1px solid #d9d9d9;
 		padding:0 .20rem;
-		height:2.64rem;
+		/*height:2.64rem;*/
 		width:7.10rem;
 	}
 	.itemhot img{

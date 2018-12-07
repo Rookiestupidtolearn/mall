@@ -162,14 +162,6 @@
 	    }
 	  },
 	  mounted(){
-	  		//	  	<!--该链接可在智齿客服工作台=>设置=>接入渠道中找到-->
-			let para=document.createElement("script");
-	        para.src = "https://www.sobot.com/chat/frame/js/entrance.js?sysNum=e5ef8967b4114644a4c290bf0729f959";
-	        para.setAttribute("id", "zhichiScript");
-        	para.setAttribute("class", "zhiCustomBtn");
-//      	para.setAttribute("data-args","属性名1=属性值1&属性名2=属性值2");
-	       	this.$refs.input1.appendChild(para);
-
 	  		var that = this;
 	  		this.idm = this.$route.query.id;
 	  		
@@ -220,6 +212,8 @@
 	    		that.minPriceList = res.data.minPriceList;
 //				that.banner = response.data.data.gallery
 
+				that.zhichi(); //智齿客服
+				
 		    	//购物车下架至灰
 		        if (that.undercarriage == '0' || that.undercarriage == '2'){
 		            that.undercarriage = true,
@@ -262,11 +256,38 @@
 		        that.specificationList = _specificationList;
 		        
 	 		 })
+	    	
 	  },
-		destroyed(){
+	destroyed(){
 				window.location.reload();
 		},
 	methods:{
+		zhichi(){
+			let that = this;
+			//	  	<!--该链接可在智齿客服工作台=>设置=>接入渠道中找到--> this指向script了
+			let para=document.createElement("script");
+	        para.src = "https://www.sobot.com/chat/frame/js/entrance.js?sysNum=e5ef8967b4114644a4c290bf0729f959";
+	        para.setAttribute("id", "zhichiScript");
+        	para.setAttribute("class", "zhiCustomBtn");
+	       	this.$refs.input1.appendChild(para);
+			para.onload=function(){
+				//	初始化智齿咨询组件实例
+				var zhiManager = (getzhiSDKInstance());
+				console.log(zhiManager)
+				//再调用load方法
+				zhiManager.on("load", function() {
+				    zhiManager.initBtnDOM();
+				});
+				
+				zhiManager.set('title_info',that.goods.name);   //商品信息的标题（必传）
+				zhiManager.set('url_info',window.location.href);  //商品信息的商品链接地址（必传）
+				zhiManager.set('abstract_info',that.goods.name);  //商品信息的简述内容（选传） 无描述用的标题
+				zhiManager.set('label_info',that.market_price);	  //商品标签例：价格（选传）
+				zhiManager.set('thumbnail_info',that.banner[0].img_url);  //商品的缩略图（选传）
+					
+
+			}
+		},
 	  	cutNumber(){
       		this.number = (this.number - 1 > 1) ? this.number - 1 : 1
 	  	},

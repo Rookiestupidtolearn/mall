@@ -28,7 +28,9 @@ import amountMoney from '@/pages/ucenter/amountMoney'  //资金明细
 import pay from '@/pages/category/pay'  //支付订单
 import register from '@/pages/register/register'  //注册页面
 import ptfwxy from '@/pages/xieyi/ptfwxy'  //平台服务协议
-import namecard from '@/pages/ucenter/namecard'  //
+import namecard from '@/pages/ucenter/namecard'  //认证
+import account from '@/pages/ucenter/account'  //账户中心
+import userservice from '@/pages/ucenter/userservice'  //客户服务
 
 Vue.use(Router)
 
@@ -151,6 +153,14 @@ export default new Router({
       path: '/pages/ucenter/namecard',
       name: 'namecard',
       component: namecard
+    },{
+      path: '/pages/ucenter/account',
+      name: 'account',
+      component: account
+    },{
+      path: '/pages/ucenter/userservice',
+      name: 'userservice',
+      component: userservice
     }
     
   ]
