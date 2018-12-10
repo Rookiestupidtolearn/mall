@@ -341,6 +341,9 @@ public class ApiOrderService {
 		}
 		//创建易宝支付订单
 		Map<String, Object> yeepayMap = yeepayOrderBizService.yeepayOrderSubmmit(orderInfo);
+		if (yeepayMap != null) {
+			resultObj.put("payurl", yeepayMap.get("payurl"));
+		}
 		
 		
 		// 创建第三方订单

@@ -1,9 +1,12 @@
 package com.platform.yeepay.service;
 
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +18,7 @@ import com.platform.yeepay.utils.PaymobileUtils;
 
 @Service
 public class YeepayOrderBizService {
+	private Logger logger = LoggerFactory.getLogger(getClass());
    
 	@Autowired
 	private YeeTradeOrderService yeeTradeOrderService;
@@ -49,27 +53,25 @@ public class YeepayOrderBizService {
 		//使用TreeMap
 		TreeMap<String, Object> treeMap	= new TreeMap<String, Object>();
 		treeMap.put("orderid", 			entity.getYeeOrderNo());
+		treeMap.put("transtime", 		Calendar.getInstance().getTimeInMillis() / 1000 );//带秒的时间戳
+		treeMap.put("amount",1);//以分为单位
+		treeMap.put("currency", 		156); //交易币种
 		treeMap.put("productcatalog", 	"20");//行业类别
 		treeMap.put("productname", 		"一键支付-测试");
-		treeMap.put("identityid", 		entity.getUserId().toString());  //用户id
-		treeMap.put("userip", 			"192.168.0.1");
-		//treeMap.put("paytool", 			"2");
-	//	treeMap.put("directpaytype", 	"1");
-		treeMap.put("terminalid", 		"44-45-53-54-00-00");
-		treeMap.put("terminaltype", 	3);
-//		treeMap.put("userua", 			userua);
-		treeMap.put("transtime", 		Calendar.getInstance().getTimeInMillis() / 1000 );//带秒的时间戳
-		int amount = 1;
-		treeMap.put("amount",1);//以分为单位
-		treeMap.put("identitytype", 	2); //2 代表用户ID
-		
 		treeMap.put("productdesc", 		"测试下");
+		treeMap.put("identitytype", 	2); //2 代表用户ID
+		treeMap.put("identityid", 		entity.getUserId().toString());  //用户id
+		treeMap.put("terminaltype", 	3);
+		treeMap.put("terminalid", 		"44-45-53-54-00-00");
+		treeMap.put("userip", 			"192.168.0.1");
+		treeMap.put("version", 			0);
+	
 ////		treeMap.put("fcallbackurl", 	fcallbackurl);
 		treeMap.put("callbackurl", 		"http://localhost:8090/InstantPay-paymobile/jsp/41payApiRequest.jsp");
 //		treeMap.put("paytypes", 		paytypes);
-		treeMap.put("currency", 		156);
+		
 //		treeMap.put("orderexpdate", 	orderexpdate);
-	//	treeMap.put("version", 			"1");
+	//
 //		treeMap.put("cardno", 			cardno);
 //		treeMap.put("idcardtype", 		idcardtype);
 //		treeMap.put("idcard", 			idcard);
@@ -106,20 +108,24 @@ public class YeepayOrderBizService {
 		String data_response						= responseMap.get("data");
 		String encryptkey_response					= responseMap.get("encryptkey");
 		TreeMap<String, String> responseDataMap	= PaymobileUtils.decrypt(data_response, encryptkey_response);
-
+        //更新数据库信息，把响应信息入库
+		
+		
 		//第六步 sign验签
 		if(!PaymobileUtils.checkSign(responseDataMap)) {
-			System.out.println("sign 验签失败！");
+			logger.error("sign 验签失败！");
 			return null;
 		}
 
 		//第七步 判断请求是否成功
 		if(responseDataMap.containsKey("error_code")) {
-			System.out.println(responseDataMap);
+			logger.error("支付响应未成功返回"+responseDataMap.toString());
 			return null;
 		}
-      
-		return null ;
+		Map<String, Object> resultObj = new HashMap<String, Object>();
+		resultObj.put("payurl", responseDataMap.get("payurl"));
+		
+		return resultObj ;
 
 	}
 
