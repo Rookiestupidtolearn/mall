@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.platform.dao.YeeTradeOrderDao">
+
+    <resultMap type="com.platform.entity.YeeTradeOrderEntity" id="yeeTradeOrderMap">
+        <result property="id" column="id"/>
+        <result property="yeeOrderNo" column="yee_order_no"/>
+        <result property="tradeNo" column="trade_no"/>
+        <result property="userId" column="user_id"/>
+        <result property="payStatus" column="pay_status"/>
+        <result property="payType" column="pay_type"/>
+        <result property="amount" column="amount"/>
+        <result property="requestParam" column="request_param"/>
+        <result property="responseMsg" column="response_msg"/>
+        <result property="isDeleted" column="is_deleted"/>
+    </resultMap>
+
+	<select id="queryObject" resultType="com.platform.entity.YeeTradeOrderEntity">
+		select
+			`id`,
+			`yee_order_no`,
+			`trade_no`,
+			`user_id`,
+			`pay_status`,
+			`pay_type`,
+			`amount`,
+			`request_param`,
+			`response_msg`,
+			`is_deleted`
+		from yee_trade_order
+		where id = #{id}
+	</select>
+
+	<select id="queryList" resultType="com.platform.entity.YeeTradeOrderEntity">
+		select
+    		`id`,
+    		`yee_order_no`,
+    		`trade_no`,
+    		`user_id`,
+    		`pay_status`,
+    		`pay_type`,
+    		`amount`,
+    		`request_param`,
+    		`response_msg`,
+    		`is_deleted`
+		from yee_trade_order
+		WHERE 1=1
+		<if test="name != null and name.trim() != ''">
+			AND name LIKE concat('%',#{name},'%')
+		</if>
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from yee_trade_order
+		WHERE 1=1
+        <if test="name != null and name.trim() != ''">
+            AND name LIKE concat('%',#{name},'%')
+        </if>
+	</select>
+	 
+	<insert id="save" parameterType="com.platform.entity.YeeTradeOrderEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into yee_trade_order(
+			`yee_order_no`,
+			`trade_no`,
+			`user_id`,
+			`pay_status`,
+			`pay_type`,
+			`amount`,
+			`request_param`,
+			`response_msg`,
+			`is_deleted`,
+			`create_time`)
+		values(
+			#{yeeOrderNo},
+			#{tradeNo},
+			#{userId},
+			#{payStatus},
+			#{payType},
+			#{amount},
+			#{requestParam},
+			#{responseMsg},
+			#{isDeleted},
+			#{createTime})
+	</insert>
+	 
+	<update id="update" parameterType="com.platform.entity.YeeTradeOrderEntity">
+		update yee_trade_order 
+		<set>
+			<if test="yeeOrderNo != null">`yee_order_no` = #{yeeOrderNo}, </if>
+			<if test="tradeNo != null">`trade_no` = #{tradeNo}, </if>
+			<if test="userId != null">`user_id` = #{userId}, </if>
+			<if test="payStatus != null">`pay_status` = #{payStatus}, </if>
+			<if test="payType != null">`pay_type` = #{payType}, </if>
+			<if test="amount != null">`amount` = #{amount}, </if>
+			<if test="requestParam != null">`request_param` = #{requestParam}, </if>
+			<if test="responseMsg != null">`response_msg` = #{responseMsg}, </if>
+			<if test="isDeleted != null">`is_deleted` = #{isDeleted}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from yee_trade_order where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from yee_trade_order where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

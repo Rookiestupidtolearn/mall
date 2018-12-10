@@ -25,6 +25,7 @@ public class TokenUtil {
 
 	public static void main(String[] args) {
 		System.out.println(wid);
+		System.out.println(Calendar.getInstance().getTimeInMillis() / 1000);
 	}
 	
 	/**

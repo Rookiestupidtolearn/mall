@@ -1,5 +1,6 @@
 package com.platform.api.yeepay;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -7,6 +8,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.ServletException;
 
 import org.apache.shiro.util.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +50,8 @@ import com.platform.service.ThirdPartyRegionService;
 import com.platform.util.ApiBaseAction;
 import com.platform.utils.GenerateCodeUtil;
 import com.platform.utils.R;
+import com.platform.yeepay.entity.YeepayOrderPayRequestEntity;
+import com.platform.yeepay.service.YeepayOrderBizService;
 import com.platform.youle.constant.Constants.Urls;
 import com.platform.youle.entity.GoodsImagePathVo;
 import com.platform.youle.entity.JdGoodsVo;
@@ -85,7 +90,7 @@ import net.oschina.j2cache.Level2Cache;
 @Api(tags = "测试接口")
 @RestController
 @RequestMapping("/api/yeepay")
-public class ApiTestController extends ApiBaseAction {
+public class ApiTestYeepayController extends ApiBaseAction {
 
 	@Autowired
 	private ApiUserService userService;
@@ -118,7 +123,9 @@ public class ApiTestController extends ApiBaseAction {
 	private ApiGoodsPureInterestRateService apiGoodsPureInterestRateService;
 	@Autowired
 	private ApiJDGoodsService apiJDGoodsService;
-
+	@Autowired
+	private  YeepayOrderBizService  yeepayOrderBizService;
+	
 	// 查询库存默认地址
 	private String DEFAULT_ADDRESS = "1_72_2799";
 
@@ -827,13 +834,12 @@ public class ApiTestController extends ApiBaseAction {
 	@IgnoreAuth
 	@ApiOperation(value = "4.3.1订单支付接口")
 	@PostMapping("payapi_request")
-	public Object payapi_request(String key,String value) {
+	public Object payapi_request(String key,String value) throws ServletException, IOException {
 		String resultObj = "";
-        //手机号
-        Level2Cache level2 = CacheProviderHolder.getLevel2Cache(J2CacheUtils.INVALID_CACHE);
      
-        
-    	level2.put(key, value,86400l);
+		YeepayOrderPayRequestEntity entity =   new YeepayOrderPayRequestEntity();
+		    yeepayOrderBizService.yeepayOrderSubmmit(null);
+		
 		return resultObj;
 	}
 	

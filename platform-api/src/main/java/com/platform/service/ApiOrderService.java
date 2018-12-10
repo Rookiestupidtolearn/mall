@@ -38,6 +38,7 @@ import com.platform.entity.QzUserAccountVo;
 import com.platform.entity.UserCouponVo;
 import com.platform.entity.UserVo;
 import com.platform.utils.GenerateCodeUtil;
+import com.platform.yeepay.service.YeepayOrderBizService;
 
 @Service
 public class ApiOrderService {
@@ -66,6 +67,9 @@ public class ApiOrderService {
 	private JdOrderService jdOrderService;
 	@Autowired
 	private ApiGoodsService apiGoodsService;
+	
+	@Autowired
+	private YeepayOrderBizService yeepayOrderBizService;
 
 	public OrderVo queryObject(Integer id) {
 		return orderDao.queryObject(id);
@@ -233,6 +237,7 @@ public class ApiOrderService {
 		BigDecimal orderTotalPrice = goodsTotalPrice.add(freightPrice);
 
 		OrderVo orderInfo = new OrderVo();
+		orderInfo.setShipping_no(GenerateCodeUtil.buildBizNo());
 		orderInfo.setOrder_sn(GenerateCodeUtil.buildJDBizNo());
 		orderInfo.setUser_id(loginUser.getUserId());
 		// 收货地址和运费
@@ -321,7 +326,7 @@ public class ApiOrderService {
 		}
 
 		// 清空已购买的商品
-		apiCartMapper.deleteByCart(loginUser.getUserId(), 1, 1);
+//		apiCartMapper.deleteByCart(loginUser.getUserId(), 1, 1);
 		resultObj.put("errno", 0);
 		resultObj.put("errmsg", "订单提交成功");
 		//
@@ -334,12 +339,16 @@ public class ApiOrderService {
 			userCoupon.setCoupon_status(4);// 支付中
 			apiUserCouponMapper.updateUserOrderCoupon(userCoupon);
 		}
+		//创建易宝支付订单
+		Map<String, Object> yeepayMap = yeepayOrderBizService.yeepayOrderSubmmit(orderInfo);
+		
+		
 		// 创建第三方订单
-		JdOrderVo jdOrderVo = new JdOrderVo();
-		jdOrderVo.setPidNums(pidNums);
-		Map<String, Object> result = jdOrderService.jdOrderSubbmit(addressVo, orderInfo, jdOrderVo);
-		resultObj.put("errno", result.get("errno"));
-		resultObj.put("errmsg", result.get("errmsg"));
+//		JdOrderVo jdOrderVo = new JdOrderVo();
+//		jdOrderVo.setPidNums(pidNums);
+//		Map<String, Object> result = jdOrderService.jdOrderSubbmit(addressVo, orderInfo, jdOrderVo);
+//		resultObj.put("errno", result.get("errno"));
+//		resultObj.put("errmsg", result.get("errmsg"));
 
 		//
 		return resultObj;
