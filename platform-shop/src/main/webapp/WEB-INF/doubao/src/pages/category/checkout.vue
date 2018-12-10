@@ -181,7 +181,7 @@
 			    }
 			    that.$http({
 	    		method: 'post',
-		        url:that.$url+ 'order/submit',
+		        url:that.$url+ 'order/submit.options',
 		        headers: {
 						'Content-Type':'application/json'
 					},
@@ -191,18 +191,10 @@
 		        	type: this.buyType 
 		        }
 		        }).then(function (res) {
-		        	console.log(res);
+		        	var res = res.data;
 			      if (res.errno === 0) {
 			        let orderId = res.data.orderInfo.id;
-			        pay.payOrder(parseInt(orderId)).then(res => {
-			          wx.redirectTo({
-			            url: '/pages/category/payResult?status=1&orderId=' + orderId
-			          });
-			        }).catch(res => {
-			          wx.redirectTo({
-			            url: '/pages/category/payResult?status=0&orderId=' + orderId
-			          });
-			        });
+			        window.location.href = res.payurl;
 			      } else {
 			       		Toast('下单失败');
 			      }

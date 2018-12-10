@@ -450,14 +450,6 @@ export default {
     position:relative;
 }
 
-.cart-div .item .img{
-    float: left;
-    height:1.25rem;
-    width: 1.25rem;
-    background: #f4f4f4;
-    margin: 0 .18rem 0 0;
-}
-
 .midHover{
   float:left;
   height:1.25rem;
@@ -484,7 +476,8 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 4.5rem;
+    width: 4.5rem;
+    text-align: left;
     display: inline-block;
 }
 

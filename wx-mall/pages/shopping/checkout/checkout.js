@@ -6,6 +6,7 @@ var app = getApp();
 
 Page({
   data: {
+    payorder:'',
     checkedGoodsList: [],
     checkedAddress: {},
     checkedCoupon: [],
@@ -164,15 +165,14 @@ Page({
     util.request(api.OrderSubmit, { addressId: this.data.addressId, couponId: this.data.couponId, type: this.data.buyType },'post','application/json').then(res => {
       if (res.errno === 0) {
         const orderId = res.data.orderInfo.id;
-        pay.payOrder(parseInt(orderId)).then(res => {
-          wx.redirectTo({
-            url: '/pages/payResult/payResult?status=1&orderId=' + orderId
-          });
-        }).catch(res => {
-          wx.redirectTo({
-            url: '/pages/payResult/payResult?status=0&orderId=' + orderId
-          });
-        });
+        wx.setStorage({
+          key: "keyOrder",
+          data: res.payurl
+        })
+        this.payorder = res.payurl;
+        wx.navigateTo({
+          url: '/pages/webView/webView'
+        })
       } else {
         util.showErrorToast('下单失败');
       }
