@@ -17,6 +17,10 @@
         <result property="msg" column="msg"/>
         <result property="errorCode" column="error_code"/>
         <result property="errorMsg" column="error_msg"/>
+        <result property="cardType" column="card_type"/>
+        <result property="lastno" column="lastno"/>
+        <result property="bank" column="bank"/>
+        <result property="bankCode" column="bank_code"/>
         <result property="memo" column="memo"/>
         <result property="createTime" column="create_time"/>
     </resultMap>
@@ -36,6 +40,10 @@
 			`msg`,
 			`error_code`,
 			`error_msg`,
+			`card_type`,
+			`lastno`,
+			`bank`,
+			`bank_code`,
 			`memo`,
 			`create_time`
 		from yee_trade_order
@@ -57,12 +65,19 @@
     		`msg`,
     		`error_code`,
     		`error_msg`,
+    		`card_type`,
+    		`lastno`,
+    		`bank`,
+    		`bank_code`,
     		`memo`,
     		`create_time`
 		from yee_trade_order
 		WHERE 1=1
 		<if test="name != null and name.trim() != ''">
 			AND name LIKE concat('%',#{name},'%')
+		</if>
+		<if test="yborderid != null and yborderid.trim() != ''">
+			AND yborderid =#{yborderid}
 		</if>
         <choose>
             <when test="sidx != null and sidx.trim() != ''">
@@ -99,6 +114,10 @@
 			`msg`,
 			`error_code`,
 			`error_msg`,
+			`card_type`,
+			`lastno`,
+			`bank`,
+			`bank_code`,
 			`memo`,
 			`create_time`)
 		values(
@@ -114,6 +133,10 @@
 			#{msg},
 			#{errorCode},
 			#{errorMsg},
+			#{cardType},
+			#{lastno},
+			#{bank},
+			#{bankCode},
 			#{memo},
 			#{createTime})
 	</insert>
@@ -133,6 +156,10 @@
 			<if test="msg != null">`msg` = #{msg}, </if>
 			<if test="errorCode != null">`error_code` = #{errorCode}, </if>
 			<if test="errorMsg != null">`error_msg` = #{errorMsg}, </if>
+			<if test="cardType != null">`card_type` = #{cardType}, </if>
+			<if test="lastno != null">`lastno` = #{lastno}, </if>
+			<if test="bank != null">`bank` = #{bank}, </if>
+			<if test="bankCode != null">`bank_code` = #{bankCode}, </if>
 			<if test="memo != null">`memo` = #{memo}, </if>
 			<if test="createTime != null">`create_time` = #{createTime}</if>
 		</set>

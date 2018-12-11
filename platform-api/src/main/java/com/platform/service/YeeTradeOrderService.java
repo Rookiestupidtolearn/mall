@@ -1,8 +1,12 @@
 package com.platform.service;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +30,18 @@ public class YeeTradeOrderService {
     public YeeTradeOrderEntity queryObject(Integer id) {
         return yeeTradeOrderDao.queryObject(id);
     }
-
+    
+    public YeeTradeOrderEntity   queryObjectByYborderid(String yborderid){
+    	 YeeTradeOrderEntity entity = null;
+		Map<String, Object> map = new HashMap();
+		map.put("yborderid", yborderid);
+		List<YeeTradeOrderEntity> list = this.queryList(map);
+		if (!CollectionUtils.isEmpty(list)) {
+			entity = list.get(0);
+		}
+		
+		return entity;
+    }
     
     public List<YeeTradeOrderEntity> queryList(Map<String, Object> map) {
         return yeeTradeOrderDao.queryList(map);

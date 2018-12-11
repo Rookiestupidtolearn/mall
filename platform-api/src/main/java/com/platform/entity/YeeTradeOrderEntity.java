@@ -10,11 +10,12 @@ import java.util.Date;
  *
  * @author lipengjun
  * @email 939961241@qq.com
- * @date 2018-12-09 13:31:06
+ * @date 2018-12-11 16:34:06
  */
 public class YeeTradeOrderEntity implements Serializable {
     private static final long serialVersionUID = 1L;
-  //主键
+
+    //主键
     private Integer id;
     //交易流水号(传给易宝)
     private String yeeOrderNo;
@@ -40,6 +41,14 @@ public class YeeTradeOrderEntity implements Serializable {
     private String errorCode;
     //错误描述
     private String errorMsg;
+    //卡类型
+    private String cardType;
+    //卡号后四位
+    private String lastno;
+    //支付卡所属银行的名称
+    private String bank;
+    //支付卡所属银行的编码
+    private String bankCode;
     //备注
     private String memo;
     //创建时间
@@ -215,6 +224,58 @@ public class YeeTradeOrderEntity implements Serializable {
         return errorMsg;
     }
     /**
+     * 设置：卡类型
+     */
+    public void setCardType(String cardType) {
+        this.cardType = cardType;
+    }
+
+    /**
+     * 获取：卡类型
+     */
+    public String getCardType() {
+        return cardType;
+    }
+    /**
+     * 设置：卡号后四位
+     */
+    public void setLastno(String lastno) {
+        this.lastno = lastno;
+    }
+
+    /**
+     * 获取：卡号后四位
+     */
+    public String getLastno() {
+        return lastno;
+    }
+    /**
+     * 设置：支付卡所属银行的名称
+     */
+    public void setBank(String bank) {
+        this.bank = bank;
+    }
+
+    /**
+     * 获取：支付卡所属银行的名称
+     */
+    public String getBank() {
+        return bank;
+    }
+    /**
+     * 设置：支付卡所属银行的编码
+     */
+    public void setBankCode(String bankCode) {
+        this.bankCode = bankCode;
+    }
+
+    /**
+     * 获取：支付卡所属银行的编码
+     */
+    public String getBankCode() {
+        return bankCode;
+    }
+    /**
      * 设置：备注
      */
     public void setMemo(String memo) {
@@ -240,5 +301,4 @@ public class YeeTradeOrderEntity implements Serializable {
     public Date getCreateTime() {
         return createTime;
     }
-    
 }

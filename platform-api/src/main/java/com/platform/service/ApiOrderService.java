@@ -32,7 +32,6 @@ import com.platform.entity.ApiTranInfoRecordVo;
 import com.platform.entity.BuyGoodsVo;
 import com.platform.entity.CartVo;
 import com.platform.entity.GoodsVo;
-import com.platform.entity.JdOrderVo;
 import com.platform.entity.OrderGoodsVo;
 import com.platform.entity.OrderVo;
 import com.platform.entity.ProductVo;
@@ -74,6 +73,18 @@ public class ApiOrderService {
 	@Autowired
 	private YeepayOrderBizService yeepayOrderBizService;
 
+	public OrderVo queryObjectByTradeNo(String tradeNo) {
+		OrderVo vo = null;
+		Map<String, Object> map = new HashMap<>();
+		   map.put("shippingNo", tradeNo);
+	       List<OrderVo> list =  this.queryList(map);
+	       if (CollectionUtils.isEmpty(list)) {
+	    	    vo = list.get(0);
+		  }
+		
+		return  vo;
+	}
+	
 	public OrderVo queryObject(Integer id) {
 		return orderDao.queryObject(id);
 	}
