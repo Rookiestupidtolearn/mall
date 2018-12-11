@@ -65,7 +65,7 @@ public class ApiOrderService {
 	private ApiGoodsService apiGoodsService;
 	@Autowired
 	private ApiCartService apiCartService;
-    
+
 	public OrderVo queryObject(Integer id) {
 		return orderDao.queryObject(id);
 	}
@@ -108,14 +108,14 @@ public class ApiOrderService {
 			resultObj.put("errmsg", "用户地址为空，不能下单!");
 			return resultObj;
 		}
-		//用户的收货地址编码
+		// 用户的收货地址编码
 		String address = addressVo.getProvince() + "_" + addressVo.getCity() + "_" + addressVo.getCounty();
 		// * 获取要购买的商品
 		List<CartVo> checkedGoodsList = new ArrayList<>();
 		// 统计商品总价
 		BigDecimal goodsTotalPrice = BigDecimal.ZERO;
 		List<CartVo> orderGoodsList = new ArrayList<>();
-		//订单商品优惠券价格
+		// 订单商品优惠券价格
 		BigDecimal discountAmount = BigDecimal.ZERO;
 		Map<String, String> soureMap = new HashMap<>();
 		if (type.equals("cart")) {
@@ -130,59 +130,67 @@ public class ApiOrderService {
 				resultObj.put("errmsg", "请选择商品");
 				return resultObj;
 			}
-			
-			//下订单的集合
-		
+
+			// 下订单的集合
+
 			for (CartVo cartItem : checkedGoodsList) {
-				//校验自己的渠道产品的上下架状态+库存
+				// 校验自己的渠道产品的上下架状态+库存
 				GoodsVo goods = apiGoodsService.queryObject(cartItem.getGoods_id());
 				if (goods == null) {
 					continue;
 				}
-				//判断是三方的还是自己的产品
-				 String source = goods.getSource();
+				// 判断是三方的还是自己的产品
+				String source = goods.getSource();
 				if (source.equals("JD")) {
-					  //检验库存+上下架状态
-					  String pid =  goods.getGoods_sn().substring(2, goods.getGoods_sn().length());
-					  //库存
-					  Map<String, Object>  stockMap =   jdOrderService.checkStockSingle(pid, cartItem.getNumber(), address);
-						if (!stockMap.get("code").equals("200")) {
-							resultObj.put("errno", "100");
-							resultObj.put("errmsg", "不可出售");
-							Integer[] arr1 = {cartItem.getGoods_id()};
-							apiGoodsService.unSaleBatch(arr1, 3);
-							continue;
-						}
-						//上下架状态
-						 Map<String, Object>  saleStatusMap =   jdOrderService.checkSaleStatusSingle(Integer.parseInt(pid));
-						if (!saleStatusMap.get("code").equals("200")) {
-							resultObj.put("errno", "100");
-							resultObj.put("errmsg", "不可出售");
-							Integer[] arr1 = {cartItem.getGoods_id()};
-							apiGoodsService.unSaleBatch(arr1, 3);
-							continue;
-						}
+					// 检验库存+上下架状态
+					String pid = goods.getGoods_sn().substring(2, goods.getGoods_sn().length());
+					// 库存
+					Map<String, Object> stockMap = jdOrderService.checkStockSingle(pid, cartItem.getNumber(), address);
+					if (!stockMap.get("code").equals("200")) {
+						resultObj.put("errno", "100");
+						resultObj.put("errmsg", "不可出售");
+						Integer[] arr1 = { cartItem.getGoods_id() };
+						apiGoodsService.unSaleBatch(arr1, 3);
+						continue;
+					}
+					// 上下架状态
+					Map<String, Object> saleStatusMap = jdOrderService.checkSaleStatusSingle(Integer.parseInt(pid));
+					if (!saleStatusMap.get("code").equals("200")) {
+						resultObj.put("errno", "100");
+						resultObj.put("errmsg", "不可出售");
+						Integer[] arr1 = { cartItem.getGoods_id() };
+						apiGoodsService.unSaleBatch(arr1, 3);
+						continue;
+					}
 
 				}
 				if (source.equals("system")) {
-					//校验自己的库存和上下架状态
-					if (goods.getGoods_number()<cartItem.getNumber()) {
-						logger.info("【系统商品库存不足无法正常下单】商品id:"+cartItem.getGoods_id()+"剩余库存："+goods.getGoods_number());
+					// 校验自己的库存和上下架状态
+					if (goods.getGoods_number() < cartItem.getNumber()) {
+						logger.info(
+								"【系统商品库存不足无法正常下单】商品id:" + cartItem.getGoods_id() + "剩余库存：" + goods.getGoods_number());
 						continue;
 					}
-				    if (goods.getIs_on_sale()==0) {
-				    	logger.info("【系统商品已经下架无法正常下单】商品上下架状态为："+goods.getIs_on_sale());
+					if (goods.getIs_on_sale() == 0) {
+						logger.info("【系统商品已经下架无法正常下单】商品上下架状态为：" + goods.getIs_on_sale());
 						continue;
 					}
-					
+
 				}
-				
-				goodsTotalPrice = goodsTotalPrice.add(cartItem.getMarket_price().multiply(new BigDecimal(cartItem.getNumber())));
+
+				goodsTotalPrice = goodsTotalPrice
+						.add(cartItem.getMarket_price().multiply(new BigDecimal(cartItem.getNumber())));
 				orderGoodsList.add(cartItem);
 				soureMap.put(cartItem.getGoods_id().toString(), source);
 			}
-		} 
-		
+			//查询可以抵扣金额
+			discountAmount = apiCartService.queryUserDisCountAmount(orderGoodsList);
+		}
+		//用户平台币账户
+		QzUserAccountVo account = qzUserAccountMapper.queruUserAccountInfo(loginUser.getUserId());
+		if(account != null){
+			
+		}
 		if (type.equals("buy")) {
 			BuyGoodsVo goodsVo = (BuyGoodsVo) J2CacheUtils.get(J2CacheUtils.SHOP_CACHE_NAME,
 					"goods" + loginUser.getUserId());
@@ -199,13 +207,17 @@ public class ApiOrderService {
 				soureMap.put(goodsVo.getGoodsId().toString(), "JD");
 			}
 		}
-        if (CollectionUtils.isEmpty(orderGoodsList)) {
-    		resultObj.put("errno", 1);
+		if (CollectionUtils.isEmpty(orderGoodsList)) {
+			resultObj.put("errno", 1);
 			resultObj.put("errmsg", "没可下单数据");
 			return resultObj;
-	}
+		}
 		
-
+		
+		
+		
+		
+		
 		// 订单的总价 商品价格+运费价格
 		BigDecimal orderTotalPrice = goodsTotalPrice.add(freightPrice);
 
@@ -224,13 +236,13 @@ public class ApiOrderService {
 		orderInfo.setFreight_price(freightPrice);
 		// 留言
 		orderInfo.setPostscript(postscript);
-	
+
 		// 减去其它支付的金额后，要实际支付的金额
-//		BigDecimal actualPrice = orderTotalPrice.subtract(couponPrice);
+		// BigDecimal actualPrice = orderTotalPrice.subtract(couponPrice);
 		orderInfo.setAdd_time(new Date());
 		orderInfo.setGoods_price(goodsTotalPrice);
 		orderInfo.setOrder_price(orderTotalPrice);
-//		orderInfo.setActual_price(actualPrice);
+		// orderInfo.setActual_price(actualPrice);
 		/*
 		 * 0 订单创建成功等待付款， 101订单已取消， 102订单已删除 201订单已付款，等待发货 300订单已发货， 301用户确认收货
 		 * 401 没有发货，退款 402 已收货，退款退货
@@ -266,7 +278,7 @@ public class ApiOrderService {
 
 		String pidNums = "";
 		// 统计商品总价
-		List<OrderGoodsVo> orderGoodsData = new ArrayList<OrderGoodsVo>();//目前没用
+		List<OrderGoodsVo> orderGoodsData = new ArrayList<OrderGoodsVo>();// 目前没用
 		for (CartVo goodsItem : orderGoodsList) {
 			OrderGoodsVo orderGoodsVo = new OrderGoodsVo();
 			orderGoodsVo.setOrder_id(orderInfo.getId());
@@ -280,7 +292,7 @@ public class ApiOrderService {
 			orderGoodsVo.setNumber(goodsItem.getNumber());
 			orderGoodsVo.setGoods_specifition_name_value(goodsItem.getGoods_specifition_name_value());
 			orderGoodsVo.setGoods_specifition_ids(goodsItem.getGoods_specifition_ids());
-			orderGoodsVo.setChannel(soureMap.get(goodsItem.getGoods_id()+""));
+			orderGoodsVo.setChannel(soureMap.get(goodsItem.getGoods_id() + ""));
 			orderGoodsVo.setGoodStatus(0);
 			orderGoodsData.add(orderGoodsVo);
 			apiOrderGoodsMapper.save(orderGoodsVo);
@@ -300,7 +312,7 @@ public class ApiOrderService {
 		orderInfoMap.put("orderInfo", orderInfo);
 		//
 		resultObj.put("data", orderInfoMap);
-		
+
 		// 创建第三方订单
 		JdOrderVo jdOrderVo = new JdOrderVo();
 		jdOrderVo.setPidNums(pidNums);
@@ -325,7 +337,7 @@ public class ApiOrderService {
 			for (OrderVo order : orderVos) {
 				QzUserAccountVo userAmountVo = qzUserAccountMapper.queruUserAccountInfo(order.getUser_id());
 				if (userAmountVo != null) {
-					
+
 				}
 				// 如果当前日期减掉订单创建时间大于一天则回滚平台币
 				if (System.currentTimeMillis() - order.getAdd_time().getTime() > 24 * 60 * 60 * 1000) {
@@ -359,6 +371,5 @@ public class ApiOrderService {
 			obj.put("data", data);
 		return obj;
 	}
-	
 
 }

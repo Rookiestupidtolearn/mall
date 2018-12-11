@@ -300,7 +300,6 @@ public class ApiCartController extends ApiBaseAction {
         Integer productId = jsonParam.getInteger("productId");
         Integer number = jsonParam.getInteger("number");
         Integer id = jsonParam.getInteger("id");
-        Long userId = loginUser.getUserId();
         Map<String,Object> param = new HashMap<>();
         //取得规格的信息,判断规格库存
         ProductVo productInfo = productService.queryObject(productId);
@@ -536,7 +535,7 @@ public class ApiCartController extends ApiBaseAction {
         
         resultObj.put("unSaleCarts", resObj.get("unSaleCarts"));//下架商品
         resultObj.put("unStoreCarts", resObj.get("unStoreCarts"));//无库存商品
-        resultObj.put("disCountAmount", disCountAmount);
+        resultObj.put("disCountAmount", disCountAmount);//优惠金额
         resultObj.put("userAmount", userAmount);
         resultObj.put("freightPrice", freightPrice);
         resultObj.put("couponPrice", couponPrice);

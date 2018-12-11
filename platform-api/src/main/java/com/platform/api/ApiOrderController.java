@@ -71,10 +71,6 @@ public class ApiOrderController extends ApiBaseAction {
     private ApiOrderMapper apiOrderMapper;
     @Autowired
     private JdOrderService JdOrderService;
-    @Autowired
-    private ApiUpdateUserCouponPriceUtils apiUpdateUserCouponPriceUtils;
-
-   
     
     @ApiOperation(value = "订单首页")
     @IgnoreAuth

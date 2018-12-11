@@ -13,4 +13,21 @@ public interface ApiJDGoodsService {
 	 * @return
 	 */
 	public JSONObject saveCategory();
+//	/**
+//	 * 查询三方库存
+//	 * @param productId
+//	 * @param num
+//	 * @return
+//	 */
+//	public JSONObject checkJdGoodNum(Long productId,Integer num);
+	/**
+	 * 定时保存三方产品id
+	 * @return
+	 */
+	public JSONObject saveJdProductIds();
+	/**
+	 * 定时查询三方库存
+	 * @return
+	 */
+	public JSONObject checkJdStore();
 }
