@@ -838,7 +838,7 @@ public class ApiTestYeepayController extends ApiBaseAction {
 		String resultObj = "";
      
 		YeepayOrderPayRequestEntity entity =   new YeepayOrderPayRequestEntity();
-		    yeepayOrderBizService.yeepayOrderSubmmit(null);
+//		    yeepayOrderBizService.yeepayOrderSubmmit(null);
 		
 		return resultObj;
 	}

@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -38,6 +40,7 @@ import com.platform.entity.QzUserAccountVo;
 import com.platform.entity.UserCouponVo;
 import com.platform.entity.UserVo;
 import com.platform.utils.GenerateCodeUtil;
+import com.platform.utils.RequestUtil;
 import com.platform.yeepay.service.YeepayOrderBizService;
 
 @Service
@@ -100,7 +103,7 @@ public class ApiOrderService {
 	}
 
 	@Transactional
-	public Map<String, Object> submit(JSONObject jsonParam, UserVo loginUser) {
+	public Map<String, Object> submit(HttpServletRequest request,JSONObject jsonParam, UserVo loginUser) {
 		// TODO
 		Map<String, Object> resultObj = new HashMap<String, Object>();
 		// 1 cart 购物车 2 buy 立即购买
@@ -340,7 +343,8 @@ public class ApiOrderService {
 			apiUserCouponMapper.updateUserOrderCoupon(userCoupon);
 		}
 		//创建易宝支付订单
-		Map<String, Object> yeepayMap = yeepayOrderBizService.yeepayOrderSubmmit(orderInfo);
+		String validIP = RequestUtil.getIpAddrByRequest(request);
+		Map<String, Object> yeepayMap = yeepayOrderBizService.yeepayOrderSubmmit(orderInfo,validIP);
 		if (yeepayMap != null) {
 			resultObj.put("payurl", yeepayMap.get("payurl"));
 		}

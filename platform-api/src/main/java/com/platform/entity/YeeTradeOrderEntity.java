@@ -14,8 +14,7 @@ import java.util.Date;
  */
 public class YeeTradeOrderEntity implements Serializable {
     private static final long serialVersionUID = 1L;
-
-    //主键
+  //主键
     private Integer id;
     //交易流水号(传给易宝)
     private String yeeOrderNo;
@@ -33,10 +32,19 @@ public class YeeTradeOrderEntity implements Serializable {
     private String requestParam;
     //响应结果
     private String responseMsg;
-    //删除 0-正常 1-删除
-    private Integer isDeleted;
+    //易宝交易流水号(支付请求成功后)
+    private String yborderid;
+    //订单状态 init,success,error
+    private String msg;
+    //错误状态码
+    private String errorCode;
+    //错误描述
+    private String errorMsg;
+    //备注
+    private String memo;
     //创建时间
     private Date createTime;
+
     /**
      * 设置：主键
      */
@@ -155,26 +163,82 @@ public class YeeTradeOrderEntity implements Serializable {
         return responseMsg;
     }
     /**
-     * 设置：删除 0-正常 1-删除
+     * 设置：易宝交易流水号(支付请求成功后)
      */
-    public void setIsDeleted(Integer isDeleted) {
-        this.isDeleted = isDeleted;
+    public void setYborderid(String yborderid) {
+        this.yborderid = yborderid;
     }
 
     /**
-     * 获取：删除 0-正常 1-删除
+     * 获取：易宝交易流水号(支付请求成功后)
      */
-    public Integer getIsDeleted() {
-        return isDeleted;
+    public String getYborderid() {
+        return yborderid;
+    }
+    /**
+     * 设置：订单状态 init,success,error
+     */
+    public void setMsg(String msg) {
+        this.msg = msg;
     }
 
-	public Date getCreateTime() {
-		return createTime;
-	}
+    /**
+     * 获取：订单状态 init,success,error
+     */
+    public String getMsg() {
+        return msg;
+    }
+    /**
+     * 设置：错误状态码
+     */
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
+    }
 
-	public void setCreateTime(Date createTime) {
-		this.createTime = createTime;
-	}
-    
+    /**
+     * 获取：错误状态码
+     */
+    public String getErrorCode() {
+        return errorCode;
+    }
+    /**
+     * 设置：错误描述
+     */
+    public void setErrorMsg(String errorMsg) {
+        this.errorMsg = errorMsg;
+    }
+
+    /**
+     * 获取：错误描述
+     */
+    public String getErrorMsg() {
+        return errorMsg;
+    }
+    /**
+     * 设置：备注
+     */
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
+    /**
+     * 获取：备注
+     */
+    public String getMemo() {
+        return memo;
+    }
+    /**
+     * 设置：创建时间
+     */
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    /**
+     * 获取：创建时间
+     */
+    public Date getCreateTime() {
+        return createTime;
+    }
     
 }

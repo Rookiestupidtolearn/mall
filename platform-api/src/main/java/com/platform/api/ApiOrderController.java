@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.print.attribute.standard.RequestingUserName;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
@@ -187,7 +188,7 @@ public class ApiOrderController extends ApiBaseAction {
      */
     @ApiOperation(value = "订单提交")
     @PostMapping("submit")
-    public Object submit(@LoginUser UserVo loginUser) {
+    public Object submit(HttpServletRequest request,@LoginUser UserVo loginUser) {
     	
 //        String  REDIS_ORDER_LOCK ="orderSubmitLock"+loginUser.getUserId();
         
@@ -202,7 +203,7 @@ public class ApiOrderController extends ApiBaseAction {
     	    try {
             	logger.info("订单提交，用户id:"+loginUser.getUserId());
             	logger.info("订单提交，redis锁:orderSubmitLock"+loginUser.getUserId());
-	        	resultObj = orderService.submit(getJsonRequest(), loginUser);
+	        	resultObj = orderService.submit(request,getJsonRequest(), loginUser);
 	            if (null != resultObj) {
 //	                return toResponsObject(MapUtils.getInteger(resultObj, "errno"), MapUtils.getString(resultObj, "errmsg"), resultObj.get("data"));
 	            	 return resultObj;

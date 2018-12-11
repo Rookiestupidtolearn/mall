@@ -13,7 +13,12 @@
         <result property="amount" column="amount"/>
         <result property="requestParam" column="request_param"/>
         <result property="responseMsg" column="response_msg"/>
-        <result property="isDeleted" column="is_deleted"/>
+        <result property="yborderid" column="yborderid"/>
+        <result property="msg" column="msg"/>
+        <result property="errorCode" column="error_code"/>
+        <result property="errorMsg" column="error_msg"/>
+        <result property="memo" column="memo"/>
+        <result property="createTime" column="create_time"/>
     </resultMap>
 
 	<select id="queryObject" resultType="com.platform.entity.YeeTradeOrderEntity">
@@ -27,7 +32,12 @@
 			`amount`,
 			`request_param`,
 			`response_msg`,
-			`is_deleted`
+			`yborderid`,
+			`msg`,
+			`error_code`,
+			`error_msg`,
+			`memo`,
+			`create_time`
 		from yee_trade_order
 		where id = #{id}
 	</select>
@@ -43,7 +53,12 @@
     		`amount`,
     		`request_param`,
     		`response_msg`,
-    		`is_deleted`
+    		`yborderid`,
+    		`msg`,
+    		`error_code`,
+    		`error_msg`,
+    		`memo`,
+    		`create_time`
 		from yee_trade_order
 		WHERE 1=1
 		<if test="name != null and name.trim() != ''">
@@ -80,7 +95,11 @@
 			`amount`,
 			`request_param`,
 			`response_msg`,
-			`is_deleted`,
+			`yborderid`,
+			`msg`,
+			`error_code`,
+			`error_msg`,
+			`memo`,
 			`create_time`)
 		values(
 			#{yeeOrderNo},
@@ -91,7 +110,11 @@
 			#{amount},
 			#{requestParam},
 			#{responseMsg},
-			#{isDeleted},
+			#{yborderid},
+			#{msg},
+			#{errorCode},
+			#{errorMsg},
+			#{memo},
 			#{createTime})
 	</insert>
 	 
@@ -106,7 +129,12 @@
 			<if test="amount != null">`amount` = #{amount}, </if>
 			<if test="requestParam != null">`request_param` = #{requestParam}, </if>
 			<if test="responseMsg != null">`response_msg` = #{responseMsg}, </if>
-			<if test="isDeleted != null">`is_deleted` = #{isDeleted}</if>
+			<if test="yborderid != null">`yborderid` = #{yborderid}, </if>
+			<if test="msg != null">`msg` = #{msg}, </if>
+			<if test="errorCode != null">`error_code` = #{errorCode}, </if>
+			<if test="errorMsg != null">`error_msg` = #{errorMsg}, </if>
+			<if test="memo != null">`memo` = #{memo}, </if>
+			<if test="createTime != null">`create_time` = #{createTime}</if>
 		</set>
 		where id = #{id}
 	</update>
