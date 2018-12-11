@@ -68,7 +68,7 @@ public class YeepayOrderBizService {
 		treeMap.put("version", 			0);
 	
 ////		treeMap.put("fcallbackurl", 	fcallbackurl);
-//		treeMap.put("callbackurl", 		"http://localhost:8090/InstantPay-paymobile/jsp/41payApiRequest.jsp");
+		treeMap.put("callbackurl", 		PaymobileUtils.getRequestUrl(PaymobileUtils.ORDERCALLBACKAPI_NAME));
 //		treeMap.put("paytypes", 		paytypes);
 		
 //		treeMap.put("orderexpdate", 	orderexpdate);
