@@ -135,6 +135,7 @@ public class ApiSmsController {
         }
 
         SysSmsLogEntity sysSmsLogEntity = smsLogService.sendSms(smsLog);
+        
         if (sysSmsLogEntity.getType()!=null && sysSmsLogEntity.getType().equals(("pt"))) {
         	Object codeSmsValue = J2CacheUtils.get(J2CacheUtils.CHECK_CACHE, "DOUBAO:"+mobile);
         	if (codeSmsValue != null) {

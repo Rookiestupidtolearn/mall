@@ -37,6 +37,11 @@ public class QzRechargeRecordEntity implements Serializable {
     private String tradeNo;
     //审核人id
     private Long auditId;
+    
+    //渠道来源 1-平台后台;2-小程序 3-wap 4-app
+    private String channelSource;
+    //平台来源 1-pc,2-wap,3-ios,4-android,5-wechat
+    private String platformSource;
 
     /**
      * 设置：主键
@@ -181,4 +186,22 @@ public class QzRechargeRecordEntity implements Serializable {
     public Long getAuditId() {
         return auditId;
     }
+
+	public String getChannelSource() {
+		return channelSource;
+	}
+
+	public void setChannelSource(String channelSource) {
+		this.channelSource = channelSource;
+	}
+
+	public String getPlatformSource() {
+		return platformSource;
+	}
+
+	public void setPlatformSource(String platformSource) {
+		this.platformSource = platformSource;
+	}
+    
+    
 }

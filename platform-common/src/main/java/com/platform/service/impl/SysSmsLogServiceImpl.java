@@ -1,23 +1,24 @@
 package com.platform.service.impl;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
+import com.google.gson.Gson;
 import com.platform.dao.SysSmsLogDao;
 import com.platform.entity.SmsConfig;
 import com.platform.entity.SysSmsLogEntity;
 import com.platform.service.SysConfigService;
 import com.platform.service.SysSmsLogService;
 import com.platform.utils.Constant;
-import com.platform.utils.DateUtils;
 import com.platform.utils.IdUtil;
 import com.platform.utils.RRException;
 import com.platform.utils.ShiroUtils;
-import com.platform.utils.SmsUtil;
 import com.platform.utils.StringUtils;
 
 @Service("smsLogService")
@@ -66,6 +67,7 @@ public class SysSmsLogServiceImpl implements SysSmsLogService {
     @Override
     public SysSmsLogEntity sendSms(SysSmsLogEntity smsLog) {
         String result = "";
+        String codeValue = "";
         //获取云存储配置信息
         SmsConfig config = sysConfigService.getConfigObject(Constant.SMS_CONFIG_KEY, SmsConfig.class);
         if (StringUtils.isNullOrEmpty(config)) {
@@ -82,6 +84,9 @@ public class SysSmsLogServiceImpl implements SysSmsLogService {
         }
         if (StringUtils.isNullOrEmpty(config.getSign())) {
         	throw new RRException("请先配置短信平台签名");
+        }
+        if (StringUtils.isNullOrEmpty(config.getDomain())) {
+        	throw new RRException("请先配置域名URL");
         }
         try {
             /**
@@ -106,14 +111,36 @@ public class SysSmsLogServiceImpl implements SysSmsLogService {
 					"02"="手机号码为黑名单";
 					"81"="手机号码错误，请检查手机号是否正确";
              */
-            result = SmsUtil.crSendSms(config.getUsername(), config.getPassword(), smsLog.getMobile(),config.getSign()+smsLog.getContent(), config.getEpid(),
-                    DateUtils.format(smsLog.getStime(), "yyyy-MM-dd HH:mm:ss"), smsLog.getExtno());
+        	
+        	//短信发送的URL 请登录zz.253.com 获取完整的URL接口信息
+    		String smsSingleRequestServerUrl = "http://smssh1.253.com/msg/send/json";
+    		
+    		// 设置您要发送的内容：其中“【】”中括号为运营商签名符号，多签名内容前置添加提交
+    	    String msg = config.getSign()+smsLog.getContent();
+    		//手机号码
+    	
+    		//状态报告
+    		String report= "true";
+    		
+    		SmsSendRequest smsSingleRequest = new SmsSendRequest(config.getUsername(), config.getPassword(), msg, smsLog.getMobile(),report);
+    		
+    		String requestJson = JSON.toJSONString(smsSingleRequest);
+    		
+    		
+    		result = ChuangLanSmsUtil.sendSmsByPost(smsSingleRequestServerUrl, requestJson);
+    		Gson gson = new Gson();
+            Map<String, Object> map = new HashMap<String, Object>();
+            map = gson.fromJson(result, map.getClass());
+            codeValue=(String) map.get("code");
+        	
+//            result = SmsUtil.crSendSms(config.getUsername(), config.getPassword(), smsLog.getMobile(),config.getSign()+smsLog.getContent(), config.getEpid(),
+//                    DateUtils.format(smsLog.getStime(), "yyyy-MM-dd HH:mm:ss"), smsLog.getExtno());
         } catch (Exception e) {
 
         }
         String arr[] = result.split(",");
         //发送成功
-        if ("00".equals(arr[0])) {
+        if ("0".equals(codeValue)) {
         	//保存短信发送日志
         	smsLog.setContent(config.getSign()+smsLog.getContent());
         	smsLog.setMobile(smsLog.getMobile());
