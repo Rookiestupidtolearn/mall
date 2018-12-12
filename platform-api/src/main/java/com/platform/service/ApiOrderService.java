@@ -78,7 +78,7 @@ public class ApiOrderService {
 		Map<String, Object> map = new HashMap<>();
 		   map.put("shippingNo", tradeNo);
 	       List<OrderVo> list =  this.queryList(map);
-	       if (CollectionUtils.isEmpty(list)) {
+	       if (!CollectionUtils.isEmpty(list)) {
 	    	    vo = list.get(0);
 		  }
 		

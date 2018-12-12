@@ -61,7 +61,7 @@ public class OrderVo implements Serializable {
     private String shipping_code;
     //快递公司名称
     private String shipping_name;
-    //快递号
+    //平台流水号
     private String shipping_no;
     //付款
     private String pay_id;

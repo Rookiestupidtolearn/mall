@@ -107,6 +107,7 @@
 			`parent_id`,
 			`coupon_price`,
 			`callback_status`,
+			`shipping_no`,
 			`full_cut_price`,
 			`order_type`
 		)
@@ -144,6 +145,7 @@
 			#{parent_id},
 			#{coupon_price},
 			#{callback_status},
+			#{shipping_no},
 			#{full_cut_price},
 			#{order_type}
 		)
