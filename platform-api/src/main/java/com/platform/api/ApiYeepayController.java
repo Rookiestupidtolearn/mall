@@ -2,12 +2,7 @@ package com.platform.api;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
-
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -67,13 +62,13 @@ public class ApiYeepayController extends ApiBaseAction {
 	@IgnoreAuth
 	@PostMapping("yeepayOrderCallback")
 	@Transactional
-	public String yeepayOrderCallback(String data,String encryptkey,HttpServletResponse response) throws IOException{
+	public String yeepayOrderCallback(String data,String encryptkey) throws IOException{
 		  logger.info("易宝支付订单支付回调start");
 		  if(StringUtils.isEmpty(data) || StringUtils.isEmpty(encryptkey)){
 			  logger.error("易宝支付回调参数错误");
 			  return "ERROR";
 		  }
-			PrintWriter out	= response.getWriter();
+		
 			//解密data
 			TreeMap<String, String>	dataMap	= PaymobileUtils.decrypt(data, encryptkey);
 			logger.info("易宝支付订单回调，返回的明文参数：" + dataMap);
@@ -87,6 +82,11 @@ public class ApiYeepayController extends ApiBaseAction {
 
 			YeeTradeOrderEntity entity = yeeTradeOrderService.queryObjectByYborderid(yborderid);
 			if (entity != null) {
+				if (entity.getPayStatus()==1) {
+					 //无需再次回调
+					 logger.info("本地订单已经处理成功，无需再处理，易宝交易流水号"+yborderid);
+					  return "SUCCESS";
+				}
 				//修改回填信息
 				entity.setBankCode(dataMap.get("bankcode"));
 				entity.setBank(dataMap.get("bank"));
@@ -112,9 +112,7 @@ public class ApiYeepayController extends ApiBaseAction {
 			}
 			
 			//回写SUCCESS
-			out.println("SUCCESS");
-			out.flush();
-			out.close();
+
 			logger.info("易宝支付订单支付回调end");
 		  return "SUCCESS";
 		
