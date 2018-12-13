@@ -16,6 +16,8 @@ public class J2CacheUtils {
      * 商城业务缓存
      */
     public static  final String SHOP_CACHE_NAME = "shopCache";
+    
+    public static  final String SHOP_JD_GOOD_NAME = "jdGoodsCache";
     /**
      * 系统缓存
      */

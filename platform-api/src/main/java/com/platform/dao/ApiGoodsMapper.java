@@ -44,4 +44,9 @@ public interface ApiGoodsMapper extends BaseDao<GoodsVo> {
 	 * @return
 	 */
 	List<GoodsVo> queryGoodsList(Integer[] ids);
+	/**
+	 * 查询本地商品  is_on_sale = 2
+	 * @return
+	 */
+	List<GoodsVo> queryGoods();
 }
