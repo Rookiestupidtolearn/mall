@@ -2,6 +2,7 @@ package com.platform.api;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,26 +21,27 @@ import com.alibaba.fastjson.JSONObject;
 import com.platform.annotation.IgnoreAuth;
 import com.platform.annotation.LoginUser;
 import com.platform.cache.J2CacheUtils;
-import com.platform.dao.ApiUserCouponMapper;
+import com.platform.dao.GoodsCouponConfigMapper;
 import com.platform.entity.AddressVo;
 import com.platform.entity.BuyGoodsVo;
 import com.platform.entity.CartVo;
 import com.platform.entity.CouponInfoVo;
 import com.platform.entity.CouponVo;
+import com.platform.entity.GoodsCouponConfigVo;
 import com.platform.entity.GoodsSpecificationVo;
 import com.platform.entity.GoodsVo;
 import com.platform.entity.ProductVo;
-import com.platform.entity.QzUserAccountVo;
 import com.platform.entity.UserVo;
 import com.platform.service.ApiAddressService;
 import com.platform.service.ApiCartService;
 import com.platform.service.ApiCouponService;
 import com.platform.service.ApiGoodsService;
 import com.platform.service.ApiGoodsSpecificationService;
+import com.platform.service.ApiOrderService;
 import com.platform.service.ApiProductService;
 import com.platform.service.ApiUserService;
 import com.platform.util.ApiBaseAction;
-import com.platform.util.ApiUpdateUserCouponPriceUtils;
+import com.platform.util.PayMatchingUtil;
 import com.qiniu.util.StringUtils;
 
 import io.swagger.annotations.Api;
@@ -66,6 +68,10 @@ public class ApiCartController extends ApiBaseAction {
     private ApiAddressService addressService;
     @Autowired
     private ApiCouponService apiCouponService;
+    @Autowired
+    private PayMatchingUtil payMatchingUtils;
+    @Autowired
+    private GoodsCouponConfigMapper goodsCouponConfigMapper;
     
     @Autowired
     private ApiUserService userService;
@@ -519,23 +525,37 @@ public class ApiCartController extends ApiBaseAction {
         		}
         	}
         }
+        BigDecimal couponAmount = BigDecimal.ZERO;
         //平台币总额
         BigDecimal userAmount = cartService.queryUserAccountAmount(loginUser.getUserId()); 
         //购物车勾选商品 总额
-        BigDecimal disCountAmount = cartService.queryUserDisCountAmount(checkedGoodsList);
-        if(userAmount.compareTo(disCountAmount) < 0){
-        	disCountAmount = BigDecimal.ZERO;
+        if(userAmount != null){
+        	BigDecimal disCountAmount = cartService.queryUserDisCountAmount(checkedGoodsList);
+        	if(userAmount.compareTo(disCountAmount) > 0 || userAmount.compareTo(disCountAmount) == 0){
+        		resultObj.put("ampleAmountFlag", true);
+        		couponAmount = disCountAmount;
+        	}
+        	if(userAmount.compareTo(disCountAmount) < 0){
+        		BigDecimal amount = goodsMaxDiscount(checkedGoodsList, userAmount);
+        		BigDecimal usableAmount = disCountAmount.subtract(amount);//还可支付平台币金额
+        		BigDecimal residueAmount = userAmount.subtract(amount);//剩余平台币金额
+        		resultObj.put("usableAmount", usableAmount);
+        		resultObj.put("residueAmount", residueAmount);
+        		resultObj.put("ampleAmountFlag", false);
+        		couponAmount = amount;
+        	}
         }
+        
         //订单的总价
         BigDecimal orderTotalPrice = goodsTotalPrice.add(freightPrice);
-        BigDecimal actualPrice = orderTotalPrice.subtract(couponPrice).subtract(disCountAmount);  //减去其它支付的金额后，要实际支付的金额
+        BigDecimal actualPrice = orderTotalPrice.subtract(couponPrice).subtract(couponAmount);  //减去其它支付的金额后，要实际支付的金额
         
         //校验商品是否有库存,是否下架
         JSONObject resObj = cartService.queryJdGoodsStatus(checkedGoodsList,addressId);
         
         resultObj.put("unSaleCarts", resObj.get("unSaleCarts"));//下架商品
         resultObj.put("unStoreCarts", resObj.get("unStoreCarts"));//无库存商品
-        resultObj.put("disCountAmount", disCountAmount);//优惠金额
+        resultObj.put("disCountAmount", couponAmount);//优惠金额
         resultObj.put("userAmount", userAmount);
         resultObj.put("freightPrice", freightPrice);
         resultObj.put("couponPrice", couponPrice);
@@ -578,5 +598,53 @@ public class ApiCartController extends ApiBaseAction {
             }
         return toResponsSuccess(couponVos);
     }
+    /**
+	 * 平台币金额小于总优惠金额，优惠金额最大化
+	 * @param carts
+	 * @param userAccount
+	 * @return
+	 */
+	public BigDecimal goodsMaxDiscount(List<CartVo> carts,BigDecimal userAccount){
+		BigDecimal maxDiscount = BigDecimal.ZERO;
+		List<BigDecimal> amounts = new ArrayList<>();
+		if(CollectionUtils.isEmpty(carts)){
+			return maxDiscount;
+		}
+		for(CartVo cart : carts){
+			//获取产品配比值
+			GoodsCouponConfigVo goodsCoupon = goodsCouponConfigMapper.getUserCoupons(cart.getGoods_id(),cart.getUser_id());
+			//计算该产品优惠券总和
+			if(goodsCoupon != null){
+				BigDecimal payMatching = BigDecimal.ZERO;
+    			if(payMatchingUtils.getPayMatching(cart.getProduct_id())!= null){
+    				Object value = payMatchingUtils.getPayMatching(cart.getProduct_id()).get(cart.getGoods_id());
+    				if(value != null){
+    					payMatching = new BigDecimal(value.toString());
+    				}
+    			}
+    			for(int j = 0;j<cart.getNumber();j++){
+    				amounts.add(payMatching);
+    			}
+			}
+			
+		}
+		Collections.sort(amounts);
+		for(int i = amounts.size()-1;i>= 0;i--){
+			userAccount = userAccount.subtract(amounts.get(i));
+			if(userAccount.compareTo(BigDecimal.ZERO) > 0){
+				maxDiscount = maxDiscount.add(amounts.get(i));
+				continue;
+			}
+			if(userAccount.compareTo(BigDecimal.ZERO) == 0){
+				maxDiscount = maxDiscount.add(amounts.get(i));
+				break;
+			}
+			if(userAccount.compareTo(BigDecimal.ZERO) < 0){
+				userAccount = userAccount.add(amounts.get(i));
+				continue;
+			}
+		}
+		return maxDiscount;
+	}
     
 }

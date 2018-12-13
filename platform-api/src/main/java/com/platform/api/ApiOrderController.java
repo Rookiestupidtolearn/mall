@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.print.attribute.standard.RequestingUserName;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -63,10 +64,6 @@ public class ApiOrderController extends ApiBaseAction {
     private ApiOrderGoodsService orderGoodsService;
     @Autowired
     private ApiKdniaoService apiKdniaoService;
-    @Autowired
-    private QzUserAccountMapper qzUserAccountMapper;
-    @Autowired
-    private ApiUserCouponMapper apiUserCouponMapper;
     @Autowired
     private ApiOrderMapper apiOrderMapper;
     @Autowired
@@ -230,7 +227,6 @@ public class ApiOrderController extends ApiBaseAction {
             //取消本系统的订单
             
      
-           QzUserAccountVo userAmountVo =qzUserAccountMapper.queruUserAccountInfo(orderVo.getUser_id());
             /*
              * 0 订单创建成功等待付款，　101订单已取消，　102订单已删除
              * 201订单已付款，等待发货
@@ -251,8 +247,9 @@ public class ApiOrderController extends ApiBaseAction {
                     orderService.update(orderVo);
                     //取消京东订单
                     JdOrderService.cancelByOrderKey(orderVo);
+                    //回滚子优惠信息
+                    orderService.rollbackDiscount(orderVo,2);
                     return toResponsMsgSuccess("取消成功");
-                    
                 } else {
                     return toResponsObject(400, "取消成失败", "");
                 }
@@ -261,6 +258,8 @@ public class ApiOrderController extends ApiBaseAction {
                 orderService.update(orderVo);
                 //取消京东订单
                 JdOrderService.cancelByOrderKey(orderVo);
+                //回滚子优惠信息
+                orderService.rollbackDiscount(orderVo,2);
                 return toResponsSuccess("取消成功");
             }
         } catch (Exception e) {

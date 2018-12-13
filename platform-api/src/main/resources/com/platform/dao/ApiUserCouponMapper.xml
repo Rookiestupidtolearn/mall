@@ -200,4 +200,7 @@
     <select id="querySubUserCoupons" resultMap = "userCouponMap">
     	select * from nideshop_user_coupon where parent_id = #{id} 
     </select>
+    <select id="queryCouponsBuOrderId" resultMap = "userCouponMap">
+    	select * from nideshop_user_coupon where order_id = #{orderId} and state = 1
+    </select>
 </mapper>

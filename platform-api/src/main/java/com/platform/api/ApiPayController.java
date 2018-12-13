@@ -230,8 +230,7 @@ public class ApiPayController extends ApiBaseAction {
             orderInfo.setShipping_status(0);
             orderInfo.setPay_time(new Date());
             orderService.update(orderInfo);
-       
-            
+            orderService.discountUserAmount(orderInfo);
             return toResponsMsgSuccess("支付成功");
         } else if ("USERPAYING".equals(trade_state)) {
             // 重新查询 正在支付中
@@ -298,6 +297,7 @@ public class ApiPayController extends ApiBaseAction {
                 orderInfo.setShipping_status(0);
                 orderInfo.setPay_time(new Date());
                 orderService.update(orderInfo);
+                orderService.discountUserAmount(orderInfo);
                 response.getWriter().write(setXml("SUCCESS", "OK"));
             }
         } catch (Exception e) {

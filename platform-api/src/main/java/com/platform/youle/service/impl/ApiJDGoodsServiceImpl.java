@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
@@ -17,7 +19,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
@@ -25,7 +30,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.github.pagehelper.util.StringUtil;
-import com.platform.cache.J2CacheUtils;
 import com.platform.dao.ApiBrandMapper;
 import com.platform.dao.ApiCategoryMapper;
 import com.platform.dao.ApiGoodsGalleryMapper;
@@ -54,7 +58,6 @@ import com.platform.youle.service.ApiJDGoodsService;
 import com.platform.youle.util.HttpUtil;
 import com.platform.youle.util.MD5util;
 import com.platform.youle.util.PropertiesUtil;
-import com.platform.youle.util.TokenUtil;
 
 @Service
 public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
@@ -318,8 +321,7 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 			return resultObj;
 		}
 		JSONObject json = JSONObject.parseObject(array.get(0).toString());
-		// 查询所有京东商品 查出库中商品是否匹配到三方返回商品id，没有则置为下架状态
-		List<GoodsPureInterestRateVo> goodsPureInterestRateVoList = new ArrayList<>(); // 批量保存毛利率
+		
 
 		List<String> productIds = getJdProductIds(json);
 		
@@ -343,6 +345,11 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 //		}
 		int count = 0;
 		for (int t = 0; t < productIds.size(); t++) {
+			// 查询所有京东商品 查出库中商品是否匹配到三方返回商品id，没有则置为下架状态
+			List<GoodsPureInterestRateVo> goodsPureInterestRateVoList = new ArrayList<>(); // 批量保存毛利率
+//			DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+//			def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);// 事务等级，
+//			TransactionStatus txStatus = txManager.getTransaction(def);// 获得事务状态
 				RequestSkuDetailEntity entity = new RequestSkuDetailEntity();
 				initRequestParam(entity);
 				entity.setPid(Long.parseLong(productIds.get(t).toString()));
@@ -389,6 +396,13 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 						if (CollectionUtils.isEmpty(goods)) {
 							vo.setName(productObj.get("name") == null ? "" : productObj.get("name").toString());
 							BrandVo brand = new BrandVo();
+							if (productObj.get("status") != null) {
+								if ("undercarriage".equals(productObj.get("status").toString())) {
+									vo.setIs_on_sale(0);
+								} else {
+									vo.setIs_on_sale(2);
+								}
+							}
 							if (productObj.get("brand") != null) {
 								List<BrandVo> brands = apiBrandMapper.quertBrandByNames(productObj.get("brand").toString());
 								if (CollectionUtils.isEmpty(brands)) {
@@ -401,13 +415,7 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 							vo.setList_pic_url(productObj.get("thumbnailImage") == null ? ""
 									: productObj.get("thumbnailImage").toString());
 							vo.setCategory_id(Integer.parseInt(productObj.get("productCate").toString()));
-							if (productObj.get("status") != null) {
-								if ("undercarriage".equals(productObj.get("status").toString())) {
-									vo.setIs_on_sale(0);
-								} else {
-									vo.setIs_on_sale(2);
-								}
-							}
+							
 							vo.setMarket_price(productObj.get("marketPrice") == null ? BigDecimal.ZERO
 									: new BigDecimal(productObj.get("marketPrice").toString()));
 							vo.setRetail_price(productObj.get("retailPrice") == null ? BigDecimal.ZERO
@@ -416,7 +424,7 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 									productObj.get("features") == null ? "" : productObj.get("features").toString());
 							vo.setIs_hot(0);
 							vo.setGoods_desc(resultDate.get("PRODUCT_DESCRIPTION") == null ? null
-									: resultDate.get("PRODUCT_DESCRIPTION").toString());
+									: getGoodsImg(resultDate.get("PRODUCT_DESCRIPTION").toString()));
 							vo.setAdd_time(new Date());
 							vo.setUpdate_time(new Date());
 							vo.setSource("JD");
@@ -446,6 +454,14 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 							}
 						} else {
 							GoodsVo good = goods.get(0);
+							if (productObj.get("status") != null) {
+								Integer[] jdids = new Integer[good.getId()];
+								if ("undercarriage".equals(productObj.get("status").toString())) {
+									apiGoodsService.unSaleBatch(jdids, 2);
+								} else {
+									good.setIs_on_sale(good.getIs_on_sale());
+								}
+							}
 							good.setName(productObj.get("name") == null ? "" : productObj.get("name").toString());
 							BrandVo brand = new BrandVo();
 							if (productObj.get("brand") != null) {
@@ -461,14 +477,7 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 							good.setList_pic_url(productObj.get("thumbnailImage") == null ? ""
 									: productObj.get("thumbnailImage").toString());
 							good.setCategory_id(Integer.parseInt(productObj.get("productCate").toString()));
-							if (productObj.get("status") != null) {
-								Integer[] jdids = new Integer[good.getId()];
-								if ("undercarriage".equals(productObj.get("status").toString())) {
-									apiGoodsService.unSaleBatch(jdids, 2);
-								} else {
-									good.setIs_on_sale(good.getIs_on_sale());
-								}
-							}
+							
 							good.setMarket_price(productObj.get("marketPrice") == null ? BigDecimal.ZERO
 									: new BigDecimal(productObj.get("marketPrice").toString()));
 							good.setRetail_price(productObj.get("retailPrice") == null ? BigDecimal.ZERO
@@ -477,8 +486,8 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 									productObj.get("features") == null ? "" : productObj.get("features").toString());
 							good.setIs_hot(good.getIs_hot());
 							
-							good.setGoods_desc(resultDate.get("PRODUCT_DESCRIPTION") == null ? null
-									: resultDate.get("PRODUCT_DESCRIPTION").toString());
+							vo.setGoods_desc(resultDate.get("PRODUCT_DESCRIPTION") == null ? null
+									: getGoodsImg(resultDate.get("PRODUCT_DESCRIPTION").toString()));
 							good.setAdd_time(good.getAdd_time());
 							good.setUpdate_time(new Date());
 							good.setSource("JD");
@@ -514,6 +523,7 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 				}
 				count += 1;
 				logger.info("=====================" + count + "======================");
+//				txManager.commit(txStatus);
 		}
 		resultObj.put("status", "success");
 		return resultObj;
@@ -939,7 +949,20 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 		 }
 		 return autoStock(productId, Math.round(number / 2), address);
 	}
-	public static void main(String[] args) {
-		System.out.println(TokenUtil.currentTime.toString());
+	public String getGoodsImg(String imgs){
+        StringBuffer goodsImg = new StringBuffer();
+        Pattern p_image;
+        Matcher m_image;
+        String regEx_img = "(i?)<img.*? src=\"?(.*?\\.(jpg|gif|bmp|bnp|png))\".*? (>|/>|</img>)";
+        p_image = Pattern.compile
+                (regEx_img, Pattern.CASE_INSENSITIVE);
+        m_image = p_image.matcher(imgs);
+        while (m_image.find()) {
+            goodsImg.append(m_image.group());
+        }
+        if(StringUtils.isEmpty(goodsImg)){
+        	return "";
+        }
+        return goodsImg.toString();
 	}
 }

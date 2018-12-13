@@ -36,6 +36,8 @@ public class QzMoneyRecordEntity implements Serializable {
     private String userPhone;
     //身份证件号
     private String cardId;
+    //备注
+    private String remark;
 
     /**
      * 设置：主键
@@ -159,6 +161,14 @@ public class QzMoneyRecordEntity implements Serializable {
 
 	public void setCardId(String cardId) {
 		this.cardId = cardId;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
     
     

@@ -2,6 +2,7 @@ package com.platform.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -301,8 +302,9 @@ public class ApiCartService {
 		
 		if(addressVo == null){
 			address = DEFAULT_ADDRESS;
+		}else{
+			address = addressVo.getProvince() + "_" + addressVo.getCity() + "_" + addressVo.getCounty();
 		}
-		address = addressVo.getProvince() + "_" + addressVo.getCity() + "_" + addressVo.getCounty();
 		if (!CollectionUtils.isEmpty(carts)) {
 			
 			for (CartVo cart : carts) {
@@ -359,5 +361,6 @@ public class ApiCartService {
 
 		return resultObj;
 	}
-
+	
+	
 }

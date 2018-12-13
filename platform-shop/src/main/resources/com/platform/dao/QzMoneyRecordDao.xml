@@ -12,6 +12,7 @@
         <result property="currentAmount" column="current_amount"/>
         <result property="createTime" column="create_time"/>
         <result property="tradeNo" column="trade_no"/>
+         <result property="remark" column="remark"/>
     </resultMap>
 
 	<select id="queryObject" resultType="com.platform.entity.QzMoneyRecordEntity">
@@ -23,7 +24,8 @@
 			`tarn_amount`,
 			`current_amount`,
 			`create_time`,
-			`trade_no`
+			`trade_no`,
+			`remark`
 		from qz_money_record
 		where id = #{id}
 	</select>
@@ -38,6 +40,7 @@
     		mr.`current_amount`,
     		mr.`create_time`,
     		mr.`trade_no`,
+    		mr.`remark`,
     		b.`username` as shopUserName,
     		b.`mobile` as UserPhone,
     		b.`idcard` as cardId
@@ -79,7 +82,7 @@
 			`tarn_amount`,
 			`current_amount`,
 			`create_time`,
-			`trade_no`)
+			`trade_no`,`remark`)
 		values(
 			#{shopUserId},
 			#{tranType},
@@ -87,7 +90,7 @@
 			#{tarnAmount},
 			#{currentAmount},
 			#{createTime},
-			#{tradeNo})
+			#{tradeNo},#{remark})
 	</insert>
 	 
 	<update id="update" parameterType="com.platform.entity.QzMoneyRecordEntity">
@@ -99,7 +102,8 @@
 			<if test="tarnAmount != null">`tarn_amount` = #{tarnAmount}, </if>
 			<if test="currentAmount != null">`current_amount` = #{currentAmount}, </if>
 			<if test="createTime != null">`create_time` = #{createTime}, </if>
-			<if test="tradeNo != null">`trade_no` = #{tradeNo}</if>
+			<if test="tradeNo != null">`trade_no` = #{tradeNo},</if>
+			<if test="remark != null">`remark` = #{remark}</if>
 		</set>
 		where id = #{id}
 	</update>

@@ -102,7 +102,7 @@ public class ApiGoodsServiceImpl extends AbsApiGoodsService {
         entity.setAddress(address);
         try {
             logger.info("[1.4单个查询商品库存]入参：" + JSONObject.toJSONString(entity));
-            String result = HttpUtil.post(Urls.base_test_url + Urls.stock, objectToMap(entity));
+            String result = HttpUtil.post(Urls.base_prod_url + Urls.stock, objectToMap(entity));
             logger.info("[1.4单个查询商品库存" + result);
             reponse = JSON.parseObject(result, ResponseProductEntity.class);
         } catch (Exception e) {
@@ -138,7 +138,7 @@ public class ApiGoodsServiceImpl extends AbsApiGoodsService {
         entity.setPid(pid);
         try {
             logger.info("[1.6查询商品可售状态]入参：" + JSONObject.toJSONString(entity));
-            String result = HttpUtil.post(Urls.base_test_url + Urls.saleStatus, objectToMap(entity));
+            String result = HttpUtil.post(Urls.base_prod_url + Urls.saleStatus, objectToMap(entity));
             reponse = JSON.parseObject(result, ResponseSaleStatusEntity.class);
         } catch (Exception e) {
             logger.error("[1.6查询商品可售状态]异常", e);
