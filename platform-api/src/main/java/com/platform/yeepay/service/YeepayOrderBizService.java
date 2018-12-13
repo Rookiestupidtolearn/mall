@@ -1,5 +1,6 @@
 package com.platform.yeepay.service;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,21 +51,22 @@ public class YeepayOrderBizService {
 //		} else {
 //			version		= ConvertUtils.objectToInt(request.getParameter("version"));
 //		}
-
+        int amount = orderInfo.getActual_price().multiply(new BigDecimal(100)).intValue();    
 		//使用TreeMap
 		TreeMap<String, Object> treeMap	= new TreeMap<String, Object>();
 		treeMap.put("orderid", 			entity.getYeeOrderNo());
 		treeMap.put("transtime", 		Calendar.getInstance().getTimeInMillis() / 1000 );//带秒的时间戳
-		treeMap.put("amount",1);//以分为单位
+		treeMap.put("amount",amount);//以分为单位
 		treeMap.put("currency", 		156); //交易币种
 		treeMap.put("productcatalog", 	"20");//行业类别 20 代表其他
 		treeMap.put("productname", 		"斗宝商铺-斗宝精品");
 //		treeMap.put("productdesc", 		"斗宝商铺");
 		treeMap.put("identitytype", 	2); //2 代表用户ID
 		treeMap.put("identityid", 		entity.getUserId().toString());  //用户id
-		treeMap.put("terminaltype", 	3);
-		treeMap.put("terminalid", 		"44-45-53-54-00-00");
+//		treeMap.put("terminaltype", 	3);
+//		treeMap.put("terminalid", 		"44-45-53-54-00-00");
 		treeMap.put("userip", 			ip);
+	//	treeMap.put("userip", 			"192.168.1.1");
 		treeMap.put("version", 			0);
 	
 ////		treeMap.put("fcallbackurl", 	fcallbackurl);

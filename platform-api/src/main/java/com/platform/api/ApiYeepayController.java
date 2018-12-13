@@ -1,7 +1,6 @@
 package com.platform.api;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
@@ -100,13 +99,11 @@ public class ApiYeepayController extends ApiBaseAction {
 				if (order != null) {
 					  //更新订单为成功
 					order.setPay_status(1);
+					order.setOrder_status(201);
 					apiOrderService.update(order);
 					//调京东的支付下订单的接口
 					
-					
 				}
-				
-		
 				
 				
 			}

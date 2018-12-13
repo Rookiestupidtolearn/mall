@@ -1,18 +1,15 @@
 package com.platform.service;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.platform.dao.YeeTradeOrderDao;
 import com.platform.entity.YeeTradeOrderEntity;
-import com.platform.service.YeeTradeOrderService;
 
 /**
  * 易宝支付订单表Service实现类
