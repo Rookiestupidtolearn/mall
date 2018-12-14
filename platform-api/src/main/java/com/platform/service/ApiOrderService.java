@@ -380,6 +380,8 @@ public class ApiOrderService {
 		
 		//查询可以抵扣金额
 		discountAmount = queryUserDisCountAmount(orderGoodsList,orderInfo);
+		// 开启事务，插入订单信息和订单商品
+		apiOrderMapper.save(orderInfo);
 		if (null == orderInfo.getId()) {
 			resultObj.put("errno", 1);
 			resultObj.put("errmsg", "订单提交失败");
@@ -389,6 +391,7 @@ public class ApiOrderService {
 		order.setActual_price(orderTotalPrice.subtract(couponAmount));
 		order.setCoupon_price(discountAmount);
 		apiOrderMapper.update(order);
+	
 		/**
 		 * 订单问题 1.拆分渠道 1.1 渠道增加 1.2 状态
 		 *
@@ -422,8 +425,7 @@ public class ApiOrderService {
 		if (StringUtils.isNotEmpty(pidNums)) {
 			pidNums = pidNums.substring(0, pidNums.length() - 1);
 		}
-		// 开启事务，插入订单信息和订单商品
-		apiOrderMapper.save(orderInfo);
+	
 		// 清空已购买的商品
 		apiCartMapper.deleteByCart(loginUser.getUserId(), 1, 1);
 		resultObj.put("errno", 0);
