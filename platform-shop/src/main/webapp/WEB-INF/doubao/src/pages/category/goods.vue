@@ -159,7 +159,7 @@
 	  		var that = this;
 	  		this.idm = this.$route.query.id;
 	  		
-			window.scrollTo(0,0);  
+			window.scrollTo(0,0);   //显示最顶部
 	  		
 	  		//获取购物车数量
 	  		that.$http({
@@ -258,16 +258,19 @@
 	methods:{
 		zhichi(){
 			let that = this;
+			//			获取userId
+			var userId = that.$cookie.getCookie('userId');
 			//	  	<!--该链接可在智齿客服工作台=>设置=>接入渠道中找到--> this指向script了
 			let para=document.createElement("script");
 	        para.src = "https://www.sobot.com/chat/frame/js/entrance.js?sysNum=e5ef8967b4114644a4c290bf0729f959";
 	        para.setAttribute("id", "zhichiScript");
         	para.setAttribute("class", "zhiCustomBtn");
+        	para.setAttribute("data-args", "partnerId="+userId);   //ios记录用户标识
 	       	this.$refs.input1.appendChild(para);
+
 			para.onload=function(){
 				//	初始化智齿咨询组件实例
 				var zhiManager = (getzhiSDKInstance());
-				console.log(zhiManager)
 				//再调用load方法
 				zhiManager.on("load", function() {
 				    zhiManager.initBtnDOM();
@@ -278,7 +281,7 @@
 				zhiManager.set('abstract_info',that.goods.name);  //商品信息的简述内容（选传） 无描述用的标题
 				zhiManager.set('label_info',that.market_price);	  //商品标签例：价格（选传）
 				zhiManager.set('thumbnail_info',that.banner[0].img_url);  //商品的缩略图（选传）
-					
+				
 
 			}
 		},
@@ -296,7 +299,23 @@
 	     	 this.number = this.number + 1
 	  	},
 	  	openCartPage(){
-	  		this.$router.push('/pages/shoppingcar');
+	  		/*android与ios交互*/
+	  		var hrefD = window.location.href;
+				if(hrefD.indexOf('device')>-1){
+	    		var device = hrefD.split('&')[1].split('=')[1];
+	    	}
+	//  	http://192.168.124.29:8081/#/?device=andriod;
+//				alert(device);
+	    	if(device == 'android'){
+	    			window.android.toShopCart(); //调起andriod交互方法(由app发起。浏览器会报错正常)
+	    			return false;
+	    	}else if(device == 'ios'){
+	    			var message = {'url':'toShopCart'}
+					window.webkit.messageHandlers.webViewApp.postMessage(message);
+					return false;
+	    	}else{
+	    		this.$router.push('/pages/shoppingcar');
+	    	}
 	  	},
 	  	getGoodsRelated() {
 		    let that = this;
@@ -840,12 +859,14 @@ overflow: hidden;
 .related-goods .item .name{
   display: block;
   width: 3.1145rem;
-  height: .35rem;
   margin: .115rem 0 .15rem 0;
   text-align: center;
   overflow: hidden;
   font-size: .30rem;
   color: #333;
+  overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .related-goods .item .price{

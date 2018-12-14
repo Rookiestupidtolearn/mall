@@ -8,7 +8,8 @@ module.exports = {
   dev: {
 // 	env: require('./dev.env'),
 //  port: 2000,
-//  host: '0.0.0.0',
+//		host:'0.0.0.0'
+//  host: '192.168.124.29',
     autoOpenBrowser: false,
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
@@ -16,7 +17,7 @@ module.exports = {
 		//http://localhost:8080/platform'  //本地
 		//http://192.168.1.244:6101/platform'  //吴明龙
 //  	'/platform': {
-//			target: 'http://106.75.99.126:6302/platform',
+//			target: 'http://192.168.124.50:6101/platform',
 //				
 //      changeOrigin: true,
 //      pathRewrite: {
@@ -26,7 +27,7 @@ module.exports = {
     },
 
     // Various Dev Server settings
-    host: 'localhost', // can be overwritten by process.env.HOST
+//  host: 'localhost', // can be overwritten by process.env.HOST
     port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,
@@ -40,6 +41,7 @@ module.exports = {
 
     // https://webpack.js.org/configuration/devtool/#development
     devtool: 'cheap-module-eval-source-map',
+//  devtool: 'inline-source-map',
 
     // If you have problems debugging vue-files in devtools,
     // set this to false - it *may* help

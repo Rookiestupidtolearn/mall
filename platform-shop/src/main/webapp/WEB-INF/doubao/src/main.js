@@ -10,7 +10,12 @@ import axios from 'axios'  //ajax
 import fontSize from './assets/fontSize.js' //字号适配js
 import cookie from './assets/cookie.js'  //cookie.js公用方法
 import './assets/css/reset.css' //公用样式引入
-  import { MessageBox } from 'mint-ui';
+/*解决android白版问题*/
+import 'babel-polyfill'
+import Es6Promise from 'es6-promise'
+Es6Promise.polyfill()
+
+ import { MessageBox } from 'mint-ui';
   
 
 Vue.use(MintUI);
@@ -45,7 +50,6 @@ axios.interceptors.request.use(function (config) {
 axios.interceptors.response.use(function (response) {
     // 对响应数据做点什么
     /*登录公用方法*/
-   console.log(response);
    if(response.data.errmsg == "请先登录" || response.data.errno ==401 ){
    				cookie.delCookie('userId');
     			cookie.delCookie('userInfo');
@@ -57,17 +61,30 @@ axios.interceptors.response.use(function (response) {
 						return false;
 					}
 				}
-	    	if(yzUserMessage('userId') && yzUserMessage('userInfo')){
+	    		if(yzUserMessage('userId') && yzUserMessage('userInfo')){
 			    	MessageBox({
 						  title: ' ',
 						  message: '请先登录 ',
 						  showCancelButton: true
-						},function(params){
-								if(params == 'confirm'){
-										router.push('/pages/register/register');
+					},function(params){
+							if(params == 'confirm'){
+								var hrefD = window.location.href;
+								if(hrefD.indexOf('device')>-1){
+									var device = hrefD.split('&')[1].split('=')[1];
 								}
-						});
-					}
+								if(device == 'android'){
+					    			window.android.toLogin(); //调起andriod交互方法(由app发起。浏览器会报错正常)
+					    			return false;
+						    	}else if(device == 'ios'){
+						    		var message = {'url':'toLogin'}
+									window.webkit.messageHandlers.webViewApp.postMessage(message);
+									return false;
+						    	}else{
+									router.push('/pages/register/register');
+								}
+							}
+					});
+				}
 		}
     return response;
   }, function (error) {

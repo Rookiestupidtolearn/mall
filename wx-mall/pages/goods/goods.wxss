@@ -485,12 +485,14 @@
 .related-goods .item .name{
   display: block;
   width: 311.45rpx;
-  height: 35rpx;
   margin: 11.5rpx 0 15rpx 0;
   text-align: center;
   overflow: hidden;
   font-size: 30rpx;
   color: #333;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space: nowrap
 }
 
 .related-goods .item .price{

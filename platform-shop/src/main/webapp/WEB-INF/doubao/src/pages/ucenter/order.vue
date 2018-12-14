@@ -5,11 +5,13 @@
   		
   		<div class="showList" v-if="orderList.length>0" >
   			<ul class="nav_list">
-  				<li v-for="(item,index) in items" @click="selectStyle (item, index)"  :class="activeClass == index ? 'list_choice' : '' ">{{item.value}} </li>
+  				<li v-for="(item,index) in items" @click="selectStyle (item, index)"  >
+  					<span :class="activeClass == index ? 'list_choice' : '' ">{{item.value}}</span>
+  				</li>
   			</ul>
-	  		<ul class="" v-infinite-scroll="loadMore" infinite-scroll-disabled="loading" infinite-scroll-distance="10">
+	  		<ul class="" v-infinite-scroll="loadMore" infinite-scroll-disabled="isMoreLoading" infinite-scroll-distance="10" class="loadm">
 	 			 <li v-for="(item,index) in orderList" >
-					<router-link  :to = "'/views/ucenter/orderDetail?id='+item.id" class="order" >
+					<router-link  :to = "'/pages/ucenter/orderDetail?id='+item.id" class="order" >
 		            <div class="h">
 		                <div class="l">订单编号：{{item.order_sn}}</div>
 		                <div class="r">{{item.order_status_text}}</div>
@@ -17,12 +19,14 @@
 		            <div class="b">
 		                <div class="l">实付：￥{{item.actual_price}}</div>
 		                <div class="r">
-		                	<mt-button type="danger"  size="small" @click.prevent="payOrder(index)"  :style="{ display: [ item.handleOption.pay ? 'block' : 'none']}">去付款</mt-button>
+		                	<mt-button type="danger"  class="resetbtn" size="small" @click.prevent="payOrder(index)"  :style="{ display: [ item.handleOption.pay ? 'block' : 'none']}">去付款</mt-button>
 		                </div>
 		            </div>
 		        </router-link>
 		        </li>
 	        </ul>
+	        <p class="loading" v-if="isLoading"><img src="../../../static/images/timg.gif" class="timg"/><span class="lon">加载中...</span></p>
+	         <p class="loading" v-else><span class="lon">没有更多数据了</span></p>
         </div>
         <div v-else class="noData">没有更多数据了</div>
   </div>
@@ -41,6 +45,11 @@ export default {
 //  	headFont:'订单列表',
     	orderList:[],
     	activeClass:0,
+    	totalPages:'',
+    	page:1,
+    	isMoreLoading:true,
+    	isLoading:true,
+    	size:10,
     	items: [
 　　	{value:'全部'},
 　　	{value:'待付款'},
@@ -51,20 +60,7 @@ export default {
     }
   },
   mounted(){
-  	
-  	var that = this;    
-    	that.$http({
-        method: 'post',
-        url:that.$url+ 'order/list.options',
-        data:{
-        	page:1,
-        	size:10
-        }
-    	}).then(function (response) {
-    		if(response.data.errno != 401){
-	    			that.orderList = response.data.data.data;
-	    	}
-		  })
+			this.getProjectInfo();
   },
   methods:{
   	selectStyle (item, index) {
@@ -75,49 +71,118 @@ export default {
 	    	this.$router.push( '/pages/pay/pay?orderId=' + order.id + '&actualPrice=' + order.actual_price);
   	},
   	loadMore() {
-//		  this.loading = true;
-//		  setTimeout(() => {
-//		    let last = this.orderList[this.orderList.length - 1];
-//		    for (let i = 1; i <= 10; i++) {
-//		      this.orderList.push(last + i);
-//		    }
-//		    this.loading = false;
-//		  }, 2500);
-		}
+			var that = this;    
+			this.page = that.page+1; // 增加分页
+    	this.isMoreLoading = true ;// 设置加载更多中
+    	this.isLoading = true; // 设置加载更多中
+    	if (this.page > this.totalPages) { // 超过了分页
+        this.isLoading = false; // 显示没有更多了
+        this.isMoreLoading = false; // 关闭加载中
+        return false
+    	}
+    	// 做个缓冲
+   		 setTimeout(() => {
+        this.getProjectInfo('loadMore')
+    	}, 500)
+
+		},
+		getProjectInfo(type){
+  			var that = this;    
+	    	that.$http({
+	        method: 'post',
+	        url:that.$url+ 'order/list.options',
+	        data:{
+	        	page:that.page,
+	        	size:that.size
+	        }
+	    	}).then(function (response) {
+	    		var response = {"errno":0,"data":{"count":19,"numsPerPage":10,"totalPages":2,"currentPage":1,"data":[{"id":49,"order_sn":"jd201812101620008661042","user_id":6,"order_status":0,"shipping_status":0,"pay_status":0,"consignee":"zr","address_id":13,"country":null,"province":"北京","city":"朝阳区","district":"三环以内","address":"sdd","mobile":"15158017054","postscript":null,"shipping_id":0,"shipping_code":null,"shipping_name":null,"shipping_no":null,"pay_id":null,"pay_name":null,"shipping_fee":0.00,"actual_price":128.00,"integral":0,"integral_money":0.00,"order_price":128.00,"goods_price":128.00,"add_time":"2018-12-10 16:20:01","confirm_time":null,"pay_time":null,"freight_price":0,"coupon_id":null,"parent_id":null,"coupon_price":null,"callback_status":null,"goodsCount":1,"order_status_text":"未付款","handleOption":{"cancel":true,"confirm":false,"delivery":false,"buy":false,"pay":true,"comment":false,"delete":false,"return":false},"full_cut_price":null,"full_region":"北京 朝阳区 三环以内 ","order_type":null},{"id":48,"order_sn":"jd201812101619356639590","user_id":6,"order_status":0,"shipping_status":0,"pay_status":0,"consignee":"zr","address_id":13,"country":null,"province":"北京","city":"朝阳区","district":"三环以内","address":"sdd","mobile":"15158017054","postscript":null,"shipping_id":0,"shipping_code":null,"shipping_name":null,"shipping_no":null,"pay_id":null,"pay_name":null,"shipping_fee":0.00,"actual_price":128.00,"integral":0,"integral_money":0.00,"order_price":128.00,"goods_price":128.00,"add_time":"2018-12-10 16:19:36","confirm_time":null,"pay_time":null,"freight_price":0,"coupon_id":null,"parent_id":null,"coupon_price":null,"callback_status":null,"goodsCount":1,"order_status_text":"未付款","handleOption":{"cancel":true,"confirm":false,"delivery":false,"buy":false,"pay":true,"comment":false,"delete":false,"return":false},"full_cut_price":null,"full_region":"北京 朝阳区 三环以内 ","order_type":null},{"id":47,"order_sn":"jd201812101615449529936","user_id":6,"order_status":0,"shipping_status":0,"pay_status":0,"consignee":"zr","address_id":13,"country":null,"province":"北京","city":"朝阳区","district":"三环以内","address":"sdd","mobile":"15158017054","postscript":null,"shipping_id":0,"shipping_code":null,"shipping_name":null,"shipping_no":null,"pay_id":null,"pay_name":null,"shipping_fee":0.00,"actual_price":65.00,"integral":0,"integral_money":0.00,"order_price":65.00,"goods_price":65.00,"add_time":"2018-12-10 16:15:45","confirm_time":null,"pay_time":null,"freight_price":0,"coupon_id":null,"parent_id":null,"coupon_price":null,"callback_status":null,"goodsCount":1,"order_status_text":"未付款","handleOption":{"cancel":true,"confirm":false,"delivery":false,"buy":false,"pay":true,"comment":false,"delete":false,"return":false},"full_cut_price":null,"full_region":"北京 朝阳区 三环以内 ","order_type":null},{"id":46,"order_sn":"jd201812101614266683715","user_id":6,"order_status":0,"shipping_status":0,"pay_status":0,"consignee":"zr","address_id":13,"country":null,"province":"北京","city":"朝阳区","district":"三环以内","address":"sdd","mobile":"15158017054","postscript":null,"shipping_id":0,"shipping_code":null,"shipping_name":null,"shipping_no":null,"pay_id":null,"pay_name":null,"shipping_fee":0.00,"actual_price":65.00,"integral":0,"integral_money":0.00,"order_price":65.00,"goods_price":65.00,"add_time":"2018-12-10 16:14:27","confirm_time":null,"pay_time":null,"freight_price":0,"coupon_id":null,"parent_id":null,"coupon_price":null,"callback_status":null,"goodsCount":1,"order_status_text":"未付款","handleOption":{"cancel":true,"confirm":false,"delivery":false,"buy":false,"pay":true,"comment":false,"delete":false,"return":false},"full_cut_price":null,"full_region":"北京 朝阳区 三环以内 ","order_type":null},{"id":45,"order_sn":"jd201812101613528972102","user_id":6,"order_status":0,"shipping_status":0,"pay_status":0,"consignee":"zr","address_id":13,"country":null,"province":"北京","city":"朝阳区","district":"三环以内","address":"sdd","mobile":"15158017054","postscript":null,"shipping_id":0,"shipping_code":null,"shipping_name":null,"shipping_no":null,"pay_id":null,"pay_name":null,"shipping_fee":0.00,"actual_price":65.00,"integral":0,"integral_money":0.00,"order_price":65.00,"goods_price":65.00,"add_time":"2018-12-10 16:13:53","confirm_time":null,"pay_time":null,"freight_price":0,"coupon_id":null,"parent_id":null,"coupon_price":null,"callback_status":null,"goodsCount":1,"order_status_text":"未付款","handleOption":{"cancel":true,"confirm":false,"delivery":false,"buy":false,"pay":true,"comment":false,"delete":false,"return":false},"full_cut_price":null,"full_region":"北京 朝阳区 三环以内 ","order_type":null},{"id":44,"order_sn":"jd201812101613139829899","user_id":6,"order_status":0,"shipping_status":0,"pay_status":0,"consignee":"zr","address_id":13,"country":null,"province":"北京","city":"朝阳区","district":"三环以内","address":"sdd","mobile":"15158017054","postscript":null,"shipping_id":0,"shipping_code":null,"shipping_name":null,"shipping_no":null,"pay_id":null,"pay_name":null,"shipping_fee":0.00,"actual_price":65.00,"integral":0,"integral_money":0.00,"order_price":65.00,"goods_price":65.00,"add_time":"2018-12-10 16:13:14","confirm_time":null,"pay_time":null,"freight_price":0,"coupon_id":null,"parent_id":null,"coupon_price":null,"callback_status":null,"goodsCount":1,"order_status_text":"未付款","handleOption":{"cancel":true,"confirm":false,"delivery":false,"buy":false,"pay":true,"comment":false,"delete":false,"return":false},"full_cut_price":null,"full_region":"北京 朝阳区 三环以内 ","order_type":null},{"id":43,"order_sn":"jd201812101609098366457","user_id":6,"order_status":0,"shipping_status":0,"pay_status":0,"consignee":"zr","address_id":13,"country":null,"province":"北京","city":"朝阳区","district":"三环以内","address":"sdd","mobile":"15158017054","postscript":null,"shipping_id":0,"shipping_code":null,"shipping_name":null,"shipping_no":null,"pay_id":null,"pay_name":null,"shipping_fee":0.00,"actual_price":65.00,"integral":0,"integral_money":0.00,"order_price":65.00,"goods_price":65.00,"add_time":"2018-12-10 16:09:10","confirm_time":null,"pay_time":null,"freight_price":0,"coupon_id":null,"parent_id":null,"coupon_price":null,"callback_status":null,"goodsCount":1,"order_status_text":"未付款","handleOption":{"cancel":true,"confirm":false,"delivery":false,"buy":false,"pay":true,"comment":false,"delete":false,"return":false},"full_cut_price":null,"full_region":"北京 朝阳区 三环以内 ","order_type":null},{"id":42,"order_sn":"jd201812101608076412602","user_id":6,"order_status":0,"shipping_status":0,"pay_status":0,"consignee":"zr","address_id":13,"country":null,"province":"北京","city":"朝阳区","district":"三环以内","address":"sdd","mobile":"15158017054","postscript":null,"shipping_id":0,"shipping_code":null,"shipping_name":null,"shipping_no":null,"pay_id":null,"pay_name":null,"shipping_fee":0.00,"actual_price":65.00,"integral":0,"integral_money":0.00,"order_price":65.00,"goods_price":65.00,"add_time":"2018-12-10 16:08:08","confirm_time":null,"pay_time":null,"freight_price":0,"coupon_id":null,"parent_id":null,"coupon_price":null,"callback_status":null,"goodsCount":1,"order_status_text":"未付款","handleOption":{"cancel":true,"confirm":false,"delivery":false,"buy":false,"pay":true,"comment":false,"delete":false,"return":false},"full_cut_price":null,"full_region":"北京 朝阳区 三环以内 ","order_type":null},{"id":41,"order_sn":"jd201812101606145150317","user_id":6,"order_status":0,"shipping_status":0,"pay_status":0,"consignee":"zr","address_id":13,"country":null,"province":"北京","city":"朝阳区","district":"三环以内","address":"sdd","mobile":"15158017054","postscript":null,"shipping_id":0,"shipping_code":null,"shipping_name":null,"shipping_no":null,"pay_id":null,"pay_name":null,"shipping_fee":0.00,"actual_price":65.00,"integral":0,"integral_money":0.00,"order_price":65.00,"goods_price":65.00,"add_time":"2018-12-10 16:06:15","confirm_time":null,"pay_time":null,"freight_price":0,"coupon_id":null,"parent_id":null,"coupon_price":null,"callback_status":null,"goodsCount":1,"order_status_text":"未付款","handleOption":{"cancel":true,"confirm":false,"delivery":false,"buy":false,"pay":true,"comment":false,"delete":false,"return":false},"full_cut_price":null,"full_region":"北京 朝阳区 三环以内 ","order_type":null},{"id":40,"order_sn":"jd201812101600358663677","user_id":6,"order_status":0,"shipping_status":0,"pay_status":0,"consignee":"zr","address_id":13,"country":null,"province":"北京","city":"朝阳区","district":"三环以内","address":"sdd","mobile":"15158017054","postscript":null,"shipping_id":0,"shipping_code":null,"shipping_name":null,"shipping_no":null,"pay_id":null,"pay_name":null,"shipping_fee":0.00,"actual_price":65.00,"integral":0,"integral_money":0.00,"order_price":65.00,"goods_price":65.00,"add_time":"2018-12-10 16:00:36","confirm_time":null,"pay_time":null,"freight_price":0,"coupon_id":null,"parent_id":null,"coupon_price":null,"callback_status":null,"goodsCount":1,"order_status_text":"未付款","handleOption":{"cancel":true,"confirm":false,"delivery":false,"buy":false,"pay":true,"comment":false,"delete":false,"return":false},"full_cut_price":null,"full_region":"北京 朝阳区 三环以内 ","order_type":null}],"filterCategory":null,"goodsList":null},"errmsg":"执行成功"};
+//	    		var response = response.data;
+	    		if(response.errno != 401){
+		    			that.orderList = response.data.data;
+		    			that.totalPages = response.data.totalPages;
+		    			if (type == 'loadMore') {
+                that.orderList = that.orderList.concat(response.data.data);
+	            } else {
+                that.orderList = response.data.data;
+							}
+		    	}
+	    		that.isMoreLoading = false;
+			  })
+  	}
+  	
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+	
+	.timg{
+		width: .5rem;
+    margin-right: .2rem;
+	}
+	.loading{
+		font-size:.28rem;
+		text-align: center;
+		margin-top: .4rem;
+	}
+	.loading .lon{
+		position: relative;
+    top: -.12rem;
+	}
+	.loadm{
+		margin-top:.9rem;
+	}
+	.resetbtn{
+		display:inline-block !important;
+		height:auto !important;
+		padding:.09rem .19rem !important;
+		font-size:.26rem !important;
+		color:#ef7c2c !important;
+		-webkit-border-radius:2rem !important;
+		background-color: initial !important;
+		border:1px solid #ef7c2c !important; 
+	}
 	.nav_list{
 		font-size:.29rem;
-		overflow: hidden;
 		background-color:#fff;
+		overflow: hidden;
+		padding: .2rem 0;
+		position: fixed;
+    width: 7.5rem;
+    top: 0;
+    z-index:2;
 	}
 	.nav_list li{
 		float:left;
 		width:20%;
+		font-size:.3rem;
+		color:#666666;
+	}
+	.nav_list li span{
 		padding:.15rem 0;
 	}
-	.nav_list li.list_choice{
-		border-bottom:3px solid #33CC99;
+	.nav_list li .list_choice{
+		border-bottom:.04rem solid #ef7c2c;
+		color:#ef7c2c;
 	}
 	.order .b {
-height:1.03rem;
-line-height:1.03rem;
+height:.81rem;
 margin-left:.3125rem;
 padding-right:.3125rem;
+padding-top:.27rem;
 border-top:1px solid #f4f4f4;
-font-size:.30rem;
-color:#333;
+font-size:.26rem;
+color:#3b3c3c;
 }
 .order .b .l {
 float:left;
 }
 .order .b .r {
 float:right;
-margin-top: .15rem;
+font-size:.26rem !important;
+color:#ef7c2c !important;
 }
 .order {
 	display: block;
@@ -139,8 +204,8 @@ color:#333;
 }
 .order .h .r {
 float:right;
-color:#b4282d;
-font-size:.24rem;
+color:#ef7c2c;
+font-size:.26rem;
 }
 .noData{
 	font-size:.29rem;

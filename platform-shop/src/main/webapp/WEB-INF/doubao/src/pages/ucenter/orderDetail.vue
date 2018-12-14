@@ -7,11 +7,11 @@
       <div class="item-c">
             <div class="l">实付：<span class="cost">￥{{orderInfo.actual_price}}</span></div>
             <div class="r">
-                <div v-if="orderInfo.handleOption.pay">
+                <div v-if="handleOption.pay" >
                   <div class="btn" @click="cancelOrder">取消订单</div>
                   <div class="btn active" @click="payOrder">去付款</div>
                 </div>
-                <div v-else-if="orderInfo.handleOption.confirm">
+                <div v-else-if="handleOption.confirm">
                   <div class="btn" @click="cancelOrder">取消订单</div>
                   <div class="btn active" @click="confirmOrder">确认收货</div>
                 </div>
@@ -59,7 +59,7 @@
             </div>
             <div class="t">
                 <span class="label">优惠券：</span>
-                <span class="txt2">-{{orderInfo.coupon_price}}</span>
+                <span class="txt">-{{orderInfo.coupon_price}}</span>
             </div>
             <div class="t">
                 <span class="label">运费：</span>
@@ -76,7 +76,7 @@
 </template>
 
 <script>
-		import { MessageBox } from 'mint-ui';
+import { MessageBox } from 'mint-ui';
 		
 export default {
   name: 'orderDetail',
@@ -92,11 +92,11 @@ export default {
   	let that = this;   
   	let id = this.$route.query.id;
     	that.$http({
-        method: 'post',
-        url:that.$url+ 'order/detail',
-        params:{orderId:id}
+	        method: 'post',
+	        url:that.$url+ 'order/detail',
+	        params:{orderId:id}
     	}).then(function (response) {
-    		console.log(response)
+    		var response = response.data;
     		that.orderInfo = response.data.orderInfo;
     		that.orderGoods =  response.data.orderGoods;
       		that.handleOption =  response.data.handleOption;
@@ -213,11 +213,9 @@ export default {
 
 .item-a{
     padding-left: .3125rem;
-    height: .425rem;
-    padding-bottom: .125rem;
     line-height: .30rem;
-    font-size: .30rem;
-    color: #666;
+    font-size: .26rem;
+    color: #3b3c3c;
 }
 
 .item-b{
@@ -225,9 +223,9 @@ export default {
     height: .29rem;
     line-height: .29rem;
     margin-top: .125rem;
-    margin-bottom: .415rem;
-    font-size: .30rem;
-    color: #666;
+    margin-bottom: .215rem;
+    font-size: .26rem;
+    color: #3b3c3c;
 }
 
 .item-c{
@@ -235,7 +233,7 @@ export default {
     border-top: 1px solid #f4f4f4;
     height: 1.03rem;
     line-height: 1.03rem;
-    font-size:.29rem;
+    font-size:.26rem;
 }
 
 .item-c .l{
@@ -253,23 +251,24 @@ export default {
 .item-c .r .btn{
     float: right;
 }
-
-.item-c .cost{
-    color: #b4282d;
+.item-c .r div{
+	line-height:initial !important;
 }
-
 .item-c .btn{
-    line-height: .66rem;
-    border-radius: .05rem;
-    text-align: center;
-    margin: 0 .15rem;
-    padding: 0 .20rem;
-    height: .66rem;
+   display: inline-block;
+    height: auto;
+    padding: .09rem .19rem;
+    font-size: .26rem;
+    color: #666666;
+    -webkit-border-radius: 2rem;
+    background-color: initial;
+    border: 1px solid #d8d8d8;
+    margin-left: .2rem;
 }
 
 .item-c .btn.active{
-    background: #b4282d;
-    color: #fff;
+    color: #ef7c2c ;
+    border: 1px solid #ef7c2c ;
 }
 
 .order-goods{
@@ -294,8 +293,8 @@ export default {
 
 .order-goods .h .status{
     float: right;
-    font-size: .30rem;
-    color: #b4282d;
+    font-size: .26rem;
+    color: #fc6e1a;
 }
 
 .order-goods .item{
@@ -318,8 +317,8 @@ export default {
 }
 
 .order-goods .item .img image{
-    height: 1.4583rem;
-    width: 1.4583rem;
+    height: 1.3rem;
+    width: 1.3rem;
 }
 
 .order-goods .item .info{
@@ -341,7 +340,7 @@ export default {
     height: .33rem;
     line-height: .33rem;
     color: #333;
-    font-size: .30rem;
+    font-size: .26rem;
 }
 
 .order-goods .item .t .number{
@@ -351,22 +350,23 @@ export default {
     text-align: right;
     line-height: .33rem;
     color: #333;
-    font-size: .30rem;
+    font-size: .26rem;
 }
 
 .order-goods .item .attr{
     height: .29rem;
     line-height: .29rem;
     color: #666;
-    margin-bottom: .25rem;
+    margin-bottom: .2rem;
     font-size: .25rem;
+    text-align: left;
 }
 
 .order-goods .item .price{
     height: .30rem;
     line-height: .30rem;
     color: #333;
-    font-size: .30rem;
+    font-size: .26rem;
     text-align: left;
 }
 
@@ -379,7 +379,7 @@ export default {
 }
 
 .order-bottom .address{
-    height: 1.28rem;
+    height: 1rem;
     padding-top: .25rem;
     border-bottom: 1px solid #f4f4f4;
 }
@@ -388,6 +388,8 @@ export default {
     margin-bottom: .075rem;
     font-size: 0;
     text-align: left;
+    overflow: hidden;
+    width: 6.8rem;
 }
 
 .order-bottom .address .name{
@@ -403,6 +405,7 @@ export default {
     height: .35rem;
     line-height: .35rem;
     font-size: .25rem;
+    float:right;
 }
 
 .order-bottom .address .b{
@@ -413,18 +416,21 @@ export default {
 }
 
 .order-bottom .total{
-    height: 1.36rem;
-    padding-top: .20rem;
+    height: 1.5rem;
+    padding-top: .30rem;
     border-bottom: 1px solid #f4f4f4;
     font-size: .29rem;
     text-align: left;
+    width:6.8rem;
 }
 
 .order-bottom .total .t{
     height: .30rem;
     line-height: .30rem;
-    margin-bottom: .075rem;
+    margin-bottom: .16rem;
     display: flex;
+    color:#999797;
+    width:6.8rem;
 }
 
 .order-bottom .total .label{
@@ -441,10 +447,7 @@ export default {
     height: .35rem;
     line-height: .35rem;
     font-size: .25rem;
-}
-
-.order-bottom .total .txt2{
-    color:#33cc99;
+    text-align: right;
 }
 
 .order-bottom .pay-fee{
@@ -452,18 +455,22 @@ export default {
     line-height: .81rem;
     font-size: .29rem;
     text-align: left;
+    width:6.8rem;
+    overflow: hidden;
 }
 
 .order-bottom .pay-fee .label{
     display: inline-block;
     width: 1.40rem;
-    color: #b4282d;
+    color: #fc6e1a;
 }
 
 .order-bottom .pay-fee .txt{
     display: inline-block;
     width: 1.40rem;
-    color: #b4282d;
+    color: #fc6e1a;
+    float: right;
+    text-align: right;
 }
 
 </style>

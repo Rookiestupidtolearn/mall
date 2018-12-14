@@ -67,8 +67,6 @@ export default {
   },
   mounted(){
   		let that = this;    
-//		window.productDeatil = this.productDeatil
-  	/*记录首页页面用户滚动位置*/
   	//banner
   		that.$http({
         method: 'post',
@@ -94,6 +92,7 @@ export default {
 		    that.hotGoods = response.data.data.hotGoodsList;
 		  })
     	
+    	/*android和ios对接特殊处理*/
     	var hrefD = window.location.href;
 				if(hrefD.indexOf('device')>-1){
 	    		var device = hrefD.split('?')[1].split('=')[1];
@@ -108,21 +107,34 @@ export default {
 	    		this.showAN = false;
 	    	}
     	
+    	/*记录用户浏览位置*/
+//  	window.onscroll=function(){
+//  		var scrollHome = document.documentElement.scrollTop;
+//  		that.$cookie.setCookie('scrollHome',scrollHome);
+//  	}
+//  	
+//  	var scrollDis = this.$cookie.getCookie('scrollHome');
+//  	if(scrollDis == ""){
+//  	}else{
+//  		window.scrollTo(scrollDis,0);
+    	
+//  	}
  },
- 	
  methods:{
 	 	andriod(e){   //与andriod和ios交互
 				var hrefD = window.location.href;
+				var delDevice = hrefD.split('?')[0];
+				var comHref =delDevice .substring(delDevice.length-1,0);  //android和ios公用链接头
 				if(hrefD.indexOf('device')>-1){
 	    		var device = hrefD.split('?')[1].split('=')[1];
 	    	}
 	//  	http://192.168.124.29:8081/#/?device=andriod;
 //				alert(device);
 	    	if(device == 'android'){
-	    			window.android.productDeatil('http://192.168.124.29:8081/#'+e); //调起andriod交互方法(由app发起。浏览器会报错正常)
+	    			window.android.productDetail(comHref + e); //调起andriod交互方法(由app发起。浏览器会报错正常)
 	    			return false;
 	    	}else if(device == 'ios'){
-	    			var message = {'url':'http://192.168.124.29:8081/#'+e}
+	    			var message = {'url':comHref + e}
 						window.webkit.messageHandlers.webViewApp.postMessage(message);
 						return false;
 	    	}else{
@@ -130,11 +142,28 @@ export default {
 	    	}
 	 	},
  		searchRoute(){
-  		this.$router.push('/pages/ucenter/search');
-  		/*清除搜索记录缓存*/
-  		this.$cookie.delCookie('search');
-			this.$cookie.delCookie('searchKey');
-  	}
+ 			var hrefD = window.location.href;
+				var delDevice = hrefD.split('#')[0];
+				var comHref =delDevice .substring(delDevice.length-1,0);  //android和ios公用链接头
+				if(hrefD.indexOf('device')>-1){
+	    		var device = hrefD.split('?')[1].split('=')[1];
+	    	}
+	//  	http://192.168.124.29:8081/#/?device=andriod;
+//				alert(device);
+	    	if(device == 'android'){
+	    			window.android.toSearch(comHref + '/#/pages/ucenter/search'); //调起andriod交互方法(由app发起。浏览器会报错正常)
+	    			return false;
+	    	}else if(device == 'ios'){
+	    			var message = {'url':comHref + '/#/pages/ucenter/search'}
+						window.webkit.messageHandlers.webViewApp.postMessage(message);
+						return false;
+	    	}else{
+		  		this.$router.push('/pages/ucenter/search');
+		  		/*清除搜索记录缓存*/
+		  		this.$cookie.delCookie('search');
+					this.$cookie.delCookie('searchKey');
+			}
+  	},
  }
 }
 </script>

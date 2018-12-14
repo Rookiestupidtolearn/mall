@@ -48,6 +48,12 @@
 	        <p class="txt">账户中心</p>
 	      </router-link >
 	    </div>
+	    <div class="item">
+	      <router-link  to="/pages/ucenter/coupon" class="a">
+	       <img src="../../static/images/fuwu5.png" alt=""  class="icon coupon"/>
+	        <p class="txt">我的优惠券</p>
+	      </router-link >
+	    </div>
 	      <div class="item no-border">
 	      <router-link  to="/pages/ucenter/collect" class="a">
 	        <img src="../../static/images/fuwu2.png" alt=""  class="icon gift"/>
@@ -72,12 +78,6 @@
 	        <p class="txt">消息中心</p>
 	      </router-link >
 	    </div>-->
-	     <div class="item">
-	      <router-link  to="/pages/ucenter/coupon" class="a">
-	        <p class="icon coupon"></p>
-	        <p class="txt">优惠券</p>
-	      </router-link >
-	    </div>
 	    <!--<div class="item item-bottom">
 	      <router-link  to="/pages/ucenter/mobile" class="a">
 	        <p class="icon phone"></p>
@@ -174,7 +174,7 @@ export default {
 	}
 	.orderList ul{
 		overflow: hidden;
-		padding: .3rem 0;
+		padding: .35rem 0;
 	}
 	.orderList ul li{
 		float:left;
@@ -184,7 +184,8 @@ export default {
 		width:.48rem;
 	}
 	.orderList ul li p{
-		margin-top:.18rem;
+		margin-top:.05rem;
+		font-size:.24rem;
 	}
 	.userinfo-availMoney{
 	  font-size:.29rem;
@@ -248,12 +249,10 @@ export default {
     display: block;
     margin-bottom: .16rem;
     width:.55rem;
-    height:.55rem;
 }
 
 .user-menu .icon.coupon{
-    background: url(http://yanxuan.nosdn.127.net/hxm/yanxuan-wap/p/20161201/style/img/sprites/ucenter-sdf6a55ee56-f2c2b9c2f0.png) 0 -.58rem no-repeat;
-    background-size: .52803rem;
+	 width:.55rem;
 }
 
 .user-menu .icon.gift{
@@ -271,7 +270,7 @@ export default {
 .user-menu .icon.kefu{
   width:.44rem;
 }
-
+/*
 .user-menu .icon.help{
     background: url(http://yanxuan.nosdn.127.net/hxm/yanxuan-wap/p/20161201/style/img/sprites/ucenter-sdf6a55ee56-f2c2b9c2f0.png) 0 -2.52rem no-repeat;
         background-size: .52803rem;
@@ -284,7 +283,7 @@ export default {
 .user-menu .icon.phone{
     background: url(https://platform-wxmall.oss-cn-beijing.aliyuncs.com/upload/20180727/15011540ebe21.png) no-repeat;
         background-size: .52803rem;
-}
+}*/
 	.userinfo-avatar {
 	width:1.60rem;
 	height:1.60rem;
