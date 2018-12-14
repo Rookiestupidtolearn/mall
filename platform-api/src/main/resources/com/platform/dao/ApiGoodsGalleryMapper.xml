@@ -85,5 +85,8 @@
             #{id}
         </foreach>
     </delete>
+    <delete id="deleteByGoodId">
+    	delete from nideshop_goods_gallery where goods_id = #{goodId}
+    </delete>
 
 </mapper>

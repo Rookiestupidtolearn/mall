@@ -155,14 +155,14 @@
         <result property="sms_text" column="sms_text"/>
     </resultMap>
 
-    <select id="querySmsCodeByUserId" resultMap="smslogMap">
+    <select id="querySmsCodeByUserId" parameterType="java.lang.Long" resultType="com.platform.entity.SmsLogVo">
         select
         a.id,
-        a.user_id,
+        a.user_id ,
         a.phone,
-        a.log_date,
+        a.log_date as Log_date,
         a.sms_code,
-        a.send_status,
+        a.send_status as send_status,
         a.sms_text
         from nideshop_sms_log a
         left join nideshop_sms_log b on a.user_id = b.user_id and b.log_date > a.log_date
@@ -183,7 +183,7 @@
         #{user_id},
         #{phone},
         #{log_date},
-        #{sms_code},
+        #{smsCode},
         #{send_status},
         #{sms_text}
         )

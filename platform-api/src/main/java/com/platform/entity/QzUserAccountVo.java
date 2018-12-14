@@ -11,6 +11,8 @@ public class QzUserAccountVo implements Serializable{
     private Long id;
     //用户余额
     private BigDecimal amount;
+    //冻结金额
+    private BigDecimal lock_amount;
     //修改时间
     private Date last_update_time;
     //创建时间
@@ -56,6 +58,14 @@ public class QzUserAccountVo implements Serializable{
 
 	public void setShop_user_id(Integer shop_user_id) {
 		this.shop_user_id = shop_user_id;
+	}
+
+	public BigDecimal getLock_amount() {
+		return lock_amount;
+	}
+
+	public void setLock_amount(BigDecimal lock_amount) {
+		this.lock_amount = lock_amount;
 	}
     
 }

@@ -115,7 +115,7 @@ public class GoodsCouponConfigController {
 			msgMap.put("str",resultSmg.toString());
 			return msgMap;
 		}
-        return R.ok();
+        return R.ok().put("str","");
     }
 
     /**

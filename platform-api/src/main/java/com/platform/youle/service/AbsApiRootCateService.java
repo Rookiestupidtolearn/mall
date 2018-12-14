@@ -4,10 +4,13 @@ import java.util.Calendar;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
+import com.platform.utils.StringUtils;
 import com.platform.youle.entity.RequestBaseEntity;
 import com.platform.youle.entity.ResponseChildsEntity;
 import com.platform.youle.entity.ResponseRootCateEntity;
 import com.platform.youle.entity.ResponseRootDetailEntity;
+import com.platform.youle.util.MD5util;
+import com.platform.youle.util.PropertiesUtil;
 import com.platform.youle.util.TokenUtil;
 
 public abstract class AbsApiRootCateService implements IApiFuncServicein{
@@ -18,11 +21,25 @@ public abstract class AbsApiRootCateService implements IApiFuncServicein{
 	   */
 	  @Override
 	  public void initRequestParam(RequestBaseEntity  entity){
-	      entity.setWid(TokenUtil.wid);
-	      entity.setTimestamp(TokenUtil.currentTime.toString());
-	      entity.setToken(TokenUtil.token);
+		  Long currentTime = Calendar.getInstance().getTimeInMillis();
+	      entity.setWid(PropertiesUtil.getValue("youle.properties","wid"));
+	      entity.setTimestamp(currentTime.toString());
+	      String token =getToken(currentTime);
+	      entity.setToken(token);
 	  }
 	
+		private  String getToken(Long currentTime){
+			String token = ""; 
+            StringBuffer  tokenStr = new StringBuffer("");
+            tokenStr.append(PropertiesUtil.getValue("youle.properties","wid"));
+            tokenStr.append(PropertiesUtil.getValue("youle.properties","accessToken"));
+            tokenStr.append(currentTime);
+            token = MD5util.encodeByMD5(tokenStr.toString()).toUpperCase();
+			return token;
+		}
+	  
+	
+		
 	  /**
 	   * 实体转map
 	   * @param entity
@@ -54,7 +71,7 @@ public abstract class AbsApiRootCateService implements IApiFuncServicein{
 	    * 5.2获取下级产品分类
 	    * @return
 	    */
-	   public abstract ResponseChildsEntity childs(Integer parentCate);
+	   public abstract String childs(Integer parentCate);
 	   /**
 	    * 5.3获取单个分类详情
 	    * @param cid

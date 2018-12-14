@@ -27,7 +27,7 @@ public class OrderVo implements Serializable {
     /*
     订单状态
     1xx 表示订单取消和删除等状态 0订单创建成功等待付款，　101订单已取消，　102订单已删除 103 订单失效
-    2xx 表示订单支付状态　201订单已付款，等待发货
+    2xx 表示订单支付状态　200 订单已付款，等待进入三方库  201订单已付款，进入三方库，等待发货
     3xx 表示订单物流相关状态　300订单已发货， 301用户确认收货
     4xx 表示订单退换货相关的状态　401 没有发货，退款　402 已收货，退款退货
     */
@@ -61,7 +61,7 @@ public class OrderVo implements Serializable {
     private String shipping_code;
     //快递公司名称
     private String shipping_name;
-    //快递号
+    //平台流水号
     private String shipping_no;
     //付款
     private String pay_id;

@@ -385,7 +385,7 @@ public class GoodsServiceImpl implements GoodsService {
 			return 0;
 		}
 		for(GoodsEntity goodsEntity : goodsList){
-			if(1 == goodsEntity.getIsOnSale()){ //不是上架中的商品处理上架
+			if(1 == goodsEntity.getIsOnSale() || 3 == goodsEntity.getIsOnSale() ){ //不是上架中的商品处理上架
 				//商品下架,删除购物车中对应的商品信息。并且回滚平台币和删除优惠券
 				//查询购物车中对应的商品信息。
 				List<CartEntity> checkedCartList = cartDao.queryCartListByGoodsId(goodsEntity.getId(),1); //购物车中是选中状态的商品数据

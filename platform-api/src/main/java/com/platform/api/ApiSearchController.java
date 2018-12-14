@@ -42,6 +42,7 @@ public class ApiSearchController extends ApiBaseAction {
      * 　　index
      */
     @ApiOperation(value = "搜索商品列表")
+    @IgnoreAuth
     @PostMapping("index")
     public Object index(@LoginUser UserVo loginUser) {
         Map<String, Object> resultObj = new HashMap();
@@ -65,19 +66,22 @@ public class ApiSearchController extends ApiBaseAction {
         List<Map> hotKeywordList = keywordsService.hotKeywordList(query);
         //
         param = new HashMap();
-        param.put("user_id", loginUser.getUserId());
+        param.put("user_id", getUserId());
         param.put("fields", "distinct keyword");
         param.put("page", 1);
         param.put("limit", 10);
         param.put("sidx", "id");
         param.put("order", "asc");
-        List<SearchHistoryVo> historyVoList = searchHistoryService.queryList(param);
-        String[] historyKeywordList = new String[historyVoList.size()];
-        if (null != historyVoList) {
-            int i = 0;
-            for (SearchHistoryVo historyVo : historyVoList) {
-                historyKeywordList[i] = historyVo.getKeyword();
-                i++;
+        String[] historyKeywordList = new String[0];
+        if(null != getUserId()){
+        	List<SearchHistoryVo> historyVoList = searchHistoryService.queryList(param);
+            historyKeywordList = new String[historyVoList.size()];
+            if (null != historyVoList) {
+                int i = 0;
+                for (SearchHistoryVo historyVo : historyVoList) {
+                    historyKeywordList[i] = historyVo.getKeyword();
+                    i++;
+                }
             }
         }
         //

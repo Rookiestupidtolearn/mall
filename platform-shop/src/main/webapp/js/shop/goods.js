@@ -163,13 +163,12 @@ var vm = new Vue({
                 url: "../goodscouponconfig/verify/"+ids,
                 async: true,
                 successCallback: function (r) {
-                	if(r != ''){
+                	if( r.str != ''){
                     	vm.msg = r.str;
                     	vm.aaaa = true;
                 		return;
-                	}
-                	if(r === ''){
-                		vm.isTrue = true;
+                	}else{
+                		vm.isTrue = true;	
                 	}
                 	if(!vm.isTrue){
                 		return;

@@ -56,6 +56,9 @@
             <if test="user_id != null">
                 and user_id = #{user_id}
             </if>
+             <if test="shippingNo != null  and shippingNo != '' ">
+                and shipping_no = #{shippingNo}
+            </if>
         </where>
        	order by add_time desc
         <if test="offset != null and limit != null">
@@ -104,6 +107,7 @@
 			`parent_id`,
 			`coupon_price`,
 			`callback_status`,
+			`shipping_no`,
 			`full_cut_price`,
 			`order_type`
 		)
@@ -141,6 +145,7 @@
 			#{parent_id},
 			#{coupon_price},
 			#{callback_status},
+			#{shipping_no},
 			#{full_cut_price},
 			#{order_type}
 		)

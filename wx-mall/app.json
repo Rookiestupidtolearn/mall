@@ -35,8 +35,7 @@
     "pages/auth/mobile/mobile",
     "pages/shopping/selCoupon/selCoupon",
     "pages/ucenter/accountSecurity/accountSecurity",
-    "pages/ucenter/helpCenter/helpCenter",
-    "pages/ucenter/namecardSecurity/namecard"
+    "pages/ucenter/helpCenter/helpCenter"
   ],
   "window": {
     "backgroundTextStyle": "dark",

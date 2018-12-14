@@ -61,8 +61,6 @@ public class ApiPayController extends ApiBaseAction {
     @Autowired
     private ApiOrderGoodsService orderGoodsService;
     @Autowired
-    private  ApiUserCouponMapper apiUserCouponMapper;
-    @Autowired
     private QzUserAccountMapper qzUserAccountMapper;
     @Autowired
     private ApiMoneyRecordMapper apiMoneyRecordMapper;
@@ -147,14 +145,12 @@ public class ApiPayController extends ApiBaseAction {
             String return_msg = MapUtils.getString("return_msg", resultUn);
             //
             if (return_code.equalsIgnoreCase("FAIL")) {
-//            	saveMoneyRecord(loginUser.getUserId(),1,orderInfo);
                 return toResponsFail("支付失败," + return_msg);
             } else if (return_code.equalsIgnoreCase("SUCCESS")) {
                 // 返回数据
                 String result_code = MapUtils.getString("result_code", resultUn);
                 String err_code_des = MapUtils.getString("err_code_des", resultUn);
                 if (result_code.equalsIgnoreCase("FAIL")) {
-//                	saveMoneyRecord(loginUser.getUserId(),1,orderInfo);
                     return toResponsFail("支付失败," + err_code_des);
                 } else if (result_code.equalsIgnoreCase("SUCCESS")) {
                     String prepay_id = MapUtils.getString("prepay_id", resultUn);
@@ -234,8 +230,7 @@ public class ApiPayController extends ApiBaseAction {
             orderInfo.setShipping_status(0);
             orderInfo.setPay_time(new Date());
             orderService.update(orderInfo);
-       
-            
+            orderService.discountUserAmount(orderInfo);
             return toResponsMsgSuccess("支付成功");
         } else if ("USERPAYING".equals(trade_state)) {
             // 重新查询 正在支付中
@@ -302,6 +297,7 @@ public class ApiPayController extends ApiBaseAction {
                 orderInfo.setShipping_status(0);
                 orderInfo.setPay_time(new Date());
                 orderService.update(orderInfo);
+                orderService.discountUserAmount(orderInfo);
                 response.getWriter().write(setXml("SUCCESS", "OK"));
             }
         } catch (Exception e) {

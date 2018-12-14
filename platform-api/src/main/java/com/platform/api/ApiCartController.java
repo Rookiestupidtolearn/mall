@@ -2,7 +2,7 @@ package com.platform.api;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,15 +18,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
+import com.platform.annotation.IgnoreAuth;
 import com.platform.annotation.LoginUser;
 import com.platform.cache.J2CacheUtils;
-import com.platform.dao.ApiCartMapper;
-import com.platform.dao.ApiTranInfoRecordMapper;
-import com.platform.dao.ApiUserCouponMapper;
 import com.platform.dao.GoodsCouponConfigMapper;
-import com.platform.dao.QzUserAccountMapper;
 import com.platform.entity.AddressVo;
-import com.platform.entity.ApiTranInfoRecordVo;
 import com.platform.entity.BuyGoodsVo;
 import com.platform.entity.CartVo;
 import com.platform.entity.CouponInfoVo;
@@ -35,20 +31,17 @@ import com.platform.entity.GoodsCouponConfigVo;
 import com.platform.entity.GoodsSpecificationVo;
 import com.platform.entity.GoodsVo;
 import com.platform.entity.ProductVo;
-import com.platform.entity.QzUserAccountVo;
-import com.platform.entity.UserCouponVo;
 import com.platform.entity.UserVo;
 import com.platform.service.ApiAddressService;
 import com.platform.service.ApiCartService;
 import com.platform.service.ApiCouponService;
 import com.platform.service.ApiGoodsService;
 import com.platform.service.ApiGoodsSpecificationService;
+import com.platform.service.ApiOrderService;
 import com.platform.service.ApiProductService;
+import com.platform.service.ApiUserService;
 import com.platform.util.ApiBaseAction;
 import com.platform.util.PayMatchingUtil;
-import com.platform.youle.entity.ResponseChildsEntity;
-import com.platform.youle.entity.ResponseRootCateEntity;
-import com.platform.youle.service.AbsApiRootCateService;
 import com.qiniu.util.StringUtils;
 
 import io.swagger.annotations.Api;
@@ -76,17 +69,12 @@ public class ApiCartController extends ApiBaseAction {
     @Autowired
     private ApiCouponService apiCouponService;
     @Autowired
-    private GoodsCouponConfigMapper goodsCouponConfigMapper;
-    @Autowired
-    private  ApiUserCouponMapper apiUserCouponMapper;
-    @Autowired
-    private  QzUserAccountMapper qzUserAccountMapper;
-    @Autowired
-    private ApiCartMapper apiCartMapper;
-    @Autowired
-    private ApiTranInfoRecordMapper apiTranInfoRecordMapper;
-    @Autowired
     private PayMatchingUtil payMatchingUtils;
+    @Autowired
+    private GoodsCouponConfigMapper goodsCouponConfigMapper;
+    
+    @Autowired
+    private ApiUserService userService;
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	
     /**
@@ -257,7 +245,6 @@ public class ApiCartController extends ApiBaseAction {
             cartInfo.setGoods_specifition_ids(productInfo.getGoods_specification_ids());
             cartInfo.setChecked(1);
             cartService.save(cartInfo);
-            updateUserCouponPrice(goodsId, productId, number, loginUser.getUserId(),1);
         } else {
             //如果已经存在购物车中，则数量增加
             if ((productInfo.getGoods_number() == null ? 0 : productInfo.getGoods_number()) < (number + cartInfo.getNumber())) {
@@ -265,7 +252,6 @@ public class ApiCartController extends ApiBaseAction {
             }
             cartInfo.setNumber(cartInfo.getNumber() + number);
             cartService.update(cartInfo);
-            updateUserCouponPrice(goodsId, productId, number,loginUser.getUserId(),1);
         }
         return toResponsSuccess(getCart(loginUser));
     }
@@ -299,11 +285,9 @@ public class ApiCartController extends ApiBaseAction {
                 cartInfo.setNumber(num);
                 cartService.update(cartInfo);
                 cart_num = cartInfo.getNumber();
-                updateUserCouponPrice(goodsId, productId, num, loginUser.getUserId(),2);
             } else if (cartInfo.getNumber() == 1) {
                 cartService.delete(cartInfo.getId());
                 param.put("user_id", loginUser.getUserId());
-                apiUserCouponMapper.deleteUserCouponPrice(param);
                 cart_num = 0;
             }
         }
@@ -322,8 +306,6 @@ public class ApiCartController extends ApiBaseAction {
         Integer productId = jsonParam.getInteger("productId");
         Integer number = jsonParam.getInteger("number");
         Integer id = jsonParam.getInteger("id");
-        BigDecimal couponTotalPrice = BigDecimal.ZERO;
-        Long userId = loginUser.getUserId();
         Map<String,Object> param = new HashMap<>();
         //取得规格的信息,判断规格库存
         ProductVo productInfo = productService.queryObject(productId);
@@ -337,7 +319,6 @@ public class ApiCartController extends ApiBaseAction {
             cartInfo.setNumber(number);
             cartService.update(cartInfo);
             param.put("user_id", loginUser.getUserId());
-            updateUserCouponPrice(goodsId, productId, number, userId,3);
             return toResponsSuccess(getCart(loginUser));
         }
         Map cartParam = new HashMap();
@@ -369,8 +350,6 @@ public class ApiCartController extends ApiBaseAction {
             }
             cartInfo.setGoods_specifition_ids(productInfo.getGoods_specification_ids());
             cartService.update(cartInfo);
-         
-            updateUserCouponPrice(goodsId, productId, number, loginUser.getUserId(),3);
         } else {
             //合并购物车已有的product信息，删除已有的数据
             Integer newNumber = number + newcartInfo.getNumber();
@@ -379,7 +358,6 @@ public class ApiCartController extends ApiBaseAction {
             }
             cartService.delete(newcartInfo.getId());
             param.put("user_id", loginUser.getUserId());
-            apiUserCouponMapper.deleteUserCouponPrice(param);
             //添加规格名和值
             String[] goodsSepcifitionValue = null;
             if (null != productInfo.getGoods_specification_ids()) {
@@ -402,7 +380,6 @@ public class ApiCartController extends ApiBaseAction {
             }
             cartInfo.setGoods_specifition_ids(productInfo.getGoods_specification_ids());
             cartService.update(cartInfo);
-            updateUserCouponPrice(goodsId, productId, number, loginUser.getUserId(),3);
         }
         return toResponsSuccess(getCart(loginUser));
     }
@@ -442,12 +419,24 @@ public class ApiCartController extends ApiBaseAction {
 
     //  获取购物车商品的总件件数
     @ApiOperation(value = "获取购物车商品的总件件数")
+    @IgnoreAuth
     @PostMapping("goodscount")
     public Object goodscount(@LoginUser UserVo loginUser) {
-        if (null == loginUser || null == loginUser.getUserId()) {
+    	Map<String, Object> resultObj = new HashMap();
+    	Long userId = getUserId();
+    	if(null == userId){ //用户未登录，默认展示购物车数量为0
+    		resultObj.put("cartList", null);
+    		resultObj.put("cartTotal", 0);
+    		 return toResponsSuccess(resultObj);
+    	}
+    	
+        /*if (null == loginUser || null == loginUser.getUserId()) {
             return toResponsFail("未登录");
-        }
-        Map<String, Object> resultObj = new HashMap();
+        }*/
+    	loginUser = userService.queryObject(userId);
+    	if(null == loginUser){
+    		throw new RuntimeException("【商品详情页查询用户购物车数量】未查询带用户id为"+userId+"的用户");
+    	}
         //查询列表数据
         Map param = new HashMap();
         param.put("user_id", loginUser.getUserId());
@@ -471,7 +460,7 @@ public class ApiCartController extends ApiBaseAction {
      */
     @ApiOperation(value = "订单提交前的检验和填写相关订单信息")
     @PostMapping("checkout")
-    public Object checkout(@LoginUser UserVo loginUser, Integer couponId, @RequestParam(defaultValue = "cart") String type) {
+    public Object checkout(@LoginUser UserVo loginUser, Integer addressId,Integer couponId, @RequestParam(defaultValue = "cart") String type) {
         Map<String, Object> resultObj = new HashMap();
         //根据收货地址计算运费
         
@@ -523,11 +512,8 @@ public class ApiCartController extends ApiBaseAction {
             }
         }
 
-
         //获取可用的优惠券信息
         BigDecimal couponPrice = new BigDecimal(0.00);
-
-//        UserCouponVo userCoupon = apiUserCouponMapper.queryUserCouponTotalPrice(loginUser.getUserId());
         
         map.put("user_id", loginUser.getUserId());
         map.put("coupon_status", 1);
@@ -539,12 +525,39 @@ public class ApiCartController extends ApiBaseAction {
         		}
         	}
         }
+        BigDecimal couponAmount = BigDecimal.ZERO;
+        //平台币总额
+        BigDecimal userAmount = cartService.queryUserAccountAmount(loginUser.getUserId()); 
+        //购物车勾选商品 总额
+        if(userAmount != null){
+        	BigDecimal disCountAmount = cartService.queryUserDisCountAmount(checkedGoodsList);
+        	if(userAmount.compareTo(disCountAmount) > 0 || userAmount.compareTo(disCountAmount) == 0){
+        		resultObj.put("ampleAmountFlag", true);
+        		couponAmount = disCountAmount;
+        	}
+        	if(userAmount.compareTo(disCountAmount) < 0){
+        		BigDecimal amount = goodsMaxDiscount(checkedGoodsList, userAmount);
+        		BigDecimal usableAmount = disCountAmount.subtract(amount);//还可支付平台币金额
+        		BigDecimal residueAmount = userAmount.subtract(amount);//剩余平台币金额
+        		resultObj.put("usableAmount", usableAmount);
+        		resultObj.put("residueAmount", residueAmount);
+        		resultObj.put("ampleAmountFlag", false);
+        		couponAmount = amount;
+        	}
+        }
         
         //订单的总价
         BigDecimal orderTotalPrice = goodsTotalPrice.add(freightPrice);
-        BigDecimal actualPrice = orderTotalPrice.subtract(couponPrice);  //减去其它支付的金额后，要实际支付的金额
+        BigDecimal actualPrice = orderTotalPrice.subtract(couponPrice).subtract(couponAmount);  //减去其它支付的金额后，要实际支付的金额
+        
+        //校验商品是否有库存,是否下架
+        JSONObject resObj = cartService.queryJdGoodsStatus(checkedGoodsList,addressId);
+        
+        resultObj.put("unSaleCarts", resObj.get("unSaleCarts"));//下架商品
+        resultObj.put("unStoreCarts", resObj.get("unStoreCarts"));//无库存商品
+        resultObj.put("disCountAmount", couponAmount);//优惠金额
+        resultObj.put("userAmount", userAmount);
         resultObj.put("freightPrice", freightPrice);
-
         resultObj.put("couponPrice", couponPrice);
         resultObj.put("checkedGoodsList", checkedGoodsList);
         resultObj.put("goodsTotalPrice", goodsTotalPrice);
@@ -585,166 +598,53 @@ public class ApiCartController extends ApiBaseAction {
             }
         return toResponsSuccess(couponVos);
     }
-    public Object  getUserCouponTotalPrice(Long userId,BigDecimal couponTotalPrice,Integer type){
-    	  List<UserCouponVo> userCouponVos = apiUserCouponMapper.queryUserCouponTotalPrice(userId);//查询用户优惠券信息
-          List<UserCouponVo> coupons = new ArrayList<>();
-          if(!CollectionUtils.isEmpty(userCouponVos)){
-         	 for(int i = 0;i<userCouponVos.size();i++){
-         		 if(userCouponVos.get(i).getCoupon_id() == 11){
-         			 coupons.add(userCouponVos.get(i));
-         		 }
-         	 }
-          }
-        UserCouponVo userCouponVo = null;
-        if(!CollectionUtils.isEmpty(coupons)){
-        	userCouponVo = coupons.get(0);
-        }
-    	if(userCouponVo == null){
-    		//获取订单使用的优惠券
-    		UserCouponVo userCoupon = new UserCouponVo();
-    		userCoupon.setCoupon_id(11);
-    		userCoupon.setCoupon_number("1");
-    		userCoupon.setUser_id(userId);
-    		userCoupon.setCoupon_status(1);
-    		userCoupon.setCoupon_price(couponTotalPrice);
-    		userCoupon.setAdd_time(new Date());
-    		apiUserCouponMapper.save(userCoupon);
-    		if(null == userCoupon.getId()){
-    			return this.toResponsObject(400, "优惠券生成失败", "");
-    		}
-    	}
-		 if(userCouponVo != null){
-	     	userCouponVo.setCoupon_price(userCouponVo.getCoupon_price().add(couponTotalPrice));
-	     	userCouponVo.setCoupon_status(1);
-	     	apiUserCouponMapper.update(userCouponVo);
-	     	if(type == 1){
-	     		saveTranInfoRecord(userId, "1", "1", couponTotalPrice, userCouponVo.getCoupon_price(), "【添加购物车】原有优惠券作废,重新更新新优惠券");
-	     	}else if(type == 2){
-	     		saveTranInfoRecord(userId, "1", "1", couponTotalPrice, userCouponVo.getCoupon_price(), "【减少商品到购物车】原有优惠券作废,重新更新新优惠券");	     		
-	     	}else if(type == 3){
-	     		saveTranInfoRecord(userId, "1", "1", couponTotalPrice, userCouponVo.getCoupon_price(), "【更新购物车】原有优惠券作废,重新更新新优惠券");
-	     	}
-	     }
-    	return this.toResponsObject(0, "优惠券发送成功", "");
-    }
     /**
-     * 更新用户优惠券、平台币
-     * @param goodsId
-     * @param productId
-     * @param number
-     * @param userId
-     * @param type 1:添加购物车 2:减少商品到购物车 3:更新购物车
-     * @return
-     */
-    public synchronized Object updateUserCouponPrice(Integer goodsId,Integer productId,Integer number,Long userId,Integer type){
-    	 BigDecimal couponTotalPrice = BigDecimal.ZERO;//优惠券总价值
-        
-         Map<String,Object> map = new HashMap<>();
-         map.put("userId",userId);
-         BigDecimal amount = BigDecimal.ZERO;//初始化用户平台币
-         logger.info("【更新用户优惠券开始】,用户id" + userId);
-         QzUserAccountVo userAmountVo =qzUserAccountMapper.queruUserAccountInfo(userId);//查询用户平台币信息
-         
-         if(userAmountVo != null){
-        	 List<UserCouponVo> userCouponVos = apiUserCouponMapper.queryUserCouponTotalPrice(userId);//查询用户优惠券信息
-             List<UserCouponVo> coupons = new ArrayList<>();
-             List<CartVo> carts = apiCartMapper.queryUserCarts(userId);	
-             if(!CollectionUtils.isEmpty(userCouponVos)){
-            	 for(int i = 0;i<userCouponVos.size();i++){
-            		 if(userCouponVos.get(i).getCoupon_id() == 11){
-            			 coupons.add(userCouponVos.get(i));
-            		 }
-            	 }
-             }
-             UserCouponVo userCouponVo = null;
-             if(!CollectionUtils.isEmpty(coupons)){
-             	userCouponVo = coupons.get(0);
-             }
-             if(userCouponVo != null && userAmountVo != null){
-            	 //购物车发生修改  原有优惠券作废，重新生成优惠券
-            	 userCouponVo.setCoupon_status(7);
-            	 logger.info("【更新用户优惠券】原有优惠券作废，原有优惠券金额" + userCouponVo.getCoupon_price()+"原用户平台币" + userAmountVo.getAmount());
-            	 apiUserCouponMapper.update(userCouponVo);
-            	 if(type == 1){
-            		 saveTranInfoRecord(userId, "1", "2", userCouponVo.getCoupon_price(), userCouponVo.getCoupon_price(), "【添加购物车】购物车发生修改  原有优惠券作废");
-            	 }else if(type == 2){
-            		 saveTranInfoRecord(userId, "1", "2", userCouponVo.getCoupon_price(), userCouponVo.getCoupon_price(), "【减少商品到购物车】购物车发生修改  原有优惠券作废");
-            	 }else if(type == 3){
-            		 saveTranInfoRecord(userId, "1", "2", userCouponVo.getCoupon_price(), userCouponVo.getCoupon_price(), "【更新购物车】购物车发生修改  原有优惠券作废");
-            	 }
-            	 //回滚平台币
-            	 userAmountVo.setAmount(userAmountVo.getAmount().add(userCouponVo.getCoupon_price()));
-            	 qzUserAccountMapper.updateUserAccount(userAmountVo);
-            	
-            	 logger.info("更新用户平台币,更新后平台币金额" + userAmountVo.getAmount());
-            	 if(type == 1){
-            		 saveTranInfoRecord(userId, "2", "1", userCouponVo.getCoupon_price(), userAmountVo.getAmount(), "【添加购物车】原有优惠券作废,原优惠券金额回滚到平台币");
-            	 }else if(type == 2){
-            		 saveTranInfoRecord(userId, "2", "1", userCouponVo.getCoupon_price(), userAmountVo.getAmount(), "【减少商品到购物车】原有优惠券作废,原优惠券金额回滚到平台币");
-            	 }else if(type == 3){
-            		 saveTranInfoRecord(userId, "2", "1", userCouponVo.getCoupon_price(), userAmountVo.getAmount(), "【更新购物车】原有优惠券作废,原优惠券金额回滚到平台币");
-            	 }
-             }
-             if(!CollectionUtils.isEmpty(carts)){
-            	for(CartVo cart : carts){
-            		if(null != cart.getChecked() && 1 == cart.getChecked()){
-            			//获取产品配比值
-            			GoodsCouponConfigVo goodsCoupon = goodsCouponConfigMapper.getUserCoupons(cart.getGoods_id(),userId);
-            			BigDecimal couponlPrice = BigDecimal.ZERO;//优惠券临时总价值
-            			//计算该产品优惠券总和
-            			if(goodsCoupon != null){
-            				BigDecimal payMatching = BigDecimal.ZERO;
-                			if(payMatchingUtils.getPayMatching(cart.getProduct_id())!= null){
-                				Object value = payMatchingUtils.getPayMatching(cart.getProduct_id()).get(cart.getGoods_id());
-                				if(value != null){
-                					payMatching = new BigDecimal(value.toString());
-                				}
-                			}
-            				couponlPrice = payMatching.multiply(new BigDecimal(cart.getNumber()));
-            			}
-            			couponTotalPrice = couponTotalPrice.add(couponlPrice);
-            		}
-            	}
-             }
-             if(userAmountVo != null){
-            	 amount = userAmountVo.getAmount();
-            	 if(amount.compareTo(couponTotalPrice)<0){
-            		 couponTotalPrice = amount;
-            	 }
-            	 userAmountVo.setAmount(userAmountVo.getAmount().subtract(couponTotalPrice));
-            	 qzUserAccountMapper.updateUserAccount(userAmountVo);
-            	 logger.info("更新用户平台币,更新后平台币金额" + userAmountVo.getAmount());
-            	 if(type == 1){
-            		 saveTranInfoRecord(userId, "2", "2", couponTotalPrice, userAmountVo.getAmount(), "【添加购物车】回滚平台币后扣减购物车中生成优惠券金额");
-            	 }else if(type == 2){
-            		 saveTranInfoRecord(userId, "2", "2", couponTotalPrice, userAmountVo.getAmount(), "【减少商品到购物车】回滚平台币后扣减购物车中生成优惠券金额");
-            	 }else if(type == 3){
-            		 saveTranInfoRecord(userId, "2", "2", couponTotalPrice, userAmountVo.getAmount(), "【更新购物车】回滚平台币后扣减购物车中生成优惠券金额");
-            	 }
-             }
-             getUserCouponTotalPrice(userId,couponTotalPrice,type);
-         }
-         return this.toResponsObject(0, "执行成功", "");
-    }
-    /**
-     * 生成平台币、优惠券流水
-     * @param userId
-     * @param tranType
-     * @param TranFlag
-     * @param tranAmount
-     * @param currentAmount
-     * @param remark
-     */
-    public void saveTranInfoRecord(Long userId,String tranType,String TranFlag,BigDecimal tranAmount,BigDecimal currentAmount
-    		,String remark){
-    	 ApiTranInfoRecordVo tranInfo = new ApiTranInfoRecordVo();
-    	 tranInfo.setUser_id(userId);
-    	 tranInfo.setTran_type(tranType);//1优惠券 2 平台币
-    	 tranInfo.setTran_flag(TranFlag);//1收入 2支出
-    	 tranInfo.setTran_amount(tranAmount);
-    	 tranInfo.setCurrent_amount(currentAmount);
-    	 tranInfo.setCreate_time(new Date());
-    	 tranInfo.setRemark(remark);
-    	 apiTranInfoRecordMapper.save(tranInfo);
-    }
+	 * 平台币金额小于总优惠金额，优惠金额最大化
+	 * @param carts
+	 * @param userAccount
+	 * @return
+	 */
+	public BigDecimal goodsMaxDiscount(List<CartVo> carts,BigDecimal userAccount){
+		BigDecimal maxDiscount = BigDecimal.ZERO;
+		List<BigDecimal> amounts = new ArrayList<>();
+		if(CollectionUtils.isEmpty(carts)){
+			return maxDiscount;
+		}
+		for(CartVo cart : carts){
+			//获取产品配比值
+			GoodsCouponConfigVo goodsCoupon = goodsCouponConfigMapper.getUserCoupons(cart.getGoods_id(),cart.getUser_id());
+			//计算该产品优惠券总和
+			if(goodsCoupon != null){
+				BigDecimal payMatching = BigDecimal.ZERO;
+    			if(payMatchingUtils.getPayMatching(cart.getProduct_id())!= null){
+    				Object value = payMatchingUtils.getPayMatching(cart.getProduct_id()).get(cart.getGoods_id());
+    				if(value != null){
+    					payMatching = new BigDecimal(value.toString());
+    				}
+    			}
+    			for(int j = 0;j<cart.getNumber();j++){
+    				amounts.add(payMatching);
+    			}
+			}
+			
+		}
+		Collections.sort(amounts);
+		for(int i = amounts.size()-1;i>= 0;i--){
+			userAccount = userAccount.subtract(amounts.get(i));
+			if(userAccount.compareTo(BigDecimal.ZERO) > 0){
+				maxDiscount = maxDiscount.add(amounts.get(i));
+				continue;
+			}
+			if(userAccount.compareTo(BigDecimal.ZERO) == 0){
+				maxDiscount = maxDiscount.add(amounts.get(i));
+				break;
+			}
+			if(userAccount.compareTo(BigDecimal.ZERO) < 0){
+				userAccount = userAccount.add(amounts.get(i));
+				continue;
+			}
+		}
+		return maxDiscount;
+	}
+    
 }

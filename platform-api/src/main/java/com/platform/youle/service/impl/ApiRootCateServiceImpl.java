@@ -41,20 +41,22 @@ public class ApiRootCateServiceImpl extends AbsApiRootCateService{
 	}
 
 	@Override
-	public ResponseChildsEntity childs(Integer parentCate) {
+	public String childs(Integer parentCate) {
 		ResponseChildsEntity  reponse=null;
 		RequestChildsEntity entity = new RequestChildsEntity();
 	    initRequestParam(entity);
 	    entity.setParentCate(parentCate);
+	    System.out.println(entity.getTimestamp());
+	    String result = "";
 		try {
 			logger.info("[5.2获取下级产品分类]入参："+JSONObject.toJSONString(entity));
-			String result = HttpUtil.post(Urls.base_test_url+Urls.childs, objectToMap(entity));
+			result = HttpUtil.post(Urls.base_prod_url+Urls.childs, objectToMap(entity));
 			logger.info("[5.2获取下级产品分类]出参："+result);
-			reponse = JSON.parseObject(result,ResponseChildsEntity.class);
+//			reponse = JSON.parseObject(result,ResponseChildsEntity.class);
 		} catch (Exception e) {
 			logger.error("[5.2获取下级产品分类]异常：", e);
 		}
-		return reponse;
+		return result;
 	}
 
 	@Override

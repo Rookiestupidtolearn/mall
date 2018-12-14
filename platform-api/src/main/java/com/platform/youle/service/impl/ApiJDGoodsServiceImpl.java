@@ -3,16 +3,26 @@ package com.platform.youle.service.impl;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.annotation.Resource;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
@@ -24,15 +34,16 @@ import com.platform.dao.ApiBrandMapper;
 import com.platform.dao.ApiCategoryMapper;
 import com.platform.dao.ApiGoodsGalleryMapper;
 import com.platform.dao.ApiGoodsMapper;
+import com.platform.dao.ApiJdProductIdsMapper;
 import com.platform.dao.ApiProductMapper;
 import com.platform.dao.JdGoodsImgPathMapper;
 import com.platform.dao.JdGoodsMapper;
 import com.platform.entity.BrandVo;
-import com.platform.entity.CartVo;
 import com.platform.entity.CategoryVo;
 import com.platform.entity.GoodsGalleryVo;
 import com.platform.entity.GoodsPureInterestRateVo;
 import com.platform.entity.GoodsVo;
+import com.platform.entity.JdProductIdsVo;
 import com.platform.entity.ProductVo;
 import com.platform.service.ApiGoodsPureInterestRateService;
 import com.platform.service.ApiGoodsService;
@@ -42,11 +53,11 @@ import com.platform.youle.entity.RequestChildsEntity;
 import com.platform.youle.entity.RequestProductStockEntity;
 import com.platform.youle.entity.RequestSkuDetailEntity;
 import com.platform.youle.entity.ResponseAllProductEntity;
-import com.platform.youle.entity.ResponseBaseEntity;
 import com.platform.youle.service.AbsApiGoodsService;
 import com.platform.youle.service.ApiJDGoodsService;
 import com.platform.youle.util.HttpUtil;
-import com.platform.youle.util.TokenUtil;
+import com.platform.youle.util.MD5util;
+import com.platform.youle.util.PropertiesUtil;
 
 @Service
 public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
@@ -71,10 +82,15 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 	private ApiProductMapper apiProductMapper;
 	@Autowired
 	private ApiGoodsPureInterestRateService apiGoodsPureInterestRateService;
+	@Autowired
+	private ApiJdProductIdsMapper apiJdProductIdsMapper;
+
 	// 查询库存默认地址
 	private String DEFAULT_ADDRESS = "1_72_2799";
 	@Autowired
 	private ApiGoodsService apiGoodsService;
+	@Resource(name = "transactionManager")
+	private DataSourceTransactionManager txManager;
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -89,7 +105,7 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 		initRequestParam(entity);
 		try {
 			logger.info("[1.1获取所有商品ID]入参：" + JSONObject.toJSONString(entity));
-			String result = HttpUtil.post(Urls.base_test_url + Urls.getAllProductIdsUrl, objectToMap(entity));
+			String result = HttpUtil.post(Urls.base_prod_url + Urls.getAllProductIdsUrl, objectToMap(entity));
 			logger.info("[1.1获取所有商品ID]出参：" + result);
 			reponse = JSON.parseObject(result, new TypeReference<ResponseAllProductEntity>() {
 			});
@@ -108,11 +124,9 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 		entity.setPid(productId);
 		entity.setNum(number);
 		entity.setAddress(address);
-		logger.info("[1.4单个查询商品库存]入参：" + JSONObject.toJSONString(entity));
 		String result = "";
 		try {
-			result = HttpUtil.post(Urls.base_test_url + Urls.stock, objectToMap(entity));
-			logger.info("[1.4单个查询商品库存" + result);
+			result = HttpUtil.post(Urls.base_prod_url + Urls.stock, objectToMap(entity));
 			if (result == null) {
 				param.put("msg", "三方返回数据为空");
 				return param;
@@ -121,6 +135,10 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 			logger.error("[1.4单个查询商品库存]异常", e);
 		}
 		JSONObject resultDate = JSONObject.parseObject(result);
+		if (resultDate.get("RESULT_DATA") == null) {
+			param.put("msg", "三方返回数据为空");
+			return param;
+		}
 		String results = resultDate.get("RESULT_DATA").toString();
 		if (StringUtils.isEmpty(results)) {
 			param.put("msg", "三方返回数据为空");
@@ -136,20 +154,42 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 			param.put("msg", "三方返回数据成功");
 			param.put("num", number);
 			return param;
-		}
-		if ((!Boolean.parseBoolean(resObj.get("stock_status").toString())) && number == 1) {
+		} 
+		else {
 			param.put("msg", "三方返回数据成功,没有库存");
 			param.put("num", 0);
 			return param;
 		}
-		return stock(productId, Math.round(number / 2), address);
+//		 if ((!Boolean.parseBoolean(resObj.get("stock_status").toString())) && number == 1) {
+//			 param.put("msg", "三方返回数据成功,没有库存");
+//			 param.put("num", 0);
+//			 return param;
+//		 }
+//		 return stock(productId, Math.round(number / 2), address);
 	}
 
-	public void initRequestParam(RequestBaseEntity entity) {
-		entity.setWid(TokenUtil.wid);
-		entity.setTimestamp(TokenUtil.currentTime.toString());
-		entity.setToken(TokenUtil.token);
-	}
+
+	 /**
+	   * 初始请求参数
+	   * @param entity
+	   */
+	  public void initRequestParam(RequestBaseEntity  entity){
+		  Long currentTime = Calendar.getInstance().getTimeInMillis();
+	      entity.setWid(PropertiesUtil.getValue("youle.properties","wid"));
+	      entity.setTimestamp(currentTime.toString());
+	      String token =getToken(currentTime);
+	      entity.setToken(token);
+	  }
+	
+		private  String getToken(Long currentTime){
+			String token = ""; 
+         StringBuffer  tokenStr = new StringBuffer("");
+         tokenStr.append(PropertiesUtil.getValue("youle.properties","wid"));
+         tokenStr.append(PropertiesUtil.getValue("youle.properties","accessToken"));
+         tokenStr.append(currentTime);
+         token = MD5util.encodeByMD5(tokenStr.toString()).toUpperCase();
+			return token;
+		}
 
 	public Map<String, Object> objectToMap(RequestBaseEntity entity) throws Exception {
 		String str = JSON.toJSONString(entity);
@@ -259,74 +299,91 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 		}
 	}
 
+
+
 	@Override
+	@Transactional
 	public JSONObject saveGoods() {
 		JSONObject resultObj = new JSONObject();
 		ResponseAllProductEntity response = this.queryAllProduects();
 		if (!response.isRESPONSE_STATUS()) {
 			resultObj.put("status", "false");
-			resultObj.put("msg", "1.1获取所有商品ID为空");
-			logger.info("[1.1获取所有商品ID为空]");
+			resultObj.put("msg", "1.1获取所有商品异常");
+			logger.info("[1.1获取所有商品异常]");
 			return resultObj;
 		}
-		List array = response.getRESULT_DATA();
+		logger.info("[1.1获取所有商品]产品总数量" + response.getTOTAL_AMOUNT());
+		List<?> array = response.getRESULT_DATA();
 		if (CollectionUtils.isEmpty(array)) {
 			resultObj.put("status", "false");
 			resultObj.put("msg", "1.1获取所有商品ID为空");
 			logger.info("[1.1获取所有商品ID为空]");
 			return resultObj;
 		}
-		for (int i = 0; i < array.size(); i++) {
-			JSONObject json = JSONObject.parseObject(array.get(i).toString());
-			String res = json.get((i + 1) + "").toString();
-			String newStr = (String) res.subSequence(1, res.length() - 1);
-			String[] attr = newStr.split(",");
+		JSONObject json = JSONObject.parseObject(array.get(0).toString());
+		
+
+		List<String> productIds = getJdProductIds(json);
+		
+//		Integer start = 0;
+//		List<JdProductIdsVo> subList = new ArrayList<>();
+//		Object  orderSubmitLock =  J2CacheUtils.get(J2CacheUtils.SHOP_JD_GOOD_NAME,REDIS_ORDER_LOCK);
+//		if(orderSubmitLock != null){
+//			J2CacheUtils.put(J2CacheUtils.SHOP_JD_GOOD_NAME, REDIS_ORDER_LOCK,Integer.parseInt(orderSubmitLock.toString()) + 1);
+//			start = Integer.parseInt(orderSubmitLock.toString());
+//			subList = apiJdProductIdsMapper.quertProductIds(start*200+1);
+//		}else{
+//			J2CacheUtils.put(J2CacheUtils.SHOP_JD_GOOD_NAME, REDIS_ORDER_LOCK, 1);
+//			subList = apiJdProductIdsMapper.quertProductIds(start);
+//		}
+//		if(subList.size()<= 0){
+//			resultObj.put("status", "true");
+//			resultObj.put("msg", "任务执行完毕，保存三方产品完成");
+//			logger.info("[任务执行完毕，保存三方产品完成]");
+//			J2CacheUtils.remove(J2CacheUtils.SHOP_JD_GOOD_NAME, REDIS_ORDER_LOCK);
+//			return resultObj;
+//		}
+		int count = 0;
+		for (int t = 0; t < productIds.size(); t++) {
 			// 查询所有京东商品 查出库中商品是否匹配到三方返回商品id，没有则置为下架状态
 			List<GoodsPureInterestRateVo> goodsPureInterestRateVoList = new ArrayList<>(); // 批量保存毛利率
-			List<GoodsVo> goodsVos = apiGoodsMapper.queryAllJDGoods();
-			if (!CollectionUtils.isEmpty(goodsVos)) {
-				List<String> arrayStr = Arrays.asList(attr);
-				List<Integer> list = new ArrayList<>();
-				for (int j = 0; j < goodsVos.size(); j++) {
-					String goodsn = goodsVos.get(j).getGoods_sn();
-					if (!arrayStr.contains(goodsn.substring(2, goodsn.length()))) {
-						list.add(goodsVos.get(j).getId());
-					}
-				}
-				if (!CollectionUtils.isEmpty(list)) {
-					Integer[] ids = new Integer[list.size()];
-					for (int t = 0; t < list.size(); t++) {
-						ids[t] = list.get(t);
-					}
-					apiGoodsService.unSaleBatch(ids,2);
-				}
-			}
-
-			for (int j = 0; j < attr.length; j++) {
+//			DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+//			def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);// 事务等级，
+//			TransactionStatus txStatus = txManager.getTransaction(def);// 获得事务状态
 				RequestSkuDetailEntity entity = new RequestSkuDetailEntity();
 				initRequestParam(entity);
-				entity.setPid(Long.parseLong(attr[j].toString()));
-
+				entity.setPid(Long.parseLong(productIds.get(t).toString()));
 				String result = "";
 				try {
-					result = HttpUtil.post(Urls.base_test_url + Urls.detial, objectToMap(entity));
+					result = HttpUtil.post(Urls.base_prod_url + Urls.detial, objectToMap(entity));
 					if (StringUtils.isEmpty(result)) {
 						resultObj.put("status", "false");
-						resultObj.put("msg", "[1.3获取单个商品详情]为空");
-						logger.info("[1.3获取单个商品详情]为空,productId:" + Long.parseLong(attr[j].toString()));
+						resultObj.put("msg", "[1.3获取单个商品详情]result为空");
+						logger.info("[1.3获取单个商品详情]result为空,productId:" + Long.parseLong(productIds.get(t).toString()));
 						continue;
 					}
 					JSONObject dateObj = JSONObject.parseObject(result);
+					if (dateObj.get("RESULT_DATA") == null) {
+						resultObj.put("status", "false");
+						resultObj.put("msg", "[1.3获取单个商品详情]RESULT_DATA为空" + dateObj);
+						logger.info("[1.3获取单个商品详情]RESULT_DATA为空,productId:" + productIds.get(t));
+						continue;
+					}
 					String resObj = dateObj.get("RESULT_DATA").toString();
 					if (StringUtils.isEmpty(resObj)) {
 						resultObj.put("status", "false");
 						resultObj.put("msg", "[1.3获取单个商品详情]为空");
-						logger.info("[1.3获取单个商品详情]为空,productId:" + Long.parseLong(attr[j].toString()));
+						logger.info("[1.3获取单个商品详情]为空,productId:" + productIds.get(t));
 						continue;
 					}
 					GoodsVo vo = new GoodsVo();
 					JSONObject resultDate = JSONObject.parseObject(resObj);
-
+					if (resultDate.get("PRODUCT_DATA") == null) {
+						resultObj.put("status", "false");
+						resultObj.put("msg", "[1.3获取单个商品详情]PRODUCT_DATA为空");
+						logger.info("[1.3获取单个商品详情]PRODUCT_DATA为空,productId:" + productIds.get(t));
+						continue;
+					}
 					String productDate = resultDate.get("PRODUCT_DATA").toString();
 					if (!StringUtils.isEmpty(productDate)) {
 						JSONObject productObj = JSONObject.parseObject(productDate);
@@ -339,20 +396,6 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 						if (CollectionUtils.isEmpty(goods)) {
 							vo.setName(productObj.get("name") == null ? "" : productObj.get("name").toString());
 							BrandVo brand = new BrandVo();
-							if (productObj.get("brand") != null) {
-								List<BrandVo> brands = apiBrandMapper
-										.quertBrandByNames(productObj.get("brand").toString());
-								if (CollectionUtils.isEmpty(brands)) {
-									brand.setName(productObj.get("brand").toString());
-									apiBrandMapper.save(brand);
-									vo.setBrand_id(brand.getId());
-								}
-							}
-
-							vo.setIs_delete(0);
-							vo.setList_pic_url(productObj.get("thumbnailImage") == null ? ""
-									: productObj.get("thumbnailImage").toString());
-							vo.setCategory_id(Integer.parseInt(productObj.get("productCate").toString()));
 							if (productObj.get("status") != null) {
 								if ("undercarriage".equals(productObj.get("status").toString())) {
 									vo.setIs_on_sale(0);
@@ -360,6 +403,19 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 									vo.setIs_on_sale(2);
 								}
 							}
+							if (productObj.get("brand") != null) {
+								List<BrandVo> brands = apiBrandMapper.quertBrandByNames(productObj.get("brand").toString());
+								if (CollectionUtils.isEmpty(brands)) {
+									brand.setName(productObj.get("brand").toString());
+									apiBrandMapper.save(brand);
+									vo.setBrand_id(brand.getId());
+								}
+							}
+							vo.setIs_delete(0);
+							vo.setList_pic_url(productObj.get("thumbnailImage") == null ? ""
+									: productObj.get("thumbnailImage").toString());
+							vo.setCategory_id(Integer.parseInt(productObj.get("productCate").toString()));
+							
 							vo.setMarket_price(productObj.get("marketPrice") == null ? BigDecimal.ZERO
 									: new BigDecimal(productObj.get("marketPrice").toString()));
 							vo.setRetail_price(productObj.get("retailPrice") == null ? BigDecimal.ZERO
@@ -368,47 +424,60 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 									productObj.get("features") == null ? "" : productObj.get("features").toString());
 							vo.setIs_hot(0);
 							vo.setGoods_desc(resultDate.get("PRODUCT_DESCRIPTION") == null ? null
-									: resultDate.get("PRODUCT_DESCRIPTION").toString());
+									: getGoodsImg(resultDate.get("PRODUCT_DESCRIPTION").toString()));
 							vo.setAdd_time(new Date());
 							vo.setUpdate_time(new Date());
 							vo.setSource("JD");
-							Map<String, Object> param = stock(productObj.get("productId").toString(), 100,
-									DEFAULT_ADDRESS);
+							Map<String, Object> param = stock(productObj.get("productId").toString(), 100, DEFAULT_ADDRESS);
 							if (param.get("num") != null) {
 								vo.setGoods_number(Integer.parseInt(param.get("num").toString()));
 							}
 							apiGoodsMapper.save(vo);
 							saveProduct(vo);
+							if (resultDate.get("PRODUCT_IMAGE") != null) {
+								JSONArray imgattr = JSONArray.parseArray(resultDate.get("PRODUCT_IMAGE").toString());
+								if (!CollectionUtils.isEmpty(imgattr)) {
+									apiGoodsGalleryMapper.deleteByGoodId(vo.getId());
+									for (int m = 0; m < imgattr.size(); m++) {
+										GoodsGalleryVo galleryVo = new GoodsGalleryVo();
+										JSONObject imgObj = JSONObject.parseObject(imgattr.get(m).toString());
+										galleryVo.setImg_url(imgObj.get("imageUrl").toString());
+										galleryVo.setGoods_id(vo.getId());
+										galleryVo.setSort_order(Integer.parseInt(imgObj.get("orderSort").toString()));
+										apiGoodsGalleryMapper.save(galleryVo);
+									}
+								}
+							}
 							GoodsPureInterestRateVo goodsPureInterestRateVo = saveGoodsPureInterestRate(vo); // 保存商品毛利率
 							if (null != goodsPureInterestRateVo) {
 								goodsPureInterestRateVoList.add(goodsPureInterestRateVo);
 							}
 						} else {
 							GoodsVo good = goods.get(0);
+							if (productObj.get("status") != null) {
+								Integer[] jdids = new Integer[good.getId()];
+								if ("undercarriage".equals(productObj.get("status").toString())) {
+									apiGoodsService.unSaleBatch(jdids, 2);
+								} else {
+									good.setIs_on_sale(good.getIs_on_sale());
+								}
+							}
 							good.setName(productObj.get("name") == null ? "" : productObj.get("name").toString());
 							BrandVo brand = new BrandVo();
 							if (productObj.get("brand") != null) {
-								List<BrandVo> brands = apiBrandMapper
-										.quertBrandByNames(productObj.get("brand").toString());
+								List<BrandVo> brands = apiBrandMapper.quertBrandByNames(productObj.get("brand").toString());
 								if (CollectionUtils.isEmpty(brands)) {
 									brand.setName(productObj.get("brand").toString());
 									apiBrandMapper.save(brand);
 									good.setBrand_id(brand.getId());
 								}
 							}
-
+							
 							good.setIs_delete(good.getIs_delete());
 							good.setList_pic_url(productObj.get("thumbnailImage") == null ? ""
 									: productObj.get("thumbnailImage").toString());
 							good.setCategory_id(Integer.parseInt(productObj.get("productCate").toString()));
-							if (productObj.get("status") != null) {
-								Integer[] ids = new Integer[good.getId()];
-								if ("undercarriage".equals(productObj.get("status").toString())) {
-									apiGoodsService.unSaleBatch(ids,2);
-								} else {
-									good.setIs_on_sale(good.getIs_on_sale());
-								}
-							}
+							
 							good.setMarket_price(productObj.get("marketPrice") == null ? BigDecimal.ZERO
 									: new BigDecimal(productObj.get("marketPrice").toString()));
 							good.setRetail_price(productObj.get("retailPrice") == null ? BigDecimal.ZERO
@@ -416,48 +485,46 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 							good.setGoods_brief(
 									productObj.get("features") == null ? "" : productObj.get("features").toString());
 							good.setIs_hot(good.getIs_hot());
-
-							good.setGoods_desc(resultDate.get("PRODUCT_DESCRIPTION") == null ? null
-									: resultDate.get("PRODUCT_DESCRIPTION").toString());
+							
+							vo.setGoods_desc(resultDate.get("PRODUCT_DESCRIPTION") == null ? null
+									: getGoodsImg(resultDate.get("PRODUCT_DESCRIPTION").toString()));
 							good.setAdd_time(good.getAdd_time());
 							good.setUpdate_time(new Date());
 							good.setSource("JD");
-							Map<String, Object> param = stock(productObj.get("productId").toString(), 100,
-									DEFAULT_ADDRESS);
+							Map<String, Object> param = stock(productObj.get("productId").toString(), 100, DEFAULT_ADDRESS);
 							if (param.get("num") != null) {
 								good.setGoods_number(Integer.parseInt(param.get("num").toString()));
 							}
 							apiGoodsMapper.update(good);
 							updateProduct(good);
+							if (resultDate.get("PRODUCT_IMAGE") != null) {
+								JSONArray imgattr = JSONArray.parseArray(resultDate.get("PRODUCT_IMAGE").toString());
+								if (!CollectionUtils.isEmpty(imgattr)) {
+									apiGoodsGalleryMapper.deleteByGoodId(good.getId());
+									for (int m = 0; m < imgattr.size(); m++) {
+										GoodsGalleryVo galleryVo = new GoodsGalleryVo();
+										JSONObject imgObj = JSONObject.parseObject(imgattr.get(m).toString());
+										galleryVo.setImg_url(imgObj.get("imageUrl").toString());
+										galleryVo.setGoods_id(good.getId());
+										galleryVo.setSort_order(Integer.parseInt(imgObj.get("orderSort").toString()));
+										apiGoodsGalleryMapper.save(galleryVo);
+									}
+								}
+							}
 							updateGoodsPureInterestRate(good); // 更新毛利率
 						}
 					}
-					if (resultDate.get("PRODUCT_IMAGE") != null) {
-						JSONArray imgattr = JSONArray.parseArray(resultDate.get("PRODUCT_IMAGE").toString());
-						if (!CollectionUtils.isEmpty(imgattr)) {
-							for (int t = 0; t < imgattr.size(); t++) {
-								GoodsGalleryVo galleryVo = new GoodsGalleryVo();
-								JSONObject imgObj = JSONObject.parseObject(imgattr.get(t).toString());
-								galleryVo.setImg_url(imgObj.get("imageUrl").toString());
-								galleryVo.setGoods_id(vo.getId());
-								galleryVo.setSort_order(Integer.parseInt(imgObj.get("orderSort").toString()));
-								apiGoodsGalleryMapper.save(galleryVo);
-							}
-						}
-					}
-
 				} catch (Exception e) {
-					logger.error("[商品入库/更新异常]", e);
+					logger.error("[商品入库/更新异常]产品id：" + productIds.get(t), e);
 				}
-
-			}
-			if (!CollectionUtils.isEmpty(goodsPureInterestRateVoList)) {
-				// 执行批量保存商品毛利率
-				apiGoodsPureInterestRateService.saveBatch(goodsPureInterestRateVoList);
-			}
-
+				if (!CollectionUtils.isEmpty(goodsPureInterestRateVoList)) {
+					// 执行批量保存商品毛利率
+					apiGoodsPureInterestRateService.saveBatch(goodsPureInterestRateVoList);
+				}
+				count += 1;
+				logger.info("=====================" + count + "======================");
+//				txManager.commit(txStatus);
 		}
-
 		resultObj.put("status", "success");
 		return resultObj;
 
@@ -470,13 +537,18 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 		RequestBaseEntity entity = new RequestBaseEntity();
 		initRequestParam(entity);
 		try {
-			result = HttpUtil.post(Urls.base_test_url + Urls.rootCate, objectToMap(entity));
+			result = HttpUtil.post(Urls.base_prod_url + Urls.rootCate, objectToMap(entity));
 			if (StringUtil.isEmpty(result)) {
 				resultObj.put("status", "false");
 				resultObj.put("msg", "三方返回数据为空");
 				return resultObj;
 			}
 			JSONObject dateObj = JSONObject.parseObject(result);
+			if (dateObj.get("RESULT_DATA") == null) {
+				resultObj.put("status", "false");
+				resultObj.put("msg", "三方返回数据为空");
+				return resultObj;
+			}
 			String resultDate = dateObj.get("RESULT_DATA").toString();
 
 			if (StringUtil.isEmpty(resultDate)) {
@@ -488,7 +560,6 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 			if (!CollectionUtils.isEmpty(dateAttr)) {
 				for (int i = 0; i < dateAttr.size(); i++) {
 					JSONObject obj = JSONObject.parseObject(dateAttr.get(i).toString());
-					System.out.println("父分类" + obj);
 					CategoryVo category = apiCategoryMapper.queryObject(obj.get("code").toString());
 					if (category != null) {
 						category.setName(obj.get("name") == null ? "" : obj.get("name").toString());
@@ -538,7 +609,7 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 			initRequestParam(entity);
 			entity.setParentCate(vo.getId());
 			try {
-				String result = HttpUtil.post(Urls.base_test_url + Urls.childs, objectToMap(entity));
+				String result = HttpUtil.post(Urls.base_prod_url + Urls.childs, objectToMap(entity));
 
 				if (StringUtils.isEmpty(result)) {
 					resultObj.put("status", "false");
@@ -628,7 +699,7 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 			initRequestParam(entity);
 			entity.setParentCate(vo.getId());
 			try {
-				String result = HttpUtil.post(Urls.base_test_url + Urls.childs, objectToMap(entity));
+				String result = HttpUtil.post(Urls.base_prod_url + Urls.childs, objectToMap(entity));
 				if (StringUtils.isEmpty(result)) {
 					resultObj.put("status", "false");
 					resultObj.put("msg", "查询二级分类三方返回数据为空");
@@ -651,8 +722,9 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 					if (category != null) {
 						category.setName(obj.get("name").toString());
 						category.setIs_show(1);
-						category.setParent_id(vo.getParent_id());
-						category.setLevel(vo.getLevel());
+						category.setParent_id(
+								obj.get("parentId") == null ? 0 : Integer.parseInt(obj.get("parentId").toString()));
+						category.setLevel(obj.get("level").toString());
 						apiCategoryMapper.update(category);
 						continue;
 					}
@@ -669,8 +741,9 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 					vos.setId(Integer.parseInt(obj.get("code").toString()));
 					vos.setName(obj.get("name").toString());
 					vos.setIs_show(1);
-					vos.setParent_id(vo.getParent_id());
-					vos.setLevel(vo.getLevel());
+					vos.setParent_id(
+							obj.get("parentId") == null ? 0 : Integer.parseInt(obj.get("parentId").toString()));
+					vos.setLevel(obj.get("level").toString());
 					apiCategoryMapper.save(vos);
 				}
 				resultObj.put("status", "success");
@@ -682,5 +755,214 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 			}
 		}
 		return resultObj;
+	}
+
+	/**
+	 * 1.获取三方所有产品id 2.校验本地与三方产品id，如果本地有三方没有则本地产品下架
+	 * 
+	 * @param json
+	 * @return
+	 */
+	public List<String> getJdProductIds(JSONObject json) {
+		List<String> ids = new ArrayList<>();
+		for (int i = 0; i < json.size(); i++) {
+			String res = json.get((i + 1) + "").toString();
+			String newStr = (String) res.subSequence(1, res.length() - 1);
+			String[] attr = newStr.split(",");
+			List<String> arrayStr = Arrays.asList(attr);
+			ids.addAll(arrayStr);
+		}
+		List<GoodsVo> goodsVos = apiGoodsMapper.queryAllJDGoods();
+		if (!CollectionUtils.isEmpty(goodsVos)) {
+			List<Integer> list = new ArrayList<>();
+			for (int j = 0; j < goodsVos.size(); j++) {
+				String goodsn = goodsVos.get(j).getGoods_sn();
+				if (!ids.contains(goodsn.substring(2, goodsn.length()))) {
+					list.add(goodsVos.get(j).getId());
+				}
+			}
+			if (!CollectionUtils.isEmpty(list)) {
+				Integer[] goodIds = new Integer[list.size()];
+				for (int t = 0; t < list.size(); t++) {
+					goodIds[t] = list.get(t);
+				}
+				apiGoodsService.unSaleBatch(goodIds, 2);
+			}
+		}
+		return ids;
+	}
+
+	/**
+	 * 查分多个list
+	 * 
+	 * @param source
+	 * @param n
+	 * @return
+	 */
+	public static <T> List<List<T>> averageAssign(List<T> source, int n) {
+		List<List<T>> result = new ArrayList<List<T>>();
+		int remaider = source.size() % n; // (先计算出余数)
+		int number = source.size() / n; // 然后是商
+		int offset = 0;// 偏移量
+		for (int i = 0; i < n; i++) {
+			List<T> value = null;
+			if (remaider > 0) {
+				value = source.subList(i * number + offset, (i + 1) * number + offset + 1);
+				remaider--;
+				offset++;
+			} else {
+				value = source.subList(i * number + offset, (i + 1) * number + offset);
+			}
+			result.add(value);
+		}
+		return result;
+	}
+
+	@Override
+	public JSONObject saveJdProductIds() {
+		JSONObject resultObj = new JSONObject();
+		ResponseAllProductEntity response = this.queryAllProduects();
+		if (!response.isRESPONSE_STATUS()) {
+			resultObj.put("status", "false");
+			resultObj.put("msg", "1.1获取所有商品异常");
+			logger.info("[1.1获取所有商品异常]");
+			return resultObj;
+		}
+		logger.info("[1.1获取所有商品]产品总数量" + response.getTOTAL_AMOUNT());
+		List<?> array = response.getRESULT_DATA();
+		if (CollectionUtils.isEmpty(array)) {
+			resultObj.put("status", "false");
+			resultObj.put("msg", "1.1获取所有商品ID为空");
+			logger.info("[1.1获取所有商品ID为空]");
+			return resultObj;
+		}
+		JSONObject json = JSONObject.parseObject(array.get(0).toString());
+		List<String> productIds = getJdProductIds(json);
+		
+		JSONObject resObjs = saveJdProductIds(productIds);
+		if (!Boolean.parseBoolean(resObjs.get("state").toString())) {
+			resultObj.put("status", "false");
+			resultObj.put("msg", "保存三方productIds异常");
+			logger.info("[保存三方productIds异常]");
+			return resultObj;
+		}
+		resultObj.put("status", "true");
+		resultObj.put("msg", "保存三方productIds成功");
+		logger.info("[保存三方productIds成功]");
+		return null;
+	}
+	public JSONObject saveJdProductIds(List<String> ids) {
+		JSONObject resultObj = new JSONObject();
+		JdProductIdsVo vo = new JdProductIdsVo();
+		try {
+			for (String id : ids) {
+				JdProductIdsVo productVo = apiJdProductIdsMapper.queryObject(id);
+				if(productVo != null){
+					continue;
+				}
+				vo.setProductId(Integer.parseInt(id));
+				vo.setDeleteFlag("0");
+				vo.setCreateTime(new Date());
+				vo.setUpdateTime(new Date());
+				apiJdProductIdsMapper.save(vo);
+			}
+			resultObj.put("state", true);
+		} catch (Exception e) {
+			logger.error("[保存三方产品id异常]", e);
+			resultObj.put("state", false);
+		}
+		return resultObj;
+	}
+
+	@Override
+	public JSONObject checkJdStore() {
+		JSONObject param = new JSONObject();
+		//// 保存商品库存，初次录入商品，查询地区以北京市(1)朝阳区(72)三环以里(2799) 商品数量100
+		List<GoodsVo> goods = apiGoodsMapper.queryGoods();
+		if(CollectionUtils.isEmpty(goods)){
+			param.put("msg", "本地申请上架商品为空");
+			return param;
+		}
+		for(GoodsVo vo : goods){
+			Map<String,Object> rssult = autoStock(vo.getProduct_id().toString(), 100, DEFAULT_ADDRESS);
+			GoodsVo good = apiGoodsMapper.queryObject(vo.getId());
+			good.setGoods_number(rssult.get("num") == null ? 0 : Integer.parseInt(rssult.get("num").toString()));
+			apiGoodsMapper.update(good);
+			Map<String, Object> paramMap = new HashMap<>();
+			paramMap.put("goods_id", vo.getId());
+			List<ProductVo> productList = apiProductMapper.queryList(paramMap);
+			if(!CollectionUtils.isEmpty(productList)){
+				for(ProductVo product : productList){
+					product.setGoods_number(rssult.get("num") == null ? 0 : Integer.parseInt(rssult.get("num").toString()));
+					apiProductMapper.update(product);
+				}
+			}
+		}
+		param.put("msg", "更新本地库存成功");
+		return param;
+	}
+	
+	public Map<String, Object> autoStock(String productId, Integer num, String address) {
+		Map<String, Object> param = new HashMap<>();
+		//// 保存商品库存，初次录入商品，查询地区以北京市(1)朝阳区(72)三环以里(2799) 商品数量100
+		Integer number = num;
+		RequestProductStockEntity entity = new RequestProductStockEntity();
+		initRequestParam(entity);
+		entity.setPid(productId);
+		entity.setNum(number);
+		entity.setAddress(address);
+		String result = "";
+		try {
+			result = HttpUtil.post(Urls.base_prod_url + Urls.stock, objectToMap(entity));
+			if (result == null) {
+				param.put("msg", "三方返回数据为空");
+				return param;
+			}
+		} catch (Exception e) {
+			logger.error("[1.4单个查询商品库存]异常", e);
+		}
+		JSONObject resultDate = JSONObject.parseObject(result);
+		if (resultDate.get("RESULT_DATA") == null) {
+			param.put("msg", "三方返回数据为空");
+			return param;
+		}
+		String results = resultDate.get("RESULT_DATA").toString();
+		if (StringUtils.isEmpty(results)) {
+			param.put("msg", "三方返回数据为空");
+			return param;
+		}
+		JSONObject resObj = JSONObject.parseObject(results);
+		if (resObj.get("stock_status") == null) {
+			param.put("msg", "三方返回数据为空");
+			return param;
+		}
+
+		if (Boolean.parseBoolean(resObj.get("stock_status").toString())) {
+			param.put("msg", "三方返回数据成功");
+			param.put("num", number);
+			return param;
+		} 
+		 if ((!Boolean.parseBoolean(resObj.get("stock_status").toString())) && number == 1) {
+			 param.put("msg", "三方返回数据成功,没有库存");
+			 param.put("num", 0);
+			 return param;
+		 }
+		 return autoStock(productId, Math.round(number / 2), address);
+	}
+	public String getGoodsImg(String imgs){
+        StringBuffer goodsImg = new StringBuffer();
+        Pattern p_image;
+        Matcher m_image;
+        String regEx_img = "(i?)<img.*? src=\"?(.*?\\.(jpg|gif|bmp|bnp|png))\".*? (>|/>|</img>)";
+        p_image = Pattern.compile
+                (regEx_img, Pattern.CASE_INSENSITIVE);
+        m_image = p_image.matcher(imgs);
+        while (m_image.find()) {
+            goodsImg.append(m_image.group());
+        }
+        if(StringUtils.isEmpty(goodsImg)){
+        	return "";
+        }
+        return goodsImg.toString();
 	}
 }

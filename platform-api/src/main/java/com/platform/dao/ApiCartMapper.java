@@ -24,7 +24,7 @@ public interface ApiCartMapper extends BaseDao<CartVo> {
     
     List<CartVo> getCarts(Map<String, Object> params);
     //根据用户id查询购物车
-    List<CartVo> queryUserCarts(Long userId);
+    List<CartVo> queryUserCarts(Long user_id);
 
 	/**
 	 * 根据购物车ids查询购物车信息

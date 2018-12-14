@@ -160,6 +160,7 @@ public class ApiGoodsController extends ApiBaseAction {
     @ApiOperation(value = " 商品详情页数据")
     @ApiImplicitParams({@ApiImplicitParam(name = "id", value = "商品id", paramType = "path", required = true),
             @ApiImplicitParam(name = "referrer", value = "商品referrer", paramType = "path", required = false)})
+    @IgnoreAuth
     @PostMapping(value = "detail")
     public Object detail(Integer id, Long referrer) {
         Map<String, Object> resultObj = new HashMap<>();
@@ -258,21 +259,24 @@ public class ApiGoodsController extends ApiBaseAction {
         if (userHasCollect > 0) {
             userHasCollect = 1;
         }
-        //记录用户的足迹
-        FootprintVo footprintEntity = new FootprintVo();
-        footprintEntity.setAdd_time(System.currentTimeMillis() / 1000);
-        footprintEntity.setGoods_brief(info.getGoods_brief());
-        footprintEntity.setList_pic_url(info.getList_pic_url());
-        footprintEntity.setGoods_id(info.getId());
-        footprintEntity.setName(info.getName());
-        footprintEntity.setRetail_price(info.getRetail_price());
-        footprintEntity.setUser_id(userId);
-        if (null != referrer) {
-            footprintEntity.setReferrer(referrer);
-        } else {
-            footprintEntity.setReferrer(0L);
+        
+        if(null != userId){
+        	//记录用户的足迹
+            FootprintVo footprintEntity = new FootprintVo();
+            footprintEntity.setAdd_time(System.currentTimeMillis() / 1000);
+            footprintEntity.setGoods_brief(info.getGoods_brief());
+            footprintEntity.setList_pic_url(info.getList_pic_url());
+            footprintEntity.setGoods_id(info.getId());
+            footprintEntity.setName(info.getName());
+            footprintEntity.setRetail_price(info.getRetail_price());
+            footprintEntity.setUser_id(userId);
+            if (null != referrer) {
+                footprintEntity.setReferrer(referrer);
+            } else {
+                footprintEntity.setReferrer(0L);
+            }
+            footprintService.save(footprintEntity);
         }
-        footprintService.save(footprintEntity);
         
         //根据商品id查询对应最低价位的规格（前端默认选中此规格）
         Map paramMap = new HashMap();
@@ -374,6 +378,7 @@ public class ApiGoodsController extends ApiBaseAction {
             @ApiImplicitParam(name = "brandId", value = "品牌Id", paramType = "path", required = true),
             @ApiImplicitParam(name = "isNew", value = "新商品", paramType = "path", required = true),
             @ApiImplicitParam(name = "isHot", value = "热卖商品", paramType = "path", required = true)})
+    @IgnoreAuth
     @PostMapping(value = "list")
     public Object list(@LoginUser UserVo loginUser, Integer categoryId,
                        Integer brandId, String keyword, Integer isNew, Integer isHot,
@@ -395,13 +400,14 @@ public class ApiGoodsController extends ApiBaseAction {
         }
         //添加到搜索历史
         if (!StringUtils.isNullOrEmpty(keyword)) {
+        	Long userId = getUserId();
+        	loginUser = userService.queryObject(userId);
             SearchHistoryVo searchHistoryVo = new SearchHistoryVo();
             searchHistoryVo.setAdd_time(System.currentTimeMillis() / 1000);
             searchHistoryVo.setKeyword(keyword);
             searchHistoryVo.setUser_id(null != loginUser ? loginUser.getUserId().toString() : "");
             searchHistoryVo.setFrom("");
             searchHistoryService.save(searchHistoryVo);
-
         }
         //筛选的分类
         List<CategoryVo> filterCategory = new ArrayList();

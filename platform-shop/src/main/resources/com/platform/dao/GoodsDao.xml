@@ -139,6 +139,12 @@
         <if test="status != null and status != ''">
             AND nideshop_goods.is_on_sale = #{status}
         </if>
+        <if test="goodss != null">
+    	 	and nideshop_goods.id in 
+    		<foreach collection="goodss" item="ids"  open="(" separator="," close=")">
+    			#{ids}
+    		</foreach>
+    	</if>
         AND nideshop_goods.is_Delete = #{isDelete}
     </select>
 
