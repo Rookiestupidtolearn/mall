@@ -53,7 +53,8 @@ public class YeeTradeOrderEntity implements Serializable {
     private String memo;
     //创建时间
     private Date createTime;
-
+    //实际支付金额
+    private BigDecimal payAmount;
     /**
      * 设置：主键
      */
@@ -301,4 +302,14 @@ public class YeeTradeOrderEntity implements Serializable {
     public Date getCreateTime() {
         return createTime;
     }
+
+	public BigDecimal getPayAmount() {
+		return payAmount;
+	}
+
+	public void setPayAmount(BigDecimal payAmount) {
+		this.payAmount = payAmount;
+	}
+    
+    
 }

@@ -4,12 +4,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.google.gson.Gson;
+import com.platform.dao.ApiCartMapper;
 import com.platform.dao.JdOrderMapper;
 import com.platform.entity.AddressVo;
 import com.platform.entity.JdOrderVo;
@@ -39,6 +42,32 @@ public class JdOrderService {
 	private AbsApiGoodsService apiGoodsService;
 	@Autowired
 	private ApiOrderService orderService;
+	
+	@Autowired
+	private ApiAddressService  apiAddressService;
+	
+	@Autowired
+	private ApiCartMapper apiCartMapper;
+	
+	@Transactional
+	public String  jdOrderCreate(OrderVo info){
+		 AddressVo addressVo = apiAddressService.queryObject(info.getAddress_id());
+		if (addressVo ==null) {
+			logger.info("用户的收货地址不能为空，不能下单，用户id"+info.getUser_id());
+			return "ERROR";
+		}
+		if (StringUtils.isEmpty(info.getPid_num()) ) {
+			logger.info("订单的商品数量不能为空");
+			return "ERROR";
+		}
+		JdOrderVo jdOrderVo  = new JdOrderVo();
+		jdOrderVo.setPidNums(info.getPid_num());
+		
+		 this.jdOrderSubbmit(addressVo, info, jdOrderVo);
+		
+		
+		 return "ERROR";
+	}
 
 	/**
 	 * 创建订单

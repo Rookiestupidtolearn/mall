@@ -102,7 +102,8 @@ public class OrderVo implements Serializable {
     private BigDecimal full_cut_price; //订单满减
     private String full_region;//区县
     private String order_type; // 订单状态
-
+    private String  pid_num;  //
+    
     public String getFull_region() {
     //    return full_region;
         if (StringUtils.isNotEmpty(this.full_region)){
@@ -530,6 +531,14 @@ public class OrderVo implements Serializable {
 
 	public void setAddress_id(Integer address_id) {
 		this.address_id = address_id;
+	}
+
+	public String getPid_num() {
+		return pid_num;
+	}
+
+	public void setPid_num(String pid_num) {
+		this.pid_num = pid_num;
 	}
 
 

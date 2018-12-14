@@ -377,8 +377,7 @@ public class ApiOrderService {
 		}
 		orderInfo.setCoupon_price(couponAmount);
 
-		// 开启事务，插入订单信息和订单商品
-		apiOrderMapper.save(orderInfo);
+		
 		//查询可以抵扣金额
 		discountAmount = queryUserDisCountAmount(orderGoodsList,orderInfo);
 		if (null == orderInfo.getId()) {
@@ -423,7 +422,8 @@ public class ApiOrderService {
 		if (StringUtils.isNotEmpty(pidNums)) {
 			pidNums = pidNums.substring(0, pidNums.length() - 1);
 		}
-
+		// 开启事务，插入订单信息和订单商品
+		apiOrderMapper.save(orderInfo);
 		// 清空已购买的商品
 		apiCartMapper.deleteByCart(loginUser.getUserId(), 1, 1);
 		resultObj.put("errno", 0);
@@ -439,14 +439,6 @@ public class ApiOrderService {
 		if (yeepayMap != null) {
 			resultObj.put("payurl", yeepayMap.get("payurl"));
 		}
-
-//		// 创建第三方订单
-//		JdOrderVo jdOrderVo = new JdOrderVo();
-//		jdOrderVo.setPidNums(pidNums);
-//		Map<String, Object> result = jdOrderService.jdOrderSubbmit(addressVo, orderInfo, jdOrderVo);
-//		resultObj.put("errno", result.get("errno"));
-//		resultObj.put("errmsg", result.get("errmsg"));
-
 		return resultObj;
 	}
 
