@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.gson.Gson;
-import com.platform.dao.ApiCartMapper;
 import com.platform.dao.JdOrderMapper;
 import com.platform.entity.AddressVo;
 import com.platform.entity.JdOrderVo;
@@ -46,9 +45,6 @@ public class JdOrderService {
 	@Autowired
 	private ApiAddressService  apiAddressService;
 	
-	@Autowired
-	private ApiCartMapper apiCartMapper;
-	
 	@Transactional
 	public String  jdOrderCreate(OrderVo info){
 		 AddressVo addressVo = apiAddressService.queryObject(info.getAddress_id());
@@ -63,10 +59,11 @@ public class JdOrderService {
 		JdOrderVo jdOrderVo  = new JdOrderVo();
 		jdOrderVo.setPidNums(info.getPid_num());
 		
-		 this.jdOrderSubbmit(addressVo, info, jdOrderVo);
+	  this.jdOrderSubbmit(addressVo, info, jdOrderVo);
+	  info.setOrder_status(201);
+	  orderService.update(info);
 		
-		
-		 return "ERROR";
+		 return "OK";
 	}
 
 	/**
