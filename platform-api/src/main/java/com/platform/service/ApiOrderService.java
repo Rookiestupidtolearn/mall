@@ -338,6 +338,7 @@ public class ApiOrderService {
 		BigDecimal orderTotalPrice = goodsTotalPrice.add(freightPrice);
 
 		OrderVo orderInfo = new OrderVo();
+		orderInfo.setShipping_no(GenerateCodeUtil.buildBizNo());
 		orderInfo.setOrder_sn(GenerateCodeUtil.buildJDBizNo());
 		orderInfo.setUser_id(loginUser.getUserId());
 		// 收货地址和运费
