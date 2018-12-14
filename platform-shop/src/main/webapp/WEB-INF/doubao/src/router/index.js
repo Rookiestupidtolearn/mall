@@ -34,6 +34,8 @@ import account from '@/pages/ucenter/account'  //账户中心
 import userservice from '@/pages/ucenter/userservice'  //客户服务
 import successPay from '@/pages/payment/successPay'  //支付成功
 import failPay from '@/pages/payment/failPay'  //支付失败
+import logistics from '@/pages/ucenter/logistics'  //物流页面
+import lookLogistics from '@/pages/ucenter/lookLogistics'  //物流页面
 
 Vue.use(Router)
 
@@ -171,7 +173,15 @@ export default new Router({
     },{
       path: '/pages/payment/failPay',
       name: 'failPay',
-      component: failPay
+      component: failPay  
+    },{
+      path: '/pages/ucenter/logistics',
+      name: 'logistics',
+      component: logistics
+    },{
+      path: '/pages/ucenter/lookLogistics',
+      name: 'lookLogistics',
+      component: lookLogistics
     }
     
   ]

@@ -89,7 +89,7 @@
         		共{{disCountAmount}}币，开通即可使用
         	</div>
         	<div class="tips" v-else>
-        		还可支付x.xx币，余额不足，剩余xx.xx币可用
+        		还可支付{{usableAmount}}币，余额不足，剩余{{residueAmount}}币可用
         	</div>
          </div>
     </div>
@@ -130,6 +130,8 @@
 	  data () {
 	    return {
 //	    	headFont:'去付款',
+			usableAmount:'',
+			residueAmount:'',
 			showCzn:false, 
 			showCz:false,//平台币是否充足
 			showBin:true,
@@ -176,14 +178,7 @@
     		this.buyType = this.isBuy?'buy':'cart';
     		this.getCheckoutInfo();
     		this.getCouponData();
-    		
-    		
- 			if (this.showCz){
- 				this.showCzn = true; 
-	 		}else{
-	 			this.showBin = false;
-	 			this.showCzn = false; 
-	 		}
+ 			
 		    //每次重新加载界面，清空数据
 //		    app.globalData.userCoupon = 'NO_USE_COUPON'
 //		    app.globalData.courseCouponCode = {}
@@ -279,12 +274,22 @@
 		          that.actualPrice = res.data.data.actualPrice;
 		          that.checkedCoupon = res.data.data.checkedCoupon;
 		          that.disCountAmount = res.data.data.disCountAmount;
-//		          that.showCz = res.data.data.ampleAmountFlag;
+		          that.usableAmount = res.data.data.usableAmount;
+		          that.residueAmount = res.data.data.residueAmount;
+		          that.showCz = res.data.data.ampleAmountFlag;
 		          that.couponList = res.data.data.couponList;
 		          that.couponPrice = res.data.data.couponPrice;
 		          that.freightPrice = res.data.data.freightPrice;
 		          that.goodsTotalPrice = res.data.data.goodsTotalPrice;
 		          that.orderTotalPrice = res.data.data.orderTotalPrice
+		          
+		          /*判断平台币*/
+		        if (that.showCz){
+	 				that.showCzn = true; 
+		 		}else{
+		 			that.showBin = false;
+		 			that.showCzn = false; 
+		 		}
 		        //设置默认收获地址
 		        if (that.checkedAddress){
 		            let addressId = that.checkedAddress.id;

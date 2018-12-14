@@ -128,7 +128,7 @@ export default {
 				if(hrefD.indexOf('device')>-1){
 	    		var device = hrefD.split('?')[1].split('=')[1];
 	    	}
-	//  	http://192.168.124.29:8081/#/?device=andriod;
+	//  	http://192.168.124.29:8080/#/?device=andriod
 //				alert(device);
 	    	if(device == 'android'){
 	    			window.android.productDetail(comHref + e); //调起andriod交互方法(由app发起。浏览器会报错正常)
@@ -148,7 +148,7 @@ export default {
 				if(hrefD.indexOf('device')>-1){
 	    		var device = hrefD.split('?')[1].split('=')[1];
 	    	}
-	//  	http://192.168.124.29:8081/#/?device=andriod;
+	//  http://192.168.124.29:8080/#/?device=andriod
 //				alert(device);
 	    	if(device == 'android'){
 	    			window.android.toSearch(comHref + '/#/pages/ucenter/search'); //调起andriod交互方法(由app发起。浏览器会报错正常)
