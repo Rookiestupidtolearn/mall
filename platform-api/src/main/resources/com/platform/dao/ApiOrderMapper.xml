@@ -197,7 +197,8 @@
             <if test="parent_id != null">`parent_id` = #{parent_id},</if>
             <if test="coupon_price != null">`coupon_price` = #{coupon_price},</if>
             <if test="callback_status != null">`callback_status` = #{callback_status}</if>
-            <if test="full_cut_price != null">`full_cut_price` = #{full_cut_price},</if>
+            <if test="full_cut_price != null">`full_cut_price` = #{full_cut_price}</if>
+            <if test="order_type != null">`order_type` = #{order_type},</if>
         </set>
         where id = #{id}
     </update>

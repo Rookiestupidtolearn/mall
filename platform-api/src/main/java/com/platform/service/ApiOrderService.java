@@ -388,10 +388,7 @@ public class ApiOrderService {
 			resultObj.put("errmsg", "订单提交失败");
 			return resultObj;
 		}
-		OrderVo order = apiOrderMapper.queryObject(orderInfo.getId());
-		order.setActual_price(orderTotalPrice.subtract(couponAmount));
-		order.setCoupon_price(discountAmount);
-		apiOrderMapper.update(order);
+	
 	
 		/**
 		 * 订单问题 1.拆分渠道 1.1 渠道增加 1.2 状态
@@ -426,7 +423,11 @@ public class ApiOrderService {
 		if (StringUtils.isNotEmpty(pidNums)) {
 			pidNums = pidNums.substring(0, pidNums.length() - 1);
 		}
-	
+		OrderVo order = apiOrderMapper.queryObject(orderInfo.getId());
+		order.setActual_price(orderTotalPrice.subtract(couponAmount));
+		order.setCoupon_price(discountAmount);
+		order.setPid_num(pidNums);
+		apiOrderMapper.update(order);
 		// 清空已购买的商品
 		apiCartMapper.deleteByCart(loginUser.getUserId(), 1, 1);
 		resultObj.put("errno", 0);
