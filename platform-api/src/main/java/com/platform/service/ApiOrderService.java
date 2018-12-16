@@ -372,9 +372,9 @@ public class ApiOrderService {
 		orderInfo.setIntegral(0);
 		orderInfo.setIntegral_money(new BigDecimal(0));
 		if (type.equals("cart")) {
-			orderInfo.setOrder_type("1");
+			orderInfo.setOrder_type("0");
 		} else {
-			orderInfo.setOrder_type("4");
+			orderInfo.setOrder_type("0");
 		}
 		orderInfo.setCoupon_price(couponAmount);
 

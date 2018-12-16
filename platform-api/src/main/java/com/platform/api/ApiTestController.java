@@ -41,6 +41,7 @@ import com.platform.entity.ThirdPartyRegionEntity;
 import com.platform.entity.UserVo;
 import com.platform.service.ApiGoodsPureInterestRateService;
 import com.platform.service.ApiUserService;
+import com.platform.service.JdOrderService;
 import com.platform.service.ThirdPartyRegionService;
 import com.platform.util.ApiBaseAction;
 import com.platform.utils.GenerateCodeUtil;
@@ -124,7 +125,9 @@ public class ApiTestController extends ApiBaseAction {
 
 	// 查询库存默认地址
 	private String DEFAULT_ADDRESS = "1_72_2799";
-
+	@Autowired
+	private  JdOrderService jdOrderService ;
+	
 	/**
 	 * 获取用户信息
 	 */
@@ -802,7 +805,16 @@ public class ApiTestController extends ApiBaseAction {
 
 		return response;
 	}
+	@IgnoreAuth
+	@ApiOperation(value = "1.8批量查询商品可售状态")
+	@PostMapping("batchSaleStatus")
+	public Object batchSaleStatus() {
 
+		Map<String, Object> map =  jdOrderService.checkBatchSaleStatus("3409468966");
+
+		return map;
+	}
+	
 	@IgnoreAuth
 	@ApiOperation(value = "4、三方地址接口")
 	@PostMapping("response")

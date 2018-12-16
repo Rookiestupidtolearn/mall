@@ -24,7 +24,7 @@ public class AutoSubbmitJDOrderTask {
 	private ApiOrderService apiOrderService;
 	
 	
-	public void  subbmitJDOrder(){
+	public Object  subbmitJDOrder(){
 		logger.info("【创建三方订单任务开始】SUBBMIT_JDORDER_TASK_KEY ，start...");
 		// 记录任务开始跑
 	
@@ -35,15 +35,15 @@ public class AutoSubbmitJDOrderTask {
 			if (value != null) {
 				isExcep = true;
 				logger.error("SUBBMIT_JDORDER_TASK_KEY_error!,redis锁未释放");
-				return;
+				return null;
 			} else {
 				J2CacheUtils.put(SUBBMIT_JDORDER_TASK,1);
 			}
             //处理业务下订单
 			Map<String, Object> map = new HashMap<>();
 			map.put("orderStatus", 200);
-			map.put("order_type", 1);
-			map.put("pay_status", 1);
+			map.put("orderType", 1);
+			map.put("payStatus", 1);
 			List<OrderVo> orderList = 	apiOrderService.queryList(map);
 			for(OrderVo orderVo : orderList ){
 				if (orderVo.getAddress_id() ==null) {
@@ -63,6 +63,7 @@ public class AutoSubbmitJDOrderTask {
 			}
 			logger.info("创建三方订单任务end********###");
 		}
+		return null;
         
 		
 	}
