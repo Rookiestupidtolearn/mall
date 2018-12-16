@@ -59,6 +59,7 @@ import com.platform.youle.entity.ResponseCancelEntity;
 import com.platform.youle.entity.ResponseChildsEntity;
 import com.platform.youle.entity.ResponseOrderSubmitEntity;
 import com.platform.youle.entity.ResponseOrderTrackEntity;
+import com.platform.youle.entity.ResponseProductEntity;
 import com.platform.youle.entity.ResponseRootCateEntity;
 import com.platform.youle.entity.ResponseSystemOrderTrackEntity;
 import com.platform.youle.service.AbsApiGoodsService;
@@ -898,6 +899,23 @@ public class ApiTestController extends ApiBaseAction {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		
+//	        RequestProductStockEntity entity = new RequestProductStockEntity();
+//	        initRequestParam(entity);
+//	        entity.setPid(productId);
+//	        entity.setNum(num);
+//	        entity.setAddress(address);
+//	        try {
+//	            logger.info("[1.4单个查询商品库存]入参：" + JSONObject.toJSONString(entity));
+//	            String result = HttpUtil.post(Urls.base_prod_url+ Urls.stock, objectToMap(entity));
+//	            logger.info("[1.4单个查询商品库存" + result);
+//	            resultObj = JSON.parseObject(result, ResponseProductEntity.class);
+//	        } catch (Exception e) {
+//	            logger.error("[1.4单个查询商品库存]异常", e);
+//	        }
+
+	        
 		return resultObj;
 //		ResponseChildsEntity  reponse=null;
 //		RequestChildsEntity entity = new RequestChildsEntity();

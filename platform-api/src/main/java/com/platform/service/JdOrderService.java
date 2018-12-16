@@ -1,5 +1,7 @@
 package com.platform.service;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,12 +11,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.platform.dao.JdOrderMapper;
 import com.platform.entity.AddressVo;
 import com.platform.entity.JdOrderVo;
 import com.platform.entity.OrderVo;
+import com.platform.youle.constant.Constants.Urls;
+import com.platform.youle.entity.RequestBaseEntity;
 import com.platform.youle.entity.RequestOrderSubmitEntity;
+import com.platform.youle.entity.RequestOrderTrackEntity;
 import com.platform.youle.entity.ResponseBaseEntity;
 import com.platform.youle.entity.ResponseBatchSaleEntity;
 import com.platform.youle.entity.ResponseOrderSubmitEntity;
@@ -26,6 +34,9 @@ import com.platform.youle.entity.result.ResulGoodsSaleEntity;
 import com.platform.youle.entity.result.ResultstockBatchEntity;
 import com.platform.youle.service.AbsApiGoodsService;
 import com.platform.youle.service.AbsApiOrderService;
+import com.platform.youle.util.HttpUtil;
+import com.platform.youle.util.MD5util;
+import com.platform.youle.util.PropertiesUtil;
 
 @Service
 public class JdOrderService {
@@ -258,5 +269,99 @@ public class JdOrderService {
 
 		return map;
 	}
+
+	public JSONObject queryLogistics(String orderSn) {
+		logger.info("【查询三方物流信息开始】,本地订单号:"  + orderSn);
+		JSONObject resultObj = new JSONObject();
+		JdOrderVo jdOrder = jdOrderMapper.queryByThirdOrder(orderSn);
+		if (jdOrder == null) {
+			resultObj.put("code", 500);
+			resultObj.put("msg", "三方订单数据为空");
+			return resultObj;
+		}
+		List<Map<String,Object>> logistics = new ArrayList<>();
+		String orderKey = jdOrder.getOrderKey();
+		RequestOrderTrackEntity entity = new RequestOrderTrackEntity();
+		initRequestParam(entity);
+		entity.setOrderKey(orderKey);
+		
+		logger.info("2.5订单物流信息接口]入参："+JSONObject.toJSONString(entity));
+        String result = "";
+		try {
+			result = HttpUtil.post(Urls.base_prod_url+Urls.systemOrderTrack, objectToMap(entity));
+			logger.info("[2.5订单物流信息接口]出参："+result);
+		} catch (Exception e) {
+			logger.error("【查询三方物流信息异常】,本地订单号:"  + orderSn,e);
+		}
+		JSONObject obj = JSONObject.parseObject(result);
+		if(!Boolean.parseBoolean(obj.get("RESPONSE_STATUS").toString())){
+			logger.info("【查询三方物流信息RESPONSE_STATUS为false】");
+			resultObj.put("code", 500);
+			resultObj.put("msg", "三方订单数据为空");
+			return resultObj;
+		}
+		if(obj.get("RESULT_DATA") == null){
+			logger.info("【查询三方物流信息】RESULT_DATA为空");
+			resultObj.put("code", 500);
+			resultObj.put("msg", "三方订单数据RESULT_DATA为空");
+			return resultObj;
+		}
+		JSONObject resultData = JSONObject.parseObject(obj.get("RESULT_DATA").toString());
+		resultObj.put("order_key", resultData.get("third_order") == null ? "" : resultData.get("third_order"));//三方订单
+		resultObj.put("shipment_name", resultData.get("shipment_name") == null ? "" : resultData.get("shipment_name"));//快递公司
+		resultObj.put("shipment_order", resultData.get("shipment_order") == null ? "" : resultData.get("shipment_order"));//快递单号
+		resultObj.put("status", resultData.get("status") == null ? "" : resultData.get("status"));//物流状态, receive:揽件,transit:运输中, signed:已签收, refuse:拒收, other:其他
+		resultObj.put("last_modify_time", resultData.get("last_modify_time") == null ? "" : resultData.get("last_modify_time"));//快递公司
+		if(resultData.get("contents") == null){
+			logger.info("【查询三方物流信息】没有相关物流信息");
+			resultObj.put("code", 500);
+			resultObj.put("msg", "三方订单数据没有相关物流信息");
+			return resultObj;
+		}
+		JSONArray array = JSONArray.parseArray(resultData.get("contents").toString());
+		for(int i = 0;i<array.size();i++){
+			JSONObject objs = JSONObject.parseObject(array.getString(i));
+			Map<String,Object> map = new HashMap<>();
+			map.put("time", objs.get("time"));
+			map.put("description", objs.get("description"));
+			logistics.add(map);
+		}
+		resultObj.put("logistics", logistics);
+		return resultObj;
+	}
+
+	/**
+	 * 初始请求参数
+	 * 
+	 * @param entity
+	 */
+	public void initRequestParam(RequestBaseEntity entity) {
+		Long currentTime = Calendar.getInstance().getTimeInMillis();
+		entity.setWid(PropertiesUtil.getValue("youle.properties", "wid"));
+		entity.setTimestamp(currentTime.toString());
+		String token = getToken(currentTime);
+		entity.setToken(token);
+	}
+
+	private String getToken(Long currentTime) {
+		String token = "";
+		StringBuffer tokenStr = new StringBuffer("");
+		tokenStr.append(PropertiesUtil.getValue("youle.properties", "wid"));
+		tokenStr.append(PropertiesUtil.getValue("youle.properties", "accessToken"));
+		tokenStr.append(currentTime);
+		token = MD5util.encodeByMD5(tokenStr.toString()).toUpperCase();
+		return token;
+	}
+	  /**
+     * 实体转map
+     * @param entity
+     * @return
+     * @throws Exception
+     */
+    public Map<String,Object>  objectToMap(RequestBaseEntity entity) throws Exception{
+            String str = JSON.toJSONString(entity);
+            Map<String,Object> map = (Map<String,Object>) JSON.parse(str);
+            return map;
+    }
 
 }

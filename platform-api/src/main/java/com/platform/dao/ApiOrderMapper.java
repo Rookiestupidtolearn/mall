@@ -30,4 +30,21 @@ public interface ApiOrderMapper extends BaseDao<OrderVo> {
 	 * @return
 	 */
 	List<OrderVo> checkOrderValid();
+	/**
+	 * 根据userId查询总订单个数
+	 * @param userId
+	 * @return
+	 */
+	List<OrderVo> queryOrders(Long userId);
+	/**
+	 * 根据userId查询待发货总订单个数
+	 * @return
+	 */
+	List<OrderVo> queryTobeShippingOrders(Long userId);
+	/**
+	 * 根据userId查询待收货总订单个数
+	 * @param userId
+	 * @return
+	 */
+	List<OrderVo> queryDelivered(Long userId);
 }

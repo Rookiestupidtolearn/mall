@@ -93,7 +93,7 @@ public class AbsApiCartPriceServiceImpl implements AbsApiCartPriceService {
 			initRequestParam(entity);
 			entity.setPid(Long.parseLong(jdProductId));
 			try {
-				result = HttpUtil.post(Urls.base_test_url + Urls.detial, objectToMap(entity));
+				result = HttpUtil.post(Urls.base_prod_url + Urls.detial, objectToMap(entity));
 				if (StringUtils.isEmpty(result)) {
 					resultObj.put("status", "false");
 					resultObj.put("msg", "[1.3获取单个商品详情]为空");

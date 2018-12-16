@@ -36,7 +36,7 @@ public class ApiSaleAfterServiceImpl extends AbsApiSaleAfterService {
 	     entity.setType(type);
 	        try {
 	            logger.info("[6.1 查询商品是否可以申请售后服务]入参："+JSONObject.toJSONString(entity));
-	            String result = HttpUtil.post(Urls.base_test_url+Urls.sale_after_check, objectToMap(entity));
+	            String result = HttpUtil.post(Urls.base_prod_url+Urls.sale_after_check, objectToMap(entity));
 	            logger.info("[6.1 查询商品是否可以申请售后服务]出参："+result);
 	            reponse = JSON.parseObject(result,new TypeReference<ResponseSaleCheckEntity>(){});
 	        } catch (Exception e) {
@@ -51,7 +51,7 @@ public class ApiSaleAfterServiceImpl extends AbsApiSaleAfterService {
 	     initRequestParam(entity);
 	        try {
 	            logger.info("[6.2 提交订单售后申请]入参："+JSONObject.toJSONString(entity));
-	            String result = HttpUtil.post(Urls.base_test_url+Urls.sale_after_submit, objectToMap(entity));
+	            String result = HttpUtil.post(Urls.base_prod_url+Urls.sale_after_submit, objectToMap(entity));
 	            logger.info("[6.2 提交订单售后申请]出参："+result);
 	            reponse = JSON.parseObject(result,new TypeReference<ResponseSaleSubmitEntity>(){});
 	        } catch (Exception e) {
@@ -68,7 +68,7 @@ public class ApiSaleAfterServiceImpl extends AbsApiSaleAfterService {
 	     entity.setServiceOrder(serviceOrder);
 	        try {
 	            logger.info("[6.3 查询售后订单详情]入参："+JSONObject.toJSONString(entity));
-	            String result = HttpUtil.post(Urls.base_test_url+Urls.sale_after_detail, objectToMap(entity));
+	            String result = HttpUtil.post(Urls.base_prod_url+Urls.sale_after_detail, objectToMap(entity));
 	            logger.info("[6.3 查询售后订单详情]出参："+result);
 	            reponse = JSON.parseObject(result,new TypeReference<ResponseSaleDetailEntity>(){});
 	        } catch (Exception e) {
@@ -83,7 +83,7 @@ public class ApiSaleAfterServiceImpl extends AbsApiSaleAfterService {
 	     initRequestParam(entity);
 	        try {
 	            logger.info("[6.4 提交京东商品订单售后服务申请]入参："+JSONObject.toJSONString(entity));
-	            String result = HttpUtil.post(Urls.base_test_url+Urls.sale_after_jd_submit, objectToMap(entity));
+	            String result = HttpUtil.post(Urls.base_prod_url+Urls.sale_after_jd_submit, objectToMap(entity));
 	            logger.info("[6.4 提交京东商品订单售后服务申请]出参："+result);
 	            reponse = JSON.parseObject(result,new TypeReference<ResponseSaleOrderSubmitEntity>(){});
 	        } catch (Exception e) {
@@ -99,7 +99,7 @@ public class ApiSaleAfterServiceImpl extends AbsApiSaleAfterService {
 	     initRequestParam(entity);
 	        try {
 	            logger.info("[6.5 获取京东商品订单售后单概要信息]入参："+JSONObject.toJSONString(entity));
-	            String result = HttpUtil.post(Urls.base_test_url+Urls.sale_after_basis, objectToMap(entity));
+	            String result = HttpUtil.post(Urls.base_prod_url+Urls.sale_after_basis, objectToMap(entity));
 	            logger.info("[6.5 获取京东商品订单售后单概要信息]出参："+result);
 	            reponse = JSON.parseObject(result,new TypeReference<ReponseSaleBasisEntity>(){});
 	        } catch (Exception e) {

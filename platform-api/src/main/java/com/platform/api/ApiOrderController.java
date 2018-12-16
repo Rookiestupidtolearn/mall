@@ -1,16 +1,13 @@
 package com.platform.api;
 
-import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.print.attribute.standard.RequestingUserName;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,18 +18,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSONObject;
 import com.platform.annotation.IgnoreAuth;
 import com.platform.annotation.LoginUser;
-import com.platform.cache.J2CacheUtils;
 import com.platform.dao.ApiOrderMapper;
-import com.platform.dao.ApiTranInfoRecordMapper;
-import com.platform.dao.ApiUserCouponMapper;
-import com.platform.dao.QzUserAccountMapper;
-import com.platform.entity.ApiTranInfoRecordVo;
 import com.platform.entity.OrderGoodsVo;
 import com.platform.entity.OrderVo;
-import com.platform.entity.QzUserAccountVo;
-import com.platform.entity.UserCouponVo;
 import com.platform.entity.UserVo;
 import com.platform.service.ApiKdniaoService;
 import com.platform.service.ApiOrderGoodsService;
@@ -40,10 +31,13 @@ import com.platform.service.ApiOrderService;
 import com.platform.service.JdOrderService;
 import com.platform.util.ApiBaseAction;
 import com.platform.util.ApiPageUtils;
-import com.platform.util.ApiUpdateUserCouponPriceUtils;
 import com.platform.util.wechat.WechatRefundApiResult;
 import com.platform.util.wechat.WechatUtil;
 import com.platform.utils.Query;
+import com.platform.youle.entity.RequestBaseEntity;
+import com.platform.youle.entity.RequestOrderTrackEntity;
+import com.platform.youle.util.MD5util;
+import com.platform.youle.util.PropertiesUtil;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -287,5 +281,24 @@ public class ApiOrderController extends ApiBaseAction {
             e.printStackTrace();
         }
         return toResponsFail("提交失败");
+    }
+    /**
+     * 查询物流信息
+     * @param orderId
+     * @return
+     */
+    @ApiOperation(value = "查询物流")
+    @PostMapping("queryLogistics")
+    @IgnoreAuth
+    public JSONObject queryLogistics(Long orderId){
+    	JSONObject resultObj = new JSONObject();
+    	OrderVo order = apiOrderMapper.queryObject(orderId);
+    	if(order == null){
+    		resultObj.put("code", 500);
+    		resultObj.put("msg", "查询订单为空");
+    		return resultObj;
+    	}
+    	JSONObject obj = JdOrderService.queryLogistics(order.getOrder_sn());
+    	return obj;
     }
 }

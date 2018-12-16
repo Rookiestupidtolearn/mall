@@ -17,6 +17,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.platform.annotation.LoginUser;
 import com.platform.cache.J2CacheUtils;
+import com.platform.dao.ApiOrderGoodsMapper;
+import com.platform.dao.ApiOrderMapper;
+import com.platform.entity.OrderGoodsVo;
+import com.platform.entity.OrderVo;
 import com.platform.entity.QzMoneyRecordEntity;
 import com.platform.entity.QzUserAccountEntity;
 import com.platform.entity.SmsConfig;
@@ -55,6 +59,10 @@ public class ApiUserController extends ApiBaseAction {
     private SysConfigService sysConfigService;
     @Autowired
     private ApiUserCouponService apiUserCouponService;
+    @Autowired
+    private ApiOrderMapper apiOrderMapper;
+    @Autowired
+    private ApiOrderGoodsMapper  apiOrderGoodsMapper;
     
 
     /**
@@ -240,14 +248,21 @@ public class ApiUserController extends ApiBaseAction {
     	Map<String, Object> obj = new HashMap<String, Object>();
        try{
     	   QzUserAccountEntity qzUserAccount = userService.queryUserAccount(loginUser.getUserId().intValue());
-    	   
-    	   
     	   obj.put("code", 1);
            if(qzUserAccount == null){
         	   //未查询到用户账户
                obj.put("data", "0.00");
                return obj;
            }
+           JSONObject unPayment = queryUnPayments(loginUser);
+           String unPaymentNum = unPayment.getString("num");
+           JSONObject tobeShipping = queryTobeShipping(loginUser);
+           String tobeShippingNum = tobeShipping.getString("num");
+           JSONObject delivered = queryDelivered(loginUser);
+           String deliveredNum = delivered.getString("num");
+           obj.put("unPaymentNum", unPaymentNum);//待付款个数
+           obj.put("tobeShippingNum", tobeShippingNum);//待发货个数
+           obj.put("deliveredNum", deliveredNum);//待收货个数
            obj.put("data", qzUserAccount.getAmount().toString());
            return obj;
        }catch(Exception e){
@@ -341,6 +356,89 @@ public class ApiUserController extends ApiBaseAction {
     		return obj;
     	}
     }
+   
+    /**
+     * 查询代付款
+     * @param loginUser
+     * @return
+     */
+    public JSONObject queryUnPayments(@LoginUser UserVo loginUser){
+    	JSONObject obj = new JSONObject();
+    	Integer num = 0;
+    	if(loginUser == null){
+    		obj.put("data","查询用户信息异常");
+    		obj.put("code","500");
+    		return obj;
+    	}
+    	Long userId = loginUser.getUserId();
+    	List<OrderVo> orders = apiOrderMapper.queryOrders(userId);
+    	
+    	if(!CollectionUtils.isEmpty(orders)){
+    		num = orders.size();
+    	}
+    	obj.put("num", num);
+    	obj.put("data", "查询订单个数成功");
+    	obj.put("code","200");
+    	return obj;
+    }
     
+    /**
+     * 查询待发货
+     * @param loginUser
+     * @return
+     */
+    public JSONObject queryTobeShipping(@LoginUser UserVo loginUser){
+    	JSONObject obj = new JSONObject();
+    	Integer num = 0;
+    	if(loginUser == null){
+    		obj.put("data","查询用户信息异常");
+    		obj.put("code","500");
+    		return obj;
+    	}
+    	Long userId = loginUser.getUserId();
+    	List<OrderVo> orders = apiOrderMapper.queryTobeShippingOrders(userId);
+    	if(!CollectionUtils.isEmpty(orders)){
+    		for(OrderVo order : orders){
+    			Integer orderId = order.getId();
+    			List<OrderGoodsVo> orderGoods = apiOrderGoodsMapper.queryOrderGoods(orderId);
+    			if(!CollectionUtils.isEmpty(orderGoods)){
+    				num += orderGoods.size();
+    			}
+    		}
+    	}
+    	obj.put("num", num);
+    	obj.put("data", "查询待收货个数成功");
+    	obj.put("code","200");
+    	return obj;
+    }
     
+    /**
+     * 查询代收货
+     * @param loginUser
+     * @return
+     */
+    public JSONObject queryDelivered(@LoginUser UserVo loginUser){
+    	JSONObject obj = new JSONObject();
+    	Integer num = 0;
+    	if(loginUser == null){
+    		obj.put("data","查询用户信息异常");
+    		obj.put("code","500");
+    		return obj;
+    	}
+    	Long userId = loginUser.getUserId();
+    	List<OrderVo> orders = apiOrderMapper.queryDelivered(userId);
+    	if(!CollectionUtils.isEmpty(orders)){
+    		for(OrderVo order : orders){
+    			Integer orderId = order.getId();
+    			List<OrderGoodsVo> orderGoods = apiOrderGoodsMapper.queryOrderDeliveredGoods(orderId);
+    			if(!CollectionUtils.isEmpty(orderGoods)){
+    				num += orderGoods.size();
+    			}
+    		}
+    	}
+    	obj.put("num", num);
+    	obj.put("data", "查询待收货个数成功");
+    	obj.put("code","200");
+    	return obj;
+    }
 }
