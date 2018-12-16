@@ -60,8 +60,7 @@ public class JdOrderService {
 		jdOrderVo.setPidNums(info.getPid_num());
 		
 	  this.jdOrderSubbmit(addressVo, info, jdOrderVo);
-	  info.setOrder_status(201);
-	  orderService.update(info);
+	 
 		
 		 return "OK";
 	}
@@ -165,6 +164,10 @@ public class JdOrderService {
 		jdOrder.setErrorMessage(response.getERROR_MESSAGE());
 		jdOrder.setErrorCode(response.getERROR_CODE());
 		jdOrderMapper.update(jdOrder);
+		   
+		//订单已提交给三方
+		 info.setOrder_status(201);
+		  orderService.update(info);
 		return resultObj;
 	}
 
