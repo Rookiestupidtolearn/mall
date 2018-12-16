@@ -102,7 +102,7 @@ public class JdOrderService {
 		 String pidNum[] = pidNums.split(",");
 		 for (int i = 0; i < pidNum.length; i++) {
 			    String pidNumSingle = pidNum[i].split("_")[0]; //11_11
-			    pids+= pidNumSingle;
+			    pids+= pidNumSingle+",";
 		}
 		 
 		 if (StringUtils.isNotEmpty(pids)) {
