@@ -62,84 +62,89 @@ public class ApiYeepayController extends ApiBaseAction {
 	@Transactional
 	public String yeepayOrderCallback(String data, String encryptkey) throws IOException {
 		logger.info("易宝支付订单支付回调start");
-		if (StringUtils.isEmpty(data) || StringUtils.isEmpty(encryptkey)) {
-			logger.error("易宝支付回调参数错误");
-			return "ERROR";
-		}
-
-		// 解密data
-		TreeMap<String, String> dataMap = PaymobileUtils.decrypt(data, encryptkey);
-		logger.info("易宝支付订单回调，返回的明文参数：" + dataMap);
-		// sign验签
-		if (!PaymobileUtils.checkSign(dataMap)) {
-			logger.error("易宝支付订单回调 ，sign 验签失败！");
-			return "ERROR";
-		}
-		String yborderid = dataMap.get("yborderid");
-		logger.info("易宝支付订单回调，易宝交易流水号" + yborderid);
-
-		YeeTradeOrderEntity entity = yeeTradeOrderService.queryObjectByYborderid(yborderid);
-		if (entity != null) {
-			if (entity.getPayStatus() == 1) {
-				// 无需再次回调
-				logger.info("本地订单已经处理成功，无需再处理，易宝交易流水号" + yborderid);
-				return "SUCCESS";
-			}
-			// 校验实际支付的金额和订单的金额是否一致
-			BigDecimal pay = new BigDecimal(dataMap.get("amount")).divide(new BigDecimal(100));
-
-			if (pay.compareTo(entity.getAmount()) != 0) {
-				logger.info("实际支付给易宝金额跟实际订单金额不一致,易宝交易流水号" + yborderid);
-				// 有异常情况。
-				// 修改回填信息
-				entity.setPayAmount(pay);
-				entity.setBankCode(dataMap.get("bankcode"));
-				entity.setBank(dataMap.get("bank"));
-				entity.setLastno(dataMap.get("lastno"));
-				entity.setCardType(dataMap.get("cardtype"));
-				entity.setPayStatus(1);// 1成功
-				entity.setMsg("exception"); //异常
-				entity.setMemo("实际支付给易宝金额跟实际订单金额不一致");
-				yeeTradeOrderService.update(entity);
-				// 更新本地状态为支付成功
-				OrderVo order = apiOrderService.queryObjectByTradeNo(entity.getTradeNo());
-				if (order != null) {
-					// 更新订单为成功
-					order.setPay_status(1);
-					order.setOrder_status(200); // 支付成功，待提交京东订单
-					order.setOrder_type("404");//支付异常
-					apiOrderService.update(order);
-
-				}
-
-			} else {
-				// 修改回填信息
-				entity.setPayAmount(pay);
-				entity.setBankCode(dataMap.get("bankcode"));
-				entity.setBank(dataMap.get("bank"));
-				entity.setLastno(dataMap.get("lastno"));
-				entity.setCardType(dataMap.get("cardtype"));
-				entity.setPayStatus(1);// 1成功
-				entity.setMsg("success");
-				entity.setMemo("支付成功");
-				yeeTradeOrderService.update(entity);
-				// 更新本地状态为支付成功
-				OrderVo order = apiOrderService.queryObjectByTradeNo(entity.getTradeNo());
-				if (order != null) {
-					// 更新订单为成功
-					order.setPay_status(1);
-					order.setOrder_status(200); // 支付成功，待提交京东订单
-					order.setOrder_type("1");//正常
-					apiOrderService.update(order);
-
-				}
+		try {
+			if (StringUtils.isEmpty(data) || StringUtils.isEmpty(encryptkey)) {
+				logger.error("易宝支付回调参数错误");
+				return "ERROR";
 			}
 
-		}
+			// 解密data
+			TreeMap<String, String> dataMap = PaymobileUtils.decrypt(data, encryptkey);
+			logger.info("易宝支付订单回调，返回的明文参数：" + dataMap);
+			// sign验签
+			if (!PaymobileUtils.checkSign(dataMap)) {
+				logger.error("易宝支付订单回调 ，sign 验签失败！");
+				return "ERROR";
+			}
+			String yborderid = dataMap.get("yborderid");
+			logger.info("易宝支付订单回调，易宝交易流水号" + yborderid);
 
-		// 回写SUCCESS
-		logger.info("易宝支付订单支付回调end");
-		return "SUCCESS";
+			YeeTradeOrderEntity entity = yeeTradeOrderService.queryObjectByYborderid(yborderid);
+			if (entity != null) {
+				if (entity.getPayStatus() == 1) {
+					// 无需再次回调
+					logger.info("本地订单已经处理成功，无需再处理，易宝交易流水号" + yborderid);
+					return "SUCCESS";
+				}
+				// 校验实际支付的金额和订单的金额是否一致
+				BigDecimal pay = new BigDecimal(dataMap.get("amount")).divide(new BigDecimal(100));
+
+				if (pay.compareTo(entity.getAmount()) != 0) {
+					logger.info("实际支付给易宝金额跟实际订单金额不一致,易宝交易流水号" + yborderid);
+					// 有异常情况。
+					// 修改回填信息
+					entity.setPayAmount(pay);
+					entity.setBankCode(dataMap.get("bankcode"));
+					entity.setBank(dataMap.get("bank"));
+					entity.setLastno(dataMap.get("lastno"));
+					entity.setCardType(dataMap.get("cardtype"));
+					entity.setPayStatus(1);// 1成功
+					entity.setMsg("exception"); //异常
+					entity.setMemo("实际支付给易宝金额跟实际订单金额不一致");
+					yeeTradeOrderService.update(entity);
+					// 更新本地状态为支付成功
+					OrderVo order = apiOrderService.queryObjectByTradeNo(entity.getTradeNo());
+					if (order != null) {
+						// 更新订单为成功
+						order.setPay_status(1);
+						order.setOrder_status(200); // 支付成功，待提交京东订单
+						order.setOrder_type("404");//支付异常
+						apiOrderService.update(order);
+
+					}
+
+				} else {
+					// 修改回填信息
+					entity.setPayAmount(pay);
+					entity.setBankCode(dataMap.get("bankcode"));
+					entity.setBank(dataMap.get("bank"));
+					entity.setLastno(dataMap.get("lastno"));
+					entity.setCardType(dataMap.get("cardtype"));
+					entity.setPayStatus(1);// 1成功
+					entity.setMsg("success");
+					entity.setMemo("支付成功");
+					yeeTradeOrderService.update(entity);
+					// 更新本地状态为支付成功
+					OrderVo order = apiOrderService.queryObjectByTradeNo(entity.getTradeNo());
+					if (order != null) {
+						// 更新订单为成功
+						order.setPay_status(1);
+						order.setOrder_status(200); // 支付成功，待提交京东订单
+						order.setOrder_type("1");//正常
+						apiOrderService.update(order);
+
+					}
+				}
+
+			}
+
+			// 回写SUCCESS
+			logger.info("易宝支付订单支付回调end");
+			return "SUCCESS";
+		} catch (Exception e) {
+			logger.error("易宝支付订单支付回调失败，",e);
+			return "ERROR";
+		}
 
 	}
 }
