@@ -108,6 +108,14 @@ public class ApiOrderService {
 	public int queryTotal(Map<String, Object> map) {
 		return orderDao.queryTotal(map);
 	}
+	/**
+	 *  查询待付款/代发货/待收货订单总数量
+	 * @param map
+	 * @return
+	 */
+	public int queryOrderTotal(Map<String, Object> map) {
+		return orderDao.queryOrderTotal(map);
+	}
 
 	public void save(OrderVo order) {
 		orderDao.save(order);

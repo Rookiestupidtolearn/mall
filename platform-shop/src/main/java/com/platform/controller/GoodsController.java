@@ -46,12 +46,12 @@ public class GoodsController {
      */
     @RequestMapping("/list")
     @RequiresPermissions("goods:list")
-    public R list(@RequestParam Map<String, Object> params) {
+    public R list(@RequestParam Map<String, Object> params) {//{_search=false, nd=1545018244178, limit=10, page=1, sidx=null, order=asc, _=1545018243857, offset=0, isDelete=0}
         //查询列表数据
         Query query = new Query(params);
         query.put("isDelete", 0);
-        query.remove("page");
-        query.remove("limit");
+//        query.remove("page");
+//        query.remove("limit");
         List<GoodsEntity> goodsList = goodsService.queryList(query);
         //查询毛利率表
         String status = (String)params.get("status");

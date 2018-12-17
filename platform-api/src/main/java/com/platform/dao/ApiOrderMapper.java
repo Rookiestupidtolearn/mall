@@ -46,5 +46,13 @@ public interface ApiOrderMapper extends BaseDao<OrderVo> {
 	 * @param userId
 	 * @return
 	 */
-	List<OrderVo> queryDelivered(Long userId);
+	List<OrderVo> queryDelivered(Long userId); 
+	/**
+	 * 查询订单列表
+	 * @param params
+	 * @return
+	 */
+	List<OrderVo> queryOrderList(Map<String,Object> params);
+	
+	int queryOrderTotal(Map<String,Object> params);
 }
