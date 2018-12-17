@@ -1,59 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.platform.dao.QzRechargeRecordDao">
+<mapper namespace="com.platform.dao.ThirdRechargeRecordDao">
 
-    <resultMap type="com.platform.entity.QzRechargeRecordEntity" id="qzRechargeRecordMap">
+    <resultMap type="com.platform.entity.ThirdRechargeRecordEntity" id="thirdRechargeRecordMap">
         <result property="id" column="id"/>
-        <result property="shopUserId" column="shop_user_id"/>
         <result property="mobile" column="mobile"/>
         <result property="state" column="state"/>
-        <result property="operateId" column="operate_id"/>
-        <result property="operateTime" column="operate_time"/>
         <result property="amount" column="amount"/>
-        <result property="memo" column="memo"/>
+        <result property="thirdTradeNo" column="third_trade_no"/>
         <result property="tradeNo" column="trade_no"/>
         <result property="rechargeType" column="recharge_type"/>
-        <result property="auditId" column="audit_id"/>
+        <result property="version" column="version"/>
         <result property="updateTime" column="update_time"/>
         <result property="createTime" column="create_time"/>
     </resultMap>
 
-	<select id="queryObject" resultType="com.platform.entity.QzRechargeRecordEntity">
+	<select id="queryObject" resultType="com.platform.entity.ThirdRechargeRecordEntity">
 		select
 			`id`,
-			`shop_user_id`,
 			`mobile`,
 			`state`,
-			`operate_id`,
-			`operate_time`,
 			`amount`,
-			`memo`,
+			`third_trade_no`,
 			`trade_no`,
 			`recharge_type`,
-			`audit_id`,
+			`version`,
 			`update_time`,
 			`create_time`
-		from qz_recharge_record
+		from third_recharge_record
 		where id = #{id}
 	</select>
 
-	<select id="queryList" resultType="com.platform.entity.QzRechargeRecordEntity">
+	<select id="queryList" resultType="com.platform.entity.ThirdRechargeRecordEntity">
 		select
     		`id`,
-    		`shop_user_id`,
     		`mobile`,
     		`state`,
-    		`operate_id`,
-    		`operate_time`,
     		`amount`,
-    		`memo`,
+    		`third_trade_no`,
     		`trade_no`,
     		`recharge_type`,
-    		`audit_id`,
+    		`version`,
     		`update_time`,
     		`create_time`
-		from qz_recharge_record
+		from third_recharge_record
 		WHERE 1=1
 		<if test="name != null and name.trim() != ''">
 			AND name LIKE concat('%',#{name},'%')
@@ -72,55 +63,46 @@
 	</select>
 	
  	<select id="queryTotal" resultType="int">
-		select count(*) from qz_recharge_record
+		select count(*) from third_recharge_record
 		WHERE 1=1
         <if test="name != null and name.trim() != ''">
             AND name LIKE concat('%',#{name},'%')
         </if>
 	</select>
 	 
-	<insert id="save" parameterType="com.platform.entity.QzRechargeRecordEntity" useGeneratedKeys="true" keyProperty="id">
-		insert into qz_recharge_record(
-			`shop_user_id`,
+	<insert id="save" parameterType="com.platform.entity.ThirdRechargeRecordEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into third_recharge_record(
 			`mobile`,
 			`state`,
-			`operate_id`,
-			`operate_time`,
 			`amount`,
-			`memo`,
+			`third_trade_no`,
 			`trade_no`,
 			`recharge_type`,
-			`audit_id`,
+			`version`,
 			`update_time`,
 			`create_time`)
 		values(
-			#{shopUserId},
 			#{mobile},
 			#{state},
-			#{operateId},
-			#{operateTime},
 			#{amount},
-			#{memo},
+			#{thirdTradeNo},
 			#{tradeNo},
 			#{rechargeType},
-			#{auditId},
+			#{version},
 			#{updateTime},
 			#{createTime})
 	</insert>
 	 
-	<update id="update" parameterType="com.platform.entity.QzRechargeRecordEntity">
-		update qz_recharge_record 
+	<update id="update" parameterType="com.platform.entity.ThirdRechargeRecordEntity">
+		update third_recharge_record 
 		<set>
-			<if test="shopUserId != null">`shop_user_id` = #{shopUserId}, </if>
 			<if test="mobile != null">`mobile` = #{mobile}, </if>
 			<if test="state != null">`state` = #{state}, </if>
-			<if test="operateId != null">`operate_id` = #{operateId}, </if>
-			<if test="operateTime != null">`operate_time` = #{operateTime}, </if>
 			<if test="amount != null">`amount` = #{amount}, </if>
-			<if test="memo != null">`memo` = #{memo}, </if>
+			<if test="thirdTradeNo != null">`third_trade_no` = #{thirdTradeNo}, </if>
 			<if test="tradeNo != null">`trade_no` = #{tradeNo}, </if>
 			<if test="rechargeType != null">`recharge_type` = #{rechargeType}, </if>
-			<if test="auditId != null">`audit_id` = #{auditId}, </if>
+			<if test="version != null">`version` = #{version}, </if>
 			<if test="updateTime != null">`update_time` = #{updateTime}, </if>
 			<if test="createTime != null">`create_time` = #{createTime}</if>
 		</set>
@@ -128,11 +110,11 @@
 	</update>
 	
 	<delete id="delete">
-		delete from qz_recharge_record where id = #{value}
+		delete from third_recharge_record where id = #{value}
 	</delete>
 	
 	<delete id="deleteBatch">
-		delete from qz_recharge_record where id in 
+		delete from third_recharge_record where id in 
 		<foreach item="id" collection="array" open="(" separator="," close=")">
 			#{id}
 		</foreach>

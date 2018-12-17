@@ -131,7 +131,8 @@ public class QzRechargeRecordServiceImpl implements QzRechargeRecordService {
 				record.setAmount(new BigDecimal(amount));
 				record.setMemo((String) params.get("memo"));
 				record.setTradeNo(GenerateCodeUtil.buildBizNo());
-				
+				record.setMobile(arr[i]);
+				record.setRechargeType(1);//1后台充值
 				log.info("充值记录信息"+JSON.toJSONString(record));
 				
 				qzRechargeRecordDao.save(record);

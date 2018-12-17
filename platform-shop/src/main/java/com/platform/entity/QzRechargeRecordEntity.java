@@ -18,6 +18,8 @@ public class QzRechargeRecordEntity implements Serializable {
     //主键
     private Integer id;
     //会员id
+    //手机号
+    private String mobile;
     private Integer shopUserId;
     private String shopUserName;
     private String UserPhone;
@@ -37,6 +39,8 @@ public class QzRechargeRecordEntity implements Serializable {
     private Date updateTime;
     //流水号
     private String tradeNo;
+    //充值类型 1-后台充值 2-奇速贷充值
+    private Integer rechargeType;
     //审核人id
     private Long auditId;
     private String operate;
@@ -207,6 +211,22 @@ public class QzRechargeRecordEntity implements Serializable {
 
 	public void setOperate(String operate) {
 		this.operate = operate;
+	}
+
+	public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+
+	public Integer getRechargeType() {
+		return rechargeType;
+	}
+
+	public void setRechargeType(Integer rechargeType) {
+		this.rechargeType = rechargeType;
 	}
     
     
