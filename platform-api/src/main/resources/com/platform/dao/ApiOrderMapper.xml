@@ -41,6 +41,7 @@
         <result property="coupon_price" column="coupon_price"/>
         <result property="callback_status" column="callback_status"/>
         <result property="full_cut_price" column="full_cut_price"/>
+         <result property="pid_num" column="pid_num"/>
     </resultMap>
 
     <select id="queryObject" resultMap="orderMap">
@@ -58,6 +59,15 @@
             </if>
              <if test="shippingNo != null  and shippingNo != '' ">
                 and shipping_no = #{shippingNo}
+            </if>
+             <if test="orderStatus != null ">
+                and order_status = #{orderStatus}
+            </if>
+             <if test="orderType != null  and orderType != '' ">
+                and order_type = #{orderType}
+            </if>
+            <if test="payStatus != null ">
+                and pay_status = #{payStatus}
             </if>
         </where>
        	order by add_time desc
@@ -109,7 +119,8 @@
 			`callback_status`,
 			`shipping_no`,
 			`full_cut_price`,
-			`order_type`
+			`order_type`,
+			`pid_num`
 		)
 		values
 		(
@@ -147,7 +158,8 @@
 			#{callback_status},
 			#{shipping_no},
 			#{full_cut_price},
-			#{order_type}
+			#{order_type},
+			#{pid_num}
 		)
 	</insert>
 
@@ -184,8 +196,10 @@
             <if test="coupon_id != null">`coupon_id` = #{coupon_id},</if>
             <if test="parent_id != null">`parent_id` = #{parent_id},</if>
             <if test="coupon_price != null">`coupon_price` = #{coupon_price},</if>
-            <if test="callback_status != null">`callback_status` = #{callback_status}</if>
+            <if test="callback_status != null">`callback_status` = #{callback_status},</if>
             <if test="full_cut_price != null">`full_cut_price` = #{full_cut_price},</if>
+            <if test="order_type != null">`order_type` = #{order_type},</if>
+            <if test="pid_num != null">`pid_num` = #{pid_num}</if>
         </set>
         where id = #{id}
     </update>

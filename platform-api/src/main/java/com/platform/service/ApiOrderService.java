@@ -352,6 +352,7 @@ public class ApiOrderService {
 		BigDecimal orderTotalPrice = goodsTotalPrice.add(freightPrice);
 
 		OrderVo orderInfo = new OrderVo();
+		orderInfo.setShipping_no(GenerateCodeUtil.buildBizNo());
 		orderInfo.setOrder_sn(GenerateCodeUtil.buildJDBizNo());
 		orderInfo.setUser_id(loginUser.getUserId());
 		// 收货地址和运费
@@ -385,25 +386,24 @@ public class ApiOrderService {
 		orderInfo.setIntegral(0);
 		orderInfo.setIntegral_money(new BigDecimal(0));
 		if (type.equals("cart")) {
-			orderInfo.setOrder_type("1");
+			orderInfo.setOrder_type("0");
 		} else {
-			orderInfo.setOrder_type("4");
+			orderInfo.setOrder_type("0");
 		}
 		orderInfo.setCoupon_price(couponAmount);
 
-		// 开启事务，插入订单信息和订单商品
-		apiOrderMapper.save(orderInfo);
+		
 		//查询可以抵扣金额
 		discountAmount = queryUserDisCountAmount(orderGoodsList,orderInfo);
+		// 开启事务，插入订单信息和订单商品
+		apiOrderMapper.save(orderInfo);
 		if (null == orderInfo.getId()) {
 			resultObj.put("errno", 1);
 			resultObj.put("errmsg", "订单提交失败");
 			return resultObj;
 		}
-		OrderVo order = apiOrderMapper.queryObject(orderInfo.getId());
-		order.setActual_price(orderTotalPrice.subtract(couponAmount));
-		order.setCoupon_price(discountAmount);
-		apiOrderMapper.update(order);
+	
+	
 		/**
 		 * 订单问题 1.拆分渠道 1.1 渠道增加 1.2 状态
 		 *
@@ -437,7 +437,11 @@ public class ApiOrderService {
 		if (StringUtils.isNotEmpty(pidNums)) {
 			pidNums = pidNums.substring(0, pidNums.length() - 1);
 		}
-
+		OrderVo order = apiOrderMapper.queryObject(orderInfo.getId());
+		order.setActual_price(orderTotalPrice.subtract(couponAmount));
+		order.setCoupon_price(discountAmount);
+		order.setPid_num(pidNums);
+		apiOrderMapper.update(order);
 		// 清空已购买的商品
 		apiCartMapper.deleteByCart(loginUser.getUserId(), 1, 1);
 		resultObj.put("errno", 0);
@@ -453,14 +457,6 @@ public class ApiOrderService {
 		if (yeepayMap != null) {
 			resultObj.put("payurl", yeepayMap.get("payurl"));
 		}
-
-//		// 创建第三方订单
-//		JdOrderVo jdOrderVo = new JdOrderVo();
-//		jdOrderVo.setPidNums(pidNums);
-//		Map<String, Object> result = jdOrderService.jdOrderSubbmit(addressVo, orderInfo, jdOrderVo);
-//		resultObj.put("errno", result.get("errno"));
-//		resultObj.put("errmsg", result.get("errmsg"));
-
 		return resultObj;
 	}
 
