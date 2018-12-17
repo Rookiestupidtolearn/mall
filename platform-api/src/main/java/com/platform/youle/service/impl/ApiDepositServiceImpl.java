@@ -28,7 +28,7 @@ public  class ApiDepositServiceImpl extends AbsApiDepositService{
 	    initRequestParam(entity);
 		try {
 			logger.info("[3.1查询预存款余额]入参："+JSONObject.toJSONString(entity));
-			String result = HttpUtil.post(Urls.base_test_url+Urls.remain, objectToMap(entity));
+			String result = HttpUtil.post(Urls.base_prod_url+Urls.remain, objectToMap(entity));
 			logger.info("[3.1查询预存款余额]出参："+result);
 			reponse = JSON.parseObject(result,new TypeReference<ResponseDepositEntity>(){});
 		} catch (Exception e) {

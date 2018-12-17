@@ -45,7 +45,7 @@ public class ApiGoodsServiceImpl extends AbsApiGoodsService {
         initRequestParam(entity);
         try {
             logger.info("[1.1获取所有商品ID]入参："+JSONObject.toJSONString(entity));
-            String result = HttpUtil.post(Urls.base_test_url+Urls.getAllProductIdsUrl, objectToMap(entity));
+            String result = HttpUtil.post(Urls.base_prod_url+Urls.getAllProductIdsUrl, objectToMap(entity));
             logger.info("[1.1获取所有商品ID]出参："+result);
             reponse = JSON.parseObject(result,new TypeReference<ResponseBaseEntity>(){});
         } catch (Exception e) {
@@ -63,7 +63,7 @@ public class ApiGoodsServiceImpl extends AbsApiGoodsService {
         entity.setTimestamp(getTimestamp());
         try {
             logger.info("[1.2分页获取当前页商品ID, 每页数据100条]入参：" + JSONObject.toJSONString(entity));
-            String result = HttpUtil.post(Urls.base_test_url + Urls.getProductIdsByPage, objectToMap(entity));
+            String result = HttpUtil.post(Urls.base_prod_url + Urls.getProductIdsByPage, objectToMap(entity));
             logger.info("[1.2分页获取当前页商品ID, 每页数据100条：" + result);
             reponse = JSON.parseObject(result,ResponseProductEntity.class);
         } catch (Exception e) {
@@ -81,7 +81,7 @@ public class ApiGoodsServiceImpl extends AbsApiGoodsService {
         entity.setPid(productId);
         try {
             logger.info("[1.3获取单个商品详情]入参："+JSONObject.toJSONString(entity));
-            String result = HttpUtil.post(Urls.base_test_url+Urls.detial, objectToMap(entity));
+            String result = HttpUtil.post(Urls.base_prod_url+Urls.detial, objectToMap(entity));
             logger.info("[1.3获取单个商品详情]出参："+result);
             reponse = JSON.parseObject(result,new TypeReference<ResponseSkuDetailEntity>(){});
         } catch (Exception e) {
@@ -121,7 +121,7 @@ public class ApiGoodsServiceImpl extends AbsApiGoodsService {
         entity.setAddress(address);
         try {
             logger.info("[1.5批量查询商品库存]：" + JSONObject.toJSONString(entity));
-            String result = HttpUtil.post(Urls.base_test_url + Urls.stockBatch, objectToMap(entity));
+            String result = HttpUtil.post(Urls.base_prod_url + Urls.stockBatch, objectToMap(entity));
             logger.info("[1.5批量查询商品库存" + result);
             reponse = JSON.parseObject(result, ResponseProductStockBatchEntity.class);
         } catch (Exception e) {
@@ -154,7 +154,7 @@ public class ApiGoodsServiceImpl extends AbsApiGoodsService {
         entity.setPid(pid);
         try {
             logger.info("[1.7查询商品协议价]入参：" + JSONObject.toJSONString(entity));
-            String result = HttpUtil.post(Urls.base_test_url + Urls.getPrice, objectToMap(entity));
+            String result = HttpUtil.post(Urls.base_prod_url + Urls.getPrice, objectToMap(entity));
             reponse = JSON.parseObject(result, ResponseGetPriceEntity.class);
         } catch (Exception e) {
             logger.error("[1.7查询商品协议价]异常", e);
@@ -171,7 +171,7 @@ public class ApiGoodsServiceImpl extends AbsApiGoodsService {
         entity.setPids(pids);
         try {
             logger.info("[1.8批量查询商品可售状态]入参：" + JSONObject.toJSONString(entity));
-            String result = HttpUtil.post(Urls.base_test_url + Urls.batchSaleStatus, objectToMap(entity));
+            String result = HttpUtil.post(Urls.base_prod_url + Urls.batchSaleStatus, objectToMap(entity));
             logger.info("[1.8批量查询商品可售状态] 返回结果：" +result);
             reponse = JSON.parseObject(result, ResponseBatchSaleEntity.class);
         } catch (Exception e) {
@@ -188,7 +188,7 @@ public class ApiGoodsServiceImpl extends AbsApiGoodsService {
         entity.setPids(pids);
         try {
             logger.info("[1.9批量查询商品协议价]入参：" + JSONObject.toJSONString(entity));
-            String result = HttpUtil.post(Urls.base_test_url + Urls.batchSaleStatus, objectToMap(entity));
+            String result = HttpUtil.post(Urls.base_prod_url + Urls.batchSaleStatus, objectToMap(entity));
             reponse = JSON.parseObject(result, ResponseBaseEntity.class);
         } catch (Exception e) {
             logger.error("[1.9批量查询商品协议价]异常", e);

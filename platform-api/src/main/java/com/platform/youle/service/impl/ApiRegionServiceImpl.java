@@ -50,7 +50,7 @@ public class ApiRegionServiceImpl extends AbsApiRegionService{
         try {
         	List<SysRegionEntity> SysRegionList = sysRegionService.queryAllByType(1);
             logger.info("[4.1获取一级地址-省份]入参："+JSONObject.toJSONString(entity));
-            String result = HttpUtil.post(Urls.base_test_url+Urls.province, objectToMap(entity));
+            String result = HttpUtil.post(Urls.base_prod_url+Urls.province, objectToMap(entity));
             logger.info("[4.1获取一级地址-省份] 返回结果："+JSONObject.toJSONString(result));
             response = JSON.parseObject(result,ResponseBaseEntity.class);
             logger.info("[4.1获取一级地址-省份] 返回data："+response.getRESULT_DATA());
@@ -83,7 +83,7 @@ public class ApiRegionServiceImpl extends AbsApiRegionService{
         entity.setProvince(province);
         try {
             logger.info("[4.2获取二地址-城市]入参："+JSONObject.toJSONString(entity));
-            String result = HttpUtil.post(Urls.base_test_url+Urls.city, objectToMap(entity));
+            String result = HttpUtil.post(Urls.base_prod_url+Urls.city, objectToMap(entity));
             logger.info("[4.2获取二地址-城市] 返回结果："+JSONObject.toJSONString(result));
             response = JSON.parseObject(result,ResponseBaseEntity.class);
             JSONArray resultData = response.getRESULT_DATA();
@@ -116,7 +116,7 @@ public class ApiRegionServiceImpl extends AbsApiRegionService{
         entity.setCity(city);
         try {
             logger.info("[4.3获取三级地址-县/区]入参："+JSONObject.toJSONString(entity));
-            String result = HttpUtil.post(Urls.base_test_url+Urls.county, objectToMap(entity));
+            String result = HttpUtil.post(Urls.base_prod_url+Urls.county, objectToMap(entity));
             logger.info("[4.3获取三级地址-县/区] 返回结果："+JSONObject.toJSONString(result));
             response = JSON.parseObject(result,ResponseBaseEntity.class);
             
@@ -150,7 +150,7 @@ public class ApiRegionServiceImpl extends AbsApiRegionService{
         entity.setCounty(county);
         try {
             logger.info("[4.4获取四级地址-镇/街道]入参："+JSONObject.toJSONString(entity));
-            String result = HttpUtil.post(Urls.base_test_url+Urls.town, objectToMap(entity));
+            String result = HttpUtil.post(Urls.base_prod_url+Urls.town, objectToMap(entity));
             logger.info("[4.4获取四级地址-镇/街道] 返回结果："+JSONObject.toJSONString(result));
             response = JSON.parseObject(result,ResponseBaseEntity.class);
             

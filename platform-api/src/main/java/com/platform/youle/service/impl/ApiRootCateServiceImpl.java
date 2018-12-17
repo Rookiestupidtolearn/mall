@@ -31,7 +31,7 @@ public class ApiRootCateServiceImpl extends AbsApiRootCateService{
 	    initRequestParam(entity);
 		try {
 			logger.info("[5.1获取一级产品分类]入参："+JSONObject.toJSONString(entity));
-			String result = HttpUtil.post(Urls.base_test_url+Urls.rootCate, objectToMap(entity));
+			String result = HttpUtil.post(Urls.base_prod_url+Urls.rootCate, objectToMap(entity));
 			logger.info("[5.1获取一级产品分类]出参："+result);
 			reponse = JSON.parseObject(result,new TypeReference<ResponseRootCateEntity>(){});
 		} catch (Exception e) {
@@ -67,7 +67,7 @@ public class ApiRootCateServiceImpl extends AbsApiRootCateService{
 	    entity.setCid(cid);
 		try {
 			logger.info("[5.3获取单个分类详情]入参："+JSONObject.toJSONString(entity));
-			String result = HttpUtil.post(Urls.base_test_url+Urls.cateDetial, objectToMap(entity));
+			String result = HttpUtil.post(Urls.base_prod_url+Urls.cateDetial, objectToMap(entity));
 			logger.info("[5.3获取单个分类详情]出参："+result);
 			reponse = JSON.parseObject(result,new TypeReference<ResponseRootDetailEntity>(){});
 		} catch (Exception e) {

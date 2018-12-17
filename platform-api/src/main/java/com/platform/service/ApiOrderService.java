@@ -247,6 +247,7 @@ public class ApiOrderService {
 		BigDecimal discountAmount = BigDecimal.ZERO;
 		Map<String, String> soureMap = new HashMap<>();
 		if (type.equals("cart")) {
+			logger.info("[加入购物车]开始创建订单");
 			Map<String, Object> param = new HashMap<String, Object>();
 			param.put("user_id", loginUser.getUserId());
 			param.put("session_id", 1);
@@ -270,11 +271,13 @@ public class ApiOrderService {
 				// 判断是三方的还是自己的产品
 				String source = goods.getSource();
 				if (source.equals("JD")) {
+					logger.info("[三方产品],开始校验三方上下架及库存状态");
 					// 检验库存+上下架状态
 					String pid = goods.getGoods_sn().substring(2, goods.getGoods_sn().length());
 					// 库存
 					Map<String, Object> stockMap = jdOrderService.checkStockSingle(pid, cartItem.getNumber(), address);
 					if (!stockMap.get("code").equals("200")) {
+						logger.info("[三方产品],三方产品已下架");
 						resultObj.put("errno", "100");
 						resultObj.put("errmsg", "不可出售");
 						Integer[] arr1 = { cartItem.getGoods_id() };
@@ -284,6 +287,7 @@ public class ApiOrderService {
 //					 上下架状态
 					Map<String, Object> saleStatusMap = jdOrderService.checkSaleStatusSingle(Integer.parseInt(pid));
 					if (!saleStatusMap.get("code").equals("200")) {
+						logger.info("[三方产品],三方产品无库存");
 						resultObj.put("errno", "100");
 						resultObj.put("errmsg", "不可出售");
 						Integer[] arr1 = { cartItem.getGoods_id() };
@@ -293,6 +297,7 @@ public class ApiOrderService {
 
 				}
 				if (source.equals("system")) {
+					logger.info("[本地产品],校验本地库存");
 					// 校验自己的库存和上下架状态
 					if (goods.getGoods_number() < cartItem.getNumber()) {
 						logger.info(
@@ -313,6 +318,7 @@ public class ApiOrderService {
 			}
 		}
 		if (type.equals("buy")) {
+			logger.info("[立即购买]开始创建订单");
 			BuyGoodsVo goodsVo = (BuyGoodsVo) J2CacheUtils.get(J2CacheUtils.SHOP_CACHE_NAME,
 					"goods" + loginUser.getUserId());
 			if (goodsVo != null) {
