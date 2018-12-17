@@ -18,6 +18,7 @@
         <result property="coupon_status" column="coupon_status"/>
          <result property="goods_id" column="goods_id"/>
         <result property="parent_id" column="parent_id"/>
+        <result property="abstract_coupon_status" column="abstract_coupon_status"/>
     </resultMap>
 
     <select id="queryObject" resultMap="userCouponMap">
@@ -89,7 +90,8 @@
 			`coupon_price`,
 			`coupon_status`,
 			`parent_id`,
-			`goods_id`
+			`goods_id`,
+			`abstract_coupon_status`
 		)
 		values
 		(
@@ -104,7 +106,8 @@
 			#{coupon_price},
 			#{coupon_status},
 			#{parent_id},
-			#{goods_id}
+			#{goods_id},
+			#{abstract_coupon_status}
 		)
 	</insert>
 
@@ -122,7 +125,8 @@
             <if test="coupon_status != null">`coupon_status` = #{coupon_status},</if>
             <if test="coupon_price != null">`coupon_price` = #{coupon_price},</if>
             <if test="parent_id != null">`parent_id` = #{parent_id},</if>
-            <if test="goods_id != null">`goods_id` = #{goods_id}</if>
+            <if test="goods_id != null">`goods_id` = #{goods_id},</if>
+            <if test="abstract_coupon_status != null">`abstract_coupon_status` = #{abstract_coupon_status}</if>
         </set>
         where id = #{id}
     </update>
@@ -166,7 +170,7 @@
 	</delete>
 	<select id="queryUserCouponTotalPrice" resultMap = "userCouponMap">
 		select uc.*
-		from nideshop_user_coupon uc where uc.user_id = #{userId} and coupon_status = 1
+		from nideshop_user_coupon uc where uc.user_id = #{userId} and coupon_status = 1 and parent_id = 0
 	</select>
 	<delete id="deleteUserCouponPrice">
 		delete from nideshop_user_coupon where user_id = #{user_id} and coupon_status = 1
@@ -187,5 +191,16 @@
         </set>
         where  id = #{id}
     </update>
-    
+    <select id="querySubCoupons" resultMap = "userCouponMap">
+    	select * from nideshop_user_coupon where parent_id = #{id} and coupon_status = 1
+    </select>
+    <select id = "quertUserCouponByGoodId" resultMap = "userCouponMap">
+    	select * from nideshop_user_coupon where goods_id = #{goodId} and coupon_status = 4
+    </select>
+    <select id="querySubUserCoupons" resultMap = "userCouponMap">
+    	select * from nideshop_user_coupon where parent_id = #{id} 
+    </select>
+    <select id="queryCouponsBuOrderId" resultMap = "userCouponMap">
+    	select * from nideshop_user_coupon where order_id = #{orderId} and state = 1
+    </select>
 </mapper>

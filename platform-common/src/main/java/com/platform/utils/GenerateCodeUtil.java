@@ -6,6 +6,7 @@ import java.util.Random;
 import java.util.UUID;
 
 import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.StringUtils;
 
 public class GenerateCodeUtil {
 
@@ -45,6 +46,13 @@ public class GenerateCodeUtil {
 	public synchronized static String buildJDBizNo() {
 		//TODO 交易流水号优化
 		return "jd"+getDateTimeStampSN();
+	}
+	public synchronized static String buildBizNo(String channel) {
+		//TODO 交易流水号优化
+		if(StringUtils.isEmpty(channel)){
+			channel = "";
+		} 
+		return channel+getDateTimeStampSN();
 	}
 	/**
 	 * 获取本地交易流水号，编号前缀"9"，该流水号不会传递给富友，只适合本地业务

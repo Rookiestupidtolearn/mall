@@ -35,13 +35,12 @@
     "pages/auth/mobile/mobile",
     "pages/shopping/selCoupon/selCoupon",
     "pages/ucenter/accountSecurity/accountSecurity",
-    "pages/ucenter/helpCenter/helpCenter",
-    "pages/ucenter/namecardSecurity/namecard"
+    "pages/ucenter/helpCenter/helpCenter"
   ],
   "window": {
     "backgroundTextStyle": "dark",
     "navigationBarBackgroundColor": "#fff",
-    "navigationBarTitleText": "斗宝商铺",
+    "navigationBarTitleText": "电商项目",
     "navigationBarTextStyle": "black",
     "enablePullDownRefresh": false
   },

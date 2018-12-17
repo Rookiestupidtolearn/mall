@@ -30,6 +30,14 @@ public class QzMoneyRecordEntity implements Serializable {
     private Date createTime;
     //交易流水号(关联各资金订单)
     private String tradeNo;
+    //会员名称
+    private String shopUserName;
+    //会员手机号
+    private String userPhone;
+    //身份证件号
+    private String cardId;
+    //备注
+    private String remark;
 
     /**
      * 设置：主键
@@ -129,6 +137,38 @@ public class QzMoneyRecordEntity implements Serializable {
 
 	public void setTranType(String tranType) {
 		this.tranType = tranType;
+	}
+
+	public String getShopUserName() {
+		return shopUserName;
+	}
+
+	public void setShopUserName(String shopUserName) {
+		this.shopUserName = shopUserName;
+	}
+
+	public String getUserPhone() {
+		return userPhone;
+	}
+
+	public void setUserPhone(String userPhone) {
+		this.userPhone = userPhone;
+	}
+
+	public String getCardId() {
+		return cardId;
+	}
+
+	public void setCardId(String cardId) {
+		this.cardId = cardId;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
     
     

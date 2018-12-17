@@ -1,13 +1,14 @@
 package com.platform.api;
 
-import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.ss.formula.functions.T;
 import org.apache.shiro.util.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,10 +20,7 @@ import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.TypeReference;
 import com.github.pagehelper.util.StringUtil;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.platform.annotation.IgnoreAuth;
 import com.platform.annotation.LoginUser;
 import com.platform.cache.J2CacheUtils;
@@ -43,6 +41,7 @@ import com.platform.entity.ThirdPartyRegionEntity;
 import com.platform.entity.UserVo;
 import com.platform.service.ApiGoodsPureInterestRateService;
 import com.platform.service.ApiUserService;
+import com.platform.service.JdOrderService;
 import com.platform.service.ThirdPartyRegionService;
 import com.platform.util.ApiBaseAction;
 import com.platform.utils.GenerateCodeUtil;
@@ -56,18 +55,21 @@ import com.platform.youle.entity.RequestChildsEntity;
 import com.platform.youle.entity.RequestOrderSubmitEntity;
 import com.platform.youle.entity.RequestProductStockEntity;
 import com.platform.youle.entity.RequestSkuDetailEntity;
-import com.platform.youle.entity.ResponseAllProductEntity;
 import com.platform.youle.entity.ResponseBaseEntity;
 import com.platform.youle.entity.ResponseCancelEntity;
+import com.platform.youle.entity.ResponseChildsEntity;
 import com.platform.youle.entity.ResponseOrderSubmitEntity;
 import com.platform.youle.entity.ResponseOrderTrackEntity;
-import com.platform.youle.entity.ResponseSkuDetailEntity;
+import com.platform.youle.entity.ResponseRootCateEntity;
 import com.platform.youle.entity.ResponseSystemOrderTrackEntity;
 import com.platform.youle.service.AbsApiGoodsService;
 import com.platform.youle.service.AbsApiOrderService;
 import com.platform.youle.service.AbsApiRegionService;
+import com.platform.youle.service.AbsApiRootCateService;
 import com.platform.youle.service.ApiJDGoodsService;
 import com.platform.youle.util.HttpUtil;
+import com.platform.youle.util.MD5util;
+import com.platform.youle.util.PropertiesUtil;
 import com.platform.youle.util.TokenUtil;
 
 import io.swagger.annotations.Api;
@@ -118,10 +120,14 @@ public class ApiTestController extends ApiBaseAction {
 	private ApiGoodsPureInterestRateService apiGoodsPureInterestRateService;
 	@Autowired
 	private ApiJDGoodsService apiJDGoodsService;
+	@Autowired
+	private AbsApiRootCateService absApiRootCateService;
 
 	// 查询库存默认地址
 	private String DEFAULT_ADDRESS = "1_72_2799";
-
+	@Autowired
+	private  JdOrderService jdOrderService ;
+	
 	/**
 	 * 获取用户信息
 	 */
@@ -170,22 +176,27 @@ public class ApiTestController extends ApiBaseAction {
 	 * 
 	 * @return
 	 */
+	@IgnoreAuth
 	@ApiOperation(value = "保存一级分类")
 	@PostMapping("rootCate")
 	public JSONObject rootCate() {
-
 		JSONObject resultObj = new JSONObject();
 		String result = "";
 		RequestBaseEntity entity = new RequestBaseEntity();
 		initRequestParam(entity);
 		try {
-			result = HttpUtil.post(Urls.base_test_url + Urls.rootCate, objectToMap(entity));
+			result = HttpUtil.post(Urls.base_prod_url + Urls.rootCate, objectToMap(entity));
 			if (StringUtil.isEmpty(result)) {
 				resultObj.put("status", "false");
 				resultObj.put("msg", "三方返回数据为空");
 				return resultObj;
 			}
 			JSONObject dateObj = JSONObject.parseObject(result);
+			if (dateObj.get("RESULT_DATA") == null) {
+				resultObj.put("status", "false");
+				resultObj.put("msg", "三方返回数据为空");
+				return resultObj;
+			}
 			String resultDate = dateObj.get("RESULT_DATA").toString();
 
 			if (StringUtil.isEmpty(resultDate)) {
@@ -197,12 +208,12 @@ public class ApiTestController extends ApiBaseAction {
 			if (!CollectionUtils.isEmpty(dateAttr)) {
 				for (int i = 0; i < dateAttr.size(); i++) {
 					JSONObject obj = JSONObject.parseObject(dateAttr.get(i).toString());
-					System.out.println("父分类" + obj);
 					CategoryVo category = apiCategoryMapper.queryObject(obj.get("code").toString());
-					if(category != null){
+					if (category != null) {
 						category.setName(obj.get("name") == null ? "" : obj.get("name").toString());
 						category.setIs_show(1);
-						category.setParent_id(obj.get("parentId") == null ? 0 : Integer.parseInt(obj.get("parentId").toString()));
+						category.setParent_id(
+								obj.get("parentId") == null ? 0 : Integer.parseInt(obj.get("parentId").toString()));
 						category.setLevel(obj.get("level").toString());
 						apiCategoryMapper.update(category);
 						continue;
@@ -218,114 +229,181 @@ public class ApiTestController extends ApiBaseAction {
 				resultObj.put("status", "success");
 				resultObj.put("msg", "5.1获取一级产品分类保存成功");
 			}
-			List<CategoryVo> categorys = apiCategoryMapper.queryAllParentIdsCategorys();
-			if (CollectionUtils.isEmpty(categorys)) {
-				resultObj.put("status", "false");
-				resultObj.put("msg", "保存二级分类异常，查询本地父类为空");
-				return resultObj;
-			}
-			for(CategoryVo vo : categorys){
-				childs(vo.getId());
-			}
+			childs();
 		} catch (Exception e) {
 			resultObj.put("status", "false");
 			resultObj.put("msg", "查询一级分类异常");
 			logger.error("[5.1获取一级产品分类保存异常]", e);
 		}
 		return resultObj;
-		
-	
 	}
 
+	
+	
 	/**
-	 * 二级分流入库
+	 * 保存二级分类
 	 * 
 	 * @return
 	 */
-	@ApiOperation(value = "保存二级分类")
-	@PostMapping("childs")
-	public JSONObject childs(Integer categoryId) {
+	public JSONObject childs() {
 		JSONObject resultObj = new JSONObject();
-		RequestChildsEntity entity = new RequestChildsEntity();
-		initRequestParam(entity);
-		entity.setParentCate(categoryId);
-		try {
-			String result = HttpUtil.post(Urls.base_test_url + Urls.childs, objectToMap(entity));
-			
-			if (StringUtils.isEmpty(result)) {
-				resultObj.put("status", "false");
-				resultObj.put("msg", "查询二级分类三方返回数据为空");
-				logger.info("[查询二级分类三方返回数据为空],父类id" + categoryId);
-				return resultObj;
-			}
-			JSONObject dateObj = JSONObject.parseObject(result);
-			if(dateObj.get("RESULT_DATA") == null){
-				resultObj.put("status", "false");
-				resultObj.put("msg", "查询二级分类三方返回数据为空");
-				logger.info("[查询二级分类三方返回数据为空],父类id" + categoryId);
-				return resultObj;
-			}
-			if(dateObj.get("RESULT_DATA") == null){
-				resultObj.put("status", "false");
-				resultObj.put("msg", "查询二级分类三方返回数据为空");
-				logger.info("[查询二级分类三方返回数据为空],父类id" + categoryId);
-				return resultObj;
-			}
-			String resultDate = dateObj.get("RESULT_DATA").toString();
-			if (StringUtils.isEmpty(resultDate)) {
-				resultObj.put("status", "false");
-				resultObj.put("msg", "查询二级分类三方返回数据为空");
-				logger.info("[查询二级分类三方返回数据为空],父类id" + categoryId);
-				return resultObj;
-			}
-			JSONArray dateAttr = JSONArray.parseArray(resultDate);
-			if (CollectionUtils.isEmpty(dateAttr)) {
-				logger.info("[查询二级分类三方返回数据为空],父类id" + categoryId);
-				return resultObj;
-			}
-			for (int i = 0; i < dateAttr.size(); i++) {
-				JSONObject obj = JSONObject.parseObject(dateAttr.get(i).toString());
-				System.out.println("子分类" + obj);
-				CategoryVo category = apiCategoryMapper.queryObject(Integer.parseInt(obj.get("code").toString()));
-				if(category != null){
-					category.setName(obj.get("name").toString());
-					category.setIs_show(1);
-					category.setParent_id(
-							obj.get("parentId") == null ? 0 : Integer.parseInt(obj.get("parentId").toString()));
-					category.setLevel(obj.get("level").toString());
-					apiCategoryMapper.update(category);
+		List<CategoryVo> categorys = apiCategoryMapper.queryAllParentIdsCategorys();
+		if (CollectionUtils.isEmpty(categorys)) {
+			resultObj.put("status", "false");
+			resultObj.put("msg", "保存二级分类异常");
+			return resultObj;
+		}
+		for (CategoryVo vo : categorys) {
+			RequestChildsEntity entity = new RequestChildsEntity();
+			initRequestParam(entity);
+			entity.setParentCate(vo.getId());
+			try {
+				String result = HttpUtil.post(Urls.base_prod_url + Urls.childs, objectToMap(entity));
+
+				if (StringUtils.isEmpty(result)) {
+					resultObj.put("status", "false");
+					resultObj.put("msg", "查询二级分类三方返回数据为空");
+					logger.info("[查询二级分类三方返回数据为空],父类id" + vo.getId());
 					continue;
 				}
-				
-				CategoryVo vos = new CategoryVo();
-				List<GoodsVo> goods = apiGoodsMapper.quertGoodsByCategory(obj.get("code").toString());
-				if (!CollectionUtils.isEmpty(goods)) {
-					for (GoodsVo good : goods) {
-						if (good.getList_pic_url() != null) {
-							vos.setWap_banner_url(good.getList_pic_url());
-						}
-						break;
-					}
+				JSONObject dateObj = JSONObject.parseObject(result);
+				if (dateObj.get("RESULT_DATA") == null) {
+					resultObj.put("status", "false");
+					resultObj.put("msg", "查询二级分类三方返回数据为空");
+					logger.info("[查询二级分类三方返回数据为空],父类id" + vo.getId());
+					continue;
 				}
-				vos.setId(Integer.parseInt(obj.get("code").toString()));
-				vos.setName(obj.get("name").toString());
-				vos.setIs_show(1);
-				vos.setParent_id(
-						obj.get("parentId") == null ? 0 : Integer.parseInt(obj.get("parentId").toString()));
-				vos.setLevel(obj.get("level").toString());
-				apiCategoryMapper.save(vos);
+				if (dateObj.get("RESULT_DATA") == null) {
+					resultObj.put("status", "false");
+					resultObj.put("msg", "查询二级分类三方返回数据为空");
+					logger.info("[查询二级分类三方返回数据为空],父类id" + vo.getId());
+					continue;
+				}
+				String resultDate = dateObj.get("RESULT_DATA").toString();
+				if (StringUtils.isEmpty(resultDate)) {
+					resultObj.put("status", "false");
+					resultObj.put("msg", "查询二级分类三方返回数据为空");
+					logger.info("[查询二级分类三方返回数据为空],父类id" + vo.getId());
+					continue;
+				}
+				JSONArray dateAttr = JSONArray.parseArray(resultDate);
+				if (CollectionUtils.isEmpty(dateAttr)) {
+					logger.info("[查询二级分类三方返回数据为空],父类id" + vo.getId());
+					continue;
+				}
+				for (int i = 0; i < dateAttr.size(); i++) {
+					JSONObject obj = JSONObject.parseObject(dateAttr.get(i).toString());
+					System.out.println("子分类" + obj);
+					CategoryVo category = apiCategoryMapper.queryObject(Integer.parseInt(obj.get("code").toString()));
+					if (category != null) {
+						category.setName(obj.get("name").toString());
+						category.setIs_show(1);
+						category.setParent_id(
+								obj.get("parentId") == null ? 0 : Integer.parseInt(obj.get("parentId").toString()));
+						category.setLevel(obj.get("level").toString());
+						apiCategoryMapper.update(category);
+						continue;
+					}
+
+					CategoryVo vos = new CategoryVo();
+					List<GoodsVo> goods = apiGoodsMapper.quertGoodsByCategory(obj.get("code").toString());
+					if (!CollectionUtils.isEmpty(goods)) {
+						for (GoodsVo good : goods) {
+							if (good.getList_pic_url() != null) {
+								vos.setWap_banner_url(good.getList_pic_url());
+							}
+							break;
+						}
+					}
+					vos.setId(Integer.parseInt(obj.get("code").toString()));
+					vos.setName(obj.get("name").toString());
+					vos.setIs_show(1);
+					vos.setParent_id(
+							obj.get("parentId") == null ? 0 : Integer.parseInt(obj.get("parentId").toString()));
+					vos.setLevel(obj.get("level").toString());
+					apiCategoryMapper.save(vos);
+				}
+				resultObj.put("status", "success");
+				resultObj.put("msg", "[5.2获取下级产品分类]保存成功");
+			} catch (Exception e) {
+				resultObj.put("status", "false");
+				resultObj.put("msg", "[5.2获取下级产品分类]保存异常");
+				logger.error("[5.2获取下级产品分类]保存异常", e);
 			}
-			resultObj.put("status", "success");
-			resultObj.put("msg", "[5.2获取下级产品分类]保存成功");
-		} catch (Exception e) {
-			resultObj.put("status", "false");
-			resultObj.put("msg", "[5.2获取下级产品分类]保存异常");
-			logger.error("[5.2获取下级产品分类]保存异常", e);
 		}
+		saveThirdCategory();
 		return resultObj;
-	
 	}
 
+	public JSONObject saveThirdCategory() {
+		JSONObject resultObj = new JSONObject();
+		List<CategoryVo> categorys = apiCategoryMapper.queryAllChildsCategorys();
+		if (CollectionUtils.isEmpty(categorys)) {
+			resultObj.put("status", "false");
+			resultObj.put("msg", "保存二级分类异常");
+			return resultObj;
+		}
+		for (CategoryVo vo : categorys) {
+			RequestChildsEntity entity = new RequestChildsEntity();
+			initRequestParam(entity);
+			entity.setParentCate(vo.getId());
+			try {
+				String result = HttpUtil.post(Urls.base_prod_url + Urls.childs, objectToMap(entity));
+				if (StringUtils.isEmpty(result)) {
+					resultObj.put("status", "false");
+					resultObj.put("msg", "查询二级分类三方返回数据为空");
+					return resultObj;
+				}
+				JSONObject dateObj = JSONObject.parseObject(result);
+				String resultDate = dateObj.get("RESULT_DATA").toString();
+				if (StringUtils.isEmpty(resultDate)) {
+					resultObj.put("status", "false");
+					resultObj.put("msg", "查询二级分类三方返回数据为空");
+					return resultObj;
+				}
+				JSONArray dateAttr = JSONArray.parseArray(resultDate);
+				if (CollectionUtils.isEmpty(dateAttr)) {
+					continue;
+				}
+				for (int i = 0; i < dateAttr.size(); i++) {
+					JSONObject obj = JSONObject.parseObject(dateAttr.get(i).toString());
+					CategoryVo category = apiCategoryMapper.queryObject(Integer.parseInt(obj.get("code").toString()));
+					if (category != null) {
+						category.setName(obj.get("name").toString());
+						category.setIs_show(1);
+						category.setParent_id(vo.getParent_id());
+						category.setLevel(vo.getLevel());
+						apiCategoryMapper.update(category);
+						continue;
+					}
+					CategoryVo vos = new CategoryVo();
+					List<GoodsVo> goods = apiGoodsMapper.quertGoodsByCategory(obj.get("code").toString());
+					if (!CollectionUtils.isEmpty(goods)) {
+						for (GoodsVo good : goods) {
+							if (good.getList_pic_url() != null) {
+								vos.setWap_banner_url(good.getList_pic_url());
+							}
+							break;
+						}
+					}
+					vos.setId(Integer.parseInt(obj.get("code").toString()));
+					vos.setName(obj.get("name").toString());
+					vos.setIs_show(1);
+					vos.setParent_id(vo.getParent_id());
+					vos.setLevel(vo.getLevel());
+					apiCategoryMapper.save(vos);
+				}
+				resultObj.put("status", "success");
+				resultObj.put("msg", "[5.2获取下级产品分类]保存成功");
+			} catch (Exception e) {
+				resultObj.put("status", "false");
+				resultObj.put("msg", "[5.2获取下级产品分类]保存异常");
+				logger.error("[5.2获取下级产品分类]保存异常", e);
+			}
+		}
+		return resultObj;
+	}
+	
 	/*
 	 * 保存商品
 	 */
@@ -530,11 +608,27 @@ public class ApiTestController extends ApiBaseAction {
 		apiProductMapper.save(product);
 	}
 
-	public void initRequestParam(RequestBaseEntity entity) {
-		entity.setWid(TokenUtil.wid);
-		entity.setTimestamp(TokenUtil.currentTime.toString());
-		entity.setToken(TokenUtil.token);
-	}
+	 /**
+	   * 初始请求参数
+	   * @param entity
+	   */
+	  public void initRequestParam(RequestBaseEntity  entity){
+		  Long currentTime = Calendar.getInstance().getTimeInMillis();
+	      entity.setWid(PropertiesUtil.getValue("youle.properties","wid"));
+	      entity.setTimestamp(currentTime.toString());
+	      String token =getToken(currentTime);
+	      entity.setToken(token);
+	  }
+	
+		private  String getToken(Long currentTime){
+			String token = ""; 
+          StringBuffer  tokenStr = new StringBuffer("");
+          tokenStr.append(PropertiesUtil.getValue("youle.properties","wid"));
+          tokenStr.append(PropertiesUtil.getValue("youle.properties","accessToken"));
+          tokenStr.append(currentTime);
+          token = MD5util.encodeByMD5(tokenStr.toString()).toUpperCase();
+			return token;
+		}
 
 	public Map<String, Object> objectToMap(RequestBaseEntity entity) throws Exception {
 		String str = JSON.toJSONString(entity);
@@ -711,7 +805,16 @@ public class ApiTestController extends ApiBaseAction {
 
 		return response;
 	}
+	@IgnoreAuth
+	@ApiOperation(value = "1.8批量查询商品可售状态")
+	@PostMapping("batchSaleStatus")
+	public Object batchSaleStatus() {
 
+		Map<String, Object> map =  jdOrderService.checkBatchSaleStatus("3409468966");
+
+		return map;
+	}
+	
 	@IgnoreAuth
 	@ApiOperation(value = "4、三方地址接口")
 	@PostMapping("response")
@@ -749,7 +852,7 @@ public class ApiTestController extends ApiBaseAction {
 	@PostMapping("orderTrack")
 	public Object orderTrack() {
 
-		ResponseOrderTrackEntity response = orderService.orderTrack("jd201811091752324423052");
+		ResponseOrderTrackEntity response = orderService.orderTrack("jd201812161347078370654");
 
 		return response;
 	}
@@ -798,17 +901,31 @@ public class ApiTestController extends ApiBaseAction {
 	@PostMapping("queryAllProducts")
 	public Object queryAllProducts(Long productId) {
 		String resultObj = "";
-		ResponseSkuDetailEntity reponse = null;
 		RequestSkuDetailEntity entity = new RequestSkuDetailEntity();
 		initRequestParam(entity);
 		entity.setPid(productId);
 		try {
-			resultObj = HttpUtil.post(Urls.base_test_url + Urls.detial, objectToMap(entity));
+			resultObj = HttpUtil.post(Urls.base_prod_url + Urls.detial, objectToMap(entity));
 			System.out.println(resultObj);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return resultObj;
+//		ResponseChildsEntity  reponse=null;
+//		RequestChildsEntity entity = new RequestChildsEntity();
+//	    initRequestParam(entity);
+//	    entity.setParentCate(parentCate);
+//	    System.out.println(entity.getTimestamp());
+//	    String result = "";
+//		try {
+//			logger.info("[5.2获取下级产品分类]入参："+JSONObject.toJSONString(entity));
+//			result = HttpUtil.post(Urls.base_prod_url+Urls.childs, objectToMap(entity));
+//			logger.info("[5.2获取下级产品分类]出参："+result);
+////			reponse = JSON.parseObject(result,ResponseChildsEntity.class);
+//		} catch (Exception e) {
+//			logger.error("[5.2获取下级产品分类]异常：", e);
+//		}
+//		return result;
 	}
 	
 	@IgnoreAuth
@@ -823,5 +940,15 @@ public class ApiTestController extends ApiBaseAction {
     	level2.put(key, value,86400l);
 		return resultObj;
 	}
-	
+	public static void main(String[] args) {
+		for(int i=0;i<100;i++){
+			try {
+				Thread.sleep(1000L);
+				System.out.println(Calendar.getInstance().getTimeInMillis());
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+		
 }

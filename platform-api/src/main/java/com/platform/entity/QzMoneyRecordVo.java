@@ -23,6 +23,8 @@ public class QzMoneyRecordVo implements Serializable{
 	    private Date createTime;
 	    //交易流水号(关联各资金订单)
 	    private String tradeNo;
+	    //备注
+	    private String remark;
 		public Integer getId() {
 			return id;
 		}
@@ -71,4 +73,11 @@ public class QzMoneyRecordVo implements Serializable{
 		public void setTradeNo(String tradeNo) {
 			this.tradeNo = tradeNo;
 		}
+		public String getRemark() {
+			return remark;
+		}
+		public void setRemark(String remark) {
+			this.remark = remark;
+		}
+		
 }

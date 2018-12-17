@@ -33,13 +33,14 @@ public class UserCouponVo implements Serializable {
     private Long referrer;
     //优惠券状态 1. 可用 2. 已用  3. 作废 4.支付中 6.过期 7作废临时字段
     private int coupon_status;
-    //优惠券价格
+    //实际优惠券价格
     private BigDecimal coupon_price;
     //父id
-    private Long  parent_id;
+    private Integer  parent_id;
     //商品id
     private Long goods_id;
-    
+    //优惠券价格
+    private BigDecimal abstract_coupon_status;
     
     public Integer getId() {
         return id;
@@ -130,11 +131,13 @@ public class UserCouponVo implements Serializable {
 		this.coupon_price = coupon_price;
 	}
 
-	public Long getParent_id() {
+	
+
+	public Integer getParent_id() {
 		return parent_id;
 	}
 
-	public void setParent_id(Long parent_id) {
+	public void setParent_id(Integer parent_id) {
 		this.parent_id = parent_id;
 	}
 
@@ -144,6 +147,14 @@ public class UserCouponVo implements Serializable {
 
 	public void setGoods_id(Long goods_id) {
 		this.goods_id = goods_id;
+	}
+
+	public BigDecimal getAbstract_coupon_status() {
+		return abstract_coupon_status;
+	}
+
+	public void setAbstract_coupon_status(BigDecimal abstract_coupon_status) {
+		this.abstract_coupon_status = abstract_coupon_status;
 	}
     
 }

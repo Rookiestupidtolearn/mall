@@ -9,7 +9,7 @@
 	},
 	"compileType": "miniprogram",
 	"libVersion": "1.9.0",
-	"appid": "wx8e4084efed7e0d70",
+	"appid": "wx9f5753163b88a9b9",
 	"projectname": "wxshop",
 	"condition": {
 		"search": {
@@ -28,7 +28,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 11,
+			"current": 10,
 			"list": [
 				{
 					"id": 0,
@@ -93,13 +93,7 @@
 				{
 					"id": -1,
 					"name": "地址",
-					"pathName": "pages/ucenter/addressAdd/addressAdd",
-					"query": ""
-				},
-				{
-					"id": -1,
-					"name": "购物车",
-					"pathName": "pages/cart/cart"
+					"pathName": "pages/ucenter/addressAdd/addressAdd"
 				}
 			]
 		}

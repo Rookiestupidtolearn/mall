@@ -35,6 +35,7 @@ import com.platform.entity.QzUserAccountVo;
 import com.platform.entity.UserCouponVo;
 import com.platform.service.ApiGoodsPureInterestRateService;
 import com.platform.service.ApiGoodsService;
+import com.platform.util.ApiUpdateUserCouponPriceUtils;
 import com.platform.util.PayMatchingUtil;
 import com.platform.youle.constant.Constants.Urls;
 import com.platform.youle.entity.RequestBaseEntity;
@@ -68,6 +69,8 @@ public class AbsApiCartPriceServiceImpl implements AbsApiCartPriceService {
 	private ApiGoodsPureInterestRateService goodsPureInterestRateService;
 	@Autowired
 	private ApiGoodsService apiGoodsService;
+	@Autowired
+	private ApiUpdateUserCouponPriceUtils apiUpdateUserCouponPriceUtils;
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -207,7 +210,7 @@ public class AbsApiCartPriceServiceImpl implements AbsApiCartPriceService {
 
 	public synchronized Object updateUserCouponPrice(Integer goodsId, Integer number, Long userId) {
 		BigDecimal couponTotalPrice = BigDecimal.ZERO;// 优惠券总价值
-
+		BigDecimal couponTotalPriceAbstract = BigDecimal.ZERO;//理论优惠券价格
 		Map<String, Object> map = new HashMap<>();
 		map.put("userId", userId);
 		BigDecimal amount = BigDecimal.ZERO;// 初始化用户平台币
@@ -230,20 +233,27 @@ public class AbsApiCartPriceServiceImpl implements AbsApiCartPriceService {
 				userCouponVo = coupons.get(0);
 			}
 			if (userCouponVo != null && userAmountVo != null) {
+				List<UserCouponVo> userCoupons = apiUserCouponMapper.querySubCoupons(userCouponVo.getId());
+	           	 if(!CollectionUtils.isEmpty(userCoupons)){
+	           		 for(UserCouponVo vo :userCoupons){
+	           			 vo.setCoupon_status(7);
+	           			 apiUserCouponMapper.update(vo);
+	           		 }
+	           	 }
 				// 购物车发生修改 原有优惠券作废，重新生成优惠券
 				userCouponVo.setCoupon_status(7);
 				logger.info("【更新用户优惠券】原有优惠券作废，原有优惠券金额" + userCouponVo.getCoupon_price() + "原用户平台币"
 						+ userAmountVo.getAmount());
 				apiUserCouponMapper.update(userCouponVo);
 
-				saveTranInfoRecord(userId, "1", "2", userCouponVo.getCoupon_price(), userCouponVo.getCoupon_price(),
+				apiUpdateUserCouponPriceUtils.saveTranInfoRecord(userId, "1", "2", userCouponVo.getCoupon_price(), userCouponVo.getCoupon_price(),
 						"【查询购物车价格与三方是否一致定时任务】购物车发生修改  原有优惠券作废");
 				// 回滚平台币
 				userAmountVo.setAmount(userAmountVo.getAmount().add(userCouponVo.getCoupon_price()));
 				qzUserAccountMapper.updateUserAccount(userAmountVo);
 
 				logger.info("【查询购物车价格与三方是否一致定时任务】更新用户平台币,更新后平台币金额" + userAmountVo.getAmount());
-				saveTranInfoRecord(userId, "2", "1", userCouponVo.getCoupon_price(), userAmountVo.getAmount(),
+				apiUpdateUserCouponPriceUtils.saveTranInfoRecord(userId, "2", "1", userCouponVo.getCoupon_price(), userAmountVo.getAmount(),
 						"【查询购物车价格与三方是否一致定时任务】原有优惠券作废,原优惠券金额回滚到平台币");
 			}
 			if (!CollectionUtils.isEmpty(carts)) {
@@ -268,6 +278,7 @@ public class AbsApiCartPriceServiceImpl implements AbsApiCartPriceService {
 						couponTotalPrice = couponTotalPrice.add(couponlPrice);
 					}
 				}
+				couponTotalPriceAbstract = couponTotalPrice;
 			}
 			if (userAmountVo != null) {
 				amount = userAmountVo.getAmount();
@@ -277,37 +288,16 @@ public class AbsApiCartPriceServiceImpl implements AbsApiCartPriceService {
 				userAmountVo.setAmount(userAmountVo.getAmount().subtract(couponTotalPrice));
 				qzUserAccountMapper.updateUserAccount(userAmountVo);
 				logger.info("更新用户平台币,更新后平台币金额" + userAmountVo.getAmount());
-				saveTranInfoRecord(userId, "2", "2", couponTotalPrice, userAmountVo.getAmount(), "【查询购物车价格与三方是否一致定时任务】回滚平台币后扣减购物车中生成优惠券金额");
+				apiUpdateUserCouponPriceUtils.saveTranInfoRecord(userId, "2", "2", couponTotalPrice, userAmountVo.getAmount(), "【查询购物车价格与三方是否一致定时任务】回滚平台币后扣减购物车中生成优惠券金额");
 			}
-			getUserCouponTotalPrice(userId, couponTotalPrice);
+			getUserCouponTotalPrice(userId, couponTotalPrice,couponTotalPriceAbstract);
 		}
 		return this.toResponsObject(0, "执行成功", "");
 	}
 
-	/**
-	 * 生成平台币、优惠券流水
-	 * 
-	 * @param userId
-	 * @param tranType
-	 * @param TranFlag
-	 * @param tranAmount
-	 * @param currentAmount
-	 * @param remark
-	 */
-	public void saveTranInfoRecord(Long userId, String tranType, String TranFlag, BigDecimal tranAmount,
-			BigDecimal currentAmount, String remark) {
-		ApiTranInfoRecordVo tranInfo = new ApiTranInfoRecordVo();
-		tranInfo.setUser_id(userId);
-		tranInfo.setTran_type(tranType);// 1优惠券 2 平台币
-		tranInfo.setTran_flag(TranFlag);// 1收入 2支出
-		tranInfo.setTran_amount(tranAmount);
-		tranInfo.setCurrent_amount(currentAmount);
-		tranInfo.setCreate_time(new Date());
-		tranInfo.setRemark(remark);
-		apiTranInfoRecordMapper.save(tranInfo);
-	}
 
-	public Object getUserCouponTotalPrice(Long userId, BigDecimal couponTotalPrice) {
+
+	public Object getUserCouponTotalPrice(Long userId, BigDecimal couponTotalPrice,BigDecimal couponTotalPriceAbstract) {
 		List<UserCouponVo> userCouponVos = apiUserCouponMapper.queryUserCouponTotalPrice(userId);// 查询用户优惠券信息
 		List<UserCouponVo> coupons = new ArrayList<>();
 		if (!CollectionUtils.isEmpty(userCouponVos)) {
@@ -329,18 +319,21 @@ public class AbsApiCartPriceServiceImpl implements AbsApiCartPriceService {
 			userCoupon.setUser_id(userId);
 			userCoupon.setCoupon_status(1);
 			userCoupon.setCoupon_price(couponTotalPrice);
+			userCoupon.setAbstract_coupon_status(couponTotalPriceAbstract);
 			userCoupon.setAdd_time(new Date());
 			apiUserCouponMapper.save(userCoupon);
 			if (null == userCoupon.getId()) {
 				return this.toResponsObject(400, "优惠券生成失败", "");
 			}
+			apiUpdateUserCouponPriceUtils.saveSubUserCoupons(userId, userCoupon.getId());
 		}
 		if (userCouponVo != null) {
+			userCouponVo.setAbstract_coupon_status(couponTotalPriceAbstract);
 			userCouponVo.setCoupon_price(userCouponVo.getCoupon_price().add(couponTotalPrice));
 			userCouponVo.setCoupon_status(1);
 			apiUserCouponMapper.update(userCouponVo);
 
-			saveTranInfoRecord(userId, "1", "1", couponTotalPrice, userCouponVo.getCoupon_price(), "【查询购物车价格与三方是否一致定时任务】原有优惠券作废,重新更新新优惠券");
+			apiUpdateUserCouponPriceUtils.saveTranInfoRecord(userId, "1", "1", couponTotalPrice, userCouponVo.getCoupon_price(), "【查询购物车价格与三方是否一致定时任务】原有优惠券作废,重新更新新优惠券");
 		}
 		return this.toResponsObject(0, "优惠券发送成功", "");
 	}
