@@ -6,7 +6,11 @@ import classification from '@/pages/classification'  //分类
 import shoppingcar from '@/pages/shoppingcar'  //购物车
 import ucenter from '@/pages/ucenter'  //个人中心
 import search from '@/pages/search/search'  //分类-搜索页面
-import order from '@/pages/ucenter/order'  //个人中心-我的订单
+import order from '@/pages/ucenter/order'  //个人中心-我的订单-全部
+import order1 from '@/pages/ucenter/order1'  //个人中心-我的订单-待付款
+import order2 from '@/pages/ucenter/order2'  //个人中心-我的订单-待收货
+import order3 from '@/pages/ucenter/order3'  //个人中心-我的订单-已完成
+import order4 from '@/pages/ucenter/order4'  //个人中心-我的订单-已取消
 import coupon from '@/pages/ucenter/coupon'  //个人中心-我的优惠券
 import collect from '@/pages/ucenter/collect'  //个人中心-我的收藏
 import footprint from '@/pages/ucenter/footprint'  //个人中心-我的足迹
@@ -40,12 +44,17 @@ import lookLogistics from '@/pages/ucenter/lookLogistics'  //物流页面
 Vue.use(Router)
 
 //当页面路径是 /的时候 加载 component 为 home 的 vue 文件
+
+const Home = resolve => require(['@/pages/home'], resolve)
 export default new Router({
   routes: [
     {
       path: '/',
       name: 'home',
-      component: home
+      component: home,
+      meta: { 
+				keepAlive: true,// 需要缓存
+			}
     },{
       path: '/pages/classification',
       name: 'classification',
@@ -97,7 +106,10 @@ export default new Router({
     },{
       path: '/pages/ucenter/search',
       name: 'search',
-      component: search
+      component: search,
+      meta: { 
+				keepAlive: true,// 需要缓存
+			}
     },{
       path: '/pages/category/category',
       name: 'categoryPages',
@@ -182,7 +194,24 @@ export default new Router({
       path: '/pages/ucenter/lookLogistics',
       name: 'lookLogistics',
       component: lookLogistics
+    },{
+      path: '/pages/ucenter/order1',
+      name: 'order1',
+      component: order1
+    },{
+      path: '/pages/ucenter/order2',
+      name: 'order2',
+      component: order2
+    },{
+      path: '/pages/ucenter/order3',
+      name: 'order3',
+      component: order3
+    },{
+      path: '/pages/ucenter/order4',
+      name: 'order4',
+      component: order4
     }
     
   ]
+  
 })

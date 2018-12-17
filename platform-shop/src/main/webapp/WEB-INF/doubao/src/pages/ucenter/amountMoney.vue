@@ -27,7 +27,7 @@ export default {
 //components:{headbar},
   data () {
     return {
-//  	headFont:'平台币明细',
+//  	headFont:'克拉明细',
     	userAccountDetail:[]
     }
   },

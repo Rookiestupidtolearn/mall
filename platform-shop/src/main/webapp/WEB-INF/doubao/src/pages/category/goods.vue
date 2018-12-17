@@ -253,43 +253,47 @@
 	    	
 	  },
 	destroyed(){
-				window.location.reload();
-		},
+ 		document.getElementById('zhichiBtnBox').style.display= 'none'; //默认隐藏智齿
+	},
 	methods:{
 		zhichi(){
 			let that = this;
 			//			获取userId
-			var userId = that.$cookie.getCookie('userId');
-			//	  	<!--该链接可在智齿客服工作台=>设置=>接入渠道中找到--> this指向script了
-			let para=document.createElement("script");
-	        para.src = "https://www.sobot.com/chat/frame/js/entrance.js?sysNum=e5ef8967b4114644a4c290bf0729f959";
-	        para.setAttribute("id", "zhichiScript");
-        	para.setAttribute("class", "zhiCustomBtn");
-        	para.setAttribute("data-args", "partnerId="+userId);   //ios记录用户标识
-	       	this.$refs.input1.appendChild(para);
-
-			para.onload=function(){
-				//	初始化智齿咨询组件实例
-				var zhiManager = (getzhiSDKInstance());
-				//再调用load方法
-				zhiManager.on("load", function() {
-				    zhiManager.initBtnDOM();
-				});
-				
-				zhiManager.set('title_info',that.goods.name);   //商品信息的标题（必传）
-				zhiManager.set('url_info',window.location.href);  //商品信息的商品链接地址（必传）
-				zhiManager.set('abstract_info',that.goods.name);  //商品信息的简述内容（选传） 无描述用的标题
-				zhiManager.set('label_info',that.market_price);	  //商品标签例：价格（选传）
-				zhiManager.set('thumbnail_info',that.banner[0].img_url);  //商品的缩略图（选传）
-				
-
+			if(document.getElementById('zhichiBtnBox') == null){
+				var userId = that.$cookie.getCookie('userId');
+				//	  	<!--该链接可在智齿客服工作台=>设置=>接入渠道中找到--> this指向script了
+				let para=document.createElement("script");
+		        para.src = "https://www.sobot.com/chat/frame/js/entrance.js?sysNum=e5ef8967b4114644a4c290bf0729f959";
+		        para.setAttribute("id", "zhichiScript");
+	        	para.setAttribute("class", "zhiCustomBtn");
+	        	para.setAttribute("data-args", "partnerId="+userId);   //ios记录用户标识
+		       	this.$refs.input1.appendChild(para);
+	
+				para.onload=function(){
+					//	初始化智齿咨询组件实例
+					var zhiManager = (getzhiSDKInstance());
+					//再调用load方法
+					zhiManager.on("load", function() {
+					    zhiManager.initBtnDOM();
+					});
+					
+					zhiManager.set('title_info',that.goods.name);   //商品信息的标题（必传）
+					zhiManager.set('url_info',window.location.href);  //商品信息的商品链接地址（必传）
+					zhiManager.set('abstract_info',that.goods.name);  //商品信息的简述内容（选传） 无描述用的标题
+					zhiManager.set('label_info',that.market_price);	  //商品标签例：价格（选传）
+					zhiManager.set('thumbnail_info',that.banner[0].img_url);  //商品的缩略图（选传）
+					
+	
+				}
+			}else{
+				document.getElementById('zhichiBtnBox').style.display= 'block'; //默认隐藏智齿
 			}
+			
 		},
 		detailHref(e){
-			console.log(e);
 			this.$router.push(e);
 			window.location.reload();
-			window.scrollTo(0,0);  
+//			window.scrollTo(0,0);  
 			
 		},
 	  	cutNumber(){
@@ -1146,7 +1150,6 @@ overflow: hidden;
     text-align: center;
     font-size:0;
 }
-
 .goods-info .brand p{
     display: inline-block;
     width: auto;

@@ -40,7 +40,7 @@
 	         <div class="coupon-item" v-else>
 	            <div class="l">
 	            	<!--<span class="name">优惠券金额</span>-->
-	                <span class="txt">平台币抵扣券</span>
+	                <span class="txt">克拉抵扣券</span>
 	            </div>
 	            <div class="r">
 	                <img src="../../../static/images/address_right.png"/>
@@ -75,7 +75,7 @@
         </div>
          <div class="order-item no-border">
             <div class="l" >
-                <span class="name">平台币</span><i @click="showTb">?</i>
+                <span class="name">克拉</span><i @click="showTb">?</i>
             </div>
             <div class="r">
                 <span class="txt">-￥{{couponPrice}}</span>
@@ -84,7 +84,7 @@
         	<!--<mt-switch v-model="switchValue" class="mtSwitch" @change="change"></mt-switch>-->
          </div>
          <div class="order-item order-tips no-border"  :style="{display : [showBin ? 'none' :'block']}">
-         	<!--//showCz判断平台币是否充足-->
+         	<!--//showCz判断克拉是否充足-->
          	<div class="tips" v-if="showCzn">  
         		共{{disCountAmount}}币，开通即可使用
         	</div>
@@ -133,7 +133,7 @@
 			usableAmount:'',
 			residueAmount:'',
 			showCzn:false, 
-			showCz:false,//平台币是否充足
+			showCz:false,//克拉是否充足
 			showBin:true,
 			confirmButtonText:'知道了',
 //			switchValue:false,
@@ -208,7 +208,7 @@
 //	 		}
 //	 	},
 		showTb(){
-			MessageBox( '平台币','内容待提供');
+			MessageBox( '克拉','内容待提供');
 			document.getElementsByClassName('mint-msgbox-confirm')[0].innerText = '知道了';
 		},
 	 	tapCoupon(){
@@ -283,7 +283,7 @@
 		          that.goodsTotalPrice = res.data.data.goodsTotalPrice;
 		          that.orderTotalPrice = res.data.data.orderTotalPrice
 		          
-		          /*判断平台币*/
+		          /*判断克拉*/
 		        if (that.showCz){
 	 				that.showCzn = true; 
 		 		}else{

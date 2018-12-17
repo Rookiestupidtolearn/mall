@@ -24,21 +24,7 @@
 					<p class="market_price">￥{{item.market_price}}</p>
 				</div>
 			</div>
-		</div>
-		<!--<div class="category" v-for="item in category">
-			<p class="instr">{{item.name}}</p>
-			<div class="listAmount">
-				<router-link v-for="goods in item.goodsList" :to="'/pages/category/goods?id='+goods.id">
-					<p><img :src="goods.list_pic_url"/></p>
-					<p class="name">{{goods.name}}</p>
-					<p class="price">￥{{goods.market_price}}</p>
-				</router-link>
-				<router-link :to="'/pages/category/goods?id='+item.id" class="more-a">
-					<p class="name">{{'更多'+item.name+'好物'}}</p>
-					<p><img class="icon" src="../../static/images/icon_go_more.png" background-size="cover"/></p>
-				</router-link>
-			</div>
-		</div>-->
+	</div>
 		<!--公用底部导航-->
   	<tabbar :selected="selected" :tabs='tabs' :style="{'display':[showAN ? 'none' : 'block']}"></tabbar> 
   </div>
@@ -107,20 +93,32 @@ export default {
 	    		this.showAN = false;
 	    	}
     	
-    	/*记录用户浏览位置*/
-//  	window.onscroll=function(){
-//  		var scrollHome = document.documentElement.scrollTop;
-//  		that.$cookie.setCookie('scrollHome',scrollHome);
-//  	}
-//  	
-//  	var scrollDis = this.$cookie.getCookie('scrollHome');
-//  	if(scrollDis == ""){
-//  	}else{
-//  		window.scrollTo(scrollDis,0);
-    	
-//  	}
+//  		window.addEventListener('scroll', this.handleScroll);  //记录页面位置keep-al
+//  		if(this.$cookie.getCookie('homescroll') == ' '){
+//  		}else{
+//  				document.documentElement.scrollTop = this.$cookie.getCookie('homescroll');
+//  		}
+				window.addEventListener('scroll', this.handleScroll);
+
  },
  methods:{
+	 	handleScroll () {
+		 this.scroll = document.documentElement && document.documentElement.scrollTop
+		},
+		activated() {
+		   if(this.scroll > 0){
+		    window.scrollTo(0, this.scroll);
+		    this.scroll = 0;
+		    window.addEventListener('scroll', this.handleScroll);
+		   }
+		},
+		deactivated(){
+		 	window.removeEventListener('scroll', this.handleScroll);
+		},
+// 		handleScroll () {
+//     this.scroll  = document.documentElement &&  document.documentElement.scrollTop;
+//     this.$cookie.setCookie('homescroll',this.scroll)
+//  },
 	 	andriod(e){   //与andriod和ios交互
 				var hrefD = window.location.href;
 				var delDevice = hrefD.split('?')[0];

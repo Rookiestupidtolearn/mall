@@ -7,7 +7,7 @@
    		<img class="userinfo-avatar" :src="avatarImg" @click="gologin"/>
    		<p class="userinfo-nickname">{{userName}}</p>
    		<router-link class="userinfo-availMoney" :to="availUrl" :style="{display:[availResult?'block':'none']}" tag="div">
-	      <p class="userinfo-title">平台币可用余额</p>
+	      <p class="userinfo-title">克拉可用余额</p>
 	      <p class="money">{{ availMoney }}</p>
 	    </router-link>
    </div>
@@ -18,21 +18,29 @@
    		</div>
    		<div class="orderList">
    			<ul>
-   				<router-link to="/pages/ucenter/order" tag="li">
+   				<router-link to="/pages/ucenter/order1" tag="li">
    					<img src="../../static/images/order1.png" alt="" />
+   					<span class="number" v-show="number1>0" v-if="number1<=99">{{number1}}</span>
+   					<span class="number" v-else>...</span>
    					<p>待付款</p>
    				</router-link>
-   				<router-link to="/pages/ucenter/order" tag="li">
+   				<router-link to="/pages/ucenter/order2" tag="li">
    					<img src="../../static/images/order2.png" alt="" />
-   					<p>待发货</p>
-   				</router-link>
-   				<router-link to="/pages/ucenter/order" tag="li">
-   					<img src="../../static/images/order3.png" alt="" />
+   					<span class="number" v-show="number2>0" v-if="number2<=99">{{number2}}</span>
+   					<span class="number" v-else>...</span>
    					<p>待收货</p>
    				</router-link>
-   				<router-link to="/pages/ucenter/order" tag="li">
+   				<router-link to="/pages/ucenter/order3" tag="li">
+   					<img src="../../static/images/order3.png" alt="" />
+   					<span class="number" v-show="number3>0" v-if="number3<=99">{{number3}}</span>
+   					<span class="number" v-else>...</span>
+   					<p>已完成</p>
+   				</router-link>
+   				<router-link to="/pages/ucenter/order4" tag="li">
    					<img src="../../static/images/order4.png" alt="" />
-   					<p>退款/售后</p>
+   					<span class="number" v-show="number4>0" v-if="number4<=99">{{number4}}</span>
+   					<span class="number" v-else>...</span>
+   					<p>已取消</p>
    				</router-link>
    			</ul>
    		</div>
@@ -101,6 +109,10 @@ export default {
   name: 'ucenter',
   data () {
     return {
+    	number1:8,
+    	number2:101,
+    	number3:18,
+    	number4:61,
     	avatarImg:'https://platform-wxmall.oss-cn-beijing.aliyuncs.com/upload/20180727/150547696d798c.png',
       category:[],
       userName:'Hi,游客',
@@ -179,6 +191,7 @@ export default {
 	.orderList ul li{
 		float:left;
 		width:25%;
+		position: relative;
 	}
 	.orderList ul li img{
 		width:.48rem;
@@ -186,6 +199,21 @@ export default {
 	.orderList ul li p{
 		margin-top:.05rem;
 		font-size:.24rem;
+	}
+	.orderList ul li span{
+		height: .28rem;
+    width: .28rem;
+    z-index: 10;
+    position: absolute;
+    top: -.1rem;
+    left: 50%;
+    background: #b4282d;
+    text-align: center;
+    font-size: .18rem;
+    color: #fff;
+    line-height: .28rem;
+    border-radius: 50%;
+    margin-left: .1rem;
 	}
 	.userinfo-availMoney{
 	  font-size:.29rem;

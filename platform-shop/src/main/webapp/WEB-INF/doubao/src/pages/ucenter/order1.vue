@@ -44,7 +44,7 @@ export default {
     return {
 //  	headFont:'订单列表',
     	orderList:[],
-    	activeClass:0,
+    	activeClass:1,
     	totalPages:'',
     	page:1,
     	isMoreLoading:true,
