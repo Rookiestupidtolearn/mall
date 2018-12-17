@@ -47,4 +47,6 @@ public interface ApiOrderMapper extends BaseDao<OrderVo> {
 	 * @return
 	 */
 	List<OrderVo> queryDelivered(Long userId);
+	
+	OrderVo queryLogistics(Long orderId);
 }

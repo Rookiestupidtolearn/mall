@@ -78,7 +78,7 @@
                 <span class="name">克拉</span><i @click="showTb">?</i>
             </div>
             <div class="r">
-                <span class="txt">-￥{{couponPrice}}</span>
+                <span class="txt">-￥{{disCountAmount}}</span>
             </div>
             <!--后期-->
         	<!--<mt-switch v-model="switchValue" class="mtSwitch" @change="change"></mt-switch>-->

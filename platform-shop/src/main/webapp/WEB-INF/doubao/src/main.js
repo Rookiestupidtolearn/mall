@@ -34,18 +34,21 @@ Vue.prototype.$url= 'http://192.168.124.29:8084/platform/api/'; //本地代理
 
 // 添加请求拦截器
 axios.interceptors.request.use(function (config) {
-//	var appHref = 'http://192.168.124.29:8081/#/pages/ucenter/order?device=andriod&token=token1';  //android和ios返回链接样本
+//	var appHref = 'http://192.168.124.29:8081/#/pages/ucenter/order?device=android&token=token1';  //android和ios返回链接样本
+//var appHref = 'http://192.168.124.29:8081/#/pages/ucenter/order?id=2132323&device=android&token=token1';  //商品详情处理android和ios返回链接样本
 //获取token 区分android和ios
 var appHref = window.location.href;
 	if(appHref.indexOf('device')>-1){
 		var tokenDevice = appHref.split('?')[1].split('=')[1].split('&')[0];
+		var tokenDetail = appHref.split('=')[2].split('&')[0];  //商品详情单独处理
 	}
 	if(appHref.indexOf('token')>-1){
-		var tokenApp = appHref.split('&')[1].split('=')[1];
+		var splitLength = appHref.split('=');
+		var tokenApp = splitLength[splitLength.length-1];
 	}
-	if(tokenDevice == 'android'){
+	if(tokenDevice == 'android'  || tokenDetail == 'android' ){
 		config.headers['X-Nideshop-Token'] = tokenApp;
-	}else if(tokenDevice == 'ios'){
+	}else if(tokenDevice == 'ios'  || tokenDetail == 'ios' ){
 		config.headers['X-Nideshop-Token'] = tokenApp;
 	}else{
 		 // 在发送请求之前做些什么
