@@ -1,3 +1,4 @@
+
 # 微信小程序商城（Java版）
 
 [![Fork me on Gitee](https://gitee.com/fuyang_lipengjun/platform/widgets/widget_3.svg?color=C71D24)](https://gitee.com/fuyang_lipengjun/platform)
@@ -221,3 +222,4 @@ AutoCode
 ***
 ## ◆免责条款:
 **_感谢您的支持，此系统供个人学习、研究之用。如因使用本系统引起的相关法律法规责任，由使用者自行负责。_**
+城商城平台
