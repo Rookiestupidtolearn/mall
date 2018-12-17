@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
 import com.platform.annotation.IgnoreAuth;
 import com.platform.annotation.LoginUser;
+import com.platform.dao.ApiOrderGoodsMapper;
 import com.platform.dao.ApiOrderMapper;
 import com.platform.entity.OrderGoodsVo;
 import com.platform.entity.OrderVo;
@@ -63,6 +65,8 @@ public class ApiOrderController extends ApiBaseAction {
     private ApiOrderMapper apiOrderMapper;
     @Autowired
     private JdOrderService JdOrderService;
+    @Autowired
+    private ApiOrderGoodsMapper  apiOrderGoodsMapper;
     
     @ApiOperation(value = "订单首页")
     @IgnoreAuth
@@ -289,7 +293,6 @@ public class ApiOrderController extends ApiBaseAction {
      */
     @ApiOperation(value = "查询物流")
     @PostMapping("queryLogistics")
-    @IgnoreAuth
     public JSONObject queryLogistics(Long orderId){
     	JSONObject resultObj = new JSONObject();
     	OrderVo order = apiOrderMapper.queryObject(orderId);
@@ -301,4 +304,56 @@ public class ApiOrderController extends ApiBaseAction {
     	JSONObject obj = JdOrderService.queryLogistics(order.getOrder_sn());
     	return obj;
     }
+    
+    
+    /**
+     * 查询代付款
+     * @param loginUser
+     * @return
+     */
+    @ApiOperation(value = "查询代付款")
+    @PostMapping("queryUnPayments")
+    @IgnoreAuth
+    public Object queryUnPayments(@LoginUser UserVo loginUser,
+    		@RequestParam(value = "page", defaultValue = "1") Integer page,
+            @RequestParam(value = "size", defaultValue = "10") Integer size,String orderStatus){
+    	  //
+        Map params = new HashMap();
+        params.put("user_id", loginUser.getUserId());
+        params.put("page", page);
+        params.put("limit", size);
+        if("all".equals(orderStatus)){//全部订单
+        	orderStatus = "";
+        }else if("UnPayments".equals(orderStatus)){//待付款
+        	orderStatus = "0"; 
+        }else if("success".equals(orderStatus)){//已完成
+        	orderStatus = "301";
+        }else if("delivered".equals(orderStatus)){//待收货
+        	orderStatus = "300";
+        }else if("cancelFlag".equals(orderStatus)){//已取消
+        	orderStatus = "101";
+        }
+        params.put("orderStatus", orderStatus);
+        params.put("sidx", "id");
+        params.put("order", "asc");
+        //查询列表数据
+        Query query = new Query(params);
+        List<OrderVo> orderEntityList = apiOrderMapper.queryOrderList(query);
+        int total = orderService.queryOrderTotal(query);
+        ApiPageUtils pageUtil = new ApiPageUtils(orderEntityList, total, query.getLimit(), query.getPage());
+        //
+        for (OrderVo item : orderEntityList) {
+            Map orderGoodsParam = new HashMap();
+            orderGoodsParam.put("order_id", item.getId());
+            //订单的商品
+            List<OrderGoodsVo> goodsList = orderGoodsService.queryList(orderGoodsParam);
+            Integer goodsCount = 0;
+            for (OrderGoodsVo orderGoodsEntity : goodsList) {
+                goodsCount += orderGoodsEntity.getNumber();
+                item.setGoodsCount(goodsCount);
+            }
+        }
+        return toResponsSuccess(pageUtil);
+    }
+   
 }

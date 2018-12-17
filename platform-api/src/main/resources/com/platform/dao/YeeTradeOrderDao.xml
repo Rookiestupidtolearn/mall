@@ -21,11 +21,12 @@
         <result property="lastno" column="lastno"/>
         <result property="bank" column="bank"/>
         <result property="bankCode" column="bank_code"/>
+        <result property="payAmount" column="pay_amount"/>
         <result property="memo" column="memo"/>
         <result property="createTime" column="create_time"/>
     </resultMap>
 
-	<select id="queryObject" resultType="com.platform.entity.YeeTradeOrderEntity">
+		<select id="queryObject" resultType="com.platform.entity.YeeTradeOrderEntity">
 		select
 			`id`,
 			`yee_order_no`,
@@ -44,6 +45,7 @@
 			`lastno`,
 			`bank`,
 			`bank_code`,
+			`pay_amount`,
 			`memo`,
 			`create_time`
 		from yee_trade_order
@@ -69,6 +71,7 @@
     		`lastno`,
     		`bank`,
     		`bank_code`,
+    		`pay_amount`,
     		`memo`,
     		`create_time`
 		from yee_trade_order
@@ -118,6 +121,7 @@
 			`lastno`,
 			`bank`,
 			`bank_code`,
+			`pay_amount`,
 			`memo`,
 			`create_time`)
 		values(
@@ -137,6 +141,7 @@
 			#{lastno},
 			#{bank},
 			#{bankCode},
+			#{payAmount},
 			#{memo},
 			#{createTime})
 	</insert>
@@ -160,6 +165,7 @@
 			<if test="lastno != null">`lastno` = #{lastno}, </if>
 			<if test="bank != null">`bank` = #{bank}, </if>
 			<if test="bankCode != null">`bank_code` = #{bankCode}, </if>
+			<if test="payAmount != null">`pay_amount` = #{payAmount}, </if>
 			<if test="memo != null">`memo` = #{memo}, </if>
 			<if test="createTime != null">`create_time` = #{createTime}</if>
 		</set>

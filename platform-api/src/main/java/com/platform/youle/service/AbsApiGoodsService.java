@@ -4,8 +4,16 @@ import java.util.Calendar;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
-import com.platform.youle.entity.*;
-import com.platform.youle.util.TokenUtil;
+import com.platform.youle.entity.RequestBaseEntity;
+import com.platform.youle.entity.ResponseBaseEntity;
+import com.platform.youle.entity.ResponseBatchSaleEntity;
+import com.platform.youle.entity.ResponseGetPriceEntity;
+import com.platform.youle.entity.ResponseProductEntity;
+import com.platform.youle.entity.ResponseProductStockBatchEntity;
+import com.platform.youle.entity.ResponseSaleStatusEntity;
+import com.platform.youle.entity.ResponseSkuDetailEntity;
+import com.platform.youle.util.MD5util;
+import com.platform.youle.util.PropertiesUtil;
 
 /**
  * 抽象类
@@ -20,9 +28,21 @@ public abstract class AbsApiGoodsService implements IApiFuncServicein {
 	 */
 	@Override
 	public void initRequestParam(RequestBaseEntity entity) {
-		entity.setWid(TokenUtil.wid);
-		entity.setTimestamp(TokenUtil.currentTime.toString());
-		entity.setToken(TokenUtil.token);
+		  Long currentTime = Calendar.getInstance().getTimeInMillis();
+	      entity.setWid(PropertiesUtil.getValue("youle.properties","wid"));
+	      entity.setTimestamp(currentTime.toString());
+	      String token =getToken(currentTime);
+	      entity.setToken(token);
+		
+	}
+	private  String getToken(Long currentTime){
+		String token = ""; 
+     StringBuffer  tokenStr = new StringBuffer("");
+     tokenStr.append(PropertiesUtil.getValue("youle.properties","wid"));
+     tokenStr.append(PropertiesUtil.getValue("youle.properties","accessToken"));
+     tokenStr.append(currentTime);
+     token = MD5util.encodeByMD5(tokenStr.toString()).toUpperCase();
+		return token;
 	}
 
 	/**

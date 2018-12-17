@@ -6,10 +6,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -50,6 +52,29 @@ public class JdOrderService {
 	private AbsApiGoodsService apiGoodsService;
 	@Autowired
 	private ApiOrderService orderService;
+	
+	@Autowired
+	private ApiAddressService  apiAddressService;
+	
+	@Transactional
+	public String  jdOrderCreate(OrderVo info){
+		 AddressVo addressVo = apiAddressService.queryObject(info.getAddress_id());
+		if (addressVo ==null) {
+			logger.info("用户的收货地址不能为空，不能下单，用户id"+info.getUser_id());
+			return "ERROR";
+		}
+		if (StringUtils.isEmpty(info.getPid_num()) ) {
+			logger.info("订单的商品数量不能为空");
+			return "ERROR";
+		}
+		JdOrderVo jdOrderVo  = new JdOrderVo();
+		jdOrderVo.setPidNums(info.getPid_num());
+		
+	  this.jdOrderSubbmit(addressVo, info, jdOrderVo);
+	 
+		
+		 return "OK";
+	}
 
 	/**
 	 * 创建订单
@@ -59,7 +84,7 @@ public class JdOrderService {
 	 * @param jdOrderVo
 	 * @return
 	 */
-	public Map<String, Object> jdOrderSubbmit(AddressVo address, OrderVo info, JdOrderVo jdOrderVo) {
+	public Map<String, Object> jdOrderSubbmit(AddressVo addressVo, OrderVo info, JdOrderVo jdOrderVo) {
 		Map<String, Object> resultObj = new HashMap<String, Object>();
 		// 创建第三方订单开始校验数据
 		if (info.getAddress_id() == null) {
@@ -74,14 +99,42 @@ public class JdOrderService {
 			resultObj.put("errmsg", "订单重复，不能重新下单");
 			return resultObj;
 		}
+		String address = addressVo.getProvince() + "_" + addressVo.getCity() + "_" + addressVo.getCounty();
+		// 批量查库存
+		Map<String, Object> stockMap = this.stockBatch(info.getPid_num(), address);
+		if (!stockMap.get("code").equals("200")) {
+			resultObj.put("errno", "100");
+			resultObj.put("errmsg", "不可出售");
+			return resultObj;
+		}
+//		 上下架状态
+		String pids = "";
+		 String pidNums = info.getPid_num();
+		 String pidNum[] = pidNums.split(",");
+		 for (int i = 0; i < pidNum.length; i++) {
+			    String pidNumSingle = pidNum[i].split("_")[0]; //11_11
+			    pids+= pidNumSingle+",";
+		}
+		 
+		 if (StringUtils.isNotEmpty(pids)) {
+			 pids = pids.substring(0, pids.length() - 1);
+		}
+		 
+		Map<String, Object> saleStatusMap = this.checkBatchSaleStatus(pids);
+		if (!saleStatusMap.get("code").equals("200")) {
+			resultObj.put("errno", "100");
+			resultObj.put("errmsg", "不可出售");
+			return resultObj;
+		}
+		
 		jdOrderVo.setShopUserId(Integer.parseInt(info.getUser_id().toString()));
 		jdOrderVo.setOrderStatus(0);
 		jdOrderVo.setThirdOrder(info.getOrder_sn());
 		jdOrderVo.setReceiverName(info.getConsignee());
-		jdOrderVo.setProvince(address.getProvince());
-		jdOrderVo.setCity(address.getCity());
-		jdOrderVo.setCounty(address.getCounty());
-		jdOrderVo.setTown(address.getTown());
+		jdOrderVo.setProvince(addressVo.getProvince());
+		jdOrderVo.setCity(addressVo.getCity());
+		jdOrderVo.setCounty(addressVo.getCounty());
+		jdOrderVo.setTown(addressVo.getTown());
 		jdOrderVo.setAddress(info.getAddress());
 		jdOrderVo.setMobile(info.getMobile());
 
@@ -122,6 +175,10 @@ public class JdOrderService {
 		jdOrder.setErrorMessage(response.getERROR_MESSAGE());
 		jdOrder.setErrorCode(response.getERROR_CODE());
 		jdOrderMapper.update(jdOrder);
+		   
+		//订单已提交给三方
+		 info.setOrder_status(201);
+		  orderService.update(info);
 		return resultObj;
 	}
 
@@ -262,7 +319,7 @@ public class JdOrderService {
 		for (ResulGoodsSaleEntity entity : list) {
 			if (!entity.getStatus()) {
 				map.put("code", "500");
-				map.put("msg", "库存不足");
+				map.put("msg", "已下架");
 				return map;
 			}
 		}

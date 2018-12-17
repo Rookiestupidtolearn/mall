@@ -51,7 +51,7 @@ public class YeepayOrderBizService {
 //		} else {
 //			version		= ConvertUtils.objectToInt(request.getParameter("version"));
 //		}
-        int amount = orderInfo.getActual_price().multiply(new BigDecimal(100)).intValue();    
+        int amount = orderInfo.getActual_price().multiply(new BigDecimal(100)).intValue();//实际下单的金额    
 		//使用TreeMap
 		TreeMap<String, Object> treeMap	= new TreeMap<String, Object>();
 		treeMap.put("orderid", 			entity.getYeeOrderNo());
@@ -59,7 +59,7 @@ public class YeepayOrderBizService {
 		treeMap.put("amount",amount);//以分为单位
 		treeMap.put("currency", 		156); //交易币种
 		treeMap.put("productcatalog", 	"20");//行业类别 20 代表其他
-		treeMap.put("productname", 		"斗宝商铺-斗宝精品");
+		treeMap.put("productname", 		"斗宝俱乐部-斗宝精品");
 //		treeMap.put("productdesc", 		"斗宝商铺");
 		treeMap.put("identitytype", 	2); //2 代表用户ID
 		treeMap.put("identityid", 		entity.getUserId().toString());  //用户id
