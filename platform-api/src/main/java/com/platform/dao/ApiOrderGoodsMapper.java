@@ -25,4 +25,10 @@ public interface ApiOrderGoodsMapper extends BaseDao<OrderGoodsVo> {
 	 * @return
 	 */
 	List<OrderGoodsVo> queryOrderDeliveredGoods(Integer orderId);
+	/**
+	 * 根据orderId查询子订单个数
+	 * @param orderId
+	 * @return
+	 */
+	List<OrderGoodsVo> queryOrderLogisticGoods(Integer orderId);
 }

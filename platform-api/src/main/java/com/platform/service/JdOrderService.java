@@ -5,8 +5,11 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.shiro.util.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +20,14 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
+import com.platform.dao.ApiGoodsMapper;
+import com.platform.dao.ApiOrderGoodsMapper;
+import com.platform.dao.ApiOrderMapper;
 import com.platform.dao.JdOrderMapper;
 import com.platform.entity.AddressVo;
+import com.platform.entity.GoodsVo;
 import com.platform.entity.JdOrderVo;
+import com.platform.entity.OrderGoodsVo;
 import com.platform.entity.OrderVo;
 import com.platform.youle.constant.Constants.Urls;
 import com.platform.youle.entity.RequestBaseEntity;
@@ -52,9 +60,12 @@ public class JdOrderService {
 	private AbsApiGoodsService apiGoodsService;
 	@Autowired
 	private ApiOrderService orderService;
-	
 	@Autowired
 	private ApiAddressService  apiAddressService;
+	@Autowired
+	private ApiGoodsMapper apiGoodsMapper;
+	@Autowired
+	private ApiOrderGoodsMapper apiOrderGoodsMapper;
 	
 	@Transactional
 	public String  jdOrderCreate(OrderVo info){
@@ -327,7 +338,7 @@ public class JdOrderService {
 		return map;
 	}
 
-	public JSONObject queryLogistics(String orderSn) {
+	public JSONObject queryLogistics(String orderSn,Long orderId) {
 		logger.info("【查询三方物流信息开始】,本地订单号:"  + orderSn);
 		JSONObject resultObj = new JSONObject();
 		JdOrderVo jdOrder = jdOrderMapper.queryByThirdOrder(orderSn);
@@ -336,6 +347,10 @@ public class JdOrderService {
 			resultObj.put("msg", "三方订单数据为空");
 			return resultObj;
 		}
+		Pattern pattern = Pattern
+				.compile("[0-9]{1,2}[月][0-9]{1,2}[日][0-9]{1,2}[:][0-9]{1,2}[-][0-9]{1,2}[:][0-9]{1,2}");
+		String arrivalTime = "";
+		
 		List<Map<String,Object>> logistics = new ArrayList<>();
 		String orderKey = jdOrder.getOrderKey();
 		RequestOrderTrackEntity entity = new RequestOrderTrackEntity();
@@ -350,6 +365,7 @@ public class JdOrderService {
 		} catch (Exception e) {
 			logger.error("【查询三方物流信息异常】,本地订单号:"  + orderSn,e);
 		}
+ 
 		JSONObject obj = JSONObject.parseObject(result);
 		if(!Boolean.parseBoolean(obj.get("RESPONSE_STATUS").toString())){
 			logger.info("【查询三方物流信息RESPONSE_STATUS为false】");
@@ -382,7 +398,18 @@ public class JdOrderService {
 			map.put("time", objs.get("time"));
 			map.put("description", objs.get("description"));
 			logistics.add(map);
+			if(i == 2){
+				Matcher matcher = pattern.matcher(objs.get("description").toString());
+				String dateStr = "";
+				if (matcher.find()) {
+					dateStr = matcher.group(0);
+				}
+				arrivalTime = dateStr.toString();
+			}
 		}
+		List<Map<String,Object>> goodList = queryOrderGoods(orderId);
+		resultObj.put("goods", goodList);//物流提供商品名称/商品url
+		resultObj.put("arrivalTime", arrivalTime);
 		resultObj.put("logistics", logistics);
 		return resultObj;
 	}
@@ -421,4 +448,28 @@ public class JdOrderService {
             return map;
     }
 
+    /**
+     * 查看物流提供商品名称和url
+     * @param orderId
+     * @return
+     */
+    public List<Map<String,Object>> queryOrderGoods(Long orderId){
+    	List<Map<String,Object>> goodLists = new ArrayList<>();
+    	List<OrderGoodsVo> orderGoods = apiOrderGoodsMapper.queryOrderLogisticGoods(Integer.parseInt(orderId.toString()));
+    	if(!CollectionUtils.isEmpty(orderGoods)){
+    		for(OrderGoodsVo order : orderGoods){
+    			GoodsVo good = apiGoodsMapper.queryObject(order.getGoods_id());
+    			Map<String,Object> map = new HashMap<>();
+    			map.put("goodsName", good.getName());
+    			map.put("img", good.getList_pic_url());
+    			goodLists.add(map);
+    		}
+    	}
+    	return goodLists;
+    }
+    
+    
+    
+    
+    
 }
