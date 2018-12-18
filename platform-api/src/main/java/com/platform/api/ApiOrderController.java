@@ -316,8 +316,14 @@ public class ApiOrderController extends ApiBaseAction {
 	public Object queryUnPayments(@LoginUser UserVo loginUser,
 			@RequestParam(value = "page", defaultValue = "1") Integer page,
 			@RequestParam(value = "size", defaultValue = "10") Integer size) {
+		
 		JSONObject feedbackJson = super.getJsonRequest();
 		String orderStatus = feedbackJson.get("orderStatus").toString();
+		
+		if(loginUser == null){
+			return toResponsSuccess("请先登录");
+    	}
+		
 		String[] state = null;
 		Map params = new HashMap();
 		params.put("user_id", loginUser == null ? null : loginUser.getUserId());
@@ -356,4 +362,26 @@ public class ApiOrderController extends ApiBaseAction {
 		}
 		return toResponsSuccess(pageUtil);
 	}
+	
+    /**
+     * 查询物流列表
+     * @param orderId
+     * @return
+     */
+    @ApiOperation(value = "查询物流列表")
+    @PostMapping("queryOrderLogistics")
+    @IgnoreAuth
+    public JSONObject queryOrderLogistics(Long orderId){
+    	JSONObject resultObj = new JSONObject();
+    	JSONObject feedbackJson = super.getJsonRequest();
+    	orderId = Long.parseLong(feedbackJson.get("orderId").toString());
+    	OrderVo order = apiOrderMapper.queryObject(orderId);
+    	if(order == null){
+    		resultObj.put("code", 500);
+    		resultObj.put("msg", "查询订单为空");
+    		return resultObj;
+    	}
+    	JSONObject obj = JdOrderService.queryOrderLogistics(order.getOrder_sn(),orderId);
+    	return obj;
+    }
 }
