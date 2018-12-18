@@ -22,12 +22,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.platform.dao.ApiGoodsMapper;
 import com.platform.dao.ApiOrderGoodsMapper;
-import com.platform.dao.ApiOrderMapper;
 import com.platform.dao.JdOrderMapper;
 import com.platform.entity.AddressVo;
 import com.platform.entity.GoodsVo;
 import com.platform.entity.JdOrderVo;
 import com.platform.entity.OrderGoodsVo;
+import com.platform.entity.OrderLogisticVo;
 import com.platform.entity.OrderVo;
 import com.platform.youle.constant.Constants.Urls;
 import com.platform.youle.entity.RequestBaseEntity;
@@ -469,7 +469,82 @@ public class JdOrderService {
     }
     
     
-    
+	public JSONObject queryOrderLogistics(String orderSn,Long orderId) {
+		logger.info("【查询三方物流信息开始】,本地订单号:"  + orderSn);
+		List<OrderLogisticVo> vos = new ArrayList<OrderLogisticVo>();
+		OrderLogisticVo logistic = new OrderLogisticVo();
+		JSONObject resultObj = new JSONObject();
+		JdOrderVo jdOrder = jdOrderMapper.queryByThirdOrder(orderSn);
+		if (jdOrder == null) {
+			resultObj.put("code", 500);
+			resultObj.put("msg", "三方订单数据为空");
+			return resultObj;
+		}
+		Pattern pattern = Pattern
+				.compile("[0-9]{1,2}[月][0-9]{1,2}[日][0-9]{1,2}[:][0-9]{1,2}[-][0-9]{1,2}[:][0-9]{1,2}");
+		String arrivalTime = "";
+		
+		String orderKey = jdOrder.getOrderKey();
+		RequestOrderTrackEntity entity = new RequestOrderTrackEntity();
+		initRequestParam(entity);
+		entity.setOrderKey(orderKey);
+		
+		logger.info("2.5订单物流信息接口]入参："+JSONObject.toJSONString(entity));
+        String result = "";
+		try {
+			result = HttpUtil.post(Urls.base_prod_url+Urls.systemOrderTrack, objectToMap(entity));
+			logger.info("[2.5订单物流信息接口]出参："+result);
+		} catch (Exception e) {
+			logger.error("【查询三方物流信息异常】,本地订单号:"  + orderSn,e);
+		}
+ 
+		JSONObject obj = JSONObject.parseObject(result);
+		if(!Boolean.parseBoolean(obj.get("RESPONSE_STATUS").toString())){
+			logger.info("【查询三方物流信息RESPONSE_STATUS为false】");
+			resultObj.put("code", 500);
+			resultObj.put("msg", "三方订单数据为空");
+			return resultObj;
+		}
+		if(obj.get("RESULT_DATA") == null){
+			logger.info("【查询三方物流信息】RESULT_DATA为空");
+			resultObj.put("code", 500);
+			resultObj.put("msg", "三方订单数据RESULT_DATA为空");
+			return resultObj;
+		}
+		JSONObject resultData = JSONObject.parseObject(obj.get("RESULT_DATA").toString());
+		resultObj.put("order_key", resultData.get("third_order") == null ? "" : resultData.get("third_order"));//三方订单
+		resultObj.put("shipment_name", resultData.get("shipment_name") == null ? "" : resultData.get("shipment_name"));//快递公司
+		resultObj.put("shipment_order", resultData.get("shipment_order") == null ? "" : resultData.get("shipment_order"));//快递单号
+		resultObj.put("status", resultData.get("status") == null ? "" : resultData.get("status"));//物流状态, receive:揽件,transit:运输中, signed:已签收, refuse:拒收, other:其他
+		resultObj.put("last_modify_time", resultData.get("last_modify_time") == null ? "" : resultData.get("last_modify_time"));//快递公司
+		if(resultData.get("contents") == null){
+			logger.info("【查询三方物流信息】没有相关物流信息");
+			resultObj.put("code", 500);
+			resultObj.put("msg", "三方订单数据没有相关物流信息");
+			return resultObj;
+		}
+		JSONArray array = JSONArray.parseArray(resultData.get("contents").toString());
+		for(int i = 0;i<array.size();i++){
+			JSONObject objs = JSONObject.parseObject(array.getString(i));
+			if(i == 2){
+				Matcher matcher = pattern.matcher(objs.get("description").toString());
+				String dateStr = "";
+				if (matcher.find()) {
+					dateStr = matcher.group(0);
+				}
+				arrivalTime = dateStr.toString();
+			}
+		}
+		List<Map<String,Object>> goodList = queryOrderGoods(orderId);
+		logistic.setArrivalTime(arrivalTime);
+//		logistic.setGoodName(goodList.get(0) == null ? "" : goodList.get(0).get(""));
+		
+		
+		
+		resultObj.put("goods", goodList);//物流提供商品名称/商品url
+		resultObj.put("arrivalTime", arrivalTime);
+		return resultObj;
+	}
     
     
 }
