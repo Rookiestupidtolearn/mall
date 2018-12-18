@@ -95,7 +95,7 @@ export default {
 //     console.log(window.scrollY);
 //     that.$cookie.setCookie('scrollHome',window.scrollY);
 //     
-//  }, false);
+//  }, true);
   },
  watch:{
  		hotGoods:function(){

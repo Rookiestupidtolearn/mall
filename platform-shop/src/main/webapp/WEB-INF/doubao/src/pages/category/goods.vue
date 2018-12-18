@@ -290,6 +290,7 @@
 		},
 		detailHref(e){
 			this.$router.push(e);
+			window.location.reload();
 			
 		},
 	  	cutNumber(){
