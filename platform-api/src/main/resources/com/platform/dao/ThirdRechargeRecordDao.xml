@@ -32,6 +32,22 @@
 		where id = #{id}
 	</select>
 
+	<select id="queryByThirdTradeNo" resultType="com.platform.entity.ThirdRechargeRecordEntity">
+		select
+			`id`,
+			`mobile`,
+			`state`,
+			`amount`,
+			`third_trade_no`,
+			`trade_no`,
+			`recharge_type`,
+			`version`,
+			`update_time`,
+			`create_time`
+		from third_recharge_record
+		where third_trade_no = #{thirdTradeNo}
+	</select>
+
 	<select id="queryList" resultType="com.platform.entity.ThirdRechargeRecordEntity">
 		select
     		`id`,
