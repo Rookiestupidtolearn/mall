@@ -100,7 +100,7 @@ export default {
   			var that = this;    
 	    	that.$http({
 	        method: 'post',
-	        url:that.$url+ 'order/list.options',
+	        url:that.$url+ 'order/queryUnPayments.options',
 	        data:{
 	        	orderStatus:'success',
 	        	page:that.page,

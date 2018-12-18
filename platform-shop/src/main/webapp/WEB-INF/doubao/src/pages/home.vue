@@ -98,17 +98,24 @@ export default {
  watch:{
  		hotGoods:function(){
  				this.$nextTick(function(){
-   					 window.scrollTo(0,this.$cookie.getCookie('scrollHome'));
+ 						if(this.$cookie.getCookie('scrollHome') == '' || this.$cookie.getCookie('scrollHome') == '0'){
+ 							
+   					}else{
+   						window.scrollTo(0,this.$cookie.getCookie('scrollHome'));
+   					}
  				})
  		}
  },
-// destoryed(){
-// 	 	window.removeEventListener("scroll", this.handleScroll,true);
-// },
  methods:{
 	 	handleScroll(){
-       console.log(window.scrollY);
-       this.$cookie.setCookie('scrollHome',window.scrollY);
+	 		if(this.$route.name == 'home'){
+	 			if(window.scrollY == '0'){
+	 				
+	 			}else{
+//		 			console.log(window.scrollY);
+	       	this.$cookie.setCookie('scrollHome',window.scrollY);
+       }
+	 		}
 	 	},
 	 	andriod(e){   //与andriod和ios交互
 				var hrefD = window.location.href;
