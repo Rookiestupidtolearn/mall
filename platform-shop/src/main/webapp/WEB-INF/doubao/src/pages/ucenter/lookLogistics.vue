@@ -2,10 +2,10 @@
 	<div class="container">
 		<!--1个物流-->
 		<div class="logistics" >
-	 		<p class="top"><span class="left">{{description.shipment_name}}：{{description.shipment_order}}</span><span class="right">预计明天送达</span></p>
+	 		<p class="top"><span class="left">{{description.shipment_name}}：{{description.shipment_order}}</span><span class="right">预计{{description.arrivalTime}}送达</span></p>
 	 		<div class="productInfo">
-	 			<img src="../../../static/images/detail_kefu.png" />
-	 			<p class="name">绿豆糕 80克绿豆糕 80克绿糕 80克绿糕 80克绿豆糕克绿豆绿豆糕 80克糕 80克 （4枚入）</p>
+	 			<img :src="description.goods[0].img" />
+	 			<p class="name">{{description.goods[0].goodsName}}</p>
 	 		</div>
 	 		<!--<div class="btn" >查看物流</div>-->
 		</div>
@@ -48,10 +48,9 @@
 	  	that.$http({
 	        method: 'post',
 	        url:that.$url+ 'order/queryLogistics.options',
-	        data:{orderId:productId}
+	        data:{orderId:78}
     	}).then(function (res) {
-    		var res = {"order_key":"jd201812161613328621091","last_modify_time":"2018-12-17 14:27:05","shipment_order":"82455833754","logistics":[{"description":"您提交了订单，请等待系统确认(客户)","time":"2018-12-16 16:18:01"},{"description":"您的订单已经进入京东北京46号仓准备出库(系统)","time":"2018-12-16 16:22:48"},{"description":"您的订单预计12月17日09:00-15:00送达您手中(系统)","time":"2018-12-16 16:22:49"},{"description":"您的订单已经打印完毕(fanguanwei)","time":"2018-12-16 16:25:26"},{"description":"您的订单已经拣货完成(李真珂)","time":"2018-12-16 16:35:23"},{"description":"扫描员已经扫描(秦学雷)","time":"2018-12-16 16:38:46"},{"description":"打包成功(京东打包员)","time":"2018-12-16 16:46:09"},{"description":"您的订单在京东【北京园区-TJINB】分拣完成(李蒙)","time":"2018-12-16 16:51:06"},{"description":"您的订单在京东【北京园区-TJINB】发货完成，准备送往京东【北京通州分拣中心】(李蒙)","time":"2018-12-16 16:51:11"},{"description":"您的订单在京东【北京通州分拣中心】分拣完成(曹宝立)","time":"2018-12-16 19:27:36"},{"description":"您的订单在京东【北京通州分拣中心】发货完成，准备送往京东【北京华润营业部】(曹宝立)","time":"2018-12-16 23:35:11"},{"description":"您的订单已到达【北京华润营业部】(颜立宁)","time":"2018-12-17 06:53:34"},{"description":"我是您的专属配送员董能光，您的订单已到达北京华润营业部，配送小哥会尽快为您配送，请您留意，如需要更改配送时间或者未如期到达，均可给我打电话18500096780，很高兴为您服务！(董能光)","time":"2018-12-17 08:30:01"},{"description":"您的订单已由本人签收（已在配送员处采用无纸化方式签收本订单）。感谢您在京东购物，欢迎再次光临。(董能光)","time":"2018-12-17 10:15:32"}],"shipment_name":"京东","status":"transit"};
-//  		var res = res.data;
+    		var res = res.data;
     		that.description  = res ;
 		})
 	  	

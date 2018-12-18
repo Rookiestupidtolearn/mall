@@ -341,6 +341,11 @@ export default {
     line-height: .33rem;
     color: #333;
     font-size: .26rem;
+    width: 4.3rem;
+    overflow: hidden;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .order-goods .item .t .number{

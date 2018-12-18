@@ -320,7 +320,7 @@ public class ApiOrderController extends ApiBaseAction {
 		String orderStatus = feedbackJson.get("orderStatus").toString();
 		String[] state = null;
 		Map params = new HashMap();
-		params.put("user_id", loginUser.getUserId());
+		params.put("user_id", loginUser == null ? null : loginUser.getUserId());
 		params.put("page", page);
 		params.put("limit", size);
 		if ("all".equals(orderStatus)) {// 全部订单
