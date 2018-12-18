@@ -316,8 +316,14 @@ public class ApiOrderController extends ApiBaseAction {
 	public Object queryUnPayments(@LoginUser UserVo loginUser,
 			@RequestParam(value = "page", defaultValue = "1") Integer page,
 			@RequestParam(value = "size", defaultValue = "10") Integer size) {
+		
 		JSONObject feedbackJson = super.getJsonRequest();
 		String orderStatus = feedbackJson.get("orderStatus").toString();
+		
+		if(loginUser == null){
+			return toResponsSuccess("请先登录");
+    	}
+		
 		String[] state = null;
 		Map params = new HashMap();
 		params.put("user_id", loginUser.getUserId());
