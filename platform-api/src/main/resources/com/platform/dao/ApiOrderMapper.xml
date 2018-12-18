@@ -259,6 +259,10 @@
             	and order_status = #{orderStatus}
             </if>
 	</select>
-	
-	
+	<select id="queryCancelFlag" resultMap="orderMap">
+		select * from nideshop_order where order_status = 101 and user_id = #{userId}
+	</select>
+	<select id="querySuccessOrder">
+		select * from nideshop_order where order_status = 301 and user_id = #{userId}
+	</select>
 </mapper>

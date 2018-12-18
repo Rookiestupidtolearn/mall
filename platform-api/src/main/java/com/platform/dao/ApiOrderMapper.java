@@ -55,4 +55,16 @@ public interface ApiOrderMapper extends BaseDao<OrderVo> {
 	List<OrderVo> queryOrderList(Map<String,Object> params);
 	
 	int queryOrderTotal(Map<String,Object> params);
+	/**
+	 * 查询已取消
+	 * @param userId
+	 * @return
+	 */
+	List<OrderVo> queryCancelFlag(Long userId);
+	/**
+	 * 查询已完成
+	 * @param userId
+	 * @return
+	 */
+	List<OrderVo> querySuccessOrder(Long userId);
 }

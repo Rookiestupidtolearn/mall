@@ -256,13 +256,16 @@ public class ApiUserController extends ApiBaseAction {
            }
            JSONObject unPayment = queryUnPayments(loginUser);
            String unPaymentNum = unPayment.getString("num");
-           JSONObject tobeShipping = queryTobeShipping(loginUser);
-           String tobeShippingNum = tobeShipping.getString("num");
+           JSONObject cancelOrder = queryCancelFlag(loginUser);
+           String cancelOrderNum = cancelOrder.getString("num");
            JSONObject delivered = queryDelivered(loginUser);
            String deliveredNum = delivered.getString("num");
+           JSONObject successOrder = querySuccessOrder(loginUser);
+           String successOrderNum = successOrder.getString("num");
            obj.put("unPaymentNum", unPaymentNum);//待付款个数
-           obj.put("tobeShippingNum", tobeShippingNum);//待发货个数
+           obj.put("cancelOrderNum", cancelOrderNum);//取消订单订单
            obj.put("deliveredNum", deliveredNum);//待收货个数
+           obj.put("successOrderNum", successOrderNum);//待收货个数
            obj.put("data", qzUserAccount.getAmount().toString());
            return obj;
        }catch(Exception e){
@@ -387,7 +390,7 @@ public class ApiUserController extends ApiBaseAction {
      * @param loginUser
      * @return
      */
-    public JSONObject queryTobeShipping(@LoginUser UserVo loginUser){
+    public JSONObject queryCancelFlag(@LoginUser UserVo loginUser){
     	JSONObject obj = new JSONObject();
     	Integer num = 0;
     	if(loginUser == null){
@@ -396,15 +399,16 @@ public class ApiUserController extends ApiBaseAction {
     		return obj;
     	}
     	Long userId = loginUser.getUserId();
-    	List<OrderVo> orders = apiOrderMapper.queryTobeShippingOrders(userId);
+    	List<OrderVo> orders = apiOrderMapper.queryCancelFlag(userId);
     	if(!CollectionUtils.isEmpty(orders)){
-    		for(OrderVo order : orders){
-    			Integer orderId = order.getId();
-    			List<OrderGoodsVo> orderGoods = apiOrderGoodsMapper.queryOrderGoods(orderId);
-    			if(!CollectionUtils.isEmpty(orderGoods)){
-    				num += orderGoods.size();
-    			}
-    		}
+//    		for(OrderVo order : orders){
+//    			Integer orderId = order.getId();
+//    			List<OrderGoodsVo> orderGoods = apiOrderGoodsMapper.queryOrderGoods(orderId);
+//    			if(!CollectionUtils.isEmpty(orderGoods)){
+//    				num += orderGoods.size();
+//    			}
+//    		}
+    		num = orders.size();
     	}
     	obj.put("num", num);
     	obj.put("data", "查询待收货个数成功");
@@ -441,4 +445,37 @@ public class ApiUserController extends ApiBaseAction {
     	obj.put("code","200");
     	return obj;
     }
+    
+    /**
+     * 查询已完成
+     * @param loginUser
+     * @return
+     */
+    public JSONObject querySuccessOrder(@LoginUser UserVo loginUser){
+    	JSONObject obj = new JSONObject();
+    	Integer num = 0;
+    	if(loginUser == null){
+    		obj.put("data","查询用户信息异常");
+    		obj.put("code","500");
+    		return obj;
+    	}
+    	Long userId = loginUser.getUserId();
+    	List<OrderVo> orders = apiOrderMapper.querySuccessOrder(userId);
+    	if(!CollectionUtils.isEmpty(orders)){
+//    		for(OrderVo order : orders){
+//    			Integer orderId = order.getId();
+//    			List<OrderGoodsVo> orderGoods = apiOrderGoodsMapper.queryOrderGoods(orderId);
+//    			if(!CollectionUtils.isEmpty(orderGoods)){
+//    				num += orderGoods.size();
+//    			}
+//    		}
+    		num = orders.size();
+    	}
+    	obj.put("num", num);
+    	obj.put("data", "查询已完成个数成功");
+    	obj.put("code","200");
+    	return obj;
+    }
+    
+    
 }
