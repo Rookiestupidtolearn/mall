@@ -512,11 +512,7 @@ public class JdOrderService {
 			return resultObj;
 		}
 		JSONObject resultData = JSONObject.parseObject(obj.get("RESULT_DATA").toString());
-		resultObj.put("order_key", resultData.get("third_order") == null ? "" : resultData.get("third_order"));//三方订单
-		resultObj.put("shipment_name", resultData.get("shipment_name") == null ? "" : resultData.get("shipment_name"));//快递公司
-		resultObj.put("shipment_order", resultData.get("shipment_order") == null ? "" : resultData.get("shipment_order"));//快递单号
 		resultObj.put("status", resultData.get("status") == null ? "" : resultData.get("status"));//物流状态, receive:揽件,transit:运输中, signed:已签收, refuse:拒收, other:其他
-		resultObj.put("last_modify_time", resultData.get("last_modify_time") == null ? "" : resultData.get("last_modify_time"));//快递公司
 		if(resultData.get("contents") == null){
 			logger.info("【查询三方物流信息】没有相关物流信息");
 			resultObj.put("code", 500);
@@ -537,12 +533,13 @@ public class JdOrderService {
 		}
 		List<Map<String,Object>> goodList = queryOrderGoods(orderId);
 		logistic.setArrivalTime(arrivalTime);
-//		logistic.setGoodName(goodList.get(0) == null ? "" : goodList.get(0).get(""));
-		
-		
-		
-		resultObj.put("goods", goodList);//物流提供商品名称/商品url
-		resultObj.put("arrivalTime", arrivalTime);
+		logistic.setGoodName(goodList.get(0) == null ? "" : goodList.get(0).get("goodsName").toString());
+		logistic.setGoodUrl(goodList.get(0) == null ? "" : goodList.get(0).get("img").toString());
+		logistic.setOrderId(orderId.toString());
+		logistic.setShipmentName(resultData.get("shipment_name") == null ? "" : resultData.get("shipment_name").toString());
+		logistic.setShipmentOrder(resultData.get("shipment_order") == null ? "" : resultData.get("shipment_order").toString());
+		vos.add(logistic);
+		resultObj.put("orderLogistics", vos);
 		return resultObj;
 	}
     
