@@ -1,4 +1,4 @@
-package com.platform.api;
+package com.platform.thirdrechard.controller;
 
 import java.util.Map;
 
@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.platform.annotation.IgnoreAuth;
-import com.platform.api.response.RechargeResponseEntity;
-import com.platform.service.RechargeBizService;
+import com.platform.thirdrechard.entity.RechargeResponseEntity;
+import com.platform.thirdrechard.service.RechargeBizService;
 import com.platform.util.ApiBaseAction;
 
 import io.swagger.annotations.Api;

@@ -1,4 +1,4 @@
-package com.platform.service;
+package com.platform.thirdrechard.service;
 
 import java.util.List;
 import java.util.Map;
@@ -11,14 +11,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.platform.api.response.RechargeResponseEntity;
-import com.platform.api.yeepay.EncryptUtil;
 import com.platform.dao.QzRechargeRecordDao;
+import com.platform.dao.ThirdRechargeRecordDao;
 import com.platform.entity.QzRechargeRecordEntity;
 import com.platform.entity.ThirdRechargeRecordEntity;
-import com.platform.utils.R;
+import com.platform.thirdrechard.entity.RechargeResponseEntity;
 
 /**
  * 用户充值记录Service实现类
@@ -32,7 +30,8 @@ public class RechargeBizService {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	@Autowired
 	private QzRechargeRecordDao qzRechargeRecordDao;
-     
+    @Autowired
+    private ThirdRechargeRecordDao  thirdRechargeRecordDao;
 	
 	/**
 	 * 充值
@@ -136,8 +135,10 @@ public class RechargeBizService {
 					  return responseEntity;
 				}
 			    //检查订单号是否重复
-			    
-			    
+			    ThirdRechargeRecordEntity   entity  =    thirdRechargeRecordDao.queryByThirdTradeNo(thirdTradeNo);
+			    if (entity != null) {
+					
+				}
 			    
 			    
 
@@ -147,9 +148,6 @@ public class RechargeBizService {
 
 	}
 
-	public QzRechargeRecordEntity queryByThirdTradeNo(String thirdTradeNo) {
-		return qzRechargeRecordDao.queryByThirdTradeNo(thirdTradeNo);
-	}
 
 	public List<QzRechargeRecordEntity> queryList(Map<String, Object> map) {
 		return qzRechargeRecordDao.queryList(map);

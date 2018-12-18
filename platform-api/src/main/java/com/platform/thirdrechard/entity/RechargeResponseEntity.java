@@ -1,4 +1,4 @@
-package com.platform.api.response;
+package com.platform.thirdrechard.entity;
 
 public class RechargeResponseEntity {
 
