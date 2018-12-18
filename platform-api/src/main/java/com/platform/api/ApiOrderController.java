@@ -292,6 +292,8 @@ public class ApiOrderController extends ApiBaseAction {
     @IgnoreAuth
     public JSONObject queryLogistics(Long orderId){
     	JSONObject resultObj = new JSONObject();
+    	JSONObject feedbackJson = super.getJsonRequest();
+    	orderId = Long.parseLong(feedbackJson.get("orderId").toString());
     	OrderVo order = apiOrderMapper.queryObject(orderId);
     	if(order == null){
     		resultObj.put("code", 500);
@@ -313,7 +315,9 @@ public class ApiOrderController extends ApiBaseAction {
 	@IgnoreAuth
 	public Object queryUnPayments(@LoginUser UserVo loginUser,
 			@RequestParam(value = "page", defaultValue = "1") Integer page,
-			@RequestParam(value = "size", defaultValue = "10") Integer size, String orderStatus) {
+			@RequestParam(value = "size", defaultValue = "10") Integer size) {
+		JSONObject feedbackJson = super.getJsonRequest();
+		String orderStatus = feedbackJson.get("orderStatus").toString();
 		String[] state = null;
 		Map params = new HashMap();
 		params.put("user_id", loginUser.getUserId());
