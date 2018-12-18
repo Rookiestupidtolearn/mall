@@ -314,23 +314,23 @@ public class ApiOrderController extends ApiBaseAction {
 	public Object queryUnPayments(@LoginUser UserVo loginUser,
 			@RequestParam(value = "page", defaultValue = "1") Integer page,
 			@RequestParam(value = "size", defaultValue = "10") Integer size, String orderStatus) {
-		//
+		String[] state = null;
 		Map params = new HashMap();
 		params.put("user_id", loginUser.getUserId());
 		params.put("page", page);
 		params.put("limit", size);
 		if ("all".equals(orderStatus)) {// 全部订单
-			orderStatus = "";
+			state = null;
 		} else if ("UnPayments".equals(orderStatus)) {// 待付款
-			orderStatus = "0";
+			state   = new String[]{"0"};
 		} else if ("success".equals(orderStatus)) {// 已完成
-			orderStatus = "301";
+			state   = new String[]{"301"};
 		} else if ("delivered".equals(orderStatus)) {// 待收货
-			orderStatus = "300";
+			state   = new String[]{"300","201"};
 		} else if ("cancelFlag".equals(orderStatus)) {// 已取消
-			orderStatus = "101";
+			state =new String[]{"101","103"};
 		}
-		params.put("orderStatus", orderStatus);
+		params.put("orderStatus", state);
 		params.put("sidx", "id");
 		params.put("order", "asc");
 		// 查询列表数据

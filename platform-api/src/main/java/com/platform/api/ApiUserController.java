@@ -387,7 +387,7 @@ public class ApiUserController extends ApiBaseAction {
     }
     
     /**
-     * 查询待发货
+     * 查询订单取消个数
      * @param loginUser
      * @return
      */
@@ -402,13 +402,6 @@ public class ApiUserController extends ApiBaseAction {
     	Long userId = loginUser.getUserId();
     	List<OrderVo> orders = apiOrderMapper.queryCancelFlag(userId);
     	if(!CollectionUtils.isEmpty(orders)){
-//    		for(OrderVo order : orders){
-//    			Integer orderId = order.getId();
-//    			List<OrderGoodsVo> orderGoods = apiOrderGoodsMapper.queryOrderGoods(orderId);
-//    			if(!CollectionUtils.isEmpty(orderGoods)){
-//    				num += orderGoods.size();
-//    			}
-//    		}
     		num = orders.size();
     	}
     	obj.put("num", num);
@@ -463,13 +456,6 @@ public class ApiUserController extends ApiBaseAction {
     	Long userId = loginUser.getUserId();
     	List<OrderVo> orders = apiOrderMapper.querySuccessOrder(userId);
     	if(!CollectionUtils.isEmpty(orders)){
-//    		for(OrderVo order : orders){
-//    			Integer orderId = order.getId();
-//    			List<OrderGoodsVo> orderGoods = apiOrderGoodsMapper.queryOrderGoods(orderId);
-//    			if(!CollectionUtils.isEmpty(orderGoods)){
-//    				num += orderGoods.size();
-//    			}
-//    		}
     		num = orders.size();
     	}
     	obj.put("num", num);
