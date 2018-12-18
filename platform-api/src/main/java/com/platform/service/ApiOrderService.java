@@ -441,6 +441,9 @@ public class ApiOrderService {
 		order.setActual_price(orderTotalPrice.subtract(couponAmount));
 		order.setCoupon_price(discountAmount);
 		order.setPid_num(pidNums);
+		
+		BigDecimal actual_price =  order.getActual_price().subtract(discountAmount);
+		order.setActual_price(actual_price);
 		apiOrderMapper.update(order);
 		// 清空已购买的商品
 		apiCartMapper.deleteByCart(loginUser.getUserId(), 1, 1);
@@ -453,7 +456,7 @@ public class ApiOrderService {
 		resultObj.put("data", orderInfoMap);
 		//创建易宝支付订单
 		String validIP = RequestUtil.getIpAddrByRequest(request);
-		Map<String, Object> yeepayMap = yeepayOrderBizService.yeepayOrderSubmmit(orderInfo,validIP);
+		Map<String, Object> yeepayMap = yeepayOrderBizService.yeepayOrderSubmmit(order,validIP);
 		if (yeepayMap != null) {
 			resultObj.put("payurl", yeepayMap.get("payurl"));
 		}

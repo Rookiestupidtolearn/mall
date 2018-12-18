@@ -9,10 +9,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
 import com.platform.api.response.RechargeResponseEntity;
 import com.platform.api.yeepay.EncryptUtil;
 import com.platform.dao.QzRechargeRecordDao;
 import com.platform.entity.QzRechargeRecordEntity;
+import com.platform.entity.ThirdRechargeRecordEntity;
 
 /**
  * 用户充值记录Service实现类
@@ -34,8 +36,10 @@ public class RechargeBizService  {
     	 responseEntity.setMsg("充值失败");
     	 //解密
     	 String  data = EncryptUtil.aesDecrypt(encrypt);
+    	  String aa = "{amount':1,'mobile':'13391506299','rechargeType':'2','thirdTradeNo':'123123123'}";
     	 if (StringUtils.isNotEmpty(data)) {
     		 logger.info("充值解密后的传值："+data.toString());
+    	     //校验
     		 
     		 
     		 

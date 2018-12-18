@@ -75,20 +75,18 @@ public class ThirdRechargeRecordEntity implements Serializable {
     public String getState() {
         return state;
     }
-    /**
-     * 设置：金额
-     */
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
 
-    /**
-     * 获取：金额
-     */
-    public BigDecimal getAmount() {
-        return amount;
-    }
-    /**
+
+
+	public BigDecimal getAmount() {
+		return amount;
+	}
+
+	public void setAmount(BigDecimal amount) {
+		this.amount = amount;
+	}
+
+	/**
      * 设置：三方订单号
      */
     public void setThirdTradeNo(String thirdTradeNo) {
