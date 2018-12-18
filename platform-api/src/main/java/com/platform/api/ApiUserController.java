@@ -249,12 +249,7 @@ public class ApiUserController extends ApiBaseAction {
        try{
     	   QzUserAccountEntity qzUserAccount = userService.queryUserAccount(loginUser.getUserId().intValue());
     	   obj.put("code", 1);
-           if(qzUserAccount == null){
-        	   //未查询到用户账户
-               obj.put("data", "0.00");
-               return obj;
-           }
-           JSONObject unPayment = queryUnPayments(loginUser);
+    	   JSONObject unPayment = queryUnPayments(loginUser);
            String unPaymentNum = unPayment.getString("num");
            JSONObject cancelOrder = queryCancelFlag(loginUser);
            String cancelOrderNum = cancelOrder.getString("num");
@@ -266,6 +261,12 @@ public class ApiUserController extends ApiBaseAction {
            obj.put("cancelOrderNum", cancelOrderNum);//取消订单订单
            obj.put("deliveredNum", deliveredNum);//待收货个数
            obj.put("successOrderNum", successOrderNum);//订单成功个数
+    	   if(qzUserAccount == null){
+        	   //未查询到用户账户
+               obj.put("data", "0.00");
+               return obj;
+           }
+          
            obj.put("data", qzUserAccount.getAmount().toString());
            return obj;
        }catch(Exception e){
