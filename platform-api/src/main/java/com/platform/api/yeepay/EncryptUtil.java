@@ -7,6 +7,8 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
 
+import com.alibaba.fastjson.JSONObject;
+
 import sun.misc.BASE64Decoder;
 
 public class EncryptUtil {
@@ -59,8 +61,8 @@ public class EncryptUtil {
 		treeMap.put("mobile", "13391506299");
 		treeMap.put("thirdTradeNo", "123123123");
 		treeMap.put("rechargeType", "2");//充值类型
-		
-		String content = treeMap.toString();
+		JSONObject json =new JSONObject(treeMap);
+		String content = json.toString();
         System.out.println("加密前：" + content);  
 
         System.out.println("加密密钥和解密密钥：" + KEY);  

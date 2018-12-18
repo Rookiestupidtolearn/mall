@@ -228,39 +228,45 @@
 		select * from nideshop_order where order_status = 201 and pay_status = 2 and user_id = #{userId}
 	</select>
 	<select id="queryDelivered" resultMap="orderMap">
-		select * from nideshop_order where order_status = 300 and pay_status = 2 and user_id = #{userId}
+		select * from nideshop_order where order_status in (201,300) and pay_status = 2 and user_id = #{userId}
 	</select>
-	
+
 	<select id="queryOrderList" resultMap="orderMap">
-        select * from nideshop_order
-        <where>
-            <if test="user_id != null">
-                and user_id = #{user_id}
-            </if>
-             <if test="shippingNo != null  and shippingNo != '' ">
-                and shipping_no = #{shippingNo}
-            </if>
-            <if test="orderStatus != null  and orderStatus != '' ">
-            	and order_status = #{orderStatus}
-            </if>
-        </where>
-       	order by add_time desc
-        <if test="offset != null and limit != null">
-            limit #{offset}, #{limit}
-        </if>
-    </select>
+		select * from nideshop_order where 1=1
+			<if test="user_id != null">
+				and user_id = #{user_id}
+			</if>
+			<if test="shippingNo != null  and shippingNo != '' ">
+				and shipping_no = #{shippingNo}
+			</if>
+			<if test="orderStatus != null  and orderStatus != '' ">
+				and order_status in
+				<foreach item="order_status" collection="orderStatus" open="("
+					separator="," close=")">
+					#{order_status}
+				</foreach>
+			</if>
+		order by add_time desc
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
 
     <select id="queryOrderTotal" resultType="int">
 		select count(*) from nideshop_order WHERE 1=1
             <if test="user_id != null">
                 and user_id = #{user_id}
             </if>
-             <if test="orderStatus != null  and orderStatus != '' ">
-            	and order_status = #{orderStatus}
-            </if>
+            <if test="orderStatus != null  and orderStatus != '' ">
+				and order_status in
+				<foreach item="order_status" collection="orderStatus" open="("
+					separator="," close=")">
+					#{order_status}
+				</foreach>
+			</if>
 	</select>
 	<select id="queryCancelFlag" resultMap="orderMap">
-		select * from nideshop_order where order_status = 101 and user_id = #{userId}
+		select * from nideshop_order where order_status in (103,101) and user_id = #{userId}
 	</select>
 	<select id="querySuccessOrder" resultMap="orderMap">
 		select * from nideshop_order where order_status = 301 and user_id = #{userId}

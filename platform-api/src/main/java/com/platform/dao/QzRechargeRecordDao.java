@@ -11,4 +11,5 @@ import com.platform.entity.QzRechargeRecordEntity;
  */
 public interface QzRechargeRecordDao extends BaseDao<QzRechargeRecordEntity> {
 
+	QzRechargeRecordEntity queryByThirdTradeNo(String thirdTradeNo);
 }
