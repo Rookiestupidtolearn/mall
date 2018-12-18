@@ -109,10 +109,10 @@ export default {
   name: 'ucenter',
   data () {
     return {
-    	number1:8,
-    	number2:101,
-    	number3:18,
-    	number4:61,
+    	number1:'',
+    	number2:'',
+    	number3:'',
+    	number4:'',
     	avatarImg:'https://platform-wxmall.oss-cn-beijing.aliyuncs.com/upload/20180727/150547696d798c.png',
       category:[],
       userName:'Hi,游客',
@@ -128,6 +128,7 @@ export default {
   mounted(){
   	let that = this;
   	var getCookieInfo = that.$cookie.getCookie('userInfo');
+  	
   	if(getCookieInfo != ""){
 	  		var userInfo =  JSON.parse(getCookieInfo);
 	  		if(userInfo !== null){
@@ -143,7 +144,12 @@ export default {
 			        method: 'post',
 			        url:that.$url+ 'user/userAccount',
 		    	}).then(function (res) {
+//		    		unPaymentNum：待付款个数  deliveredNum ：待收货个数successOrderNum： 订单成功个数 cancelOrderNum：取消订单订单
 						that.availMoney = res.data.data;
+						that.number1 = res.data.unPaymentNum;
+						that.number2 = res.data.deliveredNum ;
+						that.number3 = res.data.successOrderNum;
+						that.number4 = res.data.cancelOrderNum;
 				})
 	    }
   	}

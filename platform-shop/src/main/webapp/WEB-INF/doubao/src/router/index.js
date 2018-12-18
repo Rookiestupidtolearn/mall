@@ -211,7 +211,7 @@ export default new Router({
       name: 'order4',
       component: order4
     }
-    
   ]
+
   
 })

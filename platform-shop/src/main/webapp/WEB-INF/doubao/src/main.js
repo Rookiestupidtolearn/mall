@@ -55,6 +55,7 @@ var appHref = window.location.href;
 	if(tokenDevice == 'android'  || tokenDetail == 'android' ){
 		config.headers['X-Nideshop-Token'] = tokenApp;
 	}else if(tokenDevice == 'ios'  || tokenDetail == 'ios' ){
+		alert(window.location.href)
 		config.headers['X-Nideshop-Token'] = tokenApp;
 	}else{
 		 // 在发送请求之前做些什么

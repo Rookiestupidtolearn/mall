@@ -52,6 +52,8 @@ export default {
     }
   },
   mounted(){
+  	
+//		alert(window.location.href)
   		let that = this;    
   	//banner
   		that.$http({
@@ -91,11 +93,7 @@ export default {
 	    		this.showAN = false;
 	    	}
 	    	
-//		window.addEventListener("scroll", function() {  
-//     console.log(window.scrollY);
-//     that.$cookie.setCookie('scrollHome',window.scrollY);
-//     
-//  }, true);
+		window.addEventListener("scroll", this.handleScroll,true);
   },
  watch:{
  		hotGoods:function(){
@@ -105,9 +103,13 @@ export default {
  		}
  },
 // destoryed(){
-// 	 	window.removeEventListener("scroll", this.handleScroll);
+// 	 	window.removeEventListener("scroll", this.handleScroll,true);
 // },
  methods:{
+	 	handleScroll(){
+       console.log(window.scrollY);
+       this.$cookie.setCookie('scrollHome',window.scrollY);
+	 	},
 	 	andriod(e){   //与andriod和ios交互
 				var hrefD = window.location.href;
 				var delDevice = hrefD.split('?')[0];

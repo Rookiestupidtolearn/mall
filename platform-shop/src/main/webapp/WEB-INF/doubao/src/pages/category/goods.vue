@@ -174,8 +174,31 @@
 	    			}
 	    		}
 		    });
-	  		
-	  		//关联
+		    //大家都在看
+	  		this.relaed();
+	    	//商品详情
+	  		this.Detail();
+	    	
+	  },
+	destroyed(){
+ 		document.getElementById('zhichiBtnBox').style.display= 'none'; //默认隐藏智齿
+	},
+	watch:{
+		$route(to,from){
+			this.relateds();
+		}
+	},
+	methods:{
+		relateds(){
+			if(parseInt(this.$route.query.id) && this.$route.query.id !== this.idm){
+				this.idm=this.$route.query.id;
+			    this.Detail();
+			    this.relaed();
+			}
+		},
+		relaed(){
+			let that = this;
+			//关联
 	    	that.$http({
 	    		method: 'post',
 		        url:that.$url+ 'goods/related',
@@ -183,8 +206,10 @@
 	    	}).then(function (response) {
 		          that.relatedGoods = response.data.data.goodsList;
 		    });
-	    	
-	  		//商品详情
+		},
+		Detail(){
+			let that = this;
+			//商品详情
 	    	that.$http({
 		        method: 'post',
 		        url:that.$url+ 'goods/detail',
@@ -248,12 +273,7 @@
 		        that.specificationList = _specificationList;
 		        
 	 		 })
-	    	
-	  },
-	destroyed(){
- 		document.getElementById('zhichiBtnBox').style.display= 'none'; //默认隐藏智齿
-	},
-	methods:{
+		},
 		zhichi(){
 			let that = this;
 			//			获取userId
@@ -289,9 +309,7 @@
 			
 		},
 		detailHref(e){
-			this.$router.push(e);
-			window.location.reload();
-			
+			this.$router.push(e)
 		},
 	  	cutNumber(){
       		this.number = (this.number - 1 > 1) ? this.number - 1 : 1
