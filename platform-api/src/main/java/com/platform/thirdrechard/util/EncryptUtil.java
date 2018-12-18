@@ -1,4 +1,4 @@
-package com.platform.api.yeepay;
+package com.platform.thirdrechard.util;
 import java.util.TreeMap;
 
 import javax.crypto.Cipher;
@@ -12,7 +12,7 @@ import com.alibaba.fastjson.JSONObject;
 import sun.misc.BASE64Decoder;
 
 public class EncryptUtil {
-    private static final String KEY = "aecdefgabovpfgdf";  
+    private static final String KEY = "qzcdefgabovpfgdf";  
     private static final String ALGORITHMSTR = "AES/ECB/PKCS5Padding";  
     public static String base64Encode(byte[] bytes){  
         return Base64.encodeBase64String(bytes);  
@@ -58,7 +58,7 @@ public class EncryptUtil {
     	//使用TreeMap
 		TreeMap<String, Object> treeMap	= new TreeMap<String, Object>();
 		treeMap.put("amount", 			1);
-		treeMap.put("mobile", "13391506299");
+		treeMap.put("mobile", "");
 		treeMap.put("thirdTradeNo", "123123123");
 		treeMap.put("rechargeType", "2");//充值类型
 		JSONObject json =new JSONObject(treeMap);

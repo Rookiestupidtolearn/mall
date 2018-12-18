@@ -1,7 +1,6 @@
 package com.platform.thirdrechard.service;
 
-import java.util.List;
-import java.util.Map;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -10,13 +9,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.platform.dao.ApiUserMapper;
 import com.platform.dao.QzRechargeRecordDao;
+import com.platform.dao.QzUserAccountMapper;
 import com.platform.dao.ThirdRechargeRecordDao;
 import com.platform.entity.QzRechargeRecordEntity;
+import com.platform.entity.QzUserAccountVo;
 import com.platform.entity.ThirdRechargeRecordEntity;
+import com.platform.entity.UserVo;
 import com.platform.thirdrechard.entity.RechargeResponseEntity;
+import com.platform.thirdrechard.util.EncryptUtil;
+import com.platform.utils.GenerateCodeUtil;
 
 /**
  * 用户充值记录Service实现类
@@ -28,11 +35,16 @@ import com.platform.thirdrechard.entity.RechargeResponseEntity;
 @Service("rechargeBizService")
 public class RechargeBizService {
 	private Logger logger = LoggerFactory.getLogger(getClass());
-	@Autowired
-	private QzRechargeRecordDao qzRechargeRecordDao;
+
     @Autowired
     private ThirdRechargeRecordDao  thirdRechargeRecordDao;
-	
+    @Autowired
+    private ApiUserMapper userDao;
+	@Autowired
+	private QzRechargeRecordDao qzRechargeRecordDao;
+   @Autowired
+   private  QzUserAccountMapper qzUserAccountMapper;
+    
 	/**
 	 * 充值
 	 * @param encrypt
@@ -40,17 +52,101 @@ public class RechargeBizService {
 	 * @throws Exception
 	 */
 	public RechargeResponseEntity recharge(String encrypt) throws Exception {
-		RechargeResponseEntity responseEntity = new RechargeResponseEntity();
-		responseEntity.setCode("error");
-		responseEntity.setMsg("充值失败");
-		// 解密
-		// String data = EncryptUtil.aesDecrypt(encrypt);
-		String aa = "{amount':1,'mobile':'13391506299','rechargeType':'2','thirdTradeNo':'123123123'}";
-		String data = aa;
-		if (StringUtils.isNotEmpty(data)) {
-			logger.info("充值解密后的传值：" + data.toString());
-			// 校验
-			JSONObject jsonObject = JSONObject.parseObject(data);
+		        // 解密
+			 String data = EncryptUtil.aesDecrypt(encrypt);
+			 logger.info("解密后的密文是"+data);
+			   JSONObject jsonObject = JSONObject.parseObject(data);
+			   RechargeResponseEntity  responseEntity =  this.checkOrder(jsonObject);
+	           if (!responseEntity.getCode().equals("success")) {
+				   return responseEntity;
+			  }
+			 //开始充值
+	           ThirdRechargeRecordEntity   entity  =    thirdRechargeRecordDao.queryByThirdTradeNo(jsonObject.getString("thirdTradeNo"));
+			    if (entity != null) {
+			    	  responseEntity.setCode("error");
+					  responseEntity.setMsg("请勿重复下订单");
+					  return responseEntity;
+				} 
+			    ThirdRechargeRecordEntity nEntity =  JSONObject.parseObject(data, ThirdRechargeRecordEntity.class);
+				RechargeResponseEntity result = new  RechargeResponseEntity();
+					 //新充值
+					result = this.newRecharge(nEntity);
+				 return result;
+
+	}
+
+	/**
+	 * 新充值
+	 * @param entity
+	 * @return
+	 */
+	@Transactional
+	public  RechargeResponseEntity  newRecharge(ThirdRechargeRecordEntity   entity){
+		logger.info("三方用户充值流水入参:"+entity.toString());
+		RechargeResponseEntity  responseEntity = new  RechargeResponseEntity();
+		if (StringUtils.isEmpty(entity.getMobile())) {
+			responseEntity.setCode("1001");
+			responseEntity.setMsg("手机号不能为空");
+			return  responseEntity;
+		}
+		
+    	synchronized (entity.getMobile()) {
+    		//记录流水
+    		entity.setState("0");
+    		entity.setTradeNo(GenerateCodeUtil.buildBizNo());
+    		entity.setVersion(0);
+    		thirdRechargeRecordDao.save(entity);
+    	
+    		UserVo user = userDao.queryByMobile(entity.getMobile());
+    		if (user == null) {
+    			//暂不做处理
+    			
+    		}else {
+				//给用户做充值
+    			// 充值记录流水
+				QzRechargeRecordEntity record = new QzRechargeRecordEntity();
+				record.setShopUserId(entity.getId());
+				record.setState("0");
+				record.setOperateId(user.getUserId());
+				record.setAmount(entity.getAmount());
+				record.setMemo("三方充值");
+				record.setTradeNo(GenerateCodeUtil.buildBizNo());
+				record.setMobile(entity.getMobile());
+				record.setRechargeType(entity.getRechargeType());
+				logger.info("充值记录信息"+JSON.toJSONString(record));
+				qzRechargeRecordDao.save(record);
+    			
+				QzUserAccountVo account = qzUserAccountMapper.queruUserAccountInfo(user.getUserId());
+				// 操作用户余额
+				if (account == null) {
+					QzUserAccountVo accountEntity = new QzUserAccountVo();
+					accountEntity.setShop_user_id(Integer.parseInt(user.getUserId().toString()));
+					accountEntity.setAmount(entity.getAmount());
+					accountEntity.setLast_update_time(new Date());
+					logger.info("初次创建用户账户余额信息"+JSON.toJSONString(accountEntity));
+					qzUserAccountMapper.save(accountEntity);
+				} else {
+					account.setLast_update_time(new Date());
+					account.setAmount(entity.getAmount().add(account.getAmount()));
+					logger.info("用户账户余额信息"+JSON.toJSONString(account));
+					qzUserAccountMapper.update(account);
+				}
+				
+			}
+
+		}
+		
+	
+		responseEntity.setCode("success");
+		responseEntity.setMsg("充值成功");
+		
+		return  responseEntity;
+		
+	}
+	
+    public RechargeResponseEntity  checkOrder(JSONObject jsonObject){
+    	RechargeResponseEntity responseEntity = new RechargeResponseEntity();
+			logger.info("校验充值解密后的值：" + jsonObject.toString());
 			// 手机号
 			String mobile = jsonObject.getString("mobile");
 			if (StringUtils.isEmpty(mobile)) {
@@ -137,39 +233,13 @@ public class RechargeBizService {
 			    //检查订单号是否重复
 			    ThirdRechargeRecordEntity   entity  =    thirdRechargeRecordDao.queryByThirdTradeNo(thirdTradeNo);
 			    if (entity != null) {
-					
+			    	  responseEntity.setCode("1005");
+					  responseEntity.setMsg("重复下订单");
+					  return responseEntity;
 				}
-			    
-			    
+			    responseEntity.setCode("success");
+			    responseEntity.setMsg("校验成功");
+		        return responseEntity;
+		  }
 
-		}
-
-		return responseEntity;
-
-	}
-
-
-	public List<QzRechargeRecordEntity> queryList(Map<String, Object> map) {
-		return qzRechargeRecordDao.queryList(map);
-	}
-
-	public int queryTotal(Map<String, Object> map) {
-		return qzRechargeRecordDao.queryTotal(map);
-	}
-
-	public int save(QzRechargeRecordEntity qzRechargeRecord) {
-		return qzRechargeRecordDao.save(qzRechargeRecord);
-	}
-
-	public int update(QzRechargeRecordEntity qzRechargeRecord) {
-		return qzRechargeRecordDao.update(qzRechargeRecord);
-	}
-
-	public int delete(Integer id) {
-		return qzRechargeRecordDao.delete(id);
-	}
-
-	public int deleteBatch(Integer[] ids) {
-		return qzRechargeRecordDao.deleteBatch(ids);
-	}
 }
