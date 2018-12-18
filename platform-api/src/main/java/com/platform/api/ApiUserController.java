@@ -265,7 +265,7 @@ public class ApiUserController extends ApiBaseAction {
            obj.put("unPaymentNum", unPaymentNum);//待付款个数
            obj.put("cancelOrderNum", cancelOrderNum);//取消订单订单
            obj.put("deliveredNum", deliveredNum);//待收货个数
-           obj.put("successOrderNum", successOrderNum);//待收货个数
+           obj.put("successOrderNum", successOrderNum);//订单成功个数
            obj.put("data", qzUserAccount.getAmount().toString());
            return obj;
        }catch(Exception e){
