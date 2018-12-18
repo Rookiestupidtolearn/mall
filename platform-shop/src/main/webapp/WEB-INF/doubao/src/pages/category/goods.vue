@@ -159,8 +159,6 @@
 	  		var that = this;
 	  		this.idm = this.$route.query.id;
 	  		
-			window.scrollTo(0,0);   //显示最顶部
-	  		
 	  		//获取购物车数量
 	  		that.$http({
 	    		method: 'post',
@@ -292,8 +290,6 @@
 		},
 		detailHref(e){
 			this.$router.push(e);
-			window.location.reload();
-//			window.scrollTo(0,0);  
 			
 		},
 	  	cutNumber(){

@@ -45,16 +45,16 @@ Vue.use(Router)
 
 //当页面路径是 /的时候 加载 component 为 home 的 vue 文件
 
-const Home = resolve => require(['@/pages/home'], resolve)
+//const Home = resolve => require(['@/pages/home'], resolve)
 export default new Router({
   routes: [
     {
       path: '/',
       name: 'home',
       component: home,
-      meta: { 
-				keepAlive: true,// 需要缓存
-			}
+//    meta: { 
+//				keepAlive: false,// 需要缓存
+//			}
     },{
       path: '/pages/classification',
       name: 'classification',
@@ -107,9 +107,9 @@ export default new Router({
       path: '/pages/ucenter/search',
       name: 'search',
       component: search,
-      meta: { 
-				keepAlive: true,// 需要缓存
-			}
+//    meta: { 
+//				keepAlive: true,// 需要缓存
+//			}
     },{
       path: '/pages/category/category',
       name: 'categoryPages',

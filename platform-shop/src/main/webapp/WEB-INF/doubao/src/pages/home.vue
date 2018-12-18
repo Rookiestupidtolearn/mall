@@ -1,5 +1,5 @@
 <template>
-  <div class="hello">
+  <div class="hello"  id="home" ref="viewBox">
   	<div class="searchTop" @click="searchRoute">
   				<mt-search v-model="value"  cancel-text="取消"  placeholder="商品搜索" class="wusearch" ></mt-search>
   	</div>
@@ -58,7 +58,6 @@ export default {
         method: 'post',
         url: that.$url+'index/banner'
     	}).then(function (response) {
-    		console.log(response);
 		    that.banner = response.data.data.banner
 		  })
     //channel
@@ -68,16 +67,15 @@ export default {
     	}).then(function (response) {
 		    that.channel = response.data.data.channel
 		  })
-    //hotGoods
-    Indicator.open();
-    that.$http({
-        method: 'post',
-        url:that.$url+ 'index/hotGoods'
-    	}).then(function (response) {
-    		Indicator.close();
-		    that.hotGoods = response.data.data.hotGoodsList;
-		  })
-    	
+    	//hotgoods
+    	Indicator.open();
+	    that.$http({
+	        method: 'post',
+	        url:that.$url+ 'index/hotGoods'
+	    	}).then(function (response) {
+	    		Indicator.close();
+			    that.hotGoods = response.data.data.hotGoodsList;
+			  })
     	/*android和ios对接特殊处理*/
     	var hrefD = window.location.href;
 				if(hrefD.indexOf('device')>-1){
@@ -92,33 +90,24 @@ export default {
 	    	}else{
 	    		this.showAN = false;
 	    	}
-    	
-//  		window.addEventListener('scroll', this.handleScroll);  //记录页面位置keep-al
-//  		if(this.$cookie.getCookie('homescroll') == ' '){
-//  		}else{
-//  				document.documentElement.scrollTop = this.$cookie.getCookie('homescroll');
-//  		}
-				window.addEventListener('scroll', this.handleScroll);
-
+	    	
+//		window.addEventListener("scroll", function() {  
+//     console.log(window.scrollY);
+//     that.$cookie.setCookie('scrollHome',window.scrollY);
+//     
+//  }, false);
+  },
+ watch:{
+ 		hotGoods:function(){
+ 				this.$nextTick(function(){
+   					 window.scrollTo(0,this.$cookie.getCookie('scrollHome'));
+ 				})
+ 		}
  },
+// destoryed(){
+// 	 	window.removeEventListener("scroll", this.handleScroll);
+// },
  methods:{
-	 	handleScroll () {
-		 this.scroll = document.documentElement && document.documentElement.scrollTop
-		},
-		activated() {
-		   if(this.scroll > 0){
-		    window.scrollTo(0, this.scroll);
-		    this.scroll = 0;
-		    window.addEventListener('scroll', this.handleScroll);
-		   }
-		},
-		deactivated(){
-		 	window.removeEventListener('scroll', this.handleScroll);
-		},
-// 		handleScroll () {
-//     this.scroll  = document.documentElement &&  document.documentElement.scrollTop;
-//     this.$cookie.setCookie('homescroll',this.scroll)
-//  },
 	 	andriod(e){   //与andriod和ios交互
 				var hrefD = window.location.href;
 				var delDevice = hrefD.split('?')[0];
@@ -132,6 +121,7 @@ export default {
 	    			window.android.productDetail(comHref + e); //调起andriod交互方法(由app发起。浏览器会报错正常)
 	    			return false;
 	    	}else if(device == 'ios'){
+	    		alert(hrefD)
 	    			var message = {'url':comHref + e}
 						window.webkit.messageHandlers.webViewApp.postMessage(message);
 						return false;

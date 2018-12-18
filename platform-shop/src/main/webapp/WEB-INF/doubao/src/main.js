@@ -32,6 +32,10 @@ Vue.prototype.$url= 'http://192.168.124.29:8084/platform/api/'; //本地代理
 //Vue.prototype.$url= 'http://106.75.99.126:6302/platform/api/'; //外网(打正式包需要替换)
 //Vue.prototype.$url= 'http://10.10.120.123:6101/platform/api/'; //志强给的
 
+//切换页面时滚动条自动滚动到顶部的方法
+router.afterEach((to,from,next) => {
+  window.scrollTo(0,0);
+});
 // 添加请求拦截器
 axios.interceptors.request.use(function (config) {
 //	var appHref = 'http://192.168.124.29:8081/#/pages/ucenter/order?device=android&token=token1';  //android和ios返回链接样本
@@ -40,7 +44,9 @@ axios.interceptors.request.use(function (config) {
 var appHref = window.location.href;
 	if(appHref.indexOf('device')>-1){
 		var tokenDevice = appHref.split('?')[1].split('=')[1].split('&')[0];
-		var tokenDetail = appHref.split('=')[2].split('&')[0];  //商品详情单独处理
+		if(appHref.split('=')[2] != undefined){
+			var tokenDetail = appHref.split('=')[2].split('&')[0];  //商品详情单独处理
+		}
 	}
 	if(appHref.indexOf('token')>-1){
 		var splitLength = appHref.split('=');
