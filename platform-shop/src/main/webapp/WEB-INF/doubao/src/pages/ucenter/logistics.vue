@@ -1,21 +1,13 @@
 <template>
 	<div class="container">
 		<!--多个物流-->
-	 	<div class="logistics">
-	 		<p class="top"><span class="left">韵达快递：20181115555</span><span class="right">预计明天送达</span></p>
+	 	<div class="logistics" v-for="(item,index) in description">
+	 		<p class="top"><span class="left">{{item.shipmentName}}：20181115555</span><span class="right">预计{{item.arrivalTime}}送达</span></p>
 	 		<div class="productInfo">
-	 			<img src="../../../static/images/detail_kefu.png" />
-	 			<p class="name">绿豆糕 80克绿豆糕 80克绿糕 80克绿糕 80克绿豆糕克绿豆绿豆糕 80克糕 80克 （4枚入）</p>
+	 			<img :src="item.goodUrl" />
+	 			<p class="name">{{item.goodName}}</p>
 	 		</div>
-	 		<div class="btn" @click="looklog(1)">查看物流</div>
-		</div>
-		<div class="logistics">
-	 		<p class="top"><span class="left">韵达快递：20181115555</span><span class="right">预计明天送达</span></p>
-	 		<div class="productInfo">
-	 			<img src="../../../static/images/detail_kefu.png" />
-	 			<p class="name">绿豆糕 80克绿豆糕 80克绿糕 80克绿糕 80克绿豆糕克绿豆绿豆糕 80克糕 80克 （4枚入）</p>
-	 		</div>
-	 		<div class="btn" @click="looklog(2)">查看物流</div>
+	 		<div class="btn" @click="looklog(item.orderId)">查看物流</div>
 		</div>
 	</div>
 </template>
@@ -25,13 +17,25 @@
 	  name: 'logistics',
 	  data () {
 	    return {
+	    	description:'',
 	    	openD:true
 	    }
 	  },
 	  mounted(){
-	  	
+	  	this.loginst();
 	  },
 	  methods:{
+	  	loginst(){
+	  		let that = this;
+	  		that.$http({
+	        method: 'post',
+	        url:that.$url+ 'order/queryOrderLogistics.options',
+	        data:{orderId:78}
+	    	}).then(function (res) {
+	    		var res = res.data.orderLogistics;
+	    		that.description  = res ;
+			})
+	  	},
 	  	open(){
 	  		this.openD = !this.openD;
 	  	},

@@ -320,9 +320,9 @@ public class ApiOrderController extends ApiBaseAction {
 		JSONObject feedbackJson = super.getJsonRequest();
 		String orderStatus = feedbackJson.get("orderStatus").toString();
 		
-		if(loginUser == null){
-			return toResponsSuccess("请先登录");
-    	}
+//		if(loginUser == null){
+//			return toResponsSuccess("请先登录");
+//    	}
 		
 		String[] state = null;
 		Map params = new HashMap();

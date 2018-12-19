@@ -38,7 +38,7 @@
 	  data () {
 	    return {
 	    	openD:true,
-	    	description:[]
+	    	description:''
 	    }
 	  },
 	  mounted(){
@@ -48,7 +48,7 @@
 	  	that.$http({
 	        method: 'post',
 	        url:that.$url+ 'order/queryLogistics.options',
-	        data:{orderId:78}
+	        data:{orderId:productId}
     	}).then(function (res) {
     		var res = res.data;
     		that.description  = res ;

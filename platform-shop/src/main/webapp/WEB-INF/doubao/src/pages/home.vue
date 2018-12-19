@@ -94,12 +94,12 @@ export default {
 	    	}
 	    	
 		window.addEventListener("scroll", this.handleScroll,true);
+		
   },
  watch:{
  		hotGoods:function(){
  				this.$nextTick(function(){
- 						if(this.$cookie.getCookie('scrollHome') == '' || this.$cookie.getCookie('scrollHome') == '0'){
- 							
+ 						if(this.$cookie.getCookie('scrollHome') == '' || this.$cookie.getCookie('scrollHome') == '0'  || this.$cookie  .getCookie('scrollHome') == '-1'){
    					}else{
    						window.scrollTo(0,this.$cookie.getCookie('scrollHome'));
    					}
@@ -109,10 +109,9 @@ export default {
  methods:{
 	 	handleScroll(){
 	 		if(this.$route.name == 'home'){
-	 			if(window.scrollY == '0'){
+	 			if(window.scrollY == '0' || window.scrollY < '0'){
 	 				
 	 			}else{
-//		 			console.log(window.scrollY);
 	       	this.$cookie.setCookie('scrollHome',window.scrollY);
        }
 	 		}

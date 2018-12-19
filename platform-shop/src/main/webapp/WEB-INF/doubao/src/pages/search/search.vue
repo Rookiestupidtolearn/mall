@@ -101,8 +101,29 @@ export default {
 			}else{
 				this.cookie=false;  
 			}
+			
+			window.addEventListener("scroll", this.handleScroll,true);
 	  },
+	   watch:{
+		 		goodsList:function(){
+		 				this.$nextTick(function(){
+		 						if(this.$cookie.getCookie('scrollSearch') == '' || this.$cookie.getCookie('scrollSearch') == '0'  || this.$cookie  .getCookie('scrollSearch') == '-1'){
+		   					}else{
+		   						window.scrollTo(0,this.$cookie.getCookie('scrollSearch'));
+		   					}
+		 				})
+		 		}
+		 },
 	  methods:{
+	  	handleScroll(){
+	 		if(this.$route.name == 'search'){
+	 			if(window.scrollY == '0' || window.scrollY < '0'){
+	 				
+	 			}else{
+	       	this.$cookie.setCookie('scrollSearch',window.scrollY);
+       }
+	 		}
+	 	},
 	  	onKeywordTap(keyword){
 	  		this.getSearchResult(keyword);
 	  	},
