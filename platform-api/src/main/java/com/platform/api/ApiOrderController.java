@@ -311,6 +311,7 @@ public class ApiOrderController extends ApiBaseAction {
      */
 	@ApiOperation(value = "查询各订单")
 	@PostMapping("queryUnPayments")
+//	@IgnoreAuth
 	public Object queryUnPayments(@LoginUser UserVo loginUser,
 			@RequestParam(value = "page", defaultValue = "1") Integer page,
 			@RequestParam(value = "size", defaultValue = "10") Integer size) {

@@ -22,15 +22,16 @@
 	    }
 	  },
 	  mounted(){
-	  	this.loginst();
+	  	var productId = this.$route.query.id;
+	  	this.loginst(productId);
 	  },
 	  methods:{
-	  	loginst(){
+	  	loginst(productId){
 	  		let that = this;
 	  		that.$http({
 	        method: 'post',
 	        url:that.$url+ 'order/queryOrderLogistics.options',
-	        data:{orderId:78}
+	        data:{orderId:productId}
 	    	}).then(function (res) {
 	    		var res = res.data.orderLogistics;
 	    		that.description  = res ;

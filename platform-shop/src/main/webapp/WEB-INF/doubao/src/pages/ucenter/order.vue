@@ -63,6 +63,9 @@ export default {
 　	]
     }
   },
+  destroyed(){
+  	Indicator.close();
+  },
   mounted(){
 			this.getProjectInfo();
   },

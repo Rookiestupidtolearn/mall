@@ -25,9 +25,6 @@
 		            </div>
 		            <div class="b">
 		                <div class="l">实付：￥{{item.actual_price}}</div>
-		                <div class="r">
-		                	<mt-button type="danger"  class="resetbtn" size="small" @click.prevent="payOrder(index)"  :style="{ display: [ item.handleOption.pay ? 'block' : 'none']}">去付款</mt-button>
-		                </div>
 		            </div>
 		        </router-link>
 		        </li>
@@ -67,6 +64,9 @@ export default {
 					{value:'已取消',to:'/pages/ucenter/order4'},
 　	]
     }
+  },
+    destroyed(){
+  	Indicator.close();
   },
   mounted(){
 			this.getProjectInfo();
@@ -132,7 +132,22 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-	
+		.order .btn{
+   display: inline-block;
+    height: auto;
+    padding: .09rem .19rem;
+    font-size: .26rem;
+    color: #666666;
+    -webkit-border-radius: 2rem;
+    background-color: initial;
+    border: 1px solid #d8d8d8;
+    margin-left: .2rem;
+}
+
+.order .btn.active{
+    color: #ef7c2c ;
+    border: 1px solid #ef7c2c ;
+}
 	.timg{
 		width: .5rem;
     margin-right: .2rem;

@@ -18,7 +18,7 @@
   			</ul>
 	  		<ul class="" v-infinite-scroll="loadMore" infinite-scroll-disabled="isMoreLoading" infinite-scroll-distance="10" class="loadm">
 	 			 <li v-for="(item,index) in orderList" >
-					<router-link  :to = "'/pages/ucenter/orderDetail?id='+item.id" class="order" >
+					<div class="order" >
 		            <div class="h">
 		                <div class="l">订单编号：{{item.order_sn}}</div>
 		                <div class="r">{{item.order_status_text}}</div>
@@ -26,10 +26,11 @@
 		            <div class="b">
 		                <div class="l">实付：￥{{item.actual_price}}</div>
 		                <div class="r">
-		                	<mt-button type="danger"  class="resetbtn" size="small" @click.prevent="payOrder(index)"  :style="{ display: [ item.handleOption.pay ? 'block' : 'none']}">去付款</mt-button>
+		                	<div class="btn active" @click="confirmOrder(item.id)">确认收货</div>
+		                	<router-link class="btn" :to="'/pages/ucenter/logistics?id='+item.id">查看物流</router-link>
 		                </div>
 		            </div>
-		        </router-link>
+		        </div>
 		        </li>
 	        </ul>
 	        <p class="loading" v-if="isLoading"><img src="../../../static/images/timg.gif" class="timg"/><span class="lon">加载中...</span></p>
@@ -68,10 +69,31 @@ export default {
 　	]
     }
   },
+    destroyed(){
+  	Indicator.close();
+  },
   mounted(){
 			this.getProjectInfo();
   },
   methods:{
+  	confirmOrder(id){
+  		var that = this;    
+	    	that.$http({
+	        method: 'post',
+	        url:that.$url+ 'order/confirmOrder.options',
+	        data:{
+	        	orderId:id,
+	        }
+	    	}).then(function (res) {
+	    		var res = res.data;
+	    		if(res.errno == 0){
+	    			
+	    		}else{
+	    			that.$toast(res.errmsg);
+	    		}
+	    		
+			  })
+  	},
   	selectStyle (item, index) {
   			this.activeClass = index;
 　},
@@ -132,7 +154,22 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-	
+	.order .btn{
+   display: inline-block;
+    height: auto;
+    padding: .09rem .19rem;
+    font-size: .26rem;
+    color: #666666;
+    -webkit-border-radius: 2rem;
+    background-color: initial;
+    border: 1px solid #d8d8d8;
+    margin-left: .2rem;
+}
+
+.order .btn.active{
+    color: #ef7c2c ;
+    border: 1px solid #ef7c2c ;
+}
 	.timg{
 		width: .5rem;
     margin-right: .2rem;
