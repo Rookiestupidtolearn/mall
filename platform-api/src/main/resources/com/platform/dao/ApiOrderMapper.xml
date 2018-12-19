@@ -269,6 +269,6 @@
 		select * from nideshop_order where order_status in (103,101) and user_id = #{userId}
 	</select>
 	<select id="querySuccessOrder" resultMap="orderMap">
-		select * from nideshop_order where order_status = 301 and user_id = #{userId}
+		select * from nideshop_order where order_status = 9 and user_id = #{userId}
 	</select>
 </mapper>

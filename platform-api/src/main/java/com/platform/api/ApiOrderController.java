@@ -289,7 +289,6 @@ public class ApiOrderController extends ApiBaseAction {
      */
     @ApiOperation(value = "查询物流")
     @PostMapping("queryLogistics")
-    @IgnoreAuth
     public JSONObject queryLogistics(Long orderId){
     	JSONObject resultObj = new JSONObject();
     	JSONObject feedbackJson = super.getJsonRequest();
@@ -312,17 +311,12 @@ public class ApiOrderController extends ApiBaseAction {
      */
 	@ApiOperation(value = "查询各订单")
 	@PostMapping("queryUnPayments")
-	@IgnoreAuth
 	public Object queryUnPayments(@LoginUser UserVo loginUser,
 			@RequestParam(value = "page", defaultValue = "1") Integer page,
 			@RequestParam(value = "size", defaultValue = "10") Integer size) {
 		
 		JSONObject feedbackJson = super.getJsonRequest();
 		String orderStatus = feedbackJson.get("orderStatus").toString();
-		
-		if(loginUser == null){
-			return toResponsSuccess("请先登录");
-    	}
 		
 		String[] state = null;
 		Map params = new HashMap();
@@ -334,7 +328,7 @@ public class ApiOrderController extends ApiBaseAction {
 		} else if ("UnPayments".equals(orderStatus)) {// 待付款
 			state   = new String[]{"0"};
 		} else if ("success".equals(orderStatus)) {// 已完成
-			state   = new String[]{"301"};
+			state   = new String[]{"9"};
 		} else if ("delivered".equals(orderStatus)) {// 待收货
 			state   = new String[]{"300","201"};
 		} else if ("cancelFlag".equals(orderStatus)) {// 已取消
@@ -370,7 +364,6 @@ public class ApiOrderController extends ApiBaseAction {
      */
     @ApiOperation(value = "查询物流列表")
     @PostMapping("queryOrderLogistics")
-    @IgnoreAuth
     public JSONObject queryOrderLogistics(Long orderId){
     	JSONObject resultObj = new JSONObject();
     	JSONObject feedbackJson = super.getJsonRequest();

@@ -55,6 +55,7 @@ import com.platform.youle.entity.RequestChildsEntity;
 import com.platform.youle.entity.RequestOrderSubmitEntity;
 import com.platform.youle.entity.RequestProductStockEntity;
 import com.platform.youle.entity.RequestSkuDetailEntity;
+import com.platform.youle.entity.RequstSaleStatusEntity;
 import com.platform.youle.entity.ResponseBaseEntity;
 import com.platform.youle.entity.ResponseCancelEntity;
 import com.platform.youle.entity.ResponseChildsEntity;
@@ -902,11 +903,14 @@ public class ApiTestController extends ApiBaseAction {
 	@PostMapping("queryAllProducts")
 	public Object queryAllProducts(Long productId) {
 		String resultObj = "";
-		RequestSkuDetailEntity entity = new RequestSkuDetailEntity();
-		initRequestParam(entity);
-		entity.setPid(productId);
+//		RequestSkuDetailEntity entity = new RequestSkuDetailEntity();
+//		initRequestParam(entity);
+//		entity.setPid(productId);
+		  RequstSaleStatusEntity entity = new RequstSaleStatusEntity();
+	        initRequestParam(entity);
+	        entity.setPid(Integer.parseInt(productId.toString()));
 		try {
-			resultObj = HttpUtil.post(Urls.base_prod_url + Urls.detial, objectToMap(entity));
+			resultObj = HttpUtil.post(Urls.base_prod_url + Urls.saleStatus, objectToMap(entity));
 			System.out.println(resultObj);
 		} catch (Exception e) {
 			e.printStackTrace();
