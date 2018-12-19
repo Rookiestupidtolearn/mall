@@ -165,7 +165,7 @@ public class ApiPayController extends ApiBaseAction {
                     // 业务处理
                     orderInfo.setPay_id(prepay_id);
                     // 付款中
-                    orderInfo.setPay_status(1);
+                    orderInfo.setPay_status(0);
                     orderService.update(orderInfo);
                     saveMoneyRecord(loginUser.getUserId(),0,orderInfo);
                     return toResponsObject(0, "微信统一订单下单成功", resultObj);
@@ -225,7 +225,7 @@ public class ApiPayController extends ApiBaseAction {
             // 业务处理
             OrderVo orderInfo = new OrderVo();
             orderInfo.setId(orderId);
-            orderInfo.setPay_status(2);
+            orderInfo.setPay_status(1);
             orderInfo.setOrder_status(201);
             orderInfo.setShipping_status(0);
             orderInfo.setPay_time(new Date());
@@ -292,7 +292,7 @@ public class ApiPayController extends ApiBaseAction {
                 logger.error("订单" + out_trade_no + "支付成功");
                 // 业务处理
                 OrderVo orderInfo = orderService.queryObject(Integer.valueOf(out_trade_no));
-                orderInfo.setPay_status(2);
+                orderInfo.setPay_status(1);
                 orderInfo.setOrder_status(201);
                 orderInfo.setShipping_status(0);
                 orderInfo.setPay_time(new Date());
