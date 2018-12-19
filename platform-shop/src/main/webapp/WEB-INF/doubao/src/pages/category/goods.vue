@@ -124,6 +124,7 @@
 
 <script>
 	import { Toast } from 'mint-ui';
+	import { Indicator } from 'mint-ui';
 //	import headbar from '@/components/headbar.vue'
 		
 	export default {
@@ -198,13 +199,15 @@
 		},
 		relaed(){
 			let that = this;
+			Indicator.open();
 			//关联
 	    	that.$http({
 	    		method: 'post',
 		        url:that.$url+ 'goods/related',
 		        params:{id:that.idm}
 	    	}).then(function (response) {
-		          that.relatedGoods = response.data.data.goodsList;
+    			Indicator.close();
+		        that.relatedGoods = response.data.data.goodsList;
 		    });
 		},
 		Detail(){

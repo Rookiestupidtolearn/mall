@@ -422,7 +422,7 @@ public class OrderVo implements Serializable {
                 case 300:
                     order_status_text = "待收货";
                     break;
-                case 301:
+                case 9:
                     order_status_text = "已完成";
                     break;
                 case 200:

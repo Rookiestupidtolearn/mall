@@ -156,6 +156,11 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only  active -->
 <style scoped>
+	.classification{
+		position: fixed;
+    overflow-y: scroll;
+    height: 100%;
+	}
 	.front_name {
 		position:absolute;
 		top:0rem;
@@ -175,7 +180,7 @@ export default {
 		font-size:.28rem;
 	}
 	.bd {
-	 	overflow: hidden;
+	 	/*overflow: hidden;*/
 	 	margin-top: .3rem;
 	 	width: 5.5rem;
 	 	padding-bottom:.5rem

@@ -52,8 +52,6 @@ export default {
     }
   },
   mounted(){
-  	
-//		alert(window.location.href)
   		let that = this;    
   	//banner
   		that.$http({
@@ -93,25 +91,24 @@ export default {
 	    		this.showAN = false;
 	    	}
 	    	
-		window.addEventListener("scroll", this.handleScroll,true);
-		
+	   window.addEventListener("scroll", this.handleScroll,true);
   },
  watch:{
- 		hotGoods:function(){
- 				this.$nextTick(function(){
- 						if(this.$cookie.getCookie('scrollHome') == '' || this.$cookie.getCookie('scrollHome') == '0'  || this.$cookie  .getCookie('scrollHome') == '-1'){
+   		hotGoods:function(){
+   				this.$nextTick(function(){
+   						if(this.$cookie.getCookie('scrollHome') == '' || this.$cookie.getCookie('scrollHome') == 0  || this.$cookie  .getCookie('scrollHome') == -1){
    					}else{
    						window.scrollTo(0,this.$cookie.getCookie('scrollHome'));
    					}
- 				})
- 		}
+   				})
+   		}
  },
  methods:{
 	 	handleScroll(){
 	 		if(this.$route.name == 'home'){
-	 			if(window.scrollY == '0' || window.scrollY < '0'){
-	 				
+	 			if(window.scrollY == 0 || window.scrollY < 0){
 	 			}else{
+	 				console.log(window.scrollY);
 	       	this.$cookie.setCookie('scrollHome',window.scrollY);
        }
 	 		}

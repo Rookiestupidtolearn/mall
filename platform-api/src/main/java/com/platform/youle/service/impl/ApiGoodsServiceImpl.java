@@ -140,6 +140,7 @@ public class ApiGoodsServiceImpl extends AbsApiGoodsService {
             logger.info("[1.6查询商品可售状态]入参：" + JSONObject.toJSONString(entity));
             String result = HttpUtil.post(Urls.base_prod_url+ Urls.saleStatus, objectToMap(entity));
             reponse = JSON.parseObject(result, ResponseSaleStatusEntity.class);
+            logger.info("[1.6查询商品可售状态]出参：" + result);
         } catch (Exception e) {
             logger.error("[1.6查询商品可售状态]异常", e);
         }
