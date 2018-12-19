@@ -2,6 +2,7 @@ package com.platform.api;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
@@ -15,7 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.platform.annotation.IgnoreAuth;
+import com.platform.dao.ApiMoneyRecordMapper;
+import com.platform.dao.QzUserAccountMapper;
 import com.platform.entity.OrderVo;
+import com.platform.entity.QzMoneyRecordVo;
+import com.platform.entity.QzUserAccountVo;
 import com.platform.entity.YeeTradeOrderEntity;
 import com.platform.service.ApiOrderService;
 import com.platform.service.YeeTradeOrderService;
@@ -34,6 +39,10 @@ public class ApiYeepayController extends ApiBaseAction {
 	private YeeTradeOrderService yeeTradeOrderService;
 	@Autowired
 	private ApiOrderService apiOrderService;
+    @Autowired
+    private QzUserAccountMapper qzUserAccountMapper;
+    @Autowired
+    private ApiMoneyRecordMapper apiMoneyRecordMapper;
 
 	@IgnoreAuth
 	@GetMapping("yeepayOrderFCallback")
@@ -110,6 +119,7 @@ public class ApiYeepayController extends ApiBaseAction {
 						order.setOrder_status(200); // 支付成功，待提交京东订单
 						order.setOrder_type("404");//支付异常
 						apiOrderService.update(order);
+						saveMoneyRecord(order.getUser_id(),0,order);
 
 					}
 
@@ -132,7 +142,7 @@ public class ApiYeepayController extends ApiBaseAction {
 						order.setOrder_status(200); // 支付成功，待提交京东订单
 						order.setOrder_type("1");//正常
 						apiOrderService.update(order);
-
+						saveMoneyRecord(order.getUser_id(),0,order);
 					}
 				}
 
@@ -147,4 +157,20 @@ public class ApiYeepayController extends ApiBaseAction {
 		}
 
 	}
+	 public void saveMoneyRecord(Long userId,Integer type,OrderVo order){
+			QzUserAccountVo userAmountVo =qzUserAccountMapper.queruUserAccountInfo(Long.parseLong(userId.toString()));
+	    	if(userAmountVo != null){
+	    		QzMoneyRecordVo moneyRecord  = new QzMoneyRecordVo();
+	    		moneyRecord.setShopUserId(userId.intValue());
+	    		moneyRecord.setTranType("2");//使用优惠券
+	    		moneyRecord.setTranFlag(type);//0-支出 1-收入
+	    		moneyRecord.setTarnAmount(order.getCoupon_price());
+	    		moneyRecord.setCreateTime(new Date());
+	    		moneyRecord.setTradeNo(order.getOrder_sn());
+	    		if(userAmountVo != null){
+	    			moneyRecord.setCurrentAmount(userAmountVo.getAmount());
+	    		}
+	    		apiMoneyRecordMapper.save(moneyRecord);
+	    	}
+	    }
 }
