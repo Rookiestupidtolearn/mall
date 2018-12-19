@@ -271,6 +271,8 @@ public class ApiOrderController extends ApiBaseAction {
     @PostMapping("confirmOrder")
     public Object confirmOrder(Integer orderId) {
         try {
+        	JSONObject feedbackJson = super.getJsonRequest();
+        	orderId = Integer.parseInt(feedbackJson.get("orderId").toString());
             OrderVo orderVo = orderService.queryObject(orderId);
             orderVo.setOrder_status(301);
             orderVo.setShipping_status(2);

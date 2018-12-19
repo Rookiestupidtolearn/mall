@@ -393,10 +393,10 @@ public class ApiOrderService {
 		orderInfo.setCoupon_price(couponAmount);
 
 		
-		//查询可以抵扣金额
-		discountAmount = queryUserDisCountAmount(orderGoodsList,orderInfo);
 		// 开启事务，插入订单信息和订单商品
 		apiOrderMapper.save(orderInfo);
+		//查询可以抵扣金额
+		discountAmount = queryUserDisCountAmount(orderGoodsList,orderInfo);
 		if (null == orderInfo.getId()) {
 			resultObj.put("errno", 1);
 			resultObj.put("errmsg", "订单提交失败");
