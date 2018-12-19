@@ -129,4 +129,7 @@
 	<select id="queryOrderDeliveredGoods" resultMap="orderGoodsMap">
 		select * from nideshop_order_goods where good_status = 300 and order_id = #{orderId}
 	</select>
+	<select id="queryOrderLogisticGoods" resultMap="orderGoodsMap">
+		select * from nideshop_order_goods where  order_id = #{orderId}
+	</select>
 </mapper>

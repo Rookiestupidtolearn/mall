@@ -1,14 +1,14 @@
 package com.platform.api;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,10 +36,6 @@ import com.platform.util.ApiPageUtils;
 import com.platform.util.wechat.WechatRefundApiResult;
 import com.platform.util.wechat.WechatUtil;
 import com.platform.utils.Query;
-import com.platform.youle.entity.RequestBaseEntity;
-import com.platform.youle.entity.RequestOrderTrackEntity;
-import com.platform.youle.util.MD5util;
-import com.platform.youle.util.PropertiesUtil;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -293,6 +289,7 @@ public class ApiOrderController extends ApiBaseAction {
      */
     @ApiOperation(value = "查询物流")
     @PostMapping("queryLogistics")
+    @IgnoreAuth
     public JSONObject queryLogistics(Long orderId){
     	JSONObject resultObj = new JSONObject();
     	OrderVo order = apiOrderMapper.queryObject(orderId);
@@ -301,7 +298,7 @@ public class ApiOrderController extends ApiBaseAction {
     		resultObj.put("msg", "查询订单为空");
     		return resultObj;
     	}
-    	JSONObject obj = JdOrderService.queryLogistics(order.getOrder_sn());
+    	JSONObject obj = JdOrderService.queryLogistics(order.getOrder_sn(),orderId);
     	return obj;
     }
     
@@ -311,49 +308,48 @@ public class ApiOrderController extends ApiBaseAction {
      * @param loginUser
      * @return
      */
-    @ApiOperation(value = "查询代付款")
-    @PostMapping("queryUnPayments")
-    @IgnoreAuth
-    public Object queryUnPayments(@LoginUser UserVo loginUser,
-    		@RequestParam(value = "page", defaultValue = "1") Integer page,
-            @RequestParam(value = "size", defaultValue = "10") Integer size,String orderStatus){
-    	  //
-        Map params = new HashMap();
-        params.put("user_id", loginUser.getUserId());
-        params.put("page", page);
-        params.put("limit", size);
-        if("all".equals(orderStatus)){//全部订单
-        	orderStatus = "";
-        }else if("UnPayments".equals(orderStatus)){//待付款
-        	orderStatus = "0"; 
-        }else if("success".equals(orderStatus)){//已完成
-        	orderStatus = "301";
-        }else if("delivered".equals(orderStatus)){//待收货
-        	orderStatus = "300";
-        }else if("cancelFlag".equals(orderStatus)){//已取消
-        	orderStatus = "101";
-        }
-        params.put("orderStatus", orderStatus);
-        params.put("sidx", "id");
-        params.put("order", "asc");
-        //查询列表数据
-        Query query = new Query(params);
-        List<OrderVo> orderEntityList = apiOrderMapper.queryOrderList(query);
-        int total = orderService.queryOrderTotal(query);
-        ApiPageUtils pageUtil = new ApiPageUtils(orderEntityList, total, query.getLimit(), query.getPage());
-        //
-        for (OrderVo item : orderEntityList) {
-            Map orderGoodsParam = new HashMap();
-            orderGoodsParam.put("order_id", item.getId());
-            //订单的商品
-            List<OrderGoodsVo> goodsList = orderGoodsService.queryList(orderGoodsParam);
-            Integer goodsCount = 0;
-            for (OrderGoodsVo orderGoodsEntity : goodsList) {
-                goodsCount += orderGoodsEntity.getNumber();
-                item.setGoodsCount(goodsCount);
-            }
-        }
-        return toResponsSuccess(pageUtil);
-    }
-   
+	@ApiOperation(value = "查询各订单")
+	@PostMapping("queryUnPayments")
+	@IgnoreAuth
+	public Object queryUnPayments(@LoginUser UserVo loginUser,
+			@RequestParam(value = "page", defaultValue = "1") Integer page,
+			@RequestParam(value = "size", defaultValue = "10") Integer size, String orderStatus) {
+		//
+		Map params = new HashMap();
+		params.put("user_id", loginUser.getUserId());
+		params.put("page", page);
+		params.put("limit", size);
+		if ("all".equals(orderStatus)) {// 全部订单
+			orderStatus = "";
+		} else if ("UnPayments".equals(orderStatus)) {// 待付款
+			orderStatus = "0";
+		} else if ("success".equals(orderStatus)) {// 已完成
+			orderStatus = "301";
+		} else if ("delivered".equals(orderStatus)) {// 待收货
+			orderStatus = "300";
+		} else if ("cancelFlag".equals(orderStatus)) {// 已取消
+			orderStatus = "101";
+		}
+		params.put("orderStatus", orderStatus);
+		params.put("sidx", "id");
+		params.put("order", "asc");
+		// 查询列表数据
+		Query query = new Query(params);
+		List<OrderVo> orderEntityList = apiOrderMapper.queryOrderList(query);
+		int total = orderService.queryOrderTotal(query);
+		ApiPageUtils pageUtil = new ApiPageUtils(orderEntityList, total, query.getLimit(), query.getPage());
+		//
+		Map orderGoodsParam = new HashMap();
+		for (OrderVo item : orderEntityList) {
+			orderGoodsParam.put("order_id", item.getId());
+			// 订单的商品
+			List<OrderGoodsVo> goodsList = orderGoodsService.queryList(orderGoodsParam);
+			Integer goodsCount = 0;
+			for (OrderGoodsVo orderGoodsEntity : goodsList) {
+				goodsCount += orderGoodsEntity.getNumber();
+				item.setGoodsCount(goodsCount);
+			}
+		}
+		return toResponsSuccess(pageUtil);
+	}
 }

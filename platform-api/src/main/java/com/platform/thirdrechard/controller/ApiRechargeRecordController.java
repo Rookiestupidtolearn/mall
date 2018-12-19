@@ -1,4 +1,4 @@
-package com.platform.api;
+package com.platform.thirdrechard.controller;
 
 import java.util.Map;
 
@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.platform.annotation.IgnoreAuth;
-import com.platform.api.response.RechargeResponseEntity;
-import com.platform.service.RechargeBizService;
+import com.platform.thirdrechard.entity.RechargeResponseEntity;
+import com.platform.thirdrechard.service.RechargeBizService;
 import com.platform.util.ApiBaseAction;
 
 import io.swagger.annotations.Api;
@@ -31,7 +31,6 @@ public class ApiRechargeRecordController  extends ApiBaseAction  {
 	@PostMapping("subbmitRecharge")
 	@IgnoreAuth
 	public Object   rechargeRecordSubbmit(String encrypt){
-		String a= "ihnAfyBK8SR1Lcfe04ekgJKWDTUuwwbGffxvPsNNHmt63zZJ/+4DnOvYcom5zGVGD4ujJ5BE0UafSgYpjrLkWZqFZyQQbR1KY+MWHgfqI7o=";
 		RechargeResponseEntity responseEntity = new RechargeResponseEntity();
 		 if (StringUtils.isEmpty(encrypt)) {
 			 responseEntity.setCode("1000");
@@ -40,7 +39,7 @@ public class ApiRechargeRecordController  extends ApiBaseAction  {
 		}
 		logger.info("充值密文："+encrypt);
          try {
-        	 responseEntity  =  rechargeBizService.recharge(a);
+        	 responseEntity  =  rechargeBizService.recharge(encrypt);
 			
 			logger.info("充值成功");
 			return responseEntity;

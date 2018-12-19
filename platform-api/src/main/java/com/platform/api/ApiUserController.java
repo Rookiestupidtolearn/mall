@@ -12,37 +12,26 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.Gson;
 import com.platform.annotation.LoginUser;
-import com.platform.cache.J2CacheUtils;
 import com.platform.dao.ApiOrderGoodsMapper;
 import com.platform.dao.ApiOrderMapper;
 import com.platform.entity.OrderGoodsVo;
 import com.platform.entity.OrderVo;
 import com.platform.entity.QzMoneyRecordEntity;
 import com.platform.entity.QzUserAccountEntity;
-import com.platform.entity.SmsConfig;
 import com.platform.entity.SmsLogVo;
 import com.platform.entity.UserVo;
+import com.platform.service.ApiSendSMSService;
 import com.platform.service.ApiUserCouponService;
 import com.platform.service.ApiUserService;
 import com.platform.service.SysConfigService;
 import com.platform.util.ApiBaseAction;
 import com.platform.util.IdcardUtils;
-import com.platform.util.sms.chuanglan.ChuangLanSmsUtil;
-import com.platform.util.sms.chuanglan.SmsSendRequest;
-import com.platform.utils.CharUtil;
-import com.platform.utils.Constant;
-import com.platform.utils.RRException;
 import com.platform.utils.RequestUtil;
-import com.platform.utils.StringUtils;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import net.oschina.j2cache.CacheProviderHolder;
-import net.oschina.j2cache.Level2Cache;
 
 /**
  * 作者: @author Harmon <br>
@@ -63,7 +52,8 @@ public class ApiUserController extends ApiBaseAction {
     private ApiOrderMapper apiOrderMapper;
     @Autowired
     private ApiOrderGoodsMapper  apiOrderGoodsMapper;
-    
+    @Autowired
+    private ApiSendSMSService apiSendSMSService;
 
     /**
      * 发送短信
@@ -82,6 +72,8 @@ public class ApiUserController extends ApiBaseAction {
 			        }
 			}
 		}
+        //ip地址
+     	String validIP = RequestUtil.getIpAddrByRequest(request);
         
         Map paramMap = new HashMap();
         paramMap.put("mobile", phone);
@@ -91,109 +83,8 @@ public class ApiUserController extends ApiBaseAction {
         	return toResponsFail("该手机号已被绑定");
         }
          
-        //手机号
-        Level2Cache level2 = CacheProviderHolder.getLevel2Cache(J2CacheUtils.INVALID_CACHE);
-        Integer count =(Integer) level2.get("DOUBAO_SMS_COUNT:"+phone);
+      return  apiSendSMSService.sendSms(phone, validIP, "2",Integer.parseInt(loginUser.getUserId().toString()));
         
-        if (count!=null) {
-        	  if (count>10) {
-        		   return toResponsFail("操作频繁，明天再试");
-			  }
-        	  count +=1;
-		 }else {
-			 count = 1;
-		}
-        
-    	level2.put("DOUBAO_SMS_COUNT:"+phone, count,86400l);
-        //ip地址
-     	String validIP = RequestUtil.getIpAddrByRequest(request);
-        Integer countIP = (Integer) level2.get("DOUBAO_SMS_IP_COUNT:"+validIP);
-        
-        if (countIP!=null) {
-        	  if (countIP>10) {
-        		   level2.put("DOUBAO_SMS_MOBILE_IP:"+phone+"_"+validIP, phone+"_"+validIP,86400l);
-        		   return toResponsFail("操作频繁，明天再试");
-			  }
-        	  countIP +=1;
-		 }else {
-			 countIP = 1;
-		}
-    	level2.put("DOUBAO_SMS_IP_COUNT:"+validIP, countIP,86400l);
-        //生成验证码
-        String sms_code = CharUtil.getRandomNum(4);
-        String msgContent = "您的验证码是：" + sms_code + "，请在页面中提交验证码完成验证。";
-        // 发送短信
-        String result = "";
-        String codeValue = "";
-        //获取云存储配置信息
-        SmsConfig config = sysConfigService.getConfigObject(Constant.SMS_CONFIG_KEY, SmsConfig.class);
-        if (StringUtils.isNullOrEmpty(config)) {
-            throw new RRException("请先配置短信平台信息");
-        }
-        if (StringUtils.isNullOrEmpty(config.getUsername())) {
-            throw new RRException("请先配置短信平台用户名");
-        }
-        if (StringUtils.isNullOrEmpty(config.getPassword())) {
-            throw new RRException("请先配置短信平台密钥");
-        }
-        if (StringUtils.isNullOrEmpty(config.getEpid())) {
-            throw new RRException("请先配置短信平台epid");
-        }
-        if (StringUtils.isNullOrEmpty(config.getSign())) {
-            throw new RRException("请先配置短信平台签名");
-        }
-        if (StringUtils.isNullOrEmpty(config.getDomain())) {
-            throw new RRException("请先配置短信平台域名URL");
-        }
-        try {
-            /**
-             * 状态,发送编号,无效号码数,成功提交数,黑名单数和消息，无论发送的号码是多少，一个发送请求只返回一个sendid，如果响应的状态不是“0”，则只有状态和消息
-             */
-        	
-
-        	//短信发送的URL 请登录zz.253.com 获取完整的URL接口信息
-    		String smsSingleRequestServerUrl = "http://smssh1.253.com/msg/send/json";
-    		
-    		// 设置您要发送的内容：其中“【】”中括号为运营商签名符号，多签名内容前置添加提交
-    	    String msg = config.getSign()+msgContent;
-    		//手机号码
-    	
-    		//状态报告
-    		String report= "true";
-    		
-    		SmsSendRequest smsSingleRequest = new SmsSendRequest(config.getUsername(), config.getPassword(), msg, phone,report);
-    		
-    		String requestJson = JSON.toJSONString(smsSingleRequest);
-    		
-    		
-    		result = ChuangLanSmsUtil.sendSmsByPost(smsSingleRequestServerUrl, requestJson);
-    		Gson gson = new Gson();
-            Map<String, Object> map = new HashMap<String, Object>();
-            map = gson.fromJson(result, map.getClass());
-            codeValue=(String) map.get("code");
-          
-        	
-           // result = SmsUtil.crSendSms(config.getDomain(),config.getUsername(), config.getPassword(), phone, config.getSign()+msgContent, config.getEpid(),DateUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"), "");
-        } catch (Exception e) {
-
-        }
-        String arr[] = result.split(",");
-
-        if ("0".equals(codeValue)) {
-            smsLogVo = new SmsLogVo();
-            smsLogVo.setLog_date(System.currentTimeMillis() / 1000);
-            smsLogVo.setUser_id(loginUser.getUserId());
-            smsLogVo.setPhone(phone);
-            smsLogVo.setSmsCode(sms_code);
-            smsLogVo.setSms_text(msgContent);
-            smsLogVo.setSend_status(1); //1成功   0失败
-            userService.saveSmsCodeLog(smsLogVo);
-            Map<String, Object> re =toResponsSuccess("短信发送成功");
-            re.put("count", count);
-            return re;
-        } else {
-            return toResponsFail("短信发送失败");
-        }
     }
 
     /**
@@ -249,20 +140,24 @@ public class ApiUserController extends ApiBaseAction {
        try{
     	   QzUserAccountEntity qzUserAccount = userService.queryUserAccount(loginUser.getUserId().intValue());
     	   obj.put("code", 1);
-           if(qzUserAccount == null){
+    	   JSONObject unPayment = queryUnPayments(loginUser);
+           String unPaymentNum = unPayment.getString("num");
+           JSONObject cancelOrder = queryCancelFlag(loginUser);
+           String cancelOrderNum = cancelOrder.getString("num");
+           JSONObject delivered = queryDelivered(loginUser);
+           String deliveredNum = delivered.getString("num");
+           JSONObject successOrder = querySuccessOrder(loginUser);
+           String successOrderNum = successOrder.getString("num");
+           obj.put("unPaymentNum", unPaymentNum);//待付款个数
+           obj.put("cancelOrderNum", cancelOrderNum);//取消订单订单
+           obj.put("deliveredNum", deliveredNum);//待收货个数
+           obj.put("successOrderNum", successOrderNum);//订单成功个数
+    	   if(qzUserAccount == null){
         	   //未查询到用户账户
                obj.put("data", "0.00");
                return obj;
            }
-           JSONObject unPayment = queryUnPayments(loginUser);
-           String unPaymentNum = unPayment.getString("num");
-           JSONObject tobeShipping = queryTobeShipping(loginUser);
-           String tobeShippingNum = tobeShipping.getString("num");
-           JSONObject delivered = queryDelivered(loginUser);
-           String deliveredNum = delivered.getString("num");
-           obj.put("unPaymentNum", unPaymentNum);//待付款个数
-           obj.put("tobeShippingNum", tobeShippingNum);//待发货个数
-           obj.put("deliveredNum", deliveredNum);//待收货个数
+          
            obj.put("data", qzUserAccount.getAmount().toString());
            return obj;
        }catch(Exception e){
@@ -387,7 +282,7 @@ public class ApiUserController extends ApiBaseAction {
      * @param loginUser
      * @return
      */
-    public JSONObject queryTobeShipping(@LoginUser UserVo loginUser){
+    public JSONObject queryCancelFlag(@LoginUser UserVo loginUser){
     	JSONObject obj = new JSONObject();
     	Integer num = 0;
     	if(loginUser == null){
@@ -396,15 +291,16 @@ public class ApiUserController extends ApiBaseAction {
     		return obj;
     	}
     	Long userId = loginUser.getUserId();
-    	List<OrderVo> orders = apiOrderMapper.queryTobeShippingOrders(userId);
+    	List<OrderVo> orders = apiOrderMapper.queryCancelFlag(userId);
     	if(!CollectionUtils.isEmpty(orders)){
-    		for(OrderVo order : orders){
-    			Integer orderId = order.getId();
-    			List<OrderGoodsVo> orderGoods = apiOrderGoodsMapper.queryOrderGoods(orderId);
-    			if(!CollectionUtils.isEmpty(orderGoods)){
-    				num += orderGoods.size();
-    			}
-    		}
+//    		for(OrderVo order : orders){
+//    			Integer orderId = order.getId();
+//    			List<OrderGoodsVo> orderGoods = apiOrderGoodsMapper.queryOrderGoods(orderId);
+//    			if(!CollectionUtils.isEmpty(orderGoods)){
+//    				num += orderGoods.size();
+//    			}
+//    		}
+    		num = orders.size();
     	}
     	obj.put("num", num);
     	obj.put("data", "查询待收货个数成功");
@@ -441,4 +337,37 @@ public class ApiUserController extends ApiBaseAction {
     	obj.put("code","200");
     	return obj;
     }
+    
+    /**
+     * 查询已完成
+     * @param loginUser
+     * @return
+     */
+    public JSONObject querySuccessOrder(@LoginUser UserVo loginUser){
+    	JSONObject obj = new JSONObject();
+    	Integer num = 0;
+    	if(loginUser == null){
+    		obj.put("data","查询用户信息异常");
+    		obj.put("code","500");
+    		return obj;
+    	}
+    	Long userId = loginUser.getUserId();
+    	List<OrderVo> orders = apiOrderMapper.querySuccessOrder(userId);
+    	if(!CollectionUtils.isEmpty(orders)){
+//    		for(OrderVo order : orders){
+//    			Integer orderId = order.getId();
+//    			List<OrderGoodsVo> orderGoods = apiOrderGoodsMapper.queryOrderGoods(orderId);
+//    			if(!CollectionUtils.isEmpty(orderGoods)){
+//    				num += orderGoods.size();
+//    			}
+//    		}
+    		num = orders.size();
+    	}
+    	obj.put("num", num);
+    	obj.put("data", "查询已完成个数成功");
+    	obj.put("code","200");
+    	return obj;
+    }
+    
+    
 }

@@ -135,10 +135,42 @@ public class DateUtils {
         return resultDate;
     }
 
-
+    /**
+     * 得到两个时间之间的差距，根据type可返回分别以天，时，分为单位的整数
+     * 
+     * @param d1 被减数
+     * @param d2 减数
+     * @param type
+     *            day\minute\hour\second
+     * @return
+     */
+    public static int getBetweenDateByType(Date d1, Date d2, String type) {
+        long time1 = d1.getTime();
+        long time2 = d2.getTime();
+        long m = (time1 - time2) / 1000;
+        int nDay = (int) m / (24 * 60 * 60);
+        int nHour = (int) (m - nDay * 24 * 60 * 60) / (60 * 60);
+        int nMinute = (int) (m - nDay * 24 * 60 * 60 - nHour * 60 * 60) / 60;
+        int mSecond = (int) (m - nDay * 24 * 60 * 60 - nHour * 60 * 60);
+        if ("day".equals(type)) {
+            return nDay;
+        } else if ("minute".equals(type)) {
+            return nMinute;
+        } else if ("hour".equals(type)) {
+            return nHour;
+        } else if ("second".equals(type)) {
+            return mSecond;
+        }
+        return nMinute;
+    }
     public static void main(String[] args) {
-        Date date = new Date();
-        String str = "20170818223629599";
-        System.out.println(DateUtils.getDateFormat(str));
+        Date dateStart = new Date();
+       String endTime = DateUtils.format(dateStart);
+      Date endDate = DateUtils.strToDate(endTime+" 23:59:59");
+     System.out.println(endTime);
+     System.out.println(getBetweenDateByType(endDate,dateStart,"second"));
+       
+        
+
     }
 }
