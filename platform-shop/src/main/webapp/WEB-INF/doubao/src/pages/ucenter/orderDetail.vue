@@ -7,13 +7,17 @@
       <div class="item-c">
             <div class="l">实付：<span class="cost">￥{{orderInfo.actual_price}}</span></div>
             <div class="r">
-                <div v-if="handleOption.pay" >
-                  <div class="btn" @click="cancelOrder">取消订单</div>
-                  <div class="btn active" @click="payOrder">去付款</div>
+                <div v-if="orderInfo.order_status == 9" >
+            	 	<div class="btn active" @click="tipsShow">退货申请</div>
                 </div>
-                <div v-else-if="handleOption.confirm">
-                  <div class="btn" @click="cancelOrder">取消订单</div>
-                  <div class="btn active" @click="confirmOrder">确认收货</div>
+                 <div v-else-if="orderInfo.order_status == 300">
+                	<div class="btn active" @click="confirmOrder(orderInfo.id)">确认收货</div>
+                   <div class="btn" @click="cancelOrder">取消订单</div>
+                   <div class="btn" @click="hrefwul(orderInfo.id)">查看物流</div>
+                </div>
+                <div v-else-if="orderInfo.order_status == 0">
+                	<div class="btn active" @click="payOrder">去付款</div>
+                   <div class="btn" @click="cancelOrder">取消订单</div>
                 </div>
                 <div v-else>
                   <div class="btn active" @click="cancelOrder"  :style="{display:[cancelBtnShow ? 'block' : 'none']}">取消订单</div>
@@ -102,12 +106,37 @@ export default {
       		that.handleOption =  response.data.handleOption;
       
           //101取消订单   301已完成订单   103订单失效
-	        if (response.data.orderInfo.order_status == '101' || response.data.orderInfo.order_status == '301' || response.data.orderInfo.order_status == '103') {
+	        if ( response.data.orderInfo.order_status == '301' || response.data.orderInfo.order_status == '103') {
 	          	that.cancelBtnShow = true
+	      	}else if(response.data.orderInfo.order_status == '101'){
+	      		that.cancelBtnShow = false
 	      	}
 		})
   },
   methods:{
+  	confirmOrder(id){
+  		var that = this;    
+	    	that.$http({
+	        method: 'post',
+	        url:that.$url+ 'order/confirmOrder.options',
+	        data:{
+	        	orderId:id,
+	        }
+	    	}).then(function (res) {
+	    		var res = res.data;
+	    		if(res.errno == 0){
+	    		}else{
+	    			that.$toast(res.errmsg);
+	    		}
+	    		
+			  })
+  	},
+  	tipsShow(){
+  		MessageBox( '退货申请','请联系客服');
+  	},
+  	hrefwul(e){
+  		this.$router.push('/pages/ucenter/logistics?id='+e);
+  	},
   	payOrder(){
   			let that = this;
   			let id = this.$route.query.id;
@@ -173,25 +202,22 @@ export default {
 	      return false;
 	    }
 	    
-	    console.log('可以取消订单的情况');
 	    MessageBox({
 					  title: ' ',
 					  message: '确定要取消此订单？ ',
 					  showCancelButton: true
 					},function(action){
 							if(action == 'confirm'){
-								  console.log('用户点击确定');
-								  that.$http({
-						        method: 'post',
-						        url:that.$url+ 'order/cancelOrder',
-						        params:{orderId:id}
-						    	}).then(function (response) {
-						    		response = {"errno":0,"data":"取消成功","errmsg":"执行成功"};
+							  that.$http({
+							        method: 'post',
+							        url:that.$url+ 'order/cancelOrder.options',
+							        data:{orderId:id}
+						    	}).then(function (res) {
 							    		MessageBox({
 											  title: ' ',
-											  message: response.data
+											  message: res.data.data
 											},function(action){
-													that.$router.push('/views/ucenter/order');
+													that.$router.push('/pages/ucenter/order');
 											});
 								  })
 							}
@@ -384,7 +410,8 @@ export default {
 }
 
 .order-bottom .address{
-    height: 1rem;
+	width: 7rem;
+    text-align: justify;
     padding-top: .25rem;
     border-bottom: 1px solid #f4f4f4;
 }
@@ -414,8 +441,7 @@ export default {
 }
 
 .order-bottom .address .b{
-    height: .35rem;
-    line-height: .35rem;
+	padding-bottom:.25rem;
     font-size: .25rem;
     text-align: left;
 }

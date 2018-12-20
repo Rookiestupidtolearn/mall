@@ -25,9 +25,6 @@
 		            </div>
 		            <div class="b">
 		                <div class="l">实付：￥{{item.actual_price}}</div>
-		                <div class="r">
-		                	<div class="btn active" @click="tipsShow">退货申请</div>
-		                </div>
 		            </div>
 		        </router-link>
 		        </li>
@@ -68,7 +65,7 @@ export default {
 　	]
     }
   },
-    destroyed(){
+  destroyed(){
   	Indicator.close();
   },
   mounted(){

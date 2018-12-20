@@ -80,7 +80,7 @@ export default {
 　},
   	payOrder(orderIndex){
 	      let order = this.orderList[orderIndex];
-	    	this.$router.push( '/pages/pay/pay?orderId=' + order.id + '&actualPrice=' + order.actual_price);
+	      console.log('cc');
   	},
   	loadMore() {
 			var that = this;    

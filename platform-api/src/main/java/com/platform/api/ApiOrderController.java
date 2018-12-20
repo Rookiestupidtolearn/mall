@@ -211,6 +211,8 @@ public class ApiOrderController extends ApiBaseAction {
     @Transactional
     public Object cancelOrder(Integer orderId) {
         try {
+        	JSONObject feedbackJson = super.getJsonRequest();
+        	orderId = Integer.parseInt(feedbackJson.get("orderId").toString());
             OrderVo orderVo = orderService.queryObject(orderId);
             if (orderVo.getOrder_status() == 300) {
                 return toResponsFail("已发货，不能取消");

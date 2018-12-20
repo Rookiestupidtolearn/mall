@@ -33,6 +33,9 @@
 	        url:that.$url+ 'order/queryOrderLogistics.options',
 	        data:{orderId:productId}
 	    	}).then(function (res) {
+	    		if(res.data.code==500){
+	    			that.$toast(res.data.msg);
+	    		}
 	    		var res = res.data.orderLogistics;
 	    		that.description  = res ;
 			})
