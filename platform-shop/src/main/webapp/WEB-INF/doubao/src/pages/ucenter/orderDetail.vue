@@ -17,7 +17,7 @@
                 </div>
                 <div v-else-if="orderInfo.order_status == 0">   
             			 <div class="btn" @click="cancelOrder">取消订单</div>
-                		<div class="btn active" @click="payOrder">去付款</div>
+                		<div class="btn active" @click="payOrder(orderInfo.id)">去付款</div>
                 </div>
             </div>
         </div>
@@ -128,20 +128,24 @@ export default {
   	hrefwul(e){
   		this.$router.push('/pages/ucenter/logistics?id='+e);
   	},
-  	payOrder(){
-  			let that = this;
-  			let id = this.$route.query.id;
-  			 that.$http({
-			        method: 'post',
-			        url:that.$url+ 'pay/prepay',
-			        params:{orderId:id || 15}
-		    	}).then(function (res) {
-			      if (res.errno === 0) {
-				        console.log('支付页面逻辑待完善');
-			      }
-		    });
-
+	payOrder(orderIndex){
+	      var that = this;    
+	    	that.$http({
+	        method: 'post',
+	        url:that.$url+ 'pay/toPayOrder.options',
+	        data:{
+	        	orderId:orderIndex
+	        }
+	    	}).then(function (res) {
+	    		var res = res.data;
+	    		if(res.errno == 0){
+	    			
+	    		}else{
+	    			that.$toast(res.errmsg);
+	    		}
+			})
   	},
+
   	cancelOrder(){
 	  	console.log('开始取消订单');
 	    let that = this;

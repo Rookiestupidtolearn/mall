@@ -26,7 +26,7 @@
 		            <div class="b">
 		                <div class="l">实付：￥{{item.actual_price}}</div>
 		                <div class="r">
-		                	<mt-button type="danger"  class="resetbtn" size="small" @click.prevent="payOrder(index)"  :style="{ display: [ item.handleOption.pay ? 'block' : 'none']}">去付款</mt-button>
+		                	<mt-button type="danger"  class="resetbtn" size="small" @click.prevent="payOrder(item.id)" >去付款</mt-button>
 		                </div>
 		            </div>
 		        </router-link>
@@ -79,8 +79,21 @@ export default {
   			this.activeClass = index;
 　},
   	payOrder(orderIndex){
-	      let order = this.orderList[orderIndex];
-	      console.log('cc');
+	      var that = this;    
+	    	that.$http({
+	        method: 'post',
+	        url:that.$url+ 'pay/toPayOrder.options',
+	        data:{
+	        	orderId:orderIndex
+	        }
+	    	}).then(function (res) {
+	    		var res = res.data;
+	    		if(res.errno == 0){
+	    			
+	    		}else{
+	    			that.$toast(res.errmsg);
+	    		}
+			})
   	},
   	loadMore() {
 			var that = this;    
