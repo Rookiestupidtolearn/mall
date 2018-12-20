@@ -10,7 +10,8 @@
         <result property="amount" column="amount"/>
         <result property="thirdTradeNo" column="third_trade_no"/>
         <result property="tradeNo" column="trade_no"/>
-        <result property="rechargeType" column="recharge_type"/>
+        <result property="cardType" column="card_type"/>
+        <result property="platformType" column="platform_type"/>
         <result property="version" column="version"/>
         <result property="updateTime" column="update_time"/>
         <result property="createTime" column="create_time"/>
@@ -24,28 +25,13 @@
 			`amount`,
 			`third_trade_no`,
 			`trade_no`,
-			`recharge_type`,
+			`card_type`,
+			`platform_type`,
 			`version`,
 			`update_time`,
 			`create_time`
 		from third_recharge_record
 		where id = #{id}
-	</select>
-
-	<select id="queryByThirdTradeNo" resultType="com.platform.entity.ThirdRechargeRecordEntity">
-		select
-			`id`,
-			`mobile`,
-			`state`,
-			`amount`,
-			`third_trade_no`,
-			`trade_no`,
-			`recharge_type`,
-			`version`,
-			`update_time`,
-			`create_time`
-		from third_recharge_record
-		where third_trade_no = #{thirdTradeNo}
 	</select>
 
 	<select id="queryList" resultType="com.platform.entity.ThirdRechargeRecordEntity">
@@ -56,7 +42,8 @@
     		`amount`,
     		`third_trade_no`,
     		`trade_no`,
-    		`recharge_type`,
+    		`card_type`,
+    		`platform_type`,
     		`version`,
     		`update_time`,
     		`create_time`
@@ -93,7 +80,8 @@
 			`amount`,
 			`third_trade_no`,
 			`trade_no`,
-			`recharge_type`,
+			`card_type`,
+			`platform_type`,
 			`version`,
 			`update_time`,
 			`create_time`)
@@ -103,7 +91,8 @@
 			#{amount},
 			#{thirdTradeNo},
 			#{tradeNo},
-			#{rechargeType},
+			#{cardType},
+			#{platformType},
 			#{version},
 			#{updateTime},
 			#{createTime})
@@ -117,7 +106,8 @@
 			<if test="amount != null">`amount` = #{amount}, </if>
 			<if test="thirdTradeNo != null">`third_trade_no` = #{thirdTradeNo}, </if>
 			<if test="tradeNo != null">`trade_no` = #{tradeNo}, </if>
-			<if test="rechargeType != null">`recharge_type` = #{rechargeType}, </if>
+			<if test="cardType != null">`card_type` = #{cardType}, </if>
+			<if test="platformType != null">`platform_type` = #{platformType}, </if>
 			<if test="version != null">`version` = #{version}, </if>
 			<if test="updateTime != null">`update_time` = #{updateTime}, </if>
 			<if test="createTime != null">`create_time` = #{createTime}</if>

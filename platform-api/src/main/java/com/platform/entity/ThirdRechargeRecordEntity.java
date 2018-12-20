@@ -10,7 +10,7 @@ import java.util.Date;
  *
  * @author lipengjun
  * @email 939961241@qq.com
- * @date 2018-12-17 17:23:41
+ * @date 2018-12-20 16:00:02
  */
 public class ThirdRechargeRecordEntity implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -27,8 +27,10 @@ public class ThirdRechargeRecordEntity implements Serializable {
     private String thirdTradeNo;
     //系统订单号
     private String tradeNo;
-    //充值类型 2-奇速贷充值 
-    private Integer rechargeType;
+    //1-会员卡;2-展期卡
+    private String cardType;
+    //平台类型
+    private String platformType;
     //版本号
     private Integer version;
     //修改时间
@@ -75,18 +77,20 @@ public class ThirdRechargeRecordEntity implements Serializable {
     public String getState() {
         return state;
     }
+    /**
+     * 设置：金额
+     */
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
 
-
-
-	public BigDecimal getAmount() {
-		return amount;
-	}
-
-	public void setAmount(BigDecimal amount) {
-		this.amount = amount;
-	}
-
-	/**
+    /**
+     * 获取：金额
+     */
+    public BigDecimal getAmount() {
+        return amount;
+    }
+    /**
      * 设置：三方订单号
      */
     public void setThirdTradeNo(String thirdTradeNo) {
@@ -113,17 +117,30 @@ public class ThirdRechargeRecordEntity implements Serializable {
         return tradeNo;
     }
     /**
-     * 设置：充值类型 2-奇速贷充值 
+     * 设置：1-会员卡;2-展期卡
      */
-    public void setRechargeType(Integer rechargeType) {
-        this.rechargeType = rechargeType;
+    public void setCardType(String cardType) {
+        this.cardType = cardType;
     }
 
     /**
-     * 获取：充值类型 2-奇速贷充值 
+     * 获取：1-会员卡;2-展期卡
      */
-    public Integer getRechargeType() {
-        return rechargeType;
+    public String getCardType() {
+        return cardType;
+    }
+    /**
+     * 设置：平台类型
+     */
+    public void setPlatformType(String platformType) {
+        this.platformType = platformType;
+    }
+
+    /**
+     * 获取：平台类型
+     */
+    public String getPlatformType() {
+        return platformType;
     }
     /**
      * 设置：版本号
