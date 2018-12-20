@@ -90,14 +90,10 @@ public class ApiPayController extends ApiBaseAction {
         return toResponsSuccess("");
     }
 
+    
     @ApiOperation(value = "去支付订单")
     @PostMapping("toPayOrder")
-    @IgnoreAuth
-    public Object toPayOrder(Integer orderId){
-    
-//    @ApiOperation(value = "去支付订单")
-//    @PostMapping("toPayOrder")
-//    public Object toPayOrder(@LoginUser UserVo loginUser, Integer orderId){
+    public Object toPayOrder(@LoginUser UserVo loginUser, Integer orderId){
     	Map<String, Object>  resultObj = new HashMap<>();
     	JSONObject feedbackJson = super.getJsonRequest();
     	
