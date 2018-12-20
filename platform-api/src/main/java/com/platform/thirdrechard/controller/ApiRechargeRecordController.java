@@ -32,6 +32,7 @@ public class ApiRechargeRecordController  extends ApiBaseAction  {
 	@IgnoreAuth
 	public Object   rechargeRecordSubbmit(String encrypt){
 		RechargeResponseEntity responseEntity = new RechargeResponseEntity();
+
 		 if (StringUtils.isEmpty(encrypt)) {
 			 responseEntity.setCode("1000");
 			 responseEntity.setMsg("解析密文失败");

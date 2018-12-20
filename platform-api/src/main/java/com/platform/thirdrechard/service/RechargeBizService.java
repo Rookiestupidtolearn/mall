@@ -111,8 +111,8 @@ public class RechargeBizService {
 				record.setAmount(entity.getAmount());
 				record.setMemo("三方充值");
 				record.setTradeNo(GenerateCodeUtil.buildBizNo());
-				record.setMobile(entity.getMobile());
-				record.setRechargeType(entity.getRechargeType());
+//				record.setMobile(entity.getMobile());
+//				record.setRechargeType(entity.getRechargeType());
 				logger.info("充值记录信息"+JSON.toJSONString(record));
 				qzRechargeRecordDao.save(record);
     			
