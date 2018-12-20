@@ -40,6 +40,10 @@ public class YeeTradeOrderService {
 		return entity;
     }
     
+    public YeeTradeOrderEntity queryObjectByTradeNo(String tradeNo){
+    	return yeeTradeOrderDao.queryObjectByTradeNo(tradeNo);
+    }
+    
     public List<YeeTradeOrderEntity> queryList(Map<String, Object> map) {
         return yeeTradeOrderDao.queryList(map);
     }

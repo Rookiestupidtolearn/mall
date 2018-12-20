@@ -145,13 +145,15 @@ public class DateUtils {
      * @return
      */
     public static int getBetweenDateByType(Date d1, Date d2, String type) {
+    	//.getTime()获得的是毫秒，/1000是秒，/60是分钟，/60是小时，/24是天
         long time1 = d1.getTime();
         long time2 = d2.getTime();
         long m = (time1 - time2) / 1000;
-        int nDay = (int) m / (24 * 60 * 60);
-        int nHour = (int) (m - nDay * 24 * 60 * 60) / (60 * 60);
-        int nMinute = (int) (m - nDay * 24 * 60 * 60 - nHour * 60 * 60) / 60;
-        int mSecond = (int) (m - nDay * 24 * 60 * 60 - nHour * 60 * 60);
+        int mSecond = Integer.parseInt(String.valueOf(m));
+        int nDay = mSecond / (24 * 60 * 60);
+        int nHour = mSecond/ (60 * 60);
+        int nMinute = mSecond/ 60;
+       
         if ("day".equals(type)) {
             return nDay;
         } else if ("minute".equals(type)) {
@@ -164,11 +166,13 @@ public class DateUtils {
         return nMinute;
     }
     public static void main(String[] args) {
-        Date dateStart = new Date();
-       String endTime = DateUtils.format(dateStart);
-      Date endDate = DateUtils.strToDate(endTime+" 23:59:59");
-     System.out.println(endTime);
-     System.out.println(getBetweenDateByType(endDate,dateStart,"second"));
+       String starttime = "2018-12-21 22:59:59";
+      Date startDate = DateUtils.strToDate(starttime);
+   
+      String endttime = "2018-12-21 23:59:59";
+      Date endDate = DateUtils.strToDate(endttime);
+      
+     System.out.println(getBetweenDateByType(endDate,startDate,"day"));
        
         
 

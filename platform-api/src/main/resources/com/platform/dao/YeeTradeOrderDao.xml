@@ -52,6 +52,32 @@
 		where id = #{id}
 	</select>
 
+		<select id="queryObjectByTradeNo" resultType="com.platform.entity.YeeTradeOrderEntity">
+		select
+			`id`,
+			`yee_order_no`,
+			`trade_no`,
+			`user_id`,
+			`pay_status`,
+			`pay_type`,
+			`amount`,
+			`request_param`,
+			`response_msg`,
+			`yborderid`,
+			`msg`,
+			`error_code`,
+			`error_msg`,
+			`card_type`,
+			`lastno`,
+			`bank`,
+			`bank_code`,
+			`pay_amount`,
+			`memo`,
+			`create_time`
+		from yee_trade_order
+		where trade_no = #{tradeNo}
+	</select>
+
 	<select id="queryList" resultType="com.platform.entity.YeeTradeOrderEntity">
 		select
     		`id`,

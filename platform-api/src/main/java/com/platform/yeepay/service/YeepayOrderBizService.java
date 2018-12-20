@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
 import com.platform.entity.OrderVo;
 import com.platform.entity.YeeTradeOrderEntity;
 import com.platform.service.YeeTradeOrderService;
@@ -94,10 +95,14 @@ public class YeepayOrderBizService {
 		String merchantaccount	= PaymobileUtils.getMerchantaccount();
 		String url				= PaymobileUtils.getRequestUrl(PaymobileUtils.PAYAPI_NAME);
 		TreeMap<String, String> responseMap	= PaymobileUtils.httpPost(url, merchantaccount, data, encryptkey);
+	    String json = "";
+		if (responseMap != null) {
+		    json=JSON.toJSONString(responseMap);
+	   }
 		//第四步 判断请求是否成功
 		if(responseMap.containsKey("error_code")) {
 			logger.error("易宝订单请求支付失败");
-			entity.setResponseMsg(responseMap.toString());
+			entity.setResponseMsg(json);
 			entity.setMsg("error");
 			entity.setErrorCode(responseMap.get("error_code"));
 			entity.setErrorMsg(responseMap.get("error_msg"));
@@ -114,7 +119,7 @@ public class YeepayOrderBizService {
 		//第六步 sign验签
 		if(!PaymobileUtils.checkSign(responseDataMap)) {
 			logger.error("sign 验签失败！");
-			entity.setResponseMsg(responseMap.toString());
+			entity.setResponseMsg(json);
 			entity.setMsg("error");
 			entity.setErrorCode(responseMap.get("error_code"));
 			entity.setErrorMsg(responseMap.get("error_msg"));
@@ -126,7 +131,7 @@ public class YeepayOrderBizService {
 		//第七步 判断请求是否成功
 		if( responseDataMap.containsKey("error_code")) {
 			logger.error("支付响应未成功返回"+responseDataMap.toString());
-			entity.setResponseMsg(responseMap.toString());
+			entity.setResponseMsg(json);
 			entity.setMsg("error");
 			entity.setErrorCode(responseMap.get("error_code"));
 			entity.setErrorMsg(responseMap.get("error_msg"));
@@ -136,7 +141,7 @@ public class YeepayOrderBizService {
 		 
 		}
 		resultObj.put("payurl", responseDataMap.get("payurl"));
-		entity.setResponseMsg(responseDataMap.toString());
+		entity.setResponseMsg(json);
 		entity.setMsg("init");
 		entity.setYborderid(responseDataMap.get("yborderid"));
 		yeeTradeOrderService.save(entity);

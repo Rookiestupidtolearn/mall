@@ -10,5 +10,5 @@ import com.platform.entity.YeeTradeOrderEntity;
  * @date 2018-12-09 13:31:06
  */
 public interface YeeTradeOrderDao extends BaseDao<YeeTradeOrderEntity> {
-
+	YeeTradeOrderEntity queryObjectByTradeNo(String tradeNo);
 }

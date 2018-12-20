@@ -12,7 +12,9 @@ import java.util.TreeMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.junit.Ignore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,19 +23,27 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.platform.annotation.IgnoreAuth;
 import com.platform.annotation.LoginUser;
 import com.platform.cache.J2CacheUtils;
+import com.platform.dao.ApiAddressMapper;
 import com.platform.dao.ApiMoneyRecordMapper;
 import com.platform.dao.ApiUserCouponMapper;
 import com.platform.dao.QzUserAccountMapper;
+import com.platform.entity.AddressVo;
 import com.platform.entity.OrderGoodsVo;
 import com.platform.entity.OrderVo;
 import com.platform.entity.QzMoneyRecordVo;
 import com.platform.entity.QzUserAccountVo;
 import com.platform.entity.UserCouponVo;
 import com.platform.entity.UserVo;
+import com.platform.entity.YeeTradeOrderEntity;
 import com.platform.service.ApiOrderGoodsService;
 import com.platform.service.ApiOrderService;
+import com.platform.service.JdOrderService;
+import com.platform.service.YeeTradeOrderService;
 import com.platform.util.ApiBaseAction;
 import com.platform.util.wechat.WechatRefundApiResult;
 import com.platform.util.wechat.WechatUtil;
@@ -64,8 +74,13 @@ public class ApiPayController extends ApiBaseAction {
     private QzUserAccountMapper qzUserAccountMapper;
     @Autowired
     private ApiMoneyRecordMapper apiMoneyRecordMapper;
-
-
+    @Autowired
+    private YeeTradeOrderService yeeTradeOrderService;
+	@Autowired
+	private JdOrderService jdOrderService;
+    @Autowired
+    private ApiAddressMapper apiAddressMapper;
+	
     /**
      */
     @ApiOperation(value = "跳转")
@@ -75,6 +90,84 @@ public class ApiPayController extends ApiBaseAction {
         return toResponsSuccess("");
     }
 
+    @ApiOperation(value = "去支付订单")
+    @PostMapping("toPayOrder")
+    @IgnoreAuth
+    public Object toPayOrder(Integer orderId){
+    
+//    @ApiOperation(value = "去支付订单")
+//    @PostMapping("toPayOrder")
+//    public Object toPayOrder(@LoginUser UserVo loginUser, Integer orderId){
+    	Map<String, Object>  resultObj = new HashMap<>();
+   
+    	if (orderId == null) {
+			return toResponsFail("订单orderId不能为空");
+		}
+    	  logger.info("去支付订单,订单的id"+orderId);
+    	  OrderVo orderInfo = orderService.queryObject(orderId);
+    	   if (null == orderInfo) {
+               return toResponsObject(400, "订单已取消", "");
+           }
+    	   if (orderInfo.getPay_status() !=0) {
+    		   return toResponsObject(400, "订单已支付，请不要重复操作", "");
+		  }
+    	   if (StringUtils.isEmpty(orderInfo.getShipping_no()) ) {
+    		   return toResponsObject(400, "shipping_no 订单编号不存在", "");
+		  }
+    	   if (orderInfo.getAddress_id() == null) {
+    		   return toResponsObject(400, "Address_id 收货地址不存在", "");
+		  }
+    	   //判断订单的实效性
+    	  int minitCha = DateUtils.getBetweenDateByType(new Date(), orderInfo.getAdd_time(), "second");
+    	  if (minitCha >86400 ) { //秒
+    		  return toResponsObject(400, "该笔订单已经实效重新下单", "");
+		  }
+    	  //校验上下架。校验库存
+        AddressVo addressVo = apiAddressMapper.queryObject(orderInfo.getAddress_id());
+    		// 库存
+  		String address = addressVo.getProvince() + "_" + addressVo.getCity() + "_" + addressVo.getCounty();
+  		// 批量查库存
+  		Map<String, Object> stockMap = jdOrderService.stockBatch(orderInfo.getPid_num(), address);
+  		if (!stockMap.get("code").equals("200")) {
+  			resultObj.put("errno", "100");
+  			resultObj.put("errmsg", "不可出售");
+  			return resultObj;
+  		}
+//  		 上下架状态
+  		String pids = "";
+  		 String pidNums = orderInfo.getPid_num();
+  		 String pidNum[] = pidNums.split(",");
+  		 for (int i = 0; i < pidNum.length; i++) {
+  			    String pidNumSingle = pidNum[i].split("_")[0]; //11_11
+  			    pids+= pidNumSingle+",";
+  		}
+  		 
+  		 if (StringUtils.isNotEmpty(pids)) {
+  			 pids = pids.substring(0, pids.length() - 1);
+  		}
+  		 
+  		Map<String, Object> saleStatusMap = jdOrderService.checkBatchSaleStatus(pids);
+  		if (!saleStatusMap.get("code").equals("200")) {
+  			resultObj.put("errno", "100");
+  			resultObj.put("errmsg", "不可出售");
+  			return resultObj;
+  		}
+    	   String payurl = "";
+    	   YeeTradeOrderEntity  yeepayOrder  =  yeeTradeOrderService.queryObjectByTradeNo(orderInfo.getShipping_no());
+    	   if (yeepayOrder != null && yeepayOrder.getResponseMsg() !=null) {
+    		   JSONObject jsonObject = JSONObject.parseObject(yeepayOrder.getResponseMsg());
+    		   if (jsonObject !=null) {
+    			   payurl = (String) jsonObject.get("payurl");
+			   }
+		   }
+    	   resultObj.put("orderId", orderId);
+    	   resultObj.put("payurl", payurl);
+    	   resultObj.put("200", "请求成功");
+    	   return  resultObj;
+    	   
+    } 
+    
+    
     /**
      * 获取支付的请求参数
      */
