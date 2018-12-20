@@ -99,10 +99,12 @@ public class ApiPayController extends ApiBaseAction {
 //    @PostMapping("toPayOrder")
 //    public Object toPayOrder(@LoginUser UserVo loginUser, Integer orderId){
     	Map<String, Object>  resultObj = new HashMap<>();
-   
-    	if (orderId == null) {
+    	JSONObject feedbackJson = super.getJsonRequest();
+    	
+    	if (feedbackJson.get("orderId") == null) {
 			return toResponsFail("订单orderId不能为空");
 		}
+    	orderId = Integer.parseInt(feedbackJson.get("orderId").toString());
     	  logger.info("去支付订单,订单的id"+orderId);
     	  OrderVo orderInfo = orderService.queryObject(orderId);
     	   if (null == orderInfo) {
