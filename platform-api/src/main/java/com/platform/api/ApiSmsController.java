@@ -87,21 +87,21 @@ public class ApiSmsController {
         if (count >=5 || countIP >=5) {
             String captcha =  params.get("code");
             if (captcha == null) {
-            	result.put("code", 500);
+            	result.put("code", 0);
             	result.put("msg", "请传入图形验证码");
             	result.put("count", count);
             	return result;
 			}
             String kaptcha = ShiroUtils.getKaptcha(Constants.KAPTCHA_SESSION_KEY);
             if(null == kaptcha){
-            	result.put("code", 500);
+            	result.put("code", 0);
             	result.put("msg", "图形验证码已失效");
             	result.put("count", count);
             	return result;
             }
 
             if (!captcha.equalsIgnoreCase(kaptcha)) {
-            	result.put("code", 500);
+            	result.put("code", 0);
             	result.put("msg", "图形验证码错误");
             	result.put("count", count);
             	return result;
