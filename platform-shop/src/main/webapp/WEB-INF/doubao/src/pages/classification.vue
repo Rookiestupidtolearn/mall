@@ -34,6 +34,7 @@
 
 <script>
 	import tabbar from '@/components/tabbar.vue'
+	import { Indicator } from 'mint-ui';
 //	import headbar from '@/components/headbar'
 	
 export default {
@@ -56,6 +57,7 @@ export default {
     //记录上次用户登录时查看的分类
   	let eventId =  that.$cookie.getCookie('eventId');
   	if( eventId != ''){
+  		Indicator.open();
   		/*产品右侧分类*/
 	  		that.$http({
 	        method: 'post',
@@ -69,13 +71,16 @@ export default {
 	        method: 'post',
 	        url: that.$url+'catalog/index',
 	    	}).then(function (response) {
+	    		Indicator.close();
 			    that.categoryList = response.data.data.categoryList
 			  })
   	}else{
+  			Indicator.open();
 	  		that.$http({
 	        method: 'post',
 	        url: that.$url+'catalog/index',
 	    	}).then(function (response) {
+	    		Indicator.close();
 			    that.categoryList = response.data.data.categoryList
 			    that.currentCategory = response.data.data.currentCategory
 			  })
@@ -140,6 +145,7 @@ export default {
 			}
   	},
   	switchCate(eventId){
+  		Indicator.open();
 	    var that = this;
 	    that.$cookie.setCookie('eventId',eventId);
 	    that.$http({
@@ -147,6 +153,7 @@ export default {
         url: that.$url+'catalog/current',
 				params:{ id : eventId  }
     	}).then(function (response) {
+    		Indicator.close();
 		    that.currentCategory = response.data.data.currentCategory
 		  })
   	}
@@ -157,9 +164,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only  active -->
 <style scoped>
 	.classification{
-		position: fixed;
-    overflow-y: scroll;
-    height: 100%;
+		background-color:#fff !important;
 	}
 	.front_name {
 		position:absolute;
@@ -180,7 +185,7 @@ export default {
 		font-size:.28rem;
 	}
 	.bd {
-	 	/*overflow: hidden;*/
+	 	overflow: hidden;
 	 	margin-top: .3rem;
 	 	width: 5.5rem;
 	 	padding-bottom:.5rem
@@ -230,9 +235,10 @@ width:auto;
 }
 	.rightca{
 		float:left;
+		-webkit-overflow-scrolling: touch; 
 		border-left:1px solid #fafafa;
-		height: 11rem;
-		padding:0 .30rem 0 .30rem;
+		height: 10.5rem;
+		padding:0 .3rem 0 .3rem;
 		width: 5.2rem;
 		margin-top: 0.3rem;
 		position: relative;
@@ -254,12 +260,13 @@ width:auto;
 		.content{
 			overflow: hidden;
    	 	padding-top: 1.2rem;
-    	height: 11rem;
-    	background-color: #fff;
+   	 	height:10.5rem;
 		}
 		.content .catalog{
+			/*解决ios卡顿问题*/
+			-webkit-overflow-scrolling: touch;   
 			float:left;
-			height:11rem;
+			height:10.5rem;
 			width:1.62rem;
 			overflow-y:scroll ;
 			overflow-x:hidden ;

@@ -91,8 +91,15 @@ export default {
 	    		this.showAN = false;
 	    	}
 	    	
-	   window.addEventListener("scroll", this.handleScroll,true);
   },
+	beforeRouteLeave(to, from, next) { 
+			 let position = window.scrollY; //记录离开页面的位置 
+			 if (position == null) position = 0 ;
+			 if(this.$route.name == 'home'){
+				 		this.$cookie.setCookie('scrollHome',window.scrollY);
+		 		}
+			 next();
+	 }, 
  watch:{
    		hotGoods:function(){
    				this.$nextTick(function(){
@@ -104,15 +111,6 @@ export default {
    		}
  },
  methods:{
-	 	handleScroll(){
-	 		if(this.$route.name == 'home'){
-	 			if(window.scrollY == 0 || window.scrollY < 0){
-	 			}else{
-	 				console.log(window.scrollY);
-	       	this.$cookie.setCookie('scrollHome',window.scrollY);
-       }
-	 		}
-	 	},
 	 	andriod(e){   //与andriod和ios交互
 				var hrefD = window.location.href;
 				var delDevice = hrefD.split('?')[0];

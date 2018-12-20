@@ -21,7 +21,17 @@
 		            <div class="b">
 		                <div class="l">实付：￥{{item.actual_price}}</div>
 		                <div class="r">
-		                	<mt-button type="danger"  class="resetbtn" size="small" @click.prevent="payOrder(index)"  :style="{ display: [ item.handleOption.pay ? 'block' : 'none']}">去付款</mt-button>
+		                		<!--9 已完成   0 待付款   300,201待收货   101,103已取消-->
+				                <!--<div v-if="item.order_status == 9" >
+				            	 				<div class="btn active" @click.prevent="tipsShow">退货申请</div>
+				                </div>-->
+				                 <div v-if="item.order_status == 300 || item.order_status == 201">
+				                			<div class="btn active" @click.prevent="confirmOrder(item.id)">确认收货</div>
+				                   		<router-link class="btn" :to="'/pages/ucenter/logistics?id='+item.id">查看物流</router-link>
+				                </div>
+				                <div v-else-if="item.order_status == 0">   
+				                			<div class="btn active" @click.prevent="payOrder(item.id)">去付款</div>
+				                </div>
 		                </div>
 		            </div>
 		        </router-link>
@@ -70,6 +80,24 @@ export default {
 			this.getProjectInfo();
   },
   methods:{
+  	confirmOrder(id){
+  		var that = this;    
+	    	that.$http({
+	        method: 'post',
+	        url:that.$url+ 'order/confirmOrder.options',
+	        data:{
+	        	orderId:id,
+	        }
+	    	}).then(function (res) {
+	    		var res = res.data;
+	    		if(res.errno == 0){
+	    			window.location.reload();
+	    		}else{
+	    			that.$toast(res.errmsg);
+	    		}
+	    		
+			  })
+  	},
   	selectStyle (item, index) {
   			this.activeClass = index;
 　},
@@ -130,7 +158,22 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-	
+	.order .btn{
+   display: inline-block;
+    height: auto;
+    padding: .09rem .19rem;
+    font-size: .26rem;
+    color: #666666;
+    -webkit-border-radius: 2rem;
+    background-color: initial;
+    border: 1px solid #d8d8d8;
+    margin-left: .2rem;
+}
+
+.order .btn.active{
+    color: #ef7c2c ;
+    border: 1px solid #ef7c2c ;
+}
 	.timg{
 		width: .5rem;
     margin-right: .2rem;

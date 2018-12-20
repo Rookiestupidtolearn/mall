@@ -102,8 +102,15 @@ export default {
 				this.cookie=false;  
 			}
 			
-			window.addEventListener("scroll", this.handleScroll,true);
 	  },
+	  beforeRouteLeave(to, from, next) { 
+			 let position = window.scrollY; //记录离开页面的位置 
+			 if (position == null) position = 0 ;
+			 if(this.$route.name == 'search'){
+				 		this.$cookie.setCookie('scrollSearch',window.scrollY);
+		 		}
+			 next();
+	 }, 
 	   watch:{
 		 		goodsList:function(){
 		 				this.$nextTick(function(){
@@ -115,15 +122,6 @@ export default {
 		 		}
 		 },
 	  methods:{
-	  	handleScroll(){
-	 		if(this.$route.name == 'search'){
-	 			if(window.scrollY == '0' || window.scrollY < '0'){
-	 				
-	 			}else{
-	       	this.$cookie.setCookie('scrollSearch',window.scrollY);
-       }
-	 		}
-	 	},
 	  	onKeywordTap(keyword){
 	  		this.getSearchResult(keyword);
 	  	},

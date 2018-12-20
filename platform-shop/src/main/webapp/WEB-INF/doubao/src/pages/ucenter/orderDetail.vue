@@ -7,20 +7,17 @@
       <div class="item-c">
             <div class="l">实付：<span class="cost">￥{{orderInfo.actual_price}}</span></div>
             <div class="r">
+            	<!--9 已完成   0 待付款   300,201待收货   101,103已取消-->
                 <div v-if="orderInfo.order_status == 9" >
             	 	<div class="btn active" @click="tipsShow">退货申请</div>
                 </div>
-                 <div v-else-if="orderInfo.order_status == 300">
+                 <div v-else-if="orderInfo.order_status == 300 || orderInfo.order_status == 201">
+                 	<div class="btn" @click="hrefwul(orderInfo.id)">查看物流</div>
                 	<div class="btn active" @click="confirmOrder(orderInfo.id)">确认收货</div>
-                   <div class="btn" @click="cancelOrder">取消订单</div>
-                   <div class="btn" @click="hrefwul(orderInfo.id)">查看物流</div>
                 </div>
-                <div v-else-if="orderInfo.order_status == 0">
-                	<div class="btn active" @click="payOrder">去付款</div>
-                   <div class="btn" @click="cancelOrder">取消订单</div>
-                </div>
-                <div v-else>
-                  <div class="btn active" @click="cancelOrder"  :style="{display:[cancelBtnShow ? 'block' : 'none']}">取消订单</div>
+                <div v-else-if="orderInfo.order_status == 0">   
+            			 <div class="btn" @click="cancelOrder">取消订单</div>
+                		<div class="btn active" @click="payOrder">去付款</div>
                 </div>
             </div>
         </div>
@@ -104,13 +101,6 @@ export default {
     		that.orderInfo = response.data.orderInfo;
     		that.orderGoods =  response.data.orderGoods;
       		that.handleOption =  response.data.handleOption;
-      
-          //101取消订单   301已完成订单   103订单失效
-	        if ( response.data.orderInfo.order_status == '301' || response.data.orderInfo.order_status == '103') {
-	          	that.cancelBtnShow = true
-	      	}else if(response.data.orderInfo.order_status == '101'){
-	      		that.cancelBtnShow = false
-	      	}
 		})
   },
   methods:{
@@ -125,6 +115,7 @@ export default {
 	    	}).then(function (res) {
 	    		var res = res.data;
 	    		if(res.errno == 0){
+	    			window.location.reload();
 	    		}else{
 	    			that.$toast(res.errmsg);
 	    		}
@@ -132,7 +123,7 @@ export default {
 			  })
   	},
   	tipsShow(){
-  		MessageBox( '退货申请','请联系客服');
+  		MessageBox( '退货申请','您好，请联系客服400-114-8066');
   	},
   	hrefwul(e){
   		this.$router.push('/pages/ucenter/logistics?id='+e);
