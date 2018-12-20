@@ -157,7 +157,7 @@ public class ApiOrderController extends ApiBaseAction {
         }
 
         orderInfo.setId(orderId);
-        orderInfo.setPay_status(2);
+        orderInfo.setPay_status(1);
         orderInfo.setOrder_status(201);
         orderInfo.setShipping_status(0);
         orderInfo.setPay_time(new Date());
@@ -223,8 +223,6 @@ public class ApiOrderController extends ApiBaseAction {
 				return toResponsFail("订单初始完毕，该订单不能取消");
 			}
             //取消本系统的订单
-            
-     
             /*
              * 0 订单创建成功等待付款，　101订单已取消，　102订单已删除
              * 201订单已付款，等待发货
@@ -232,7 +230,7 @@ public class ApiOrderController extends ApiBaseAction {
              * 401 没有发货，退款　402 已收货，退款退货
              */
             // 需要退款
-             if (orderVo.getPay_status() == 2) {
+             if (orderVo.getPay_status() == 1) {
                 WechatRefundApiResult result = WechatUtil.wxRefund(orderVo.getId().toString(),
                         0.01, 0.01);
                 if (result.getResult_code().equals("SUCCESS")) {
@@ -276,7 +274,7 @@ public class ApiOrderController extends ApiBaseAction {
         	JSONObject feedbackJson = super.getJsonRequest();
         	orderId = Integer.parseInt(feedbackJson.get("orderId").toString());
             OrderVo orderVo = orderService.queryObject(orderId);
-            orderVo.setOrder_status(301);
+            orderVo.setOrder_status(9);
             orderVo.setShipping_status(2);
             orderVo.setConfirm_time(new Date());
             orderService.update(orderVo);

@@ -43,6 +43,8 @@ public class ApiYeepayController extends ApiBaseAction {
     private QzUserAccountMapper qzUserAccountMapper;
     @Autowired
     private ApiMoneyRecordMapper apiMoneyRecordMapper;
+    @Autowired
+    private ApiOrderService orderService;
 
 	@IgnoreAuth
 	@GetMapping("yeepayOrderFCallback")
@@ -119,8 +121,8 @@ public class ApiYeepayController extends ApiBaseAction {
 						order.setOrder_status(200); // 支付成功，待提交京东订单
 						order.setOrder_type("404");//支付异常
 						apiOrderService.update(order);
+						orderService.discountUserAmount(order);//支付成功，扣减平台比
 						saveMoneyRecord(order.getUser_id(),0,order);
-
 					}
 
 				} else {
@@ -142,6 +144,7 @@ public class ApiYeepayController extends ApiBaseAction {
 						order.setOrder_status(200); // 支付成功，待提交京东订单
 						order.setOrder_type("1");//正常
 						apiOrderService.update(order);
+						orderService.discountUserAmount(order);//支付成功，扣减平台比
 						saveMoneyRecord(order.getUser_id(),0,order);
 					}
 				}
