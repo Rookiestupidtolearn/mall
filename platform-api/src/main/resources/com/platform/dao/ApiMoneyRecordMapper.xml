@@ -13,6 +13,7 @@
         <result property="create_time" column="create_time"/>
         <result property="trade_no" column="trade_no"/>
         <result property="remark" column="remark"/>
+         <result property="lockAmount" column="lock_amount"/>
     </resultMap>
     	<insert id="save" parameterType="com.platform.entity.QzMoneyRecordVo" useGeneratedKeys="true" keyProperty="id">
 			insert into qz_money_record(
@@ -22,7 +23,7 @@
 				`tarn_amount`,
 				`current_amount`,
 				`create_time`,
-				`trade_no`,`remark`)
+				`trade_no`,`remark`,`lock_amount`)
 			values(
 				#{shopUserId},
 				#{tranType},
@@ -30,7 +31,7 @@
 				#{tarnAmount},
 				#{currentAmount},
 				#{createTime},
-				#{tradeNo},#{remark})
+				#{tradeNo},#{remark},#{lockAmount})
 	</insert>
     
  </mapper>

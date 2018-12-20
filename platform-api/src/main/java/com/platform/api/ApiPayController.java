@@ -362,7 +362,7 @@ public class ApiPayController extends ApiBaseAction {
     	if(userAmountVo != null){
     		QzMoneyRecordVo moneyRecord  = new QzMoneyRecordVo();
     		moneyRecord.setShopUserId(userId.intValue());
-    		moneyRecord.setTranType("2");//使用优惠券
+    		moneyRecord.setTranType("2");//使用克拉币
     		moneyRecord.setTranFlag(type);//0-支出 1-收入
     		moneyRecord.setTarnAmount(order.getCoupon_price());
     		moneyRecord.setCreateTime(new Date());

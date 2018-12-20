@@ -25,6 +25,8 @@ public class QzMoneyRecordVo implements Serializable{
 	    private String tradeNo;
 	    //备注
 	    private String remark;
+	    //冻结金额
+	    private BigDecimal lockAmount;
 		public Integer getId() {
 			return id;
 		}
@@ -79,5 +81,10 @@ public class QzMoneyRecordVo implements Serializable{
 		public void setRemark(String remark) {
 			this.remark = remark;
 		}
-		
+		public BigDecimal getLockAmount() {
+			return lockAmount;
+		}
+		public void setLockAmount(BigDecimal lockAmount) {
+			this.lockAmount = lockAmount;
+		}
 }
