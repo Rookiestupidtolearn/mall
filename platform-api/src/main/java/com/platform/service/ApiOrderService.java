@@ -568,15 +568,15 @@ public class ApiOrderService {
 							}
 						}
 						coupon.setCoupon_price(payMatching);
+						coupon.setOrder_id(order.getId());
+						coupon.setCoupon_number("1");
+						coupon.setCoupon_status(1);//未用
+						coupon.setAdd_time(new Date());
+						coupon.setGoods_id(Long.parseLong(cart.getGoods_id().toString()));
+						coupon.setCoupon_id(11);
+						coupon.setUser_id(cart.getUser_id());
+						apiUserCouponMapper.save(coupon);
 					}
-					coupon.setOrder_id(order.getId());
-					coupon.setCoupon_number("1");
-					coupon.setCoupon_status(1);//未用
-					coupon.setAdd_time(new Date());
-					coupon.setGoods_id(Long.parseLong(cart.getGoods_id().toString()));
-					coupon.setCoupon_id(11);
-					coupon.setUser_id(cart.getUser_id());
-					apiUserCouponMapper.save(coupon);
 				}
 				
 			}
