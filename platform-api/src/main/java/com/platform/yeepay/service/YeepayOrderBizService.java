@@ -66,8 +66,8 @@ public class YeepayOrderBizService {
 		treeMap.put("identityid", 		entity.getUserId().toString());  //用户id
 //		treeMap.put("terminaltype", 	3);
 //		treeMap.put("terminalid", 		"44-45-53-54-00-00");
-		treeMap.put("userip", 			ip);
-	//	treeMap.put("userip", 			"192.168.1.1");
+	treeMap.put("userip", 			ip);
+//		treeMap.put("userip", 			"192.168.1.1");
 		treeMap.put("version", 			0);
 	
 ////		treeMap.put("fcallbackurl", 	fcallbackurl);
@@ -115,7 +115,7 @@ public class YeepayOrderBizService {
 		String data_response						= responseMap.get("data");
 		String encryptkey_response					= responseMap.get("encryptkey");
 		TreeMap<String, String> responseDataMap	= PaymobileUtils.decrypt(data_response, encryptkey_response);
-  
+		   json=JSON.toJSONString(responseDataMap);
 		//第六步 sign验签
 		if(!PaymobileUtils.checkSign(responseDataMap)) {
 			logger.error("sign 验签失败！");

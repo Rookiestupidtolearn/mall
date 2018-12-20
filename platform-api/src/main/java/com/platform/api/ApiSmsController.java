@@ -63,13 +63,19 @@ public class ApiSmsController {
         if (params.get("mobile")== null ||params.get("mobile").equals("") ) {
         	 return R.error("手机号不能为空！");
 		}
-        Integer count = 0 ;
-        Integer countIP = 0;
+       
+   
     	//校验图形验证码
 		Level2Cache level2 = CacheProviderHolder.getLevel2Cache(J2CacheUtils.INVALID_CACHE);
-		 count = (Integer) level2.get("DOUBAO_SMS_COUNT:" + params.get("mobile"));
-         countIP = (Integer) level2.get("DOUBAO_SMS_IP_COUNT:" + validIP);
-   
+		Integer count = (Integer) level2.get("DOUBAO_SMS_COUNT:" + params.get("mobile"));
+		 Integer countIP = (Integer) level2.get("DOUBAO_SMS_IP_COUNT:" + validIP);
+        if (count == null) {
+        	count = 0;
+		}
+        if (countIP == null) {
+        	countIP = 0;
+		}
+		 
         Map<String, Object> result = new HashMap<String, Object>();
         if (count !=null) {
             logger.info("今日手机号"+params.get("mobile")+"已发送"+count+"次");
@@ -81,15 +87,24 @@ public class ApiSmsController {
         if (count >=5 || countIP >=5) {
             String captcha =  params.get("code");
             if (captcha == null) {
-            	return result.put("msg", "请传入图形验证码");
+            	result.put("code", 500);
+            	result.put("msg", "请传入图形验证码");
+            	result.put("count", count);
+            	return result;
 			}
             String kaptcha = ShiroUtils.getKaptcha(Constants.KAPTCHA_SESSION_KEY);
             if(null == kaptcha){
-                return R.error("图形验证码已失效");
+            	result.put("code", 500);
+            	result.put("msg", "图形验证码已失效");
+            	result.put("count", count);
+            	return result;
             }
 
             if (!captcha.equalsIgnoreCase(kaptcha)) {
-                return R.error("图形验证码错误");
+            	result.put("code", 500);
+            	result.put("msg", "图形验证码错误");
+            	result.put("count", count);
+            	return result;
             }
 		}
         
