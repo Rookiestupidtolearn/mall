@@ -11,4 +11,6 @@ import com.platform.entity.ThirdRechargeRecordEntity;
  */
 public interface ThirdRechargeRecordDao extends BaseDao<ThirdRechargeRecordEntity> {
 
+	ThirdRechargeRecordEntity queryByThirdTradeNo(String thirdTradeNo);
+
 }

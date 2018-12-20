@@ -1,0 +1,61 @@
+
+用户名：limuling@doubaoclub.com
+
+密码：doubao4001148066
+
+
+
+京东正式参数：
+
+网站名称： 斗宝商城api 到期日期： 2019-11-28 
+
+
+网站ID： 2144 秘钥： 44pM2gr4NXZc9GRrHjQBpWdPTUc95B
+
+
+
+
+
+开发者环境
+mysql    192.168.124.54   shop_dev   root  123456
+redis     192.168.124.50  7002
+项目地址     /home/data/dev_application
+
+
+测试：
+mysql    192.168.124.54   shop_db   root  123456
+redis     192.168.124.50  7001
+项目地址     /home/data/env2application
+
+
+预发布外网地址：
+
+
+redis    10.10.120.123:7002   qsd4rr1   
+
+
+mysql 10.9.173.88  3306    shop_db_wai      用户shop_db_rw  密码UISJKDQ##1sk863
+
+服务器  117.50.60.55  端口22  用户  root  密码  SHOP##CZq##91s5sq25
+
+地址   /data/env3application                  
+
+
+
+
+Qzxq测试
+MQ   账户 qzxq360    密码 ifJ4%ftWj((63WVJ   192.168.0.53     61616
+ZK    2181     192.168.0.53 
+redis    qsd4rr1      192.168.0.53      端口7001
+
+mysql   qzxq_test_rw_5       HJWUS##183E#89sqf     数据库 qzxqdev_un    奇子贷数据库 eloan_un
+######
+服务地址 /home/env3application
+192.168.0.53      pc_tomcat_6302    cms_tomcat_6301   
+
+/home/env3application
+192.168.0.52      fengfu_callback_6308     fengfu_provider_6306   mq_listener_6340   qzd_6317   
+                  serivice_provider_6309     task_6304      wap_tomcat_6302 
+ 
+
+
