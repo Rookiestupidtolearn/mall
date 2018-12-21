@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.collections.MapUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +29,14 @@ import com.platform.service.TokenService;
 import com.platform.util.ApiBaseAction;
 import com.platform.util.ApiUserUtils;
 import com.platform.util.CommonUtil;
-import com.platform.utils.CharUtil;
 import com.platform.utils.R;
 import com.platform.validator.Assert;
 import com.qiniu.util.StringUtils;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import net.oschina.j2cache.CacheProviderHolder;
+import net.oschina.j2cache.Level2Cache;
 
 /**
  * API登录授权
@@ -149,7 +152,7 @@ public class ApiAuthController extends ApiBaseAction {
     @ApiOperation(value = "根据手机号登录")
     @IgnoreAuth
     @PostMapping("login_by_mobile")
-    public Object loginByMobile(@RequestParam Map<String, String> params) {
+    public Object loginByMobile( @RequestParam Map<String, String> params ,HttpServletRequest requset) {
     	   //校验手机号格式
     	if (params.get("mobile").equals("")) {
        	 return R.error("手机号不能为空！");
@@ -170,14 +173,27 @@ public class ApiAuthController extends ApiBaseAction {
 		if (params.get("code")==null) {
 	       	 return R.error("验证码不能为空！");
 	    }
+		
+		//TODO
+		
 		//校验验证码的有效性
-		Object codeSmsValue = J2CacheUtils.get(J2CacheUtils.CHECK_CACHE, "DOUBAO:"+mobile);
-    	if (codeSmsValue== null) {
-    	  	 return R.error("验证码不正确！");
+		Level2Cache level2 = CacheProviderHolder.getLevel2Cache(J2CacheUtils.INVALID_CACHE);
+		Integer count = (Integer) level2.get("DOUBAO_SMS_COUNT:" + mobile);
+		 String imageCode = (String) requset.getSession().getAttribute("imageCode");
+		if(count !=null &&count>4){
+			String  checkcode = params.get("imageCode");
+			if(StringUtils.isNullOrEmpty(checkcode)){
+			  	 return R.error("图形验证码不能为空！");
+			}
+		
+			if (org.apache.commons.lang.StringUtils.isEmpty(imageCode)) {
+				return R.error("图形验证码失效！");
+			}
+
 		}
-		if (!params.get("code").equals(codeSmsValue)) {
-			 return R.error("验证码不正确！");
-		}
+	    if (!org.apache.commons.lang.StringUtils.isEmpty(imageCode)) {
+			requset.removeAttribute("imageCode");
+	   }		
 		UserVo userVo = userService.queryByMobile(mobile);
        if (userVo== null) {
 		 //新注册

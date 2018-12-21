@@ -10,17 +10,18 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-import org.junit.Ignore;
+import org.apache.commons.lang.StringUtils;
+import org.apache.shiro.subject.support.DefaultSubjectContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.google.code.kaptcha.Constants;
 import com.google.code.kaptcha.Producer;
 import com.platform.annotation.IgnoreAuth;
 import com.platform.cache.J2CacheUtils;
@@ -30,7 +31,6 @@ import com.platform.service.ApiUserService;
 import com.platform.service.SysSmsLogService;
 import com.platform.utils.R;
 import com.platform.utils.RequestUtil;
-import com.platform.utils.ShiroUtils;
 
 import net.oschina.j2cache.CacheProviderHolder;
 import net.oschina.j2cache.Level2Cache;
@@ -54,20 +54,20 @@ public class ApiSmsController {
     private ApiSendSMSService apiSendSMSService;
     @Autowired
     private Producer  producer;
+    private final static String  SESSION_SECURITY_CODE= "SESSION_SECURITY_CODE" ; 
     
     @RequestMapping("image.jpg")
     @IgnoreAuth
-    public void captcha(HttpServletResponse response) throws ServletException, IOException {
+    public void captcha(HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException {
         response.setHeader("Cache-Control", "no-store, no-cache");
         response.setContentType("image/jpeg");
-
+        request.setAttribute(DefaultSubjectContext.SESSION_CREATION_ENABLED, Boolean.TRUE);
         //生成文字验证码
         String text = producer.createText();
         //生成图片验证码
         BufferedImage image = producer.createImage(text);
-        //保存到shiro session
-//        ShiroUtils.setSessionAttribute(Constants.KAPTCHA_SESSION_KEY, text);
-
+       HttpSession session = request.getSession();
+       session.setAttribute("imageCode", text);
         ServletOutputStream out = response.getOutputStream();
         ImageIO.write(image, "jpg", out);
     }
@@ -80,18 +80,14 @@ public class ApiSmsController {
      * @return R
      */
     @IgnoreAuth
-    @PostMapping("/sendSms")
+    @GetMapping("/sendSms")
     public Object sendSms(HttpServletRequest request, @RequestParam Map<String, String> params) {
     	logger.info("api/sendSms发送登录短信验证码入参："+params.toString());
     	SysSmsLogEntity smsLog = new SysSmsLogEntity();
        String validIP = RequestUtil.getIpAddrByRequest(request);
-//        if (ResourceUtil.getConfigByName("sms.validIp").indexOf(validIP) < 0) {
-//        	 return R.error("非法IP请求！");
-//        }
         if (params.get("mobile")== null ||params.get("mobile").equals("") ) {
         	 return R.error("手机号不能为空！");
 		}
-       
    
     	//校验图形验证码
 		Level2Cache level2 = CacheProviderHolder.getLevel2Cache(J2CacheUtils.INVALID_CACHE);
@@ -113,22 +109,22 @@ public class ApiSmsController {
 		}
         
         if (count >=5 || countIP >=5) {
-            String captcha =  params.get("code");
-            if (captcha == null) {
-            	result.put("code", 0);
+        	 String imageCode = (String) request.getSession().getAttribute("imageCode");
+        	if (StringUtils.isEmpty(params.get("imageCode"))) {
+        		result.put("code", 0);
             	result.put("msg", "请传入图形验证码");
             	result.put("count", count);
             	return result;
 			}
-            String kaptcha = ShiroUtils.getKaptcha(Constants.KAPTCHA_SESSION_KEY);
-            if(null == kaptcha){
+        	
+            if (StringUtils.isEmpty(imageCode)) {
             	result.put("code", 0);
             	result.put("msg", "图形验证码已失效");
             	result.put("count", count);
             	return result;
-            }
+			}
 
-            if (!captcha.equalsIgnoreCase(kaptcha)) {
+            if (imageCode.equals(params.get("imageCode"))) {
             	result.put("code", 0);
             	result.put("msg", "图形验证码错误");
             	result.put("count", count);
