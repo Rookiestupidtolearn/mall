@@ -139,6 +139,11 @@ let vm = new Vue({
             }
             vm.reload();
         },
+        exportUser : function() {
+			exportFile('#rrapp', '../qzmoneyrecord/export', {
+				'name' : vm.q.name
+			});
+		},
         handleSubmit: function (name) {
             handleSubmitValidate(this, name, function () {
                 vm.saveOrUpdate()
