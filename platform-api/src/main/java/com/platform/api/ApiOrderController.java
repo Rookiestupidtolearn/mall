@@ -341,7 +341,7 @@ public class ApiOrderController extends ApiBaseAction {
 		} else if ("success".equals(orderStatus)) {// 已完成
 			state   = new String[]{"9"};
 		} else if ("delivered".equals(orderStatus)) {// 待收货
-			state   = new String[]{"300","201"};
+			state   = new String[]{"200","300","201"};
 		} else if ("cancelFlag".equals(orderStatus)) {// 已取消
 			state =new String[]{"101","103"};
 		}

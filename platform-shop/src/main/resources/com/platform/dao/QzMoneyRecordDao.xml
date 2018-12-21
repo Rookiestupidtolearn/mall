@@ -49,7 +49,7 @@
     		b.`idcard` as cardId
 		from qz_money_record mr
 		LEFT JOIN `nideshop_user` b  ON mr.`shop_user_id` = b.`id`
-		WHERE 1=1
+		WHERE 1=1 and tran_type != 3
 		<if test="name != null and name.trim() != ''">
 			AND b.username LIKE concat('%',#{name},'%')
 		</if>
