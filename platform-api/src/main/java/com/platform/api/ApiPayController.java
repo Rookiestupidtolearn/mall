@@ -155,6 +155,7 @@ public class ApiPayController extends ApiBaseAction {
     	   resultObj.put("orderId", orderId);
     	   resultObj.put("payurl", payurl);
     	   resultObj.put("200", "请求成功");
+    	   resultObj.put("errno", "0");
     	   return  resultObj;
     	   
     } 
