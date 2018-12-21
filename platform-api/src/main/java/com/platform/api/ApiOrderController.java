@@ -211,6 +211,12 @@ public class ApiOrderController extends ApiBaseAction {
     @Transactional
     public Object cancelOrder(Integer orderId) {
         try {
+        	JSONObject feedbackJson = super.getJsonRequest();
+        	
+        	if (feedbackJson.get("orderId") == null) {
+    			return toResponsFail("订单orderId不能为空");
+    		}
+        	orderId = Integer.parseInt(feedbackJson.get("orderId").toString());
             OrderVo orderVo = orderService.queryObject(orderId);
             if (orderVo.getOrder_status() == 300) {
                 return toResponsFail("已发货，不能取消");
@@ -270,6 +276,9 @@ public class ApiOrderController extends ApiBaseAction {
     public Object confirmOrder(Integer orderId) {
         try {
         	JSONObject feedbackJson = super.getJsonRequest();
+        	if (feedbackJson.get("orderId") == null) {
+    			return toResponsFail("订单orderId不能为空");
+    		}
         	orderId = Integer.parseInt(feedbackJson.get("orderId").toString());
             OrderVo orderVo = orderService.queryObject(orderId);
             orderVo.setOrder_status(9);
@@ -292,6 +301,7 @@ public class ApiOrderController extends ApiBaseAction {
     public JSONObject queryLogistics(Long orderId){
     	JSONObject resultObj = new JSONObject();
     	JSONObject feedbackJson = super.getJsonRequest();
+    	
     	orderId = Long.parseLong(feedbackJson.get("orderId").toString());
     	OrderVo order = apiOrderMapper.queryObject(orderId);
     	if(order == null){
@@ -316,6 +326,9 @@ public class ApiOrderController extends ApiBaseAction {
 			@RequestParam(value = "size", defaultValue = "10") Integer size) {
 		
 		JSONObject feedbackJson = super.getJsonRequest();
+		if (feedbackJson.get("orderId") == null) {
+			return toResponsFail("订单orderId不能为空");
+		}
 		String orderStatus = feedbackJson.get("orderStatus").toString();
 		
 		String[] state = null;
@@ -367,6 +380,7 @@ public class ApiOrderController extends ApiBaseAction {
     public JSONObject queryOrderLogistics(Long orderId){
     	JSONObject resultObj = new JSONObject();
     	JSONObject feedbackJson = super.getJsonRequest();
+    	
     	orderId = Long.parseLong(feedbackJson.get("orderId").toString());
     	OrderVo order = apiOrderMapper.queryObject(orderId);
     	if(order == null){
