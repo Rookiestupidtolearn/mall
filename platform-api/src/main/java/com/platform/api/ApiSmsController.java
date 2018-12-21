@@ -44,7 +44,7 @@ import net.oschina.j2cache.Level2Cache;
  * @date 2018-06-05 13:58:47
  */
 @RestController
-@RequestMapping("api")
+@RequestMapping("/api")
 public class ApiSmsController {
 	private Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
@@ -57,7 +57,7 @@ public class ApiSmsController {
     private Producer  producer;
     private final static String  SESSION_SECURITY_CODE= "SESSION_SECURITY_CODE" ; 
     
-    @RequestMapping("image.jpg")
+    @RequestMapping("/image.jpg")
     @IgnoreAuth
     public void captcha(HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException {
         response.setHeader("Cache-Control", "no-store, no-cache");
