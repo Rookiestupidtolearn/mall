@@ -350,7 +350,9 @@ public class ApiOrderService {
 		
 		// 订单的总价 商品价格+运费价格
 		BigDecimal orderTotalPrice = goodsTotalPrice.add(freightPrice);
+		BigDecimal ShippingFee = BigDecimal.ZERO; //计算快递费用
 
+		
 		OrderVo orderInfo = new OrderVo();
 		orderInfo.setShipping_no(GenerateCodeUtil.buildBizNo());
 		orderInfo.setOrder_sn(GenerateCodeUtil.buildJDBizNo());
@@ -382,7 +384,13 @@ public class ApiOrderService {
 		orderInfo.setShipping_status(0);
 		orderInfo.setPay_status(0);
 		orderInfo.setShipping_id(0);
-		orderInfo.setShipping_fee(new BigDecimal(0));
+		orderInfo.setShipping_fee(new BigDecimal(0));  //计算快递费用
+		if (orderTotalPrice.compareTo(new BigDecimal("49")) <=0) { //(0-49]  8元运费
+			orderInfo.setShipping_fee(new BigDecimal("8"));
+		}else if (orderTotalPrice.compareTo(new BigDecimal("99")) <=0) { //(49-99]  6元运费
+			orderInfo.setShipping_fee(new BigDecimal("6"));
+		}
+		
 		orderInfo.setIntegral(0);
 		orderInfo.setIntegral_money(new BigDecimal(0));
 		if (type.equals("cart")) {
@@ -443,6 +451,7 @@ public class ApiOrderService {
 		order.setPid_num(pidNums);
 		
 		BigDecimal actual_price =  order.getActual_price().subtract(discountAmount);
+		actual_price = actual_price.add(orderInfo.getShipping_fee());
 		order.setActual_price(actual_price);
 		apiOrderMapper.update(order);
 		// 清空已购买的商品
@@ -592,26 +601,7 @@ public class ApiOrderService {
 		}
 		return couponAmount;
 	}
-	public static void main(String[] args) {
-		List<Map<String,Object>> array = new ArrayList<>();
-		for(int i =0;i<5;i++){
-			Map<String,Object> param = new HashMap<>();
-			param.put((i+1)+"", 2);
-			array.add(param);
-		}
-		System.out.println(array.size());
-		for(Map<String,Object> key : array){
-			String keyValue = "";
-			for(String key1 : key.keySet()){
-				keyValue = key1;
-			}
-			if(keyValue.endsWith("3")){
-				array.remove(key);
-				break;
-			}
-		}
-		System.out.println(array);
-	}
+
 	
 	/**
 	 * 订单失效/取消订单，子商品优惠冻结金额返回到用户平台币中
@@ -704,5 +694,11 @@ public class ApiOrderService {
 		log.setCreateTime(new Date());
 		log.setUpdateTime(new Date());
 		apiOrderLogMapper.save(log);
+	}
+	
+	public static void main(String[] args) {
+      BigDecimal a  = new BigDecimal("42");
+      BigDecimal  C = new BigDecimal("49");
+	  System.out.println(a.compareTo(C));
 	}
 }
