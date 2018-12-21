@@ -153,4 +153,12 @@ public class ApiYeepayController extends ApiBaseAction {
 		}
 
 	}
+	
+	
+	public static void main(String[] args) {
+	BigDecimal aBigDecimal= 	new BigDecimal("12.48");
+	BigDecimal aBigDecimal2= 	new BigDecimal("12.48");
+		System.out.println(aBigDecimal.compareTo(aBigDecimal2));
+	
+	}
 }
