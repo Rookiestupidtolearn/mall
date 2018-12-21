@@ -16,11 +16,11 @@
 	            <p class="desc">{{currentCategory.front_name}}</p>
 	        </div>-->
 	        <div class="b">
-	            <router-link :to="'/pages/goods/goods?id='+iitem.id" class="item [(iindex + 1) % 2 == 0 ? 'item-b' : '']"   v-for="(iitem,index) in goodsList" >
+	            <a  class="item [(iindex + 1) % 2 == 0 ? 'item-b' : '']"   v-for="(iitem,index) in goodsList"  @click="andriod('/pages/goods/goods?id='+iitem.id)">
 	                <img class="img" :src="iitem.list_pic_url" background-size="cover"/>
 	                <p class="name">{{iitem.name}}</p>
 	                <p class="price">￥{{iitem.market_price}}</p>
-	            </router-link>
+	            </a>
 	        </div>
 	    </div>
   </div>
@@ -49,6 +49,27 @@
 	    	this.listShow();
 	  },
 	  methods:{
+	  	andriod(e){   //与andriod和ios交互
+				var hrefD = window.location.href;
+//				var hrefD= 'http://192.168.124.29:8081/#/pages/goods/goods?id=18013&device=android';
+				var delDevice = hrefD.split('#')[0];
+				var comHref =delDevice.substring(delDevice.length-1,0);  //android和ios公用链接头
+				if(hrefD.indexOf('device')>-1){
+		    		var device = hrefD.split('&')[1].split('=')[1];
+		    	}
+	//  	http://192.168.124.29:8081/#/?device=andriod;
+	    	if(device == 'android'){
+	    			window.android.productDetail(comHref +'/#' + e ); //调起andriod交互方法(由app发起。浏览器会报错正常)
+	    			return false;
+	    	}else if(device == 'ios'){
+	    		
+	    			var message = {'url':comHref +'/#' + e}
+						window.webkit.messageHandlers.webViewApp.postMessage(message);
+						return false;
+	    	}else{
+	    		this.$router.push(e);
+	    	}
+	 	},
 	  	switchCate(idItem){
 	  		this.idm = idItem;
 	  		this.categoryShow();
@@ -183,10 +204,11 @@ margin-right: .06rem;
 .cate-item .item .name{
   display: block;
   width: 3.3rem;
-  height: .35rem;
   margin: .115rem 0 .22rem 0;
   text-align: center;
   overflow: hidden;
+  text-overflow: ellipsis;
+white-space: nowrap;
   padding: 0 .20rem;
   font-size: .30rem;
   color: #333;

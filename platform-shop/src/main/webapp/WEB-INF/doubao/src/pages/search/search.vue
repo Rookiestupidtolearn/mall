@@ -4,9 +4,11 @@
   		<!--<headbar :headFont = "headFont"></headbar>-->
   		
 	 	<div class="searchTop" >
-	  		<mt-search v-model="value"  @keyup.enter.native="showList" @input="inputFocus" cancel-text="取消"  placeholder="商品搜索" class="wusearch" ></mt-search>
+	 		<form action="" target="frameFile">
+	  			<mt-search v-model="value"  @keyup.enter.native="showList" @input="inputFocus" cancel-text="取消"  placeholder="商品搜索" class="wusearch" ></mt-search>
+	  		</form>
 	  	</div>
-	  	<div class="no-search" :style="{display: [value || defaultKeyword? 'none' : 'block']}">
+	  	<div class="no-search" :style="{display: [value || defaultKeyword || cookie? 'none' : 'block']}" >
 	  		<!--:style="{display: [value ? 'none' : 'block']}"-->
 		     <div class="serach-keywords search-history" >
 			    <div class="h" >
@@ -18,7 +20,7 @@
 			    </div>
 	 	 	</div>
  		</div>
- 		<div class="serach-keywords search-hot" :style="{display: [value ? 'none' : 'block']}">
+ 		<div class="serach-keywords search-hot" :style="{display: [value|| cookie ? 'none' : 'block']}" :data-c="value">
 		    <div class="h">
 		      <p class="title">热门搜索</p>
 		    </div>
@@ -46,7 +48,7 @@
 			    <!--商品渲染-->
 			    <div class="cate-item">
 				    <div class="b">
-				      <router-link class="item" :class=" [(iindex + 1) % 2 == 0 ? 'item-b' : '']" :to="'/pages/category/goods?id='+iitem.id" v-for="(iitem,iindex) in goodsList" >
+				      <router-link class="item" :class=" [(iindex + 1) % 2 == 0 ? 'item-b' : '']" :to="'/pages/goods/goods?id='+iitem.id" v-for="(iitem,iindex) in goodsList" >
 				        <img class="img" :src="iitem.list_pic_url" background-size="cover"/>
 				        <p class="name">{{iitem.name}}</p>
 				        <p class="price">￥{{iitem.market_price}}</p>
@@ -69,6 +71,7 @@ export default {
 //	  components:{headbar},
 	  data () {
 	    return {
+	    	cookie:true,
     		value:'',
     		searchStatus:false,
 //  		headFont:'搜索',
@@ -89,7 +92,35 @@ export default {
 	  },
 	  mounted(){
 			this.getKeyWordList();
+			var search = this.$cookie.getCookie('search');
+			var searchKey = this.$cookie.getCookie('searchKey');
+			if(search != ""){
+				this.value=searchKey;
+				this.cookie=true;  
+				this.showList(search);
+			}else{
+				this.cookie=false;  
+			}
+			
 	  },
+	  beforeRouteLeave(to, from, next) { 
+			 let position = window.scrollY; //记录离开页面的位置 
+			 if (position == null) position = 0 ;
+			 if(this.$route.name == 'search'){
+				 		this.$cookie.setCookie('scrollSearch',window.scrollY);
+		 		}
+			 next();
+	 }, 
+	   watch:{
+		 		goodsList:function(){
+		 				this.$nextTick(function(){
+		 						if(this.$cookie.getCookie('scrollSearch') == '' || this.$cookie.getCookie('scrollSearch') == '0'  || this.$cookie  .getCookie('scrollSearch') == '-1'){
+		   					}else{
+		   						window.scrollTo(0,this.$cookie.getCookie('scrollSearch'));
+		   					}
+		 				})
+		 		}
+		 },
 	  methods:{
 	  	onKeywordTap(keyword){
 	  		this.getSearchResult(keyword);
@@ -121,11 +152,10 @@ export default {
 		      this.showList();
 	  	},
 	  	openSortFilter(currentId){
-	  		console.log(currentId);
 		    switch (currentId) {
 		      case 'categoryFilter':
 		          this.categoryFilter =  !this.categoryFilter;
-		          this.currentSortOrder = 'asc';
+		          this.currentSortOrder = this.currentSortOrder;
 		        	break;
 		      case 'priceSort':
 		        let tmpSortOrder = 'asc';
@@ -153,9 +183,11 @@ export default {
 	        url: that.$url+'search/index',
 	    	}).then(function (response) {
 	    		var  response = response.data;
-    			that.historyKeyword = response.data.historyKeywordList,
-      			that.defaultKeyword = response.data.defaultKeyword,
-      			that.hotKeyword =  response.data.hotKeywordList
+	    		if(response.errno != 401){
+	    			that.historyKeyword = response.data.historyKeywordList,
+	      			that.defaultKeyword = response.data.defaultKeyword,
+	      			that.hotKeyword =  response.data.hotKeywordList
+	      		}
 			})
 	  	},
 	  	clearHistory(){
@@ -180,20 +212,24 @@ export default {
 		    			console.log(response.data);
 				})
 	  	},
-	  	showList(){
+	  	showList(data){
 	  		let that = this;
+	  		
+	  		var data = {
+	  			keyword:that.value,
+	        	page:that.page,
+	        	size:that.size,
+	        	sort:that.currentSortType,
+	        	order:that.currentSortOrder,
+	        	categoryId:that.categoryId
+	  		}
+	  		that.$cookie.setCookie("search",data);
+	  		that.$cookie.setCookie("searchKey",that.value);
 //	  		获取商品列表
 	  		that.$http({
 		        method: 'post',
 		        url: that.$url+'goods/list',
-		        params:{
-		        	keyword:that.value,
-		        	page:that.page,
-		        	size:that.size,
-		        	sort:that.currentSortType,
-		        	order:that.currentSortOrder,
-		        	categoryId:that.categoryId
-		        }
+		        params:data
 	    	}).then(function (response) {
 	    		var response = response.data;
 	    		 that.searchStatus = true;
@@ -212,13 +248,17 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-	.wusearch{
-		font-size:.28rem !important;
-		height:100%;
-	}
-	.no-search{
+.cate-item .b .item:last-child{
+	margin-bottom:.3rem !important;
+}
+.wusearch{
+	font-size:.28rem !important;
+	height:100%;
+}
+.no-search{
     height: auto;
     overflow: hidden;
+    margin-top:1.05rem
 }
 .serach-keywords{
     background: #fff;
@@ -275,7 +315,7 @@ export default {
 .shelper-list{
     width: 7.50rem;
     height: auto;
-    overflow: hidden;
+    /*overflow: hidden;*/
     background: #fff;
     padding: 0 .3125rem;
 }
@@ -288,19 +328,16 @@ export default {
     border-bottom: 1px solid #f4f4f4;
 }
 .sort{
-    position: fixed;
-    top: 1rem;
     background: #fff;
     width: 100%;
-    height: .78rem;
 }
 .sort-box{
 	display: flex;
+	position: fixed;
+	top:.93rem;
     background: #fff;
     width: 100%;
     height: .78rem;
-    overflow: hidden;
-    padding: 0 .30rem;
     border-bottom: 1px solid #d9d9d9;
 }
 .sort-box .item{
@@ -333,11 +370,12 @@ export default {
     background-size: .15rem .21rem;
 }
 .sort-box-category{
+	position: absolute;
     background: #fff;
     width: 100%;
     height: auto;
     overflow: hidden;
-    padding: .40rem .40rem 0 0;
+    padding: .40rem 0 0 0;
     border-bottom: 1px solid #d9d9d9;
 }
 .sort-box-category .item{
@@ -357,9 +395,7 @@ export default {
 }
 
 .cate-item{
-    margin-top: .18rem;
-    height: auto;
-    overflow: hidden;
+    margin-top: 1.9rem;
 }
 
 .cate-item .h{
@@ -387,10 +423,10 @@ export default {
 }
 
 .cate-item .b{
-  width: 7.50rem;
-  padding: 0 .0625rem;
+  width: 7.40rem;
+	padding: .05rem;
   height: auto;
-  overflow: hidden;
+  /*overflow: hidden;*/
 }
 
 .cate-item .list-filter{
@@ -418,13 +454,14 @@ export default {
 }
 .cate-item .item .name{
   display: block;
-  width: 3.65rem;
-  height: .35rem;
-  text-align: center;
-  overflow: hidden;
-  font-size: .30rem;
-  color: #333;
-  margin-bottom:.15rem
+    width: 3.65rem;
+    text-align: center;
+    overflow: hidden;
+    font-size: .30rem;
+    color: #333;
+    margin-bottom: .15rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .cate-item .item .price{
@@ -456,5 +493,10 @@ export default {
     font-size: .28rem;
     text-align: center;
     color: #999;
+}
+.searchTop{
+	position: fixed;
+    width: 100%;
+    top: 0;
 }
 </style>

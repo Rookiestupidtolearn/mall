@@ -12,8 +12,9 @@ page{
   width:560rpx;
   height:80rpx;
   line-height:80rpx;
-  background: #c9c9c9;
-  color:#333;
+  background: -webkit-linear-gradient(left, #FFB559, #F76B1C);
+  background: linear-gradient(left, #FFB559, #F76B1C);
+  color:#fff;
   border-radius:10rpx;
   text-align: center;
   margin:0 auto;

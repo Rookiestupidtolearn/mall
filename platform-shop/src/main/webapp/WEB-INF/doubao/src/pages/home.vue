@@ -1,5 +1,8 @@
 <template>
-  <div class="hello">
+  <div class="hello"  id="home" ref="viewBox">
+  	<div class="searchTop" @click="searchRoute">
+  				<mt-search v-model="value"  cancel-text="取消"  placeholder="商品搜索" class="wusearch" ></mt-search>
+  	</div>
     <mt-swipe :auto="3000" class="swiper" >
 		  <mt-swipe-item v-for="item in banner">
 		  	<a :href="item.link"><img :src="item.image_url"/></a>
@@ -13,31 +16,17 @@
 		</div>
 		<div class="h">
 			<p class="txt">人气推荐</p>
-			<router-link class="itemhot" v-for="item in hotGoods" :to="'/pages/goods/goods?id='+item.id">
+			<div class="itemhot" v-for="item in hotGoods"  @click="andriod('/pages/goods/goods?id='+item.id)">
 				<img :src="item.list_pic_url"/>
 				<div class="right">
 					<p class="name">{{item.name}}</p>
 					<!--<p class="goods_brief">{{item.goods_brief}}</p>-->
 					<p class="market_price">￥{{item.market_price}}</p>
 				</div>
-			</router-link>
-		</div>
-		<!--<div class="category" v-for="item in category">
-			<p class="instr">{{item.name}}</p>
-			<div class="listAmount">
-				<router-link v-for="goods in item.goodsList" :to="'/pages/category/goods?id='+goods.id">
-					<p><img :src="goods.list_pic_url"/></p>
-					<p class="name">{{goods.name}}</p>
-					<p class="price">￥{{goods.market_price}}</p>
-				</router-link>
-				<router-link :to="'/pages/category/goods?id='+item.id" class="more-a">
-					<p class="name">{{'更多'+item.name+'好物'}}</p>
-					<p><img class="icon" src="../../static/images/icon_go_more.png" background-size="cover"/></p>
-				</router-link>
 			</div>
-		</div>-->
+	</div>
 		<!--公用底部导航-->
-  	<tabbar :selected="selected" :tabs='tabs'></tabbar> 
+  	<tabbar :selected="selected" :tabs='tabs' :style="{'display':[showAN ? 'none' : 'block']}"></tabbar> 
   </div>
 </template>
 
@@ -50,6 +39,8 @@ export default {
   name: 'home',
   data () {
     return {
+    	showAN:'',
+    	value:'',
       banner:[],
       channel:[],
       hotGoods:[],
@@ -61,13 +52,12 @@ export default {
     }
   },
   mounted(){
-  	var that = this;    
+  		let that = this;    
   	//banner
   		that.$http({
         method: 'post',
         url: that.$url+'index/banner'
     	}).then(function (response) {
-    		console.log(response);
 		    that.banner = response.data.data.banner
 		  })
     //channel
@@ -77,23 +67,95 @@ export default {
     	}).then(function (response) {
 		    that.channel = response.data.data.channel
 		  })
-    //hotGoods
-    Indicator.open();
-    that.$http({
-        method: 'post',
-        url:that.$url+ 'index/hotGoods'
-    	}).then(function (response) {
-    		Indicator.close();
-		    that.hotGoods = response.data.data.hotGoodsList
-		  })
-    	//category
-    	that.$http({
-        method: 'post',
-        url:that.$url+ 'index/category'
-    	}).then(function (response) {
-		    that.category = response.data.data.categoryList
-		  })
-  }
+    	//hotgoods
+    	Indicator.open();
+	    that.$http({
+	        method: 'post',
+	        url:that.$url+ 'index/hotGoods'
+	    	}).then(function (response) {
+	    		Indicator.close();
+			    that.hotGoods = response.data.data.hotGoodsList;
+			  })
+    	/*android和ios对接特殊处理*/
+    	var hrefD = window.location.href;
+				if(hrefD.indexOf('device')>-1){
+	    		var device = hrefD.split('?')[1].split('=')[1];
+	    	}
+	//  	http://192.168.124.29:8081/#/?device=andriod;
+//				alert(device);
+	    	if(device == 'android'){
+	    			this.showAN = true;   //是否显示公用底部
+	    	}else if(device == 'ios'){
+	    			this.showAN = true;
+	    	}else{
+	    		this.showAN = false;
+	    	}
+	    	
+  },
+	beforeRouteLeave(to, from, next) { 
+			 let position = window.scrollY; //记录离开页面的位置 
+			 if (position == null) position = 0 ;
+			 if(this.$route.name == 'home'){
+				 		this.$cookie.setCookie('scrollHome',window.scrollY);
+		 		}
+			 next();
+	 }, 
+ watch:{
+   		hotGoods:function(){
+   				this.$nextTick(function(){
+   						if(this.$cookie.getCookie('scrollHome') == '' || this.$cookie.getCookie('scrollHome') == 0  || this.$cookie  .getCookie('scrollHome') == -1){
+   					}else{
+   						window.scrollTo(0,this.$cookie.getCookie('scrollHome'));
+   					}
+   				})
+   		}
+ },
+ methods:{
+	 	andriod(e){   //与andriod和ios交互
+				var hrefD = window.location.href;
+				var delDevice = hrefD.split('?')[0];
+				var comHref =delDevice .substring(delDevice.length-1,0);  //android和ios公用链接头
+				if(hrefD.indexOf('device')>-1){
+	    		var device = hrefD.split('?')[1].split('=')[1];
+	    	}
+	//  	http://192.168.124.29:8080/#/?device=andriod
+//				alert(device);
+	    	if(device == 'android'){
+	    			window.android.productDetail(comHref + e); //调起andriod交互方法(由app发起。浏览器会报错正常)
+	    			return false;
+	    	}else if(device == 'ios'){
+	    		alert(hrefD)
+	    			var message = {'url':comHref + e}
+						window.webkit.messageHandlers.webViewApp.postMessage(message);
+						return false;
+	    	}else{
+	    		this.$router.push(e);
+	    	}
+	 	},
+ 		searchRoute(){
+ 			var hrefD = window.location.href;
+				var delDevice = hrefD.split('#')[0];
+				var comHref =delDevice .substring(delDevice.length-1,0);  //android和ios公用链接头
+				if(hrefD.indexOf('device')>-1){
+	    		var device = hrefD.split('?')[1].split('=')[1];
+	    	}
+	//  http://192.168.124.29:8080/#/?device=andriod
+//				alert(device);
+	    	if(device == 'android'){
+	    			window.android.toSearch(comHref + '/#/pages/ucenter/search'); //调起andriod交互方法(由app发起。浏览器会报错正常)
+	    			return false;
+	    	}else if(device == 'ios'){
+	    			var message = {'url':comHref + '/#/pages/ucenter/search'}
+						window.webkit.messageHandlers.webViewApp.postMessage(message);
+						return false;
+	    	}else{
+		  		this.$router.push('/pages/ucenter/search');
+		  		/*清除搜索记录缓存*/
+		  		this.$cookie.delCookie('search');
+					this.$cookie.delCookie('searchKey');
+			}
+  	},
+ }
 }
 </script>
 
@@ -178,7 +240,7 @@ color:#b4282d;
 		background-color: #fff;
 		border-top:1px solid #d9d9d9;
 		padding:0 .20rem;
-		height:2.64rem;
+		/*height:2.64rem;*/
 		width:7.10rem;
 	}
 	.itemhot img{
@@ -200,6 +262,7 @@ color:#b4282d;
 .swiper{
 	width:7.5rem;
 	height:4.17rem;
+	margin-top:.95rem;
 }
 .m-menu {
   overflow: hidden;

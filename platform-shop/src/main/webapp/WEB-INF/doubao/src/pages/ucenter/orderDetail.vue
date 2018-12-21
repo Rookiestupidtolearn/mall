@@ -7,16 +7,17 @@
       <div class="item-c">
             <div class="l">实付：<span class="cost">￥{{orderInfo.actual_price}}</span></div>
             <div class="r">
-                <div v-if="orderInfo.handleOption.pay">
-                  <div class="btn" @click="cancelOrder">取消订单</div>
-                  <div class="btn active" @click="payOrder">去付款</div>
+            	<!--9 已完成   0 待付款   300,201待收货   101,103已取消-->
+                <div v-if="orderInfo.order_status == 9" >
+            	 	<div class="btn active" @click="tipsShow">退货申请</div>
                 </div>
-                <div v-else-if="orderInfo.handleOption.confirm">
-                  <div class="btn" @click="cancelOrder">取消订单</div>
-                  <div class="btn active" @click="confirmOrder">确认收货</div>
+                 <div v-else-if="orderInfo.order_status == 300 || orderInfo.order_status == 201">
+                 	<div class="btn" @click="hrefwul(orderInfo.id)">查看物流</div>
+                	<div class="btn active" @click="confirmOrder(orderInfo.id)">确认收货</div>
                 </div>
-                <div v-else>
-                  <div class="btn active" @click="cancelOrder"  :style="{display:[cancelBtnShow ? 'block' : 'none']}">取消订单</div>
+                <div v-else-if="orderInfo.order_status == 0">   
+            			 <div class="btn" @click="cancelOrder">取消订单</div>
+                		<div class="btn active" @click="payOrder(orderInfo.id)">去付款</div>
                 </div>
             </div>
         </div>
@@ -59,7 +60,7 @@
             </div>
             <div class="t">
                 <span class="label">优惠券：</span>
-                <span class="txt2">-{{orderInfo.coupon_price}}</span>
+                <span class="txt">-{{orderInfo.coupon_price}}</span>
             </div>
             <div class="t">
                 <span class="label">运费：</span>
@@ -76,7 +77,7 @@
 </template>
 
 <script>
-		import { MessageBox } from 'mint-ui';
+import { MessageBox } from 'mint-ui';
 		
 export default {
   name: 'orderDetail',
@@ -92,38 +93,61 @@ export default {
   	let that = this;   
   	let id = this.$route.query.id;
     	that.$http({
-        method: 'post',
-        url:that.$url+ 'order/detail',
-        params:{orderId:id}
+	        method: 'post',
+	        url:that.$url+ 'order/detail',
+	        params:{orderId:id}
     	}).then(function (response) {
-    		console.log(response)
+    		var response = response.data;
     		that.orderInfo = response.data.orderInfo;
     		that.orderGoods =  response.data.orderGoods;
       		that.handleOption =  response.data.handleOption;
-      
-          //101取消订单   301已完成订单   103订单失效
-	        if (response.data.orderInfo.order_status == '101' || response.data.orderInfo.order_status == '301' || response.data.orderInfo.order_status == '103') {
-	          	that.cancelBtnShow = true
-	      	}
 		})
   },
   methods:{
-  	payOrder(){
-  			let that = this;
-  			let id = this.$route.query.id;
-  			 that.$http({
-			        method: 'post',
-			        url:that.$url+ 'pay/prepay',
-			        params:{orderId:id || 15}
-		    	}).then(function (res) {
-			      if (res.errno === 0) {
-				        console.log('支付页面逻辑待完善');
-			      }
-		    });
-
+  	confirmOrder(id){
+  		var that = this;    
+	    	that.$http({
+	        method: 'post',
+	        url:that.$url+ 'order/confirmOrder.options',
+	        data:{
+	        	orderId:id,
+	        }
+	    	}).then(function (res) {
+	    		var res = res.data;
+	    		if(res.errno == 0){
+	    			window.location.reload();
+	    		}else{
+	    			that.$toast(res.errmsg);
+	    		}
+	    		
+			  })
   	},
+  	tipsShow(){
+  		MessageBox( '退货申请','您好，请联系客服400-114-8066');
+  	},
+  	hrefwul(e){
+  		this.$router.push('/pages/ucenter/logistics?id='+e);
+  	},
+	payOrder(orderIndex){
+	      var that = this;    
+	    	that.$http({
+	        method: 'post',
+	        url:that.$url+ 'pay/toPayOrder.options',
+	        data:{
+	        	orderId:orderIndex
+	        }
+	    	}).then(function (res) {
+	    		var res = res.data;
+	    		if(res.errno == 0){
+	    			
+	    		}else{
+	    			that.$toast(res.errmsg);
+	    		}
+			})
+  	},
+
   	cancelOrder(){
-	  		console.log('开始取消订单');
+	  	console.log('开始取消订单');
 	    let that = this;
 	    let id = this.$route.query.id;
 	    let orderInfo = that.orderInfo;
@@ -173,25 +197,22 @@ export default {
 	      return false;
 	    }
 	    
-	    console.log('可以取消订单的情况');
 	    MessageBox({
 					  title: ' ',
 					  message: '确定要取消此订单？ ',
 					  showCancelButton: true
 					},function(action){
 							if(action == 'confirm'){
-								  console.log('用户点击确定');
-								  that.$http({
-						        method: 'post',
-						        url:that.$url+ 'order/cancelOrder',
-						        params:{orderId:id}
-						    	}).then(function (response) {
-						    		response = {"errno":0,"data":"取消成功","errmsg":"执行成功"};
+							  that.$http({
+							        method: 'post',
+							        url:that.$url+ 'order/cancelOrder.options',
+							        data:{orderId:id}
+						    	}).then(function (res) {
 							    		MessageBox({
 											  title: ' ',
-											  message: response.data
+											  message: res.data.data
 											},function(action){
-													that.$router.push('/views/ucenter/order');
+													that.$router.push('/pages/ucenter/order');
 											});
 								  })
 							}
@@ -213,11 +234,9 @@ export default {
 
 .item-a{
     padding-left: .3125rem;
-    height: .425rem;
-    padding-bottom: .125rem;
     line-height: .30rem;
-    font-size: .30rem;
-    color: #666;
+    font-size: .26rem;
+    color: #3b3c3c;
 }
 
 .item-b{
@@ -225,9 +244,9 @@ export default {
     height: .29rem;
     line-height: .29rem;
     margin-top: .125rem;
-    margin-bottom: .415rem;
-    font-size: .30rem;
-    color: #666;
+    margin-bottom: .215rem;
+    font-size: .26rem;
+    color: #3b3c3c;
 }
 
 .item-c{
@@ -235,7 +254,7 @@ export default {
     border-top: 1px solid #f4f4f4;
     height: 1.03rem;
     line-height: 1.03rem;
-    font-size:.29rem;
+    font-size:.26rem;
 }
 
 .item-c .l{
@@ -253,23 +272,24 @@ export default {
 .item-c .r .btn{
     float: right;
 }
-
-.item-c .cost{
-    color: #b4282d;
+.item-c .r div{
+	line-height:initial !important;
 }
-
 .item-c .btn{
-    line-height: .66rem;
-    border-radius: .05rem;
-    text-align: center;
-    margin: 0 .15rem;
-    padding: 0 .20rem;
-    height: .66rem;
+   display: inline-block;
+    height: auto;
+    padding: .09rem .19rem;
+    font-size: .26rem;
+    color: #666666;
+    -webkit-border-radius: 2rem;
+    background-color: initial;
+    border: 1px solid #d8d8d8;
+    margin-left: .2rem;
 }
 
 .item-c .btn.active{
-    background: #b4282d;
-    color: #fff;
+    color: #ef7c2c ;
+    border: 1px solid #ef7c2c ;
 }
 
 .order-goods{
@@ -294,8 +314,8 @@ export default {
 
 .order-goods .h .status{
     float: right;
-    font-size: .30rem;
-    color: #b4282d;
+    font-size: .26rem;
+    color: #fc6e1a;
 }
 
 .order-goods .item{
@@ -318,8 +338,8 @@ export default {
 }
 
 .order-goods .item .img image{
-    height: 1.4583rem;
-    width: 1.4583rem;
+    height: 1.3rem;
+    width: 1.3rem;
 }
 
 .order-goods .item .info{
@@ -341,7 +361,12 @@ export default {
     height: .33rem;
     line-height: .33rem;
     color: #333;
-    font-size: .30rem;
+    font-size: .26rem;
+    width: 4.3rem;
+    overflow: hidden;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .order-goods .item .t .number{
@@ -351,22 +376,23 @@ export default {
     text-align: right;
     line-height: .33rem;
     color: #333;
-    font-size: .30rem;
+    font-size: .26rem;
 }
 
 .order-goods .item .attr{
     height: .29rem;
     line-height: .29rem;
     color: #666;
-    margin-bottom: .25rem;
+    margin-bottom: .2rem;
     font-size: .25rem;
+    text-align: left;
 }
 
 .order-goods .item .price{
     height: .30rem;
     line-height: .30rem;
     color: #333;
-    font-size: .30rem;
+    font-size: .26rem;
     text-align: left;
 }
 
@@ -379,7 +405,8 @@ export default {
 }
 
 .order-bottom .address{
-    height: 1.28rem;
+	width: 7rem;
+    text-align: justify;
     padding-top: .25rem;
     border-bottom: 1px solid #f4f4f4;
 }
@@ -388,6 +415,8 @@ export default {
     margin-bottom: .075rem;
     font-size: 0;
     text-align: left;
+    overflow: hidden;
+    width: 6.8rem;
 }
 
 .order-bottom .address .name{
@@ -403,28 +432,31 @@ export default {
     height: .35rem;
     line-height: .35rem;
     font-size: .25rem;
+    float:right;
 }
 
 .order-bottom .address .b{
-    height: .35rem;
-    line-height: .35rem;
+	padding-bottom:.25rem;
     font-size: .25rem;
     text-align: left;
 }
 
 .order-bottom .total{
-    height: 1.36rem;
-    padding-top: .20rem;
+    height: 1.5rem;
+    padding-top: .30rem;
     border-bottom: 1px solid #f4f4f4;
     font-size: .29rem;
     text-align: left;
+    width:6.8rem;
 }
 
 .order-bottom .total .t{
     height: .30rem;
     line-height: .30rem;
-    margin-bottom: .075rem;
+    margin-bottom: .16rem;
     display: flex;
+    color:#999797;
+    width:6.8rem;
 }
 
 .order-bottom .total .label{
@@ -441,10 +473,7 @@ export default {
     height: .35rem;
     line-height: .35rem;
     font-size: .25rem;
-}
-
-.order-bottom .total .txt2{
-    color:#33cc99;
+    text-align: right;
 }
 
 .order-bottom .pay-fee{
@@ -452,18 +481,22 @@ export default {
     line-height: .81rem;
     font-size: .29rem;
     text-align: left;
+    width:6.8rem;
+    overflow: hidden;
 }
 
 .order-bottom .pay-fee .label{
     display: inline-block;
     width: 1.40rem;
-    color: #b4282d;
+    color: #fc6e1a;
 }
 
 .order-bottom .pay-fee .txt{
     display: inline-block;
     width: 1.40rem;
-    color: #b4282d;
+    color: #fc6e1a;
+    float: right;
+    text-align: right;
 }
 
 </style>

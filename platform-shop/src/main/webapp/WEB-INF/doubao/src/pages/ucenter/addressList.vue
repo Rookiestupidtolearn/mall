@@ -51,7 +51,9 @@ export default {
 		        url:that.$url+ 'address/list',
 			}).then(function (response) {
 				var response=response.data;
+				if(response.errno != 401){
 					that.addressList = response.data;
+				}
 			  })
   	},
 		addressAddOrUpdate(setId){
@@ -67,7 +69,7 @@ export default {
 					var that = this;
 					that.$http({
 				        method: 'post',
-				        url:that.$url+ 'address/delete',
+				        url:that.$url+ 'address/delete.options',
 				        data:{id:deleteId}
 			    	}).then(function (res) {
 			    		if( res.errno = '0'){
@@ -144,6 +146,9 @@ export default {
     line-height: .37rem;
     overflow: hidden;
     color: #666;
+    width: 4.8rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .address-list .r{
     width: .52rem;

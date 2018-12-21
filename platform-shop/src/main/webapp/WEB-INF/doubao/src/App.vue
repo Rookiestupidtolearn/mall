@@ -1,6 +1,10 @@
 <template>
   <div id="app">
     <router-view/>
+   	<!--<keep-alive>
+          <router-view v-if="$route.meta.keepAlive" class="router-view"></router-view>
+      </keep-alive>
+     <router-view v-if="!$route.meta.keepAlive" class="router-view" ></router-view>-->
   </div>
 </template>
 
@@ -12,7 +16,7 @@ export default {
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: Microsoft YaHei,Tahoma,Arial,sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

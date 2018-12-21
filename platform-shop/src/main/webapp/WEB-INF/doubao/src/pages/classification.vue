@@ -5,7 +5,7 @@
   	
   	<!--主体内容-->
   	<div class="searchTop" @click="searchRoute">
-  		<mt-search v-model="value"  cancel-text="取消"  placeholder="商品搜索" class="wusearch" ></mt-search>
+  				<mt-search v-model="value"  cancel-text="取消"  placeholder="商品搜索" class="wusearch"></mt-search>
   	</div>
   	<div class="content">
 	  	<div class="catalog" >
@@ -20,20 +20,21 @@
             <span class="line"></span>
         </div>
         <div class="bd">
-        	<router-link :to="'/pages/category/category?id='+item.id" v-for="item in currentCategory.subCategoryList">
+        	<a v-for="item in currentCategory.subCategoryList" @click="andriod('/pages/category/category?id='+item.id)">
 		        <img :src="item.wap_banner_url"/>
 		       	<p>{{item.name}}</p>
-	        </router-link>
+	        </a>
         </div>
 	  	</div>
   	</div>
   	<!--公用底部导航-->
-  	<tabbar :selected="selected" :tabs='tabs'></tabbar> 
+  	<tabbar :selected="selected" :tabs='tabs' :style="{'display':[showAN ? 'none' : 'block']}"></tabbar> 
   </div>
 </template>
 
 <script>
 	import tabbar from '@/components/tabbar.vue'
+	import { Indicator } from 'mint-ui';
 //	import headbar from '@/components/headbar'
 	
 export default {
@@ -41,6 +42,7 @@ export default {
   name: 'classification',
   data () {
     return {
+    	showAN:'',
     	value:'',
 			categoryList:[],
 			currentCategory:[],
@@ -52,26 +54,106 @@ export default {
   },
   mounted(){
   	var that = this;   
-  	//index
-  		that.$http({
-        method: 'post',
-        url: that.$url+'catalog/index',
-    	}).then(function (response) {
-		    that.categoryList = response.data.data.categoryList,
-		    that.currentCategory = response.data.data.currentCategory
-		  })
+    //记录上次用户登录时查看的分类
+  	let eventId =  that.$cookie.getCookie('eventId');
+  	if( eventId != ''){
+  		Indicator.open();
+  		/*产品右侧分类*/
+	  		that.$http({
+	        method: 'post',
+	        url: that.$url+'catalog/current',
+					params:{ id : eventId  }
+	    	}).then(function (response) {
+			    that.currentCategory = response.data.data.currentCategory
+			  })
+	    	/*展示左侧分类*/
+	    	that.$http({
+	        method: 'post',
+	        url: that.$url+'catalog/index',
+	    	}).then(function (response) {
+	    		Indicator.close();
+			    that.categoryList = response.data.data.categoryList
+			  })
+  	}else{
+  			Indicator.open();
+	  		that.$http({
+	        method: 'post',
+	        url: that.$url+'catalog/index',
+	    	}).then(function (response) {
+	    		Indicator.close();
+			    that.categoryList = response.data.data.categoryList
+			    that.currentCategory = response.data.data.currentCategory
+			  })
+  	}
+  	
+  	/*android和ios对接特殊处理*/
+    	var hrefD = window.location.href;
+				if(hrefD.indexOf('device')>-1){
+	    		var device = hrefD.split('?')[1].split('=')[1];
+	    	}
+	//  	http://192.168.124.29:8081/#/?device=andriod;
+//				alert(device);
+	    	if(device == 'android'){
+	    			this.showAN = true;   //是否显示公用底部
+	    	}else if(device == 'ios'){
+	    			this.showAN = true;
+	    	}else{
+	    		this.showAN = false;
+	    	}
+  	
   },
   methods:{
+  	andriod(e){   //与andriod和ios交互
+				var hrefD = window.location.href;
+				var delDevice = hrefD.split('#')[0];
+				var comHref =delDevice .substring(delDevice.length-1,0);  //android和ios公用链接头
+				if(hrefD.indexOf('device')>-1){
+	    		var device = hrefD.split('?')[1].split('=')[1];
+	    	}
+	//  	http://192.168.124.29:8081/#/?device=andriod;
+	    	if(device == 'android'){
+	    			window.android.toSecondary(comHref +'/#' + e); //调起andriod交互方法(由app发起。浏览器会报错正常)
+	    			return false;
+	    	}else if(device == 'ios'){
+	    			var message = {'url':comHref +'/#' + e}
+						window.webkit.messageHandlers.webViewApp.postMessage(message);
+						return false;
+	    	}else{
+	    		this.$router.push(e);
+	    	}
+	 	},
   	searchRoute(){
-  		this.$router.push('/pages/ucenter/search');
+ 			var hrefD = window.location.href;
+				var delDevice = hrefD.split('#')[0];
+				var comHref =delDevice .substring(delDevice.length-1,0);  //android和ios公用链接头
+				if(hrefD.indexOf('device')>-1){
+	    		var device = hrefD.split('?')[1].split('=')[1];
+	    	}
+	//  	http://192.168.124.29:8081/#/?device=andriod;
+	    	if(device == 'android'){
+	    			window.android.toSearch(comHref + '/#/pages/ucenter/search'); //调起andriod交互方法(由app发起。浏览器会报错正常)
+	    			return false;
+	    	}else if(device == 'ios'){
+	    			var message = {'url':comHref + '/#/pages/ucenter/search'}
+						window.webkit.messageHandlers.webViewApp.postMessage(message);
+						return false;
+	    	}else{
+		  		this.$router.push('/pages/ucenter/search');
+		  		/*清除搜索记录缓存*/
+		  		this.$cookie.delCookie('search');
+					this.$cookie.delCookie('searchKey');
+			}
   	},
   	switchCate(eventId){
+  		Indicator.open();
 	    var that = this;
+	    that.$cookie.setCookie('eventId',eventId);
 	    that.$http({
         method: 'post',
         url: that.$url+'catalog/current',
 				params:{ id : eventId  }
     	}).then(function (response) {
+    		Indicator.close();
 		    that.currentCategory = response.data.data.currentCategory
 		  })
   	}
@@ -81,11 +163,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only  active -->
 <style scoped>
-	.searchTop{
-		position: fixed;
-    width: 100%;
-    top: 0;
-    z-index: 2;
+	.classification{
+		background-color:#fff !important;
 	}
 	.front_name {
 		position:absolute;
@@ -156,9 +235,10 @@ width:auto;
 }
 	.rightca{
 		float:left;
+		-webkit-overflow-scrolling: touch; 
 		border-left:1px solid #fafafa;
-		height: 11rem;
-		padding:0 .30rem 0 .30rem;
+		height: 10.5rem;
+		padding:0 .3rem 0 .3rem;
 		width: 5.2rem;
 		margin-top: 0.3rem;
 		position: relative;
@@ -174,18 +254,19 @@ width:auto;
 		overflow: hidden;
 	}
 		.wusearch{
-			font-size:.28rem !important;
+			font-size:.3rem !important;
 			height:100%;
 		}
 		.content{
 			overflow: hidden;
    	 	padding-top: 1.2rem;
-    	height: 11rem;
-    	background-color: #fff;
+   	 	height:10.5rem;
 		}
 		.content .catalog{
+			/*解决ios卡顿问题*/
+			-webkit-overflow-scrolling: touch;   
 			float:left;
-			height:11rem;
+			height:10.5rem;
 			width:1.62rem;
 			overflow-y:scroll ;
 			overflow-x:hidden ;

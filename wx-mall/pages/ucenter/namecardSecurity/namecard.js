@@ -33,6 +33,17 @@ Page({
     } else if (!idcard.match(/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/)){
       util.showErrorToast('身份证号不正确');
       return false;
+    } else if (idcard.length == 15) {
+      wx.showModal({
+        title: '',
+        content: '非18位证件号认证请联系客服',
+        success: function (res) {
+          if (res.confirm) {
+            
+          }
+        }
+      });
+      return false;
     }
 
     let that = this;
@@ -43,7 +54,7 @@ Page({
     },'post','application/json').then(function (res) {
       console.log(res);
       if(res.code == '500'){
-        util.showErrorToast(res.msg);
+        util.showErrorToast(res.data);
       }else{
         wx.switchTab({ //跳转到tabbar页面
           url: '/pages/ucenter/index/index',

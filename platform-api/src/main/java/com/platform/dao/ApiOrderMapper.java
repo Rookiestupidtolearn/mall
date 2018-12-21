@@ -68,3 +68,4 @@ public interface ApiOrderMapper extends BaseDao<OrderVo> {
 	 */
 	List<OrderVo> querySuccessOrder(Long userId);
 }
+

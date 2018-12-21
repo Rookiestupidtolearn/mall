@@ -321,6 +321,7 @@ public class ApiOrderController extends ApiBaseAction {
      */
 	@ApiOperation(value = "查询各订单")
 	@PostMapping("queryUnPayments")
+//	@IgnoreAuth
 	public Object queryUnPayments(@LoginUser UserVo loginUser,
 			@RequestParam(value = "page", defaultValue = "1") Integer page,
 			@RequestParam(value = "size", defaultValue = "10") Integer size) {
@@ -328,10 +329,10 @@ public class ApiOrderController extends ApiBaseAction {
 		JSONObject feedbackJson = super.getJsonRequest();
 		
 		String orderStatus = feedbackJson.get("orderStatus").toString();
-		
+
 		String[] state = null;
 		Map params = new HashMap();
-		params.put("user_id", loginUser.getUserId());
+		params.put("user_id", loginUser == null ? null : loginUser.getUserId());
 		params.put("page", page);
 		params.put("limit", size);
 		if ("all".equals(orderStatus)) {// 全部订单

@@ -41,57 +41,32 @@ h1, h2, h3, h4, h5, h6{ font-size:100%; font-family: Microsoft YaHei;}
 img{border: none;}
 .scope{min-width:320px; max-width:540px;}
 /*body{font-size: 62.5%;}*/
-input:-webkit-autofill { 
--webkit-box-shadow:inset 0 0 0 100px #FFFFFF inset; 
--webkit-text-fill-color: #818391;
-}
-input::-webkit-input-placeholder, textarea::-webkit-input-placeholder { 
-color: #bfbfbf; 
-} 
-input:-moz-placeholder, textarea:-moz-placeholder { 
-color: #bfbfbf; 
-} 
-input::-moz-placeholder, textarea::-moz-placeholder { 
-color: #bfbfbf; 
-} 
-input:-ms-input-placeholder, textarea:-ms-input-placeholder { 
-color: #bfbfbf; 
-}
-input,button{
-	outline: none;
-}
-body{
-	margin:0;
-	padding-bottom: 1.2rem;
-}
-.mint-msgbox-cancel{
-	box-sizing: border-box;
-	-webkit-box-sizing: border-box;
-}
-.mint-tabbar{
-	position: fixed;
-}
-.mint-indicator-wrapper{
-	padding: .2rem .5rem !important;
-}
-.mt88{
-	margin-top:.88rem !important;
-}
-.mint-msgbox-btns button{
-	font-size:.28rem;
-}
+input:-webkit-autofill { -webkit-box-shadow:inset 0 0 0 100px #FFFFFF inset;-webkit-text-fill-color: #818391;}
+input::-webkit-input-placeholder, textarea::-webkit-input-placeholder { color: #bfbfbf;} 
+input:-moz-placeholder, textarea:-moz-placeholder { color: #bfbfbf;} 
+input::-moz-placeholder, textarea::-moz-placeholder { color: #bfbfbf;} 
+input:-ms-input-placeholder, textarea:-ms-input-placeholder { color: #bfbfbf;}
+input,button{	outline: none;}
+body{	margin:0;	padding-bottom: 1.2rem;}
+.mint-msgbox-cancel{	box-sizing: border-box;	-webkit-box-sizing: border-box;}
+.mint-tabbar{	position: fixed;}
+.mint-indicator-wrapper{	padding: .2rem .5rem !important;}
+.mt88{	margin-top:.88rem !important;}
+.mint-msgbox-btns button{	font-size:.28rem;}
 /*注册*/
-.mint-field .mint-cell-title{
-		text-align: left;
-		font-size:.32rem;
-		width:1.7rem;
-}
-.mint-cell-wrapper{
-	padding:0 .4rem 0 .2rem;
-}
-.mint-cell:last-child{
-	margin-top:.1rem;
-}
+.mint-field .mint-cell-title{		text-align: left;		font-size:.32rem;		width:1.7rem;}
+.mint-cell-wrapper{	padding:0 .4rem 0 .2rem;}
+.mint-cell:last-child{	margin-top:.1rem;}
 /*.mint-button--small{
 	width:2.1rem;
 }*/
+/*智齿客服*/
+#zhichiBtnBox{bottom:2.5rem !important;}
+/*搜索高度自适应处理*/
+.mint-searchbar-inner {height: .62rem !important; padding: .04rem .06rem !important;}
+.mint-searchbar{padding: .12rem .14rem !important;}
+.searchTop{	position: fixed;    top: 0;    z-index: 2;    width: 7.5rem !important;    height:.95rem !important;}
+.wusearch{	height:.95rem !important;}
+.mint-msgbox-message{ line-height:initial !important;}
+/*克拉按钮*/
+.mint-switch-input:checked + .mint-switch-core {    border-color:#cc9966 !important;    background-color: #cc9966 !important;}

@@ -295,10 +295,11 @@ page{
 .cate-item .item .name{
   display: block;
   width: 365.625rpx;
-  height: 35rpx;
   margin: 11.5rpx 0 22rpx 0;
   text-align: center;
   overflow: hidden;
+  text-overflow:ellipsis;
+  white-space: nowrap;
   padding: 0 20rpx;
   font-size: 30rpx;
   color: #333;

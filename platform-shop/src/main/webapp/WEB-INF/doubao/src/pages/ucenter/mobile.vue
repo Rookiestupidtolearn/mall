@@ -150,7 +150,6 @@
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<!--因加scoped会picker样式不可用-->
 <style scoped>
 	/*已绑定显示*/
 	p{

@@ -1,14 +1,17 @@
 <template>
  	<div class="container">
  		<div class="icon">
- 			<img src="../../../static/images/logo.png"/>
+ 			<img :src="logo"/>
  			<h3>斗宝商城</h3>
  		</div>
  		<div class="form">
  			<p>快速登录</p>
- 			<mt-field label="手机号码"  placeholder="请输入手机号码" type="tel" v-model="phone" :attr="{ maxlength: 11 }" ></mt-field>
- 			<mt-field label="验证码" placeholder="请输入验证码" v-model="captcha" :attr="{ maxlength: 4}" >
-			<mt-button type="primary" size="small" :disabled="disabled" @click="yzm" >{{count}}</mt-button>
+ 			<mt-field label="手机号码"  placeholder="请输入手机号码" type="tel" v-model="phone"  :attr="{ maxlength: 11 }" ></mt-field>
+ 			<mt-field placeholder="请输入图形验证码" v-model="imgcaptcha"  :attr="{ maxlength: 4}"  :style="{display:[ showImg ? 'block' : 'none']}">
+				<img :src="imgyzm" class="imgYzm"/>
+			</mt-field>
+ 			<mt-field label="验证码" placeholder="请输入验证码" v-model="captcha"  :attr="{ maxlength: 4}" >
+				<mt-button type="primary" size="small" :disabled="disabled" @click="yzm" >{{count}}</mt-button>
 			</mt-field>
  		</div>
  		<p class="last">
@@ -27,14 +30,42 @@
 	    return {
 	    	phone:'',
 	    	captcha:'',
+	    	imgcaptcha:'',
+	    	imgyzm:'',
+	    	showImg:false,
 	    	count:'获取验证码',
 	    	disabled:false,
-	    	checked:false
+	    	checked:false,
+	    	logo:require('../../../static/images/logo.png')
 	    }
+	  },
+	  mounted(){
+	  		let that = this;
+	  		var phone =  that.$cookie.getCookie('phone');
+	  		var captcha =  that.$cookie.getCookie('captcha');
+	  		var checked =  that.$cookie.getCookie('checked');
+//	  		var showImg =  that.$cookie.getCookie('showImg');
+	  		if(phone !=="" ){
+	  			that.phone = phone;
+	  		}
+	  		if(captcha !=="" ){
+	  			that.captcha = captcha;
+	  		}
+	  		if(checked !==""){
+	  			that.checked = JSON.parse(checked);
+	  		} 
+//	  		if(showImg !==""){
+//	  			that.showImg = JSON.parse(showImg);
+//	  		} 
 	  },
 	  methods:{
 	  	fwxieyi(){
-	  		this.$router.push('/pages/xieyi/ptfwxy');
+	  		let that = this;
+	  		that.$cookie.setCookie('phone',this.phone);
+	  		that.$cookie.setCookie('captcha',this.captcha);
+	  		that.$cookie.setCookie('checked',this.checked);
+//	  		that.$cookie.setCookie('imgcaptcha',this.imgcaptcha);
+	  		that.$router.push('/pages/xieyi/ptfwxy');
 	  	},
 	  	submit(){
 	  		let that = this;
@@ -56,6 +87,13 @@
 	  			return false;
 	  		}
 	  		
+	  		if(this.showImg == true){
+	  			if(this.imgcaptcha == ''){
+		  			this.$toast({message:'请输入图形验证码',duration:1500});
+		  			return false;
+		  		}
+	  		}
+	  		
 	  		if(this.checked == false){
 	  			this.$toast({message:'请阅读平台服务协议',duration:1500});
 	  			return false;
@@ -65,7 +103,8 @@
 		        url:that.$url+ 'auth/login_by_mobile',
 		        params:{
 		        	mobile:this.phone,
-		        	code:this.captcha
+		        	code:this.captcha,
+		        	yzm:this.imgcaptcha//图形验证码需要传的参数
 		        }
 	    	}).then(function (res) {
 	    		if(res.data.code !== 500){
@@ -101,25 +140,34 @@
 		        method: 'post',
 		        url:that.$url+ 'sendSms',
 		        params:{
-		        	mobile:this.phone
+		        	mobile:this.phone,
+		        	code:this.imgcaptcha
 		        }
 	    	}).then(function (res) {
+//	    		var res ={"data":{"msg": "请传入图形验证码","code": 0,"count": 5}};
 	    		if(res.data.code == 0){
-                    that.disabled = true;
-			  		let i = 60;
-			  		let countDown = setInterval(function(){
-			  			i -- ;
-			  			if( i<10){
-			  				that.count = '0'+i +'s';
-			  			}else{
-			  				that.count =i +'s';
-			  			}
-			  			if(i<=0){
-			  				clearInterval(countDown);
-			  				that.count = '获取验证码';
-			  				that.disabled = false;
-			  			}
-			  		}, 1000);
+	    			/*图形验证码是否显示*/
+			  		if (res.data.count >=5){
+			  			that.showImg = true;
+			    		that.imgyzm = 'http://192.168.0.11:6101/platform/captcha.jpg'; //后台的图片
+//			    		that.$cookie.setCookie('showImg',that.showImg);
+			  		}else{
+	                    that.disabled = true;
+				  		let i = 60;
+				  		let countDown = setInterval(function(){
+				  			i -- ;
+				  			if( i<10){
+				  				that.count = '0'+i +'s';
+				  			}else{
+				  				that.count =i +'s';
+				  			}
+				  			if(i<=0){
+				  				clearInterval(countDown);
+				  				that.count = '获取验证码';
+				  				that.disabled = false;
+				  			}
+				  		}, 1000);
+			  		}
 		    	}else{
 		    		that.$toast({message:res.data.msg,duration:3000});
 		    	}
@@ -132,6 +180,9 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+	.imgYzm{
+		width:2rem;
+	}
 	.icon{
 		margin-top:.5rem;
 	}

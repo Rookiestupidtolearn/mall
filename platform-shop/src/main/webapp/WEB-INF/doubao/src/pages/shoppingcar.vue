@@ -3,11 +3,11 @@
   	<!--公用头部-->
   	<!--<headbar :headFont = "headFont"></headbar>-->
   	
-  	<div class="service-policy ">
+  	<!--<div class="service-policy ">
   		<span class="item">30天无忧退货</span>
   		<span class="item">48小时快速退款</span>
   		<span class="item">免邮费</span>
-  	</div>
+  	</div>-->
   	<div class="no-cart" v-if="cartGoods.length <= 0">
     <div class="c">
       <div class="title-box">购物车空空如也～</div>
@@ -88,19 +88,9 @@ export default {
     }
   },
   mounted(){
-		this.index();
+		this.getCartList();
   },
   methods:{
-  		index(){
-  			var that = this;   
-  			that.$http({
-        method: 'post',
-        url: that.$url+'cart/index',
-    	}).then(function (response) {
-				    that.cartGoods = response.data.data.cartList;
-				    that.cartTotal = response.data.data.cartTotal;
-		  })
-  		},
 	  	deleteCart(){
 	  			//获取已选择的商品
 			    let that = this;
@@ -125,7 +115,7 @@ export default {
 			
 		  that.$http({
 	        method: 'post',
-	        url: that.$url+'cart/delete',
+	        url: that.$url+'cart/delete.options',
 	        data:{productIds: productIds.join(',')}
         }).then(function (res) {
         		var res = res.data;
@@ -169,7 +159,7 @@ export default {
 			      });
 			     that.$http({
 			        method: 'post',
-			        url: that.$url+'cart/checked',
+			        url: that.$url+'cart/checked.options',
 			        data:{ productIds: productIds.join(','), isChecked: that.isCheckedAll() ? 0 : 1 }
 			     }).then(function (res) {
 			     	var res = res.data;
@@ -186,7 +176,7 @@ export default {
 			    } else {
 			      //编辑状态
 			      let checkedAllStatus = that.isCheckedAll();
-			      let tmpCartData = this.cartGoods.map(function (v) {
+			      let tmpCartData = that.cartGoods.map(function (v) {
 			        v.checked = !checkedAllStatus;
 			        return v;
 			      });
@@ -201,7 +191,7 @@ export default {
 			    if (!this.isEditCart) {
 			      that.$http({
 			        method: 'post',
-			        url: that.$url+'cart/checked',
+			        url: that.$url+'cart/checked.options',
 			        data:{ 
 				        	productIds: that.cartGoods[itemIndex].product_id, 
 				        	isChecked: that.cartGoods[itemIndex].checked ? 0 : 1 
@@ -283,7 +273,7 @@ export default {
 	  		let that = this;
 		    that.$http({
 		    	 method: 'post',
-        	url: that.$url+'cart/update',
+        	url: that.$url+'cart/update.options',
 		      data:{
 		      	productId: productId,
 			      goodsId: goodsId,
@@ -460,14 +450,6 @@ export default {
     position:relative;
 }
 
-.cart-div .item .img{
-    float: left;
-    height:1.25rem;
-    width: 1.25rem;
-    background: #f4f4f4;
-    margin: 0 .18rem 0 0;
-}
-
 .midHover{
   float:left;
   height:1.25rem;
@@ -494,7 +476,8 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 4.5rem;
+    width: 4.5rem;
+    text-align: left;
     display: inline-block;
 }
 

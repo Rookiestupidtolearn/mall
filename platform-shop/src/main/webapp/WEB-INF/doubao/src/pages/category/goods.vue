@@ -1,5 +1,5 @@
 <template>
- 	<div class="container">
+ 	<div class="container" ref="input1">
  		<!--公用头部-->
   		<!--<headbar :headFont = "headFont"></headbar>-->
   	
@@ -9,11 +9,11 @@
 			  	<img :src="item.img_url"/>
 			  </mt-swipe-item>
 			</mt-swipe>
-			<div class="service-policy">
+			<!--<div class="service-policy">
 		  		<span class="item">30天无忧退货</span>
 		  		<span class="item">48小时快速退款</span>
 		  		<span class="item">免邮费</span>
-		  	</div>
+		  	</div>-->
 		  	<div class="goods-info">
 		     <div class="c">
 		        <p class="name">{{goods.name}}</p>
@@ -68,12 +68,10 @@
 		        <span class="title">大家都在看</span>
 		      </div>
 		      <div class="b">
-		        <div class="item" v-for="item in relatedGoods" >
-		          <router-link :to="'/pages/goods/goods?id='+item.id">
+		        <div class="item" v-for="item in relatedGoods" @click="detailHref('/pages/goods/goods?id='+item.id)">
 		            <img class="img" :src="item.list_pic_url" background-size="cover"/>
 		            <p class="name">{{item.name}}</p>
 		            <p class="price">￥{{item.market_price}}</p>
-		          </router-link>
 		        </div>
 		      </div>
 		    </div>
@@ -126,6 +124,7 @@
 
 <script>
 	import { Toast } from 'mint-ui';
+	import { Indicator } from 'mint-ui';
 //	import headbar from '@/components/headbar.vue'
 		
 	export default {
@@ -152,9 +151,9 @@
 	    	cartGoodsCount:0,
 	    	userHasCollect: 0,
 	    	openAttr: false,
-	    	noCollectImage: "../../../static/images/icon_collect.png",
-		    hasCollectImage: "../../../static/images/icon_collect_checked.png",
-		    collectBackImage: "../../../static/images/icon_collect.png"
+	    	noCollectImage: require("../../../static/images/icon_collect.png"),
+		    hasCollectImage: require("../../../static/images/icon_collect_checked.png"),
+		    collectBackImage: require("../../../static/images/icon_collect.png")
 	    }
 	  },
 	  mounted(){
@@ -167,21 +166,53 @@
 		        url:that.$url+ 'cart/goodscount',
 	    	}).then(function (response) {
 	    		if(response.data.errno==0){
-	    			let _res = response.data.data;
-	    			that.cartGoodsCount = _res.cartTotal.goodsCount;
+	    			let _res = response.data;
+	    			var goodsCount = _res.data.cartTotal.goodsCount; //购物车数量
+	    			if (goodsCount ==""  || goodsCount == undefined){
+	    				that.cartGoodsCount = 0;
+	    			}else{
+	    				that.cartGoodsCount = goodsCount;
+	    			}
 	    		}
 		    });
-	  		
-	  		//关联
+		    //大家都在看
+	  		this.relaed();
+	    	//商品详情
+	  		this.Detail();
+	    	
+	  },
+	destroyed(){
+ 		document.getElementById('zhichiBtnBox').style.display= 'none'; //默认隐藏智齿
+	},
+	watch:{
+		$route(to,from){
+			this.relateds();
+		}
+	},
+	methods:{
+		relateds(){
+			if(parseInt(this.$route.query.id) && this.$route.query.id !== this.idm){
+				this.idm=this.$route.query.id;
+			    this.Detail();
+			    this.relaed();
+			}
+		},
+		relaed(){
+			let that = this;
+			Indicator.open();
+			//关联
 	    	that.$http({
 	    		method: 'post',
 		        url:that.$url+ 'goods/related',
 		        params:{id:that.idm}
 	    	}).then(function (response) {
-		          that.relatedGoods = response.data.data.goodsList;
+    			Indicator.close();
+		        that.relatedGoods = response.data.data.goodsList;
 		    });
-	    	
-	  		//商品详情
+		},
+		Detail(){
+			let that = this;
+			//商品详情
 	    	that.$http({
 		        method: 'post',
 		        url:that.$url+ 'goods/detail',
@@ -201,6 +232,8 @@
 	    		that.minPriceList = res.data.minPriceList;
 //				that.banner = response.data.data.gallery
 
+				that.zhichi(); //智齿客服
+				
 		    	//购物车下架至灰
 		        if (that.undercarriage == '0' || that.undercarriage == '2'){
 		            that.undercarriage = true,
@@ -222,27 +255,65 @@
 		        let _specificationList = that.specificationList;
 		        let minGoodsSpec = (that.minPriceList[0].goods_specification_ids).split('_');
 		        let specValueList = that.specificationList;
-		        for (let i = 0; i < minGoodsSpec.length; i++){
-		          for (let j = 0; j < specValueList[i].valueList.length; j++){
-		            if (minGoodsSpec[i] == specValueList[i].valueList[j].id){
-		              showArraySpec.push(specValueList[i].valueList[j].value);
-		              if (_specificationList[i].valueList[j].checked) {
-		                _specificationList[i].valueList[j].checked = false;
-		              } else {
-		                _specificationList[i].valueList[j].checked = true;
-		              }
-		            } else {
-		              _specificationList[i].valueList[j].checked = false;
-		            }
-		          }
+		        if(specValueList.length != 0){
+			        for (let i = 0; i < minGoodsSpec.length; i++){
+			          for (let j = 0; j < specValueList[i].valueList.length; j++){
+			            if (minGoodsSpec[i] == specValueList[i].valueList[j].id){
+			              showArraySpec.push(specValueList[i].valueList[j].value);
+			              if (_specificationList[i].valueList[j].checked) {
+			                _specificationList[i].valueList[j].checked = false;
+			              } else {
+			                _specificationList[i].valueList[j].checked = true;
+			              }
+			            } else {
+			              _specificationList[i].valueList[j].checked = false;
+			            }
+			          }
+			        }
 		        }
 		        that.market_price = that.minPriceList[0].market_price;
 		        that.checkedSpecText =  showArraySpec.join('　');
 		        that.specificationList = _specificationList;
 		        
 	 		 })
-	  },
-	  methods:{
+		},
+		zhichi(){
+			let that = this;
+			//			获取userId
+			if(document.getElementById('zhichiBtnBox') == null){
+				var userId = that.$cookie.getCookie('userId');
+				//	  	<!--该链接可在智齿客服工作台=>设置=>接入渠道中找到--> this指向script了
+				let para=document.createElement("script");
+		        para.src = "https://www.sobot.com/chat/frame/js/entrance.js?sysNum=e5ef8967b4114644a4c290bf0729f959";
+		        para.setAttribute("id", "zhichiScript");
+	        	para.setAttribute("class", "zhiCustomBtn");
+	        	para.setAttribute("data-args", "partnerId="+userId);   //ios记录用户标识
+		       	this.$refs.input1.appendChild(para);
+	
+				para.onload=function(){
+					//	初始化智齿咨询组件实例
+					var zhiManager = (getzhiSDKInstance());
+					//再调用load方法
+					zhiManager.on("load", function() {
+					    zhiManager.initBtnDOM();
+					});
+					
+					zhiManager.set('title_info',that.goods.name);   //商品信息的标题（必传）
+					zhiManager.set('url_info',window.location.href);  //商品信息的商品链接地址（必传）
+					zhiManager.set('abstract_info',that.goods.name);  //商品信息的简述内容（选传） 无描述用的标题
+					zhiManager.set('label_info',that.market_price);	  //商品标签例：价格（选传）
+					zhiManager.set('thumbnail_info',that.banner[0].img_url);  //商品的缩略图（选传）
+					
+	
+				}
+			}else{
+				document.getElementById('zhichiBtnBox').style.display= 'block'; //默认隐藏智齿
+			}
+			
+		},
+		detailHref(e){
+			this.$router.push(e)
+		},
 	  	cutNumber(){
       		this.number = (this.number - 1 > 1) ? this.number - 1 : 1
 	  	},
@@ -250,7 +321,23 @@
 	     	 this.number = this.number + 1
 	  	},
 	  	openCartPage(){
-	  		this.$router.push('/pages/shoppingcar');
+	  		/*android与ios交互*/
+	  		var hrefD = window.location.href;
+				if(hrefD.indexOf('device')>-1){
+	    		var device = hrefD.split('&')[1].split('=')[1];
+	    	}
+	//  	http://192.168.124.29:8081/#/?device=andriod;
+//				alert(device);
+	    	if(device == 'android'){
+	    			window.android.toShopCart(); //调起andriod交互方法(由app发起。浏览器会报错正常)
+	    			return false;
+	    	}else if(device == 'ios'){
+	    			var message = {'url':'toShopCart'}
+					window.webkit.messageHandlers.webViewApp.postMessage(message);
+					return false;
+	    	}else{
+	    		this.$router.push('/pages/shoppingcar');
+	    	}
 	  	},
 	  	getGoodsRelated() {
 		    let that = this;
@@ -431,7 +518,7 @@
 		      //添加到购物车
 		      that.$http({
 		    		method: 'post',
-			        url:that.$url+ 'cart/add',
+			        url:that.$url+ 'cart/add.options',
 			        data:{ goodsId:that.goods.id, number:that.number, productId: checkedProduct[0].id }
 		    	}).then(function (response) {
 			          let _res = response;
@@ -471,7 +558,7 @@
 		      //关联
 	    	that.$http({
 	    		method: 'post',
-		        url:that.$url+ 'collect/addordelete',
+		        url:that.$url+ 'collect/addordelete.options',
 		        data:{ typeId: 0, valueId: this.idm}
 	    	}).then(function (response) {
 		          let _res = response.data;
@@ -494,19 +581,6 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <!--v-html  的标签 加样式 用 >>>-->
 <style scoped>
-
-/*商品详情*/
-	/*>>>.ssd-widget-pic{
-	width:7.5rem  !important;
-	height: auto !important;
-	}
-	>>> .ssd-module-wrap{
-		width:7.5rem !important;
-	}
-	>>> .ssd-module{
-		width:7.5rem !important;
-		background-size:
-	}*/
 /*其它*/
 div{
 	font-size:.29rem;
@@ -807,12 +881,14 @@ overflow: hidden;
 .related-goods .item .name{
   display: block;
   width: 3.1145rem;
-  height: .35rem;
   margin: .115rem 0 .15rem 0;
   text-align: center;
   overflow: hidden;
   font-size: .30rem;
   color: #333;
+  overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .related-goods .item .price{
@@ -1092,7 +1168,6 @@ overflow: hidden;
     text-align: center;
     font-size:0;
 }
-
 .goods-info .brand p{
     display: inline-block;
     width: auto;

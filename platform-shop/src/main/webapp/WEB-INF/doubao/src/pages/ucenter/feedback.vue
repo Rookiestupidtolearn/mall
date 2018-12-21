@@ -38,6 +38,7 @@
 	    	values:'请选择反馈类型',
 	    	values2:'',
 	    	introduct:'',
+	    	paramIndex:0,
 	    	index:'',
 	    	introductLength:'0',
 		    contentLength:0,
@@ -89,12 +90,27 @@
 		        return false;
 		      }
 		    }
+		    if(this.values == "商品相关"){
+		    	this.paramIndex=1;
+		    }else if(this.values == "物流状况"){
+		    	this.paramIndex=2;
+		    }else if(this.values == "客户服务"){
+		    	this.paramIndex=3;
+		    }else if(this.values == "优惠活动"){
+		    	this.paramIndex=4;
+		    }else if(this.values == "功能异常"){
+		    	this.paramIndex=5;
+		    }else if(this.values == "产品建议"){
+		    	this.paramIndex=6;
+		    }else if(this.values == "其他"){
+		    	this.paramIndex=7;
+		    }
 		    that.$http({
 			        method: 'post',
-			        url:that.$url+ 'feedback/save',
+			        url:that.$url+ 'feedback/save.options',
 			        data:{
 			        	content:this.introduct,
-			        	index:this.values,
+			        	index:this.paramIndex,
 			        	mobile:this.inputValue
 			        }
 		    	}).then(function (response) {
@@ -102,6 +118,13 @@
 		    			that.$toast(response.data.errmsg);
 		    		}else if(response.data.code == 500 ){
 		    			that.$toast(response.data.msg);
+		    		}else if(response.data.errno == 0 ){
+		    			that.$toast(response.data.data);
+		    			that.values = '请选择反馈类型';
+			            that.introduct = '';
+			            that.contentLength = 0;
+			            that.inputValue =  '';
+			            that.paramIndex=0;
 		    		}
 			 })
 	   }
@@ -133,16 +156,22 @@
 	  float: right;
 	}
 	.pickerO{
-		position: relative;
-		z-index: 3;
+	    height: 4.5rem;
+	    position: fixed;
+	    overflow: hidden;
+	    font-size: .32rem;
+	    z-index: 2;
+	    width: 100%;
+	    background-color: #fff;
+	    bottom: 0;
 	}
 	.pickerO .top{
-		position: fixed;
-		bottom:3.4rem;
-		overflow: hidden;
-		font-size:.32rem;
-		z-index: 2;
-		width: 6rem;
+		position: relative;
+	    top:.5rem;
+	    overflow: hidden;
+	    font-size: .32rem;
+	    z-index: 2;
+	    width: 6rem;
 	    margin: 0 auto;
 	    left: 50%;
 	    margin-left: -3rem;
@@ -155,11 +184,10 @@
 		color: royalblue;
 	}
 	.picker-items{
-		position: fixed;
+		position: fixed !important;
 		bottom: 0;
 		width:100%;	
 		background-color: #fff;
-		padding:.25rem 0;
 	}
 	.picker-slot-wrapper{
 		text-align: center;

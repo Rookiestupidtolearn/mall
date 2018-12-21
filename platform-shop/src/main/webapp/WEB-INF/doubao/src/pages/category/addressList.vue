@@ -158,6 +158,9 @@ export default {
     line-height: .37rem;
     overflow: hidden;
     color: #666;
+    width: 4.8rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .address-list .r{
     width: .52rem;

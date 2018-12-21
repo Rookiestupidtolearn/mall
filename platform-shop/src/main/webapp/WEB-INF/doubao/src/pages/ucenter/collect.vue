@@ -1,8 +1,8 @@
 <template>
- 	<div class="collect-list">
+ 	<div class="collect">
  		<!--公用头部-->
   		<!--<headbar :headFont = "headFont"></headbar>-->
-  	<div >
+  	<div v-if="collectList.length>0"  class="collect-list">
 	    <router-link :to="'/pages/goods/goods?id='+item.value_id" class="item" v-for="item in collectList" >
 	      <img class="img" :src="item.list_pic_url"/>
 	      <div class="info">
@@ -11,6 +11,9 @@
 	        <div class="price">￥{{item.market_price}}</div>
 	      </div>
 	    </router-link>
+    </div>
+    <div v-else class="noData">
+	   	没有更多数据了
     </div>
   </div>
 </template>
@@ -32,7 +35,7 @@ export default {
   	var that = this;    
     	that.$http({
 	        method: 'post',
-	        url:that.$url+ 'collect/list',
+	        url:that.$url+ 'collect/list.options',
 	        data:{typeId:0}
     	}).then(function (res) {
     			that.collectList = res.data.data;
@@ -49,6 +52,7 @@ export default {
 .noData{
 	font-size:.29rem;
 	text-align: center;
+	margin-top:.5rem;
 }
 .collect-list{
   width: 100%;

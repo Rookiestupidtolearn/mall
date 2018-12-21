@@ -351,7 +351,7 @@
 		    let that = this;
 		    that.$http({
 		    	method:'post',
-		    	url:that.$url + 'address/save',
+		    	url:that.$url + 'address/save.options',
 		    	headers: {
 					'Content-Type':'application/json'
 				},
