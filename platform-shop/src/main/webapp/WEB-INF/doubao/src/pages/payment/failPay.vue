@@ -5,7 +5,7 @@
   	<p>否则订单将会被系统取消</p>
   	<div class="buttongroup">
   		<span @click="look">查看订单</span>
-  		<span @click="pay">重新付款</span>
+  		<!--<span @click="pay">重新付款</span>-->
   	</div>
   </div>
 </template>
@@ -24,10 +24,7 @@ export default {
 	 },
 	 methods:{
  		look(){
-	 		
-	 	},
-	 	pay(){
-	 		
+	 		this.$router.push('/pages/ucenter/order')
 	 	}
 	 		
  	}

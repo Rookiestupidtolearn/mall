@@ -1,8 +1,8 @@
 <template>
   <div class="failPay">
   	<h4>支付成功</h4>
-  	<p>订单编号  {{paycard}}</p>
-  	<p>支付金额  {{paymoney}}</p>
+  	<!--<p>订单编号  {{paycard}}</p>
+  	<p>支付金额  {{paymoney}}</p>-->
   	<div class="buttongroup">
   		<span @click="look">查看订单</span>
   		<span @click="success">完成</span>
@@ -24,7 +24,7 @@ export default {
 	 },
 	 methods:{
 	 	look(){
-	 		
+	 		this.$router.push('/pages/ucenter/order')
 	 	},
 	 	success(){
 	 		this.$router.push('/pages/shoppingcar')

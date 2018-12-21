@@ -213,7 +213,7 @@ export default {
 				        data:{orderId:id}
 			    	}).then(function (res) {
 			    		if(res.data.errno == 0){
-			    			this.$router.push('/pages/ucenter/order')
+			    			that.$router.push('/pages/ucenter/order')
 			    		}else{
 			    			MessageBox({
 							  	title: ' ',
@@ -225,7 +225,7 @@ export default {
 					})
 				}
 		});
-		document.getElementsByClassName('mint-msgbox-confirm')[0].innerText = '知道了';
+		document.getElementsByClassName('mint-msgbox-confirm')[0].innerText = '确定';
   	}
   }
 }

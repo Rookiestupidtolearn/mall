@@ -203,7 +203,7 @@ export default {
 	  	},
 	  	inputFocus(){
 	  		var that = this;
-	  		that.$cookie.delCookie('scrollSearch');
+//	  		that.$cookie.delCookie('scrollSearch');
       		that.searchStatus =  false,
 			   that.$http({
 			        method: 'post',
@@ -215,6 +215,7 @@ export default {
 	  	},
 	  	showList(data){
 	  		let that = this;
+	  		console.log(that.value);
 	  		var data = {
 	  			keyword:that.value,
 	        	page:that.page,
