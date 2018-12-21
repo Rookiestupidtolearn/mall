@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -80,7 +81,7 @@ public class ApiSmsController {
      * @return R
      */
     @IgnoreAuth
-    @GetMapping("/sendSms")
+    @PostMapping("/sendSms")
     public Object sendSms(HttpServletRequest request, @RequestParam Map<String, String> params) {
     	logger.info("api/sendSms发送登录短信验证码入参："+params.toString());
     	SysSmsLogEntity smsLog = new SysSmsLogEntity();
