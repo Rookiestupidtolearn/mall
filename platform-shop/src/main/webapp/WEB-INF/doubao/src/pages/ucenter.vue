@@ -113,7 +113,7 @@ export default {
     	number2:'',
     	number3:'',
     	number4:'',
-    	avatarImg:'https://platform-wxmall.oss-cn-beijing.aliyuncs.com/upload/20180727/150547696d798c.png',
+    	avatarImg:require("../../static/images/avatar.png"),
       category:[],
       userName:'Hi,游客',
       mobile:'',
@@ -135,7 +135,7 @@ export default {
 	  		if(userInfo !== null){
 				this.availResult = true;
 				if(userInfo.avatar == null || userInfo.avatar == ""){
-					this.avatarImg = 'https://platform-wxmall.oss-cn-beijing.aliyuncs.com/upload/20180727/150547696d798c.png'
+					this.avatarImg = require("../../static/images/avatar.png");
 				}else{
 					this.avatarImg = userInfo.avatar;
 				}
