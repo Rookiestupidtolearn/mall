@@ -32,6 +32,7 @@ public class PaymobileUtils {
 	public static final String QUERYBANKCARDLISTAPI_NAME	= "QueryBankCardListApi";
 	public static final String UNBINDCARDAPI_NAME	= "UnbindCardApi";
 	public static final String ORDERCALLBACKAPI_NAME = "OrderCallbackApi";
+	public static final String ORDER_FCALL_BACKAPI_NAME = "OrderFcallbackurlApi";
 	
 	//编码格式UTF-8
 	public static final String CHARSET 			= "UTF-8";

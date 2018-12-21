@@ -171,7 +171,9 @@ public class ApiSendSMSService {
 			
 			SmsLogVo smsLogVo = new SmsLogVo();
 			smsLogVo.setLog_date(System.currentTimeMillis() / 1000);
-			smsLogVo.setUser_id(Long.valueOf(userId.toString()));
+			if (userId != null) {
+				smsLogVo.setUser_id(Long.valueOf(userId.toString()));
+			}
 			smsLogVo.setPhone(mobile);
 			smsLogVo.setSmsCode(sms_code);
 			smsLogVo.setSms_text(msgContent);

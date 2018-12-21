@@ -1,10 +1,17 @@
 package com.platform.api;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.junit.Ignore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.code.kaptcha.Constants;
+import com.google.code.kaptcha.Producer;
 import com.platform.annotation.IgnoreAuth;
 import com.platform.cache.J2CacheUtils;
 import com.platform.entity.SysSmsLogEntity;
@@ -44,6 +52,26 @@ public class ApiSmsController {
     private ApiUserService userService;
     @Autowired
     private ApiSendSMSService apiSendSMSService;
+    @Autowired
+    private Producer  producer;
+    
+    @RequestMapping("image.jpg")
+    @IgnoreAuth
+    public void captcha(HttpServletResponse response) throws ServletException, IOException {
+        response.setHeader("Cache-Control", "no-store, no-cache");
+        response.setContentType("image/jpeg");
+
+        //生成文字验证码
+        String text = producer.createText();
+        //生成图片验证码
+        BufferedImage image = producer.createImage(text);
+        //保存到shiro session
+//        ShiroUtils.setSessionAttribute(Constants.KAPTCHA_SESSION_KEY, text);
+
+        ServletOutputStream out = response.getOutputStream();
+        ImageIO.write(image, "jpg", out);
+    }
+    
     /**
      * 发送短信
      *
@@ -63,13 +91,19 @@ public class ApiSmsController {
         if (params.get("mobile")== null ||params.get("mobile").equals("") ) {
         	 return R.error("手机号不能为空！");
 		}
-        Integer count = 0 ;
-        Integer countIP = 0;
+       
+   
     	//校验图形验证码
 		Level2Cache level2 = CacheProviderHolder.getLevel2Cache(J2CacheUtils.INVALID_CACHE);
-		 count = (Integer) level2.get("DOUBAO_SMS_COUNT:" + params.get("mobile"));
-         countIP = (Integer) level2.get("DOUBAO_SMS_IP_COUNT:" + validIP);
-   
+		Integer count = (Integer) level2.get("DOUBAO_SMS_COUNT:" + params.get("mobile"));
+		 Integer countIP = (Integer) level2.get("DOUBAO_SMS_IP_COUNT:" + validIP);
+        if (count == null) {
+        	count = 0;
+		}
+        if (countIP == null) {
+        	countIP = 0;
+		}
+		 
         Map<String, Object> result = new HashMap<String, Object>();
         if (count !=null) {
             logger.info("今日手机号"+params.get("mobile")+"已发送"+count+"次");
@@ -81,15 +115,24 @@ public class ApiSmsController {
         if (count >=5 || countIP >=5) {
             String captcha =  params.get("code");
             if (captcha == null) {
-            	return result.put("msg", "请传入图形验证码");
+            	result.put("code", 0);
+            	result.put("msg", "请传入图形验证码");
+            	result.put("count", count);
+            	return result;
 			}
             String kaptcha = ShiroUtils.getKaptcha(Constants.KAPTCHA_SESSION_KEY);
             if(null == kaptcha){
-                return R.error("图形验证码已失效");
+            	result.put("code", 0);
+            	result.put("msg", "图形验证码已失效");
+            	result.put("count", count);
+            	return result;
             }
 
             if (!captcha.equalsIgnoreCase(kaptcha)) {
-                return R.error("图形验证码错误");
+            	result.put("code", 0);
+            	result.put("msg", "图形验证码错误");
+            	result.put("count", count);
+            	return result;
             }
 		}
         

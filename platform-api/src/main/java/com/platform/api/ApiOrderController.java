@@ -212,6 +212,10 @@ public class ApiOrderController extends ApiBaseAction {
     public Object cancelOrder(Integer orderId) {
         try {
         	JSONObject feedbackJson = super.getJsonRequest();
+        	
+        	if (feedbackJson.get("orderId") == null) {
+    			return toResponsFail("订单orderId不能为空");
+    		}
         	orderId = Integer.parseInt(feedbackJson.get("orderId").toString());
             OrderVo orderVo = orderService.queryObject(orderId);
             if (orderVo.getOrder_status() == 300) {
@@ -272,6 +276,9 @@ public class ApiOrderController extends ApiBaseAction {
     public Object confirmOrder(Integer orderId) {
         try {
         	JSONObject feedbackJson = super.getJsonRequest();
+        	if (feedbackJson.get("orderId") == null) {
+    			return toResponsFail("订单orderId不能为空");
+    		}
         	orderId = Integer.parseInt(feedbackJson.get("orderId").toString());
             OrderVo orderVo = orderService.queryObject(orderId);
             orderVo.setOrder_status(9);
@@ -294,6 +301,7 @@ public class ApiOrderController extends ApiBaseAction {
     public JSONObject queryLogistics(Long orderId){
     	JSONObject resultObj = new JSONObject();
     	JSONObject feedbackJson = super.getJsonRequest();
+    	
     	orderId = Long.parseLong(feedbackJson.get("orderId").toString());
     	OrderVo order = apiOrderMapper.queryObject(orderId);
     	if(order == null){
@@ -319,6 +327,7 @@ public class ApiOrderController extends ApiBaseAction {
 			@RequestParam(value = "size", defaultValue = "10") Integer size) {
 		
 		JSONObject feedbackJson = super.getJsonRequest();
+		
 		String orderStatus = feedbackJson.get("orderStatus").toString();
 
 		String[] state = null;
@@ -333,7 +342,7 @@ public class ApiOrderController extends ApiBaseAction {
 		} else if ("success".equals(orderStatus)) {// 已完成
 			state   = new String[]{"9"};
 		} else if ("delivered".equals(orderStatus)) {// 待收货
-			state   = new String[]{"300","201"};
+			state   = new String[]{"200","300","201"};
 		} else if ("cancelFlag".equals(orderStatus)) {// 已取消
 			state =new String[]{"101","103"};
 		}
@@ -370,6 +379,7 @@ public class ApiOrderController extends ApiBaseAction {
     public JSONObject queryOrderLogistics(Long orderId){
     	JSONObject resultObj = new JSONObject();
     	JSONObject feedbackJson = super.getJsonRequest();
+    	
     	orderId = Long.parseLong(feedbackJson.get("orderId").toString());
     	OrderVo order = apiOrderMapper.queryObject(orderId);
     	if(order == null){

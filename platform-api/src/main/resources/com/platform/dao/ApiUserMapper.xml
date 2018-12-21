@@ -208,14 +208,14 @@
 	    select
 				`id`,
 				`shop_user_id`,
-				case when `tran_type` = 1 then '充值' else '未知' end 'tran_type',
+				 case when `tran_type` = 1 then '平台充值'  when `tran_type` = 2 then '消费' else '' end 'tran_type',
 				`tran_flag`,
 				`tarn_amount`,
 				`current_amount`,
 				`create_time`,
 				`trade_no`
 			from qz_money_record
-			where shop_user_id = #{userId} order by create_time desc
+			where shop_user_id = #{userId}  and tran_type != 3 order by create_time desc
     </select>
 
 </mapper>

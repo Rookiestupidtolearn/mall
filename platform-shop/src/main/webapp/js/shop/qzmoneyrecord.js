@@ -24,9 +24,9 @@ $(function () {
 			},
 			{label: '资金变动类型 ', name: 'tranType', index: 'tran_type', width: 80,formatter: function (value){
 				if(value == '1'){
-					return "充值";
+					return "平台充值";
 				}else if(value == '2'){
-					return "优惠券";
+					return "消费";
 				}
 			}
 			},

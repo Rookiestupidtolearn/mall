@@ -40,27 +40,39 @@ public class ApiYeepayController extends ApiBaseAction {
 	@Autowired
 	private ApiOrderService apiOrderService;
     @Autowired
-    private QzUserAccountMapper qzUserAccountMapper;
-    @Autowired
-    private ApiMoneyRecordMapper apiMoneyRecordMapper;
-    @Autowired
     private ApiOrderService orderService;
 
 	@IgnoreAuth
 	@GetMapping("yeepayOrderFCallback")
 	public String yeepayOrderFCallback(String data, String encryptkey) {
-		logger.info("易宝支付订单支付回调start");
-		if (StringUtils.isEmpty(data) || StringUtils.isEmpty(encryptkey)) {
-			logger.error("易宝支付回调参数错误");
-			return "ERROR";
-		}
-
-		// 解密data
-		TreeMap<String, String> dataMap = PaymobileUtils.decrypt(data, encryptkey);
-		logger.info("易宝支付订单回调，返回的明文参数：" + dataMap);
-		// sign验签
-		if (!PaymobileUtils.checkSign(dataMap)) {
-			logger.error("易宝支付订单回调 ，sign 验签失败！");
+		logger.info("易宝支付订单支付页面回调start......");
+		
+		try {
+			if (StringUtils.isEmpty(data) || StringUtils.isEmpty(encryptkey)) {
+				logger.error("易宝支付回调参数错误");
+				return "ERROR";
+			}
+			// 解密data
+			TreeMap<String, String> dataMap = PaymobileUtils.decrypt(data, encryptkey);
+			logger.info("易宝支付订单回调，返回的明文参数：" + dataMap);
+			// sign验签
+			if (!PaymobileUtils.checkSign(dataMap)) {
+				logger.error("易宝支付订单回调 ，sign 验签失败！");
+				return "ERROR";
+			}
+			String yborderid = dataMap.get("yborderid");
+			logger.info("易宝支付订单回调，易宝交易流水号" + yborderid);
+			
+			YeeTradeOrderEntity entity = yeeTradeOrderService.queryObjectByYborderid(yborderid);
+			if (entity != null) {
+				entity.getYeeOrderNo();
+				
+			}	
+			
+			
+			
+		} catch (Exception e) {
+			logger.error("易宝支付订单支付页面回调失败，",e);
 			return "ERROR";
 		}
 
@@ -78,7 +90,6 @@ public class ApiYeepayController extends ApiBaseAction {
 				logger.error("易宝支付回调参数错误");
 				return "ERROR";
 			}
-
 			// 解密data
 			TreeMap<String, String> dataMap = PaymobileUtils.decrypt(data, encryptkey);
 			logger.info("易宝支付订单回调，返回的明文参数：" + dataMap);
@@ -122,7 +133,6 @@ public class ApiYeepayController extends ApiBaseAction {
 						order.setOrder_type("404");//支付异常
 						apiOrderService.update(order);
 						orderService.discountUserAmount(order);//支付成功，扣减平台比
-						saveMoneyRecord(order.getUser_id(),0,order);
 					}
 
 				} else {
@@ -145,7 +155,6 @@ public class ApiYeepayController extends ApiBaseAction {
 						order.setOrder_type("1");//正常
 						apiOrderService.update(order);
 						orderService.discountUserAmount(order);//支付成功，扣减平台比
-						saveMoneyRecord(order.getUser_id(),0,order);
 					}
 				}
 
@@ -160,20 +169,12 @@ public class ApiYeepayController extends ApiBaseAction {
 		}
 
 	}
-	 public void saveMoneyRecord(Long userId,Integer type,OrderVo order){
-			QzUserAccountVo userAmountVo =qzUserAccountMapper.queruUserAccountInfo(Long.parseLong(userId.toString()));
-	    	if(userAmountVo != null){
-	    		QzMoneyRecordVo moneyRecord  = new QzMoneyRecordVo();
-	    		moneyRecord.setShopUserId(userId.intValue());
-	    		moneyRecord.setTranType("2");//使用优惠券
-	    		moneyRecord.setTranFlag(type);//0-支出 1-收入
-	    		moneyRecord.setTarnAmount(order.getCoupon_price());
-	    		moneyRecord.setCreateTime(new Date());
-	    		moneyRecord.setTradeNo(order.getOrder_sn());
-	    		if(userAmountVo != null){
-	    			moneyRecord.setCurrentAmount(userAmountVo.getAmount());
-	    		}
-	    		apiMoneyRecordMapper.save(moneyRecord);
-	    	}
-	    }
+	
+	
+	public static void main(String[] args) {
+	BigDecimal aBigDecimal= 	new BigDecimal("12.48");
+	BigDecimal aBigDecimal2= 	new BigDecimal("12.48");
+		System.out.println(aBigDecimal.compareTo(aBigDecimal2));
+	
+	}
 }

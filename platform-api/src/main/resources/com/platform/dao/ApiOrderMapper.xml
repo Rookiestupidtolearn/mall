@@ -228,7 +228,7 @@
 		select * from nideshop_order where order_status = 201 and pay_status = 2 and user_id = #{userId}
 	</select>
 	<select id="queryDelivered" resultMap="orderMap">
-		select * from nideshop_order where order_status in (201,300) and pay_status = 2 and user_id = #{userId}
+		select * from nideshop_order where order_status in (200,201,300) and pay_status = 2 and user_id = #{userId}
 	</select>
 
 	<select id="queryOrderList" resultMap="orderMap">

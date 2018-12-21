@@ -34,6 +34,10 @@ public class QzMoneyRecordEntity implements Serializable {
     private Date createTime;
     //交易流水号(关联各资金订单)
     private String tradeNo;
+    //备注
+    private String remark;
+    //冻结金额
+    private BigDecimal lockAmount;
 
     /**
      * 设置：主键
@@ -139,4 +143,21 @@ public class QzMoneyRecordEntity implements Serializable {
     public String getTradeNo() {
         return tradeNo;
     }
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
+	public BigDecimal getLockAmount() {
+		return lockAmount;
+	}
+
+	public void setLockAmount(BigDecimal lockAmount) {
+		this.lockAmount = lockAmount;
+	}
+    
 }

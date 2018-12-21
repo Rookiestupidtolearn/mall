@@ -14,30 +14,24 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.junit.Ignore;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.platform.annotation.IgnoreAuth;
 import com.platform.annotation.LoginUser;
 import com.platform.cache.J2CacheUtils;
 import com.platform.dao.ApiAddressMapper;
 import com.platform.dao.ApiMoneyRecordMapper;
-import com.platform.dao.ApiUserCouponMapper;
 import com.platform.dao.QzUserAccountMapper;
 import com.platform.entity.AddressVo;
 import com.platform.entity.OrderGoodsVo;
 import com.platform.entity.OrderVo;
 import com.platform.entity.QzMoneyRecordVo;
 import com.platform.entity.QzUserAccountVo;
-import com.platform.entity.UserCouponVo;
 import com.platform.entity.UserVo;
 import com.platform.entity.YeeTradeOrderEntity;
 import com.platform.service.ApiOrderGoodsService;
@@ -90,18 +84,17 @@ public class ApiPayController extends ApiBaseAction {
         return toResponsSuccess("");
     }
 
+    
     @ApiOperation(value = "去支付订单")
     @PostMapping("toPayOrder")
-    @IgnoreAuth
-    public Object toPayOrder(Integer orderId){
-    
-//    @ApiOperation(value = "去支付订单")
-//    @PostMapping("toPayOrder")
-//    public Object toPayOrder(@LoginUser UserVo loginUser, Integer orderId){
+    public Object toPayOrder(@LoginUser UserVo loginUser, Integer orderId){
     	Map<String, Object>  resultObj = new HashMap<>();
     	JSONObject feedbackJson = super.getJsonRequest();
-    	orderId = Integer.parseInt(feedbackJson.get("orderId").toString());
     	
+    	if (feedbackJson.get("orderId") == null) {
+			return toResponsFail("订单orderId不能为空");
+		}
+    	orderId = Integer.parseInt(feedbackJson.get("orderId").toString());
     	  logger.info("去支付订单,订单的id"+orderId);
     	  OrderVo orderInfo = orderService.queryObject(orderId);
     	   if (null == orderInfo) {
@@ -162,6 +155,7 @@ public class ApiPayController extends ApiBaseAction {
     	   resultObj.put("orderId", orderId);
     	   resultObj.put("payurl", payurl);
     	   resultObj.put("200", "请求成功");
+    	   resultObj.put("errno", "0");
     	   return  resultObj;
     	   
     } 
@@ -454,7 +448,7 @@ public class ApiPayController extends ApiBaseAction {
     	if(userAmountVo != null){
     		QzMoneyRecordVo moneyRecord  = new QzMoneyRecordVo();
     		moneyRecord.setShopUserId(userId.intValue());
-    		moneyRecord.setTranType("2");//使用优惠券
+    		moneyRecord.setTranType("2");//使用克拉币
     		moneyRecord.setTranFlag(type);//0-支出 1-收入
     		moneyRecord.setTarnAmount(order.getCoupon_price());
     		moneyRecord.setCreateTime(new Date());

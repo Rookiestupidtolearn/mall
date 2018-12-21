@@ -350,7 +350,9 @@ public class ApiOrderService {
 		
 		// 订单的总价 商品价格+运费价格
 		BigDecimal orderTotalPrice = goodsTotalPrice.add(freightPrice);
+		BigDecimal ShippingFee = BigDecimal.ZERO; //计算快递费用
 
+		
 		OrderVo orderInfo = new OrderVo();
 		orderInfo.setShipping_no(GenerateCodeUtil.buildBizNo());
 		orderInfo.setOrder_sn(GenerateCodeUtil.buildJDBizNo());
@@ -382,7 +384,13 @@ public class ApiOrderService {
 		orderInfo.setShipping_status(0);
 		orderInfo.setPay_status(0);
 		orderInfo.setShipping_id(0);
-		orderInfo.setShipping_fee(new BigDecimal(0));
+		orderInfo.setShipping_fee(new BigDecimal(0));  //计算快递费用
+		if (orderTotalPrice.compareTo(new BigDecimal("49")) <=0) { //(0-49]  8元运费
+			orderInfo.setShipping_fee(new BigDecimal("8"));
+		}else if (orderTotalPrice.compareTo(new BigDecimal("99")) <=0) { //(49-99]  6元运费
+			orderInfo.setShipping_fee(new BigDecimal("6"));
+		}
+		
 		orderInfo.setIntegral(0);
 		orderInfo.setIntegral_money(new BigDecimal(0));
 		if (type.equals("cart")) {
@@ -443,6 +451,7 @@ public class ApiOrderService {
 		order.setPid_num(pidNums);
 		
 		BigDecimal actual_price =  order.getActual_price().subtract(discountAmount);
+		actual_price = actual_price.add(orderInfo.getShipping_fee());
 		order.setActual_price(actual_price);
 		apiOrderMapper.update(order);
 		// 清空已购买的商品
@@ -547,13 +556,13 @@ public class ApiOrderService {
 				disCountAmount = disCountAmount.add(couponlPrice);
 			}
 
-			// 用户余额 apiUserCouponMapper
+			// 用户余额 
 			BigDecimal userAccount = account.getAmount();
 			// 平台币余额>=优惠金额
 			if (userAccount.compareTo(disCountAmount) == 0 || userAccount.compareTo(disCountAmount) > 0) {
 				couponAmount = disCountAmount;
 				account.setAmount(userAccount.subtract(couponAmount));
-				account.setLock_amount(couponAmount);// 冻结金额
+				account.setLock_amount(account.getLock_amount().add(couponAmount));// 冻结金额
 				for(CartVo cart : carts){
 					// 获取产品配比值
 					GoodsCouponConfigVo goodsCoupon = goodsCouponConfigMapper.getUserCoupons(cart.getGoods_id(),
@@ -568,50 +577,31 @@ public class ApiOrderService {
 							}
 						}
 						coupon.setCoupon_price(payMatching);
+						coupon.setOrder_id(order.getId());
+						coupon.setCoupon_number("1");
+						coupon.setCoupon_status(1);//未用
+						coupon.setAdd_time(new Date());
+						coupon.setGoods_id(Long.parseLong(cart.getGoods_id().toString()));
+						coupon.setCoupon_id(11);
+						coupon.setUser_id(cart.getUser_id());
+						apiUserCouponMapper.save(coupon);
 					}
-					coupon.setOrder_id(order.getId());
-					coupon.setCoupon_number("1");
-					coupon.setCoupon_status(1);//未用
-					coupon.setAdd_time(new Date());
-					coupon.setGoods_id(Long.parseLong(cart.getGoods_id().toString()));
-					coupon.setCoupon_id(11);
-					coupon.setUser_id(cart.getUser_id());
-					apiUserCouponMapper.save(coupon);
 				}
-				saveMoneyRecord(carts.get(0).getUser_id(), 0, order,"创建订单，生成商品优惠冻结金额",couponAmount);
+				
 			}
 			// 平台币余额<优惠金额
 			if (userAccount.compareTo(disCountAmount) < 0) {
 				couponAmount = goodsMaxDiscount(carts, userAccount,order.getId());
 				account.setAmount(userAccount.subtract(couponAmount));
-				account.setLock_amount(couponAmount);// 冻结金额
-				saveMoneyRecord(carts.get(0).getUser_id(), 0, order,"创建订单，生成商品优惠冻结金额",couponAmount);
+				account.setLock_amount(account.getLock_amount().add(couponAmount));// 冻结金额
 			}
 			account.setLast_update_time(new Date());
 			qzUserAccountMapper.update(account);
+			saveMoneyRecord(carts.get(0).getUser_id(),"3", 0, order,"创建订单，生成商品优惠冻结金额",couponAmount);
 		}
 		return couponAmount;
 	}
-	public static void main(String[] args) {
-		List<Map<String,Object>> array = new ArrayList<>();
-		for(int i =0;i<5;i++){
-			Map<String,Object> param = new HashMap<>();
-			param.put((i+1)+"", 2);
-			array.add(param);
-		}
-		System.out.println(array.size());
-		for(Map<String,Object> key : array){
-			String keyValue = "";
-			for(String key1 : key.keySet()){
-				keyValue = key1;
-			}
-			if(keyValue.endsWith("3")){
-				array.remove(key);
-				break;
-			}
-		}
-		System.out.println(array);
-	}
+
 	
 	/**
 	 * 订单失效/取消订单，子商品优惠冻结金额返回到用户平台币中
@@ -622,16 +612,16 @@ public class ApiOrderService {
 	public Object rollbackDiscount(OrderVo order,Integer type){
 		QzUserAccountVo userAmountVo = qzUserAccountMapper.queruUserAccountInfo(order.getUser_id());
 		if(userAmountVo != null){
-			userAmountVo.setAmount(userAmountVo.getAmount().add(userAmountVo.getLock_amount()));
-			userAmountVo.setLock_amount(BigDecimal.ZERO);
+			userAmountVo.setAmount(userAmountVo.getAmount().add(order.getCoupon_price()));
+			userAmountVo.setLock_amount(userAmountVo.getLock_amount().subtract(order.getCoupon_price()));
 			userAmountVo.setLast_update_time(new Date());
+			qzUserAccountMapper.update(userAmountVo);
 			if(type == 1){
-				saveMoneyRecord(order.getUser_id(), 1, order, "订单失效，子商品优惠冻结金额返回到用户平台币中", userAmountVo.getLock_amount());
+				saveMoneyRecord(order.getUser_id(), "3",1, order, "订单失效，子商品优惠冻结金额返回到用户平台币中", order.getCoupon_price());
 			}
 			if(type == 2){
-				saveMoneyRecord(order.getUser_id(), 1, order, "取消订单，子商品优惠冻结金额返回到用户平台币中", userAmountVo.getLock_amount());
+				saveMoneyRecord(order.getUser_id(), "3",1, order, "取消订单，子商品优惠冻结金额返回到用户平台币中", order.getCoupon_price());
 			}
-			qzUserAccountMapper.update(userAmountVo);
 			List<UserCouponVo> coupons = apiUserCouponMapper.queryCouponsBuOrderId(order.getId());
 			if(!CollectionUtils.isEmpty(coupons)){
 				for(UserCouponVo userCoupon : coupons){
@@ -650,14 +640,15 @@ public class ApiOrderService {
 	public Object discountUserAmount(OrderVo order){
 		QzUserAccountVo userAmountVo = qzUserAccountMapper.queruUserAccountInfo(order.getUser_id());
 		if(userAmountVo != null){
-			userAmountVo.setLock_amount(BigDecimal.ZERO);
+			userAmountVo.setLock_amount(userAmountVo.getLock_amount().subtract(order.getCoupon_price()));
 			userAmountVo.setLast_update_time(new Date());
-			saveMoneyRecord(order.getUser_id(), 0, order, "支付成功，扣减平台币", userAmountVo.getLock_amount());
 			qzUserAccountMapper.update(userAmountVo);
+			saveMoneyRecord(order.getUser_id(), "2",0, order, "支付成功，扣减商品优化金额", order.getCoupon_price());
 			List<UserCouponVo> coupons = apiUserCouponMapper.queryCouponsBuOrderId(order.getId());
 			if(!CollectionUtils.isEmpty(coupons)){
 				for(UserCouponVo userCoupon : coupons){
 					userCoupon.setCoupon_status(2);//支付成功，优惠状态不置为已用
+					userCoupon.setUsed_time(new Date());
 					apiUserCouponMapper.update(userCoupon);
 				}
 			}
@@ -672,18 +663,19 @@ public class ApiOrderService {
 	 * @param remark
 	 * @param tranAmount
 	 */
-	public void saveMoneyRecord(Long userId,Integer type,OrderVo order,String remark,BigDecimal tranAmount){
+	public void saveMoneyRecord(Long userId,String tranType,Integer type,OrderVo order,String remark,BigDecimal tranAmount){
 		QzUserAccountVo userAmountVo =qzUserAccountMapper.queruUserAccountInfo(Long.parseLong(userId.toString()));
     	if(userAmountVo != null){
     		QzMoneyRecordVo moneyRecord  = new QzMoneyRecordVo();
     		moneyRecord.setShopUserId(userId.intValue());
-    		moneyRecord.setTranType("1");//使用优惠券
+    		moneyRecord.setTranType(tranType);//1-充值 2-克拉币 3-回滚/扣减冻结克拉币',
     		moneyRecord.setTranFlag(type);//0-支出 1-收入
     		moneyRecord.setTarnAmount(tranAmount);
     		moneyRecord.setCreateTime(new Date());
     		moneyRecord.setTradeNo(order.getOrder_sn());
     		moneyRecord.setRemark(remark);
     		if(userAmountVo != null){
+    			moneyRecord.setLockAmount(userAmountVo.getLock_amount());
     			moneyRecord.setCurrentAmount(userAmountVo.getAmount());
     		}
     		apiMoneyRecordMapper.save(moneyRecord);
@@ -703,5 +695,11 @@ public class ApiOrderService {
 		log.setCreateTime(new Date());
 		log.setUpdateTime(new Date());
 		apiOrderLogMapper.save(log);
+	}
+	
+	public static void main(String[] args) {
+      BigDecimal a  = new BigDecimal("42");
+      BigDecimal  C = new BigDecimal("49");
+	  System.out.println(a.compareTo(C));
 	}
 }

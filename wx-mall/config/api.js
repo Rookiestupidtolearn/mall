@@ -1,18 +1,10 @@
 const root = '/platform/api/';
 
-<<<<<<< HEAD
-// const API_BASE_URL = 'http://localhost:8080' + root;
-const API_BASE_URL = 'http://192.168.124.50:6101' + root;
-//  const API_BASE_URL = 'http://117.50.60.55:6201' + root;
- //const API_BASE_URL = 'http://localhost:8080' + root;
-  //const API_BASE_URL = 'http://192.168.124.50:6101' + root;
-=======
 // const API_BASE_URL = 'http://fly2you.cn' + root;
 
 
 
  //const API_BASE_URL = 'http://localhost:8080' + root;
->>>>>>> efc9c6ec146c0a623787f9f2e729a7e9f1269f48
   //const API_BASE_URL = 'http://192.168.124.50:6101' + root;
 //外网访问地址
 const API_BASE_URL = 'http://117.50.60.55:6201' + root;
@@ -20,6 +12,8 @@ const API_BASE_URL = 'http://117.50.60.55:6201' + root;
 //const API_BASE_URL = 'http://localhost:8093' + root;
 // const API_BASE_URL = 'http://192.144.156.42:8080' + root;
 // const API_BASE_URL = 'http://192.168.0.11:6101' + root;
+
+
 
 module.exports = {
     IndexUrlNewGoods: API_BASE_URL + 'index/newGoods', //新品首发
@@ -100,5 +94,4 @@ module.exports = {
 
     UserMobile: API_BASE_URL + 'user/userInfo',//获取手机号
     CancelAddBuyCoupons: API_BASE_URL + 'buy/cancelAddBuyCoupons',//区分立即购买还是加入购物车
-    bindUserIdcard: API_BASE_URL + 'user/bind_user_idcard'  //实名认证
 };
