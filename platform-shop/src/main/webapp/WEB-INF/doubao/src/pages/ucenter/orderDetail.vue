@@ -64,7 +64,7 @@
             </div>
             <div class="t">
                 <span class="label">克拉：</span>
-                <span class="txt">-{{orderInfo.coupon_price}}</span>
+                <span class="txt">-￥{{orderInfo.coupon_price}}</span>
             </div>
             <div class="t">
                 <span class="label">运费：</span>
