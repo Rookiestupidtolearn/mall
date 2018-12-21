@@ -207,9 +207,12 @@
 // 				this.showCzn = true; 
 //	 		}
 //	 	},
+		destroyed(){
+			document.getElementsByClassName('mint-msgbox-confirm')[0].innerText = '确定';
+		},
 		showTb(){
-			MessageBox( '克拉','内容待提供');
-			document.getElementsByClassName('mint-msgbox-confirm')[0].innerText = '知道了';
+			MessageBox( '克拉','斗宝俱乐部‘克拉’可在斗宝俱乐部平台消费时抵用现金，1克拉抵1元现金使用。');
+			document.getElementsByClassName('mint-msgbox-confirm')[0].innerText = '我知道了';
 		},
 	 	tapCoupon(){
 	 		this.$router.push('/pages/category/selCoupon?buyType=' + this.buyType+'&isBuy='+this.isBuy);

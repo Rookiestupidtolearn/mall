@@ -75,10 +75,6 @@ export default {
   	selectStyle (item, index) {
   			this.activeClass = index;
 　},
-  	payOrder(orderIndex){
-	      let order = this.orderList[orderIndex];
-	    	this.$router.push( '/pages/pay/pay?orderId=' + order.id + '&actualPrice=' + order.actual_price);
-  	},
   	loadMore() {
 			var that = this;    
 			this.page = that.page+1; // 增加分页

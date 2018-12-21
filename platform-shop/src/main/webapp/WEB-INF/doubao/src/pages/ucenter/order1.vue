@@ -89,7 +89,7 @@ export default {
 	    	}).then(function (res) {
 	    		var res = res.data;
 	    		if(res.errno == 0){
-	    			
+	    			window.location.href= res.payurl;
 	    		}else{
 	    			that.$toast(res.errmsg);
 	    		}

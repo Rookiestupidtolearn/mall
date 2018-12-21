@@ -87,7 +87,7 @@ export default {
 	    	}).then(function (res) {
 	    		var res = res.data;
 	    		if(res.errno == 0){
-	    			
+	    			window.location.reload();
 	    		}else{
 	    			that.$toast(res.errmsg);
 	    		}

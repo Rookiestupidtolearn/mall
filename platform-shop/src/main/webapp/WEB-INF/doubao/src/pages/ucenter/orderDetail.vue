@@ -11,7 +11,7 @@
                 <div v-if="orderInfo.order_status == 9" >
             	 	<div class="btn active" @click="tipsShow">退货申请</div>
                 </div>
-                 <div v-else-if="orderInfo.order_status == 300 || orderInfo.order_status == 201">
+                 <div v-else-if="orderInfo.order_status == 300 || orderInfo.order_status == 201 || orderInfo.order_status == 200">
                  	<div class="btn" @click="hrefwul(orderInfo.id)">查看物流</div>
                 	<div class="btn active" @click="confirmOrder(orderInfo.id)">确认收货</div>
                 </div>
@@ -60,6 +60,10 @@
             </div>
             <div class="t">
                 <span class="label">优惠券：</span>
+                <span class="txt">-￥0</span>
+            </div>
+            <div class="t">
+                <span class="label">克拉：</span>
                 <span class="txt">-{{orderInfo.coupon_price}}</span>
             </div>
             <div class="t">
@@ -139,7 +143,7 @@ export default {
 	    	}).then(function (res) {
 	    		var res = res.data;
 	    		if(res.errno == 0){
-	    			
+	    			window.location.href= res.payurl;
 	    		}else{
 	    			that.$toast(res.errmsg);
 	    		}
@@ -198,25 +202,30 @@ export default {
 	    }
 	    
 	    MessageBox({
-					  title: ' ',
-					  message: '确定要取消此订单？ ',
-					  showCancelButton: true
-					},function(action){
-							if(action == 'confirm'){
-							  that.$http({
-							        method: 'post',
-							        url:that.$url+ 'order/cancelOrder.options',
-							        data:{orderId:id}
-						    	}).then(function (res) {
-							    		MessageBox({
-											  title: ' ',
-											  message: res.data.data
-											},function(action){
-													that.$router.push('/pages/ucenter/order');
-											});
-								  })
-							}
-					});
+		  title: ' ',
+		  message: '确定要取消此订单？ ',
+		  showCancelButton: true
+		},function(action){
+				if(action == 'confirm'){
+				  that.$http({
+				        method: 'post',
+				        url:that.$url+ 'order/cancelOrder.options',
+				        data:{orderId:id}
+			    	}).then(function (res) {
+			    		if(res.data.errno == 0){
+			    			this.$router.push('/pages/ucenter/order')
+			    		}else{
+			    			MessageBox({
+							  	title: ' ',
+							  	message: res.data.errmsg
+							},function(action){
+									that.$router.push('/pages/ucenter/order');
+							});
+			    		}
+					})
+				}
+		});
+		document.getElementsByClassName('mint-msgbox-confirm')[0].innerText = '知道了';
   	}
   }
 }
@@ -442,7 +451,6 @@ export default {
 }
 
 .order-bottom .total{
-    height: 1.5rem;
     padding-top: .30rem;
     border-bottom: 1px solid #f4f4f4;
     font-size: .29rem;

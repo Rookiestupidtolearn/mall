@@ -25,7 +25,7 @@
 				                <!--<div v-if="item.order_status == 9" >
 				            	 				<div class="btn active" @click.prevent="tipsShow">退货申请</div>
 				                </div>-->
-				                 <div v-if="item.order_status == 300 || item.order_status == 201">
+				                 <div v-if="item.order_status == 300 || item.order_status == 201 || item.order_status == 200">
 				                			<div class="btn active" @click.prevent="confirmOrder(item.id)">确认收货</div>
 				                   		<router-link class="btn" :to="'/pages/ucenter/logistics?id='+item.id">查看物流</router-link>
 				                </div>
@@ -102,8 +102,21 @@ export default {
   			this.activeClass = index;
 　},
   	payOrder(orderIndex){
-	      let order = this.orderList[orderIndex];
-	    	this.$router.push( '/pages/pay/pay?orderId=' + order.id + '&actualPrice=' + order.actual_price);
+	      var that = this;    
+	    	that.$http({
+	        method: 'post',
+	        url:that.$url+ 'pay/toPayOrder.options',
+	        data:{
+	        	orderId:orderIndex
+	        }
+	    	}).then(function (res) {
+	    		var res = res.data;
+	    		if(res.errno == 0){
+	    			window.location.href= res.payurl;
+	    		}else{
+	    			that.$toast(res.errmsg);
+	    		}
+			})
   	},
   	loadMore() {
 			var that = this;    

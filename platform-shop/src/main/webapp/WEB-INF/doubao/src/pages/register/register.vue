@@ -149,7 +149,7 @@
 	    			/*图形验证码是否显示*/
 			  		if (res.data.count >=5){
 			  			that.showImg = true;
-			    		that.imgyzm = 'http://192.168.0.11:6101/platform/captcha.jpg'; //后台的图片
+			    		that.imgyzm = window.location.protocol+'//'+window.location.host+'/platform/captcha.jpg'; //后台的图片
 //			    		that.$cookie.setCookie('showImg',that.showImg);
 			  		}else{
 	                    that.disabled = true;

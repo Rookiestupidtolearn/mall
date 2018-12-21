@@ -112,15 +112,15 @@ export default {
 			 next();
 	 }, 
 	   watch:{
-		 		goodsList:function(){
-		 				this.$nextTick(function(){
-		 						if(this.$cookie.getCookie('scrollSearch') == '' || this.$cookie.getCookie('scrollSearch') == '0'  || this.$cookie  .getCookie('scrollSearch') == '-1'){
-		   					}else{
-		   						window.scrollTo(0,this.$cookie.getCookie('scrollSearch'));
-		   					}
-		 				})
-		 		}
-		 },
+	 		goodsList:function(){
+ 				this.$nextTick(function(){
+ 						if(this.$cookie.getCookie('scrollSearch') == '' || this.$cookie.getCookie('scrollSearch') == '0'  || this.$cookie  .getCookie('scrollSearch') == '-1'){
+   					}else{
+   						window.scrollTo(0,this.$cookie.getCookie('scrollSearch'));
+   					}
+ 				})
+	 		}
+		},
 	  methods:{
 	  	onKeywordTap(keyword){
 	  		this.getSearchResult(keyword);
@@ -203,6 +203,7 @@ export default {
 	  	},
 	  	inputFocus(){
 	  		var that = this;
+	  		that.$cookie.delCookie('scrollSearch');
       		that.searchStatus =  false,
 			   that.$http({
 			        method: 'post',
@@ -214,7 +215,6 @@ export default {
 	  	},
 	  	showList(data){
 	  		let that = this;
-	  		
 	  		var data = {
 	  			keyword:that.value,
 	        	page:that.page,
