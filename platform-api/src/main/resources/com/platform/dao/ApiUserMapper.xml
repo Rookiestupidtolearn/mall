@@ -208,7 +208,7 @@
 	    select
 				`id`,
 				`shop_user_id`,
-				case when `tran_type` = 1 then '充值' else '克拉币' end 'tran_type',
+				 case when `tran_type` = 1 then '平台充值'  when `tran_type` = 2 then '消费' else '' end 'tran_type',
 				`tran_flag`,
 				`tarn_amount`,
 				`current_amount`,

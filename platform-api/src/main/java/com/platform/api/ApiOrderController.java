@@ -326,9 +326,7 @@ public class ApiOrderController extends ApiBaseAction {
 			@RequestParam(value = "size", defaultValue = "10") Integer size) {
 		
 		JSONObject feedbackJson = super.getJsonRequest();
-		if (feedbackJson.get("orderId") == null) {
-			return toResponsFail("订单orderId不能为空");
-		}
+		
 		String orderStatus = feedbackJson.get("orderStatus").toString();
 		
 		String[] state = null;

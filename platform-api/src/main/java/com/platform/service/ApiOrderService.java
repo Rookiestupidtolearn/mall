@@ -658,6 +658,7 @@ public class ApiOrderService {
 			if(!CollectionUtils.isEmpty(coupons)){
 				for(UserCouponVo userCoupon : coupons){
 					userCoupon.setCoupon_status(2);//支付成功，优惠状态不置为已用
+					userCoupon.setUsed_time(new Date());
 					apiUserCouponMapper.update(userCoupon);
 				}
 			}
