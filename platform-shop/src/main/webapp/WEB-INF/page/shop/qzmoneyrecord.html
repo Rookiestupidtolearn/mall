@@ -46,6 +46,9 @@
             <Form-item label="变动金额" prop="tarnAmount">
                 <i-input v-model="qzMoneyRecord.tarnAmount" placeholder="变动金额"/>
             </Form-item>
+            <Form-item label="冻结金额" prop="lockAmount">
+                <i-input v-model="qzMoneyRecord.lockAmount" placeholder="冻结金额"/>
+            </Form-item>
             <Form-item label="当前余额" prop="currentAmount">
                 <i-input v-model="qzMoneyRecord.currentAmount" placeholder="当前余额"/>
             </Form-item>
@@ -55,6 +58,7 @@
             <Form-item label="交易流水号(关联各资金订单)" prop="tradeNo">
                 <i-input v-model="qzMoneyRecord.tradeNo" placeholder="交易流水号(关联各资金订单)"/>
             </Form-item>
+           
             <Form-item>
                 <i-button type="primary" @click="handleSubmit('formValidate')">提交</i-button>
                 <i-button type="warning" @click="reload" style="margin-left: 8px"/>返回</i-button>

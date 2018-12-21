@@ -38,6 +38,7 @@ $(function () {
 				}
 			}},
 			{label: '变动金额', name: 'tarnAmount', index: 'tarn_amount', width: 80},
+			{label: '冻结金额', name: 'lockAmount', index: 'lock_amount', width: 80},
 			{label: '当前余额', name: 'currentAmount', index: 'current_amount', width: 80},
 			{label: '创建时间', name: 'createTime', index: 'create_time', width: 80,formatter: function (value) {
                 return transDate(value, 'yyyy-MM-dd');
