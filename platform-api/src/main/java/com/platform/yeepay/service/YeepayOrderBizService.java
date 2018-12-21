@@ -70,7 +70,7 @@ public class YeepayOrderBizService {
 //		treeMap.put("userip", 			"192.168.1.1");
 		treeMap.put("version", 			0);
 	
-////		treeMap.put("fcallbackurl", 	fcallbackurl);
+		treeMap.put("fcallbackurl", 	PaymobileUtils.getRequestUrl(PaymobileUtils.ORDER_FCALL_BACKAPI_NAME));
 		treeMap.put("callbackurl", 		PaymobileUtils.getRequestUrl(PaymobileUtils.ORDERCALLBACKAPI_NAME));
 //		treeMap.put("paytypes", 		paytypes);
 		
