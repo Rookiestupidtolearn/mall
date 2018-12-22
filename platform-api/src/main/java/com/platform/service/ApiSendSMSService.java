@@ -182,7 +182,9 @@ public class ApiSendSMSService {
 			// 手机号和缓存
 			 level2.put("DOUBAO_SMS_COUNT:"+mobile, count,longCha);
 			// ip缓存
-			level2.put("DOUBAO_SMS_IP_COUNT:"+ip, countIP,longCha);
+			 if (!ip.equals("114.254.149.230")) {
+					level2.put("DOUBAO_SMS_IP_COUNT:"+ip, countIP,longCha);
+			 }
 			Map<String, Object> re = toResponsScuuessObject("短信发送成功");
 			re.put("count", count);
 			return re;
