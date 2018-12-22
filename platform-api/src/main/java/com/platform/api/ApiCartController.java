@@ -545,7 +545,13 @@ public class ApiCartController extends ApiBaseAction {
         		couponAmount = amount;
         	}
         }
-        
+        //计算快递费
+    	if (goodsTotalPrice.compareTo(new BigDecimal("49")) <=0) { //(0-49]  8元运费
+    		freightPrice = new BigDecimal("8");
+		}else if (goodsTotalPrice.compareTo(new BigDecimal("99")) <=0) { //(49-99]  6元运费
+			freightPrice = new BigDecimal("6");
+		}
+    	
         //订单的总价
         BigDecimal orderTotalPrice = goodsTotalPrice.add(freightPrice);
         BigDecimal actualPrice = orderTotalPrice.subtract(couponPrice).subtract(couponAmount);  //减去其它支付的金额后，要实际支付的金额
@@ -557,7 +563,7 @@ public class ApiCartController extends ApiBaseAction {
         resultObj.put("unStoreCarts", resObj.get("unStoreCarts"));//无库存商品
         resultObj.put("disCountAmount", couponAmount);//优惠金额
         resultObj.put("userAmount", userAmount);
-        resultObj.put("freightPrice", freightPrice);
+        resultObj.put("freightPrice", freightPrice);  //配送费
         resultObj.put("couponPrice", couponPrice);
         resultObj.put("checkedGoodsList", checkedGoodsList);
         resultObj.put("goodsTotalPrice", goodsTotalPrice);
