@@ -83,6 +83,7 @@ public class ApiSmsController {
     @IgnoreAuth
     @PostMapping("/sendSms")
     public Object sendSms(HttpServletRequest request, @RequestParam Map<String, String> params) {
+    	request.setAttribute(DefaultSubjectContext.SESSION_CREATION_ENABLED, Boolean.TRUE);
     	logger.info("api/sendSms发送登录短信验证码入参："+params.toString());
     	SysSmsLogEntity smsLog = new SysSmsLogEntity();
        String validIP = RequestUtil.getIpAddrByRequest(request);
