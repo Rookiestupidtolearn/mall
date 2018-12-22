@@ -60,12 +60,14 @@ public class ApiSmsController {
     @RequestMapping("/image.jpg")
     @IgnoreAuth
     public void captcha(HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException {
+    	
         response.setHeader("Cache-Control", "no-store, no-cache");
         response.setContentType("image/jpeg");
         //生成文字验证码
         String text = producer.createText();
         //生成图片验证码
         BufferedImage image = producer.createImage(text);
+    	request.setAttribute(DefaultSubjectContext.SESSION_CREATION_ENABLED, Boolean.TRUE);
        HttpSession session = request.getSession();
        session.setAttribute("imageCode", text);
         ServletOutputStream out = response.getOutputStream();
