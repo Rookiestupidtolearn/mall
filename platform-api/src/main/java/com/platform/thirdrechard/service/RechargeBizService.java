@@ -219,17 +219,13 @@ public class RechargeBizService {
 					  return responseEntity;
 				}
 			    
-			    String rechargeType = jsonObject.getString("rechargeType");
+			    String rechargeType = jsonObject.getString("platformType");
 			    if (StringUtils.isEmpty(rechargeType)) {
 			    	  responseEntity.setCode("1004");
 					  responseEntity.setMsg("充值渠错误");
 					  return responseEntity;
 				}
-			    if (!(rechargeType.equals("2") || rechargeType.equals("3")) ) {
-			    	  responseEntity.setCode("1004");
-					  responseEntity.setMsg("充值渠错误");
-					  return responseEntity;
-				}
+
 			    //检查订单号是否重复
 			    ThirdRechargeRecordEntity   entity  =    thirdRechargeRecordDao.queryByThirdTradeNo(thirdTradeNo);
 			    if (entity != null) {

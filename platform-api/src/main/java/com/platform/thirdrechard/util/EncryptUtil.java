@@ -58,9 +58,11 @@ public class EncryptUtil {
     	//使用TreeMap
 		TreeMap<String, Object> treeMap	= new TreeMap<String, Object>();
 		treeMap.put("amount", 			1);
-		treeMap.put("mobile", "");
+		treeMap.put("mobile", "13391506299");
 		treeMap.put("thirdTradeNo", "123123123");
-		treeMap.put("rechargeType", "2");//充值类型
+		treeMap.put("platformType", "2");//充值类型
+		treeMap.put("cardType", "2");//充值类型
+		treeMap.put("queryCheckUrl", "");//充值类型
 		JSONObject json =new JSONObject(treeMap);
 		String content = json.toString();
         System.out.println("加密前：" + content);  
