@@ -56,4 +56,9 @@ public class QzMoneyRecordServiceImpl implements QzMoneyRecordService {
     public int deleteBatch(Long[] ids) {
         return qzMoneyRecordDao.deleteBatch(ids);
     }
+
+	@Override
+	public List<QzMoneyRecordEntity> queryMoneyRecords(Map<String, Object> maps) {
+		 return qzMoneyRecordDao.queryMoneyRecords(maps);
+	}
 }

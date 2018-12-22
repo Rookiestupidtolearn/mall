@@ -41,7 +41,7 @@ $(function () {
 			{label: '冻结金额', name: 'lockAmount', index: 'lock_amount', width: 80},
 			{label: '当前余额', name: 'currentAmount', index: 'current_amount', width: 80},
 			{label: '创建时间', name: 'createTime', index: 'create_time', width: 80,formatter: function (value) {
-                return transDate(value, 'yyyy-MM-dd');
+                return transDate(value, 'yyyy-MM-dd hh:mm:ss');
             }},
 			{label: '交易流水号(关联各资金订单)', name: 'tradeNo', index: 'trade_no', width: 80}]
     });
@@ -59,7 +59,9 @@ let vm = new Vue({
 			]
 		},
 		q: {
-		    name: ''
+		    name: '',
+		    start_time:'',
+		    end_time:''
 		}
 	},
 	methods: {
@@ -128,22 +130,19 @@ let vm = new Vue({
 			vm.showList = true;
             let page = $("#jqGrid").jqGrid('getGridParam', 'page');
 			$("#jqGrid").jqGrid('setGridParam', {
-                postData: {'name': vm.q.name},
+                postData: {'name': vm.q.name,'start_time': vm.q.start_time,'end_time': vm.q.end_time},
                 page: page
             }).trigger("reloadGrid");
             vm.handleReset('formValidate');
 		},
         reloadSearch: function() {
             vm.q = {
-                name: ''
+            		name: '',
+         		    start_time:'',
+         		    end_time:''
             }
             vm.reload();
         },
-        exportUser : function() {
-			exportFile('#rrapp', '../qzmoneyrecord/export', {
-				'name' : vm.q.name
-			});
-		},
         handleSubmit: function (name) {
             handleSubmitValidate(this, name, function () {
                 vm.saveOrUpdate()
@@ -151,6 +150,13 @@ let vm = new Vue({
         },
         handleReset: function (name) {
             handleResetForm(this, name);
-        }
+        },
+        exportUser : function() {
+			exportFile('#rrapp', '../qzmoneyrecord/export', {
+				'name': vm.q.name,
+				'start_time': vm.q.start_time,
+				'end_time': vm.q.end_time
+			});
+		}
 	}
 });

@@ -69,4 +69,6 @@ public interface QzMoneyRecordService {
      * @return 删除条数
      */
     int deleteBatch(Long[] ids);
+    
+    List<QzMoneyRecordEntity> queryMoneyRecords(Map<String,Object> maps);
 }

@@ -1,6 +1,7 @@
 package com.platform.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.platform.entity.QzMoneyRecordEntity;
-import com.platform.entity.UserEntity;
 import com.platform.service.QzMoneyRecordService;
 import com.platform.utils.PageUtils;
 import com.platform.utils.Query;
@@ -116,10 +116,11 @@ public class QzMoneyRecordController {
     public R export(@RequestParam Map<String, Object> params, HttpServletResponse response) {
 
     	  //查询列表数据
-    	System.out.println("111");
-        Query query = new Query(params);
-
-        List<QzMoneyRecordEntity> qzMoneyRecordList = qzMoneyRecordService.queryList(query);
+    	Map<String,Object> maps = new HashMap<String,Object>();
+    	maps.put("name", params.get("name"));
+    	maps.put("start_time", params.get("start_time"));
+    	maps.put("end_time", params.get("end_time"));
+        List<QzMoneyRecordEntity> qzMoneyRecordList = qzMoneyRecordService.queryMoneyRecords(maps);
 
         ExcelExport ee = new ExcelExport("平台流水列表");
 
