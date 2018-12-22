@@ -113,21 +113,21 @@ public class ApiSmsController {
         if (count >=5 || countIP >=5) {
         	 String imageCode = (String) request.getSession().getAttribute("imageCode");
         	if (StringUtils.isEmpty(params.get("imageCode"))) {
-        		result.put("code", 1);
+        		result.put("errno", 1);
             	result.put("msg", "请传入图形验证码");
             	result.put("count", count);
             	return result;
 			}
         	
             if (StringUtils.isEmpty(imageCode)) {
-            	result.put("code", 1);
+            	result.put("errno", 1);
             	result.put("msg", "图形验证码已失效");
             	result.put("count", count);
             	return result;
 			}
 
             if (imageCode.equals(params.get("imageCode"))) {
-            	result.put("code", 1);
+            	result.put("errno", 1);
             	result.put("msg", "图形验证码错误");
             	result.put("count", count);
             	return result;
