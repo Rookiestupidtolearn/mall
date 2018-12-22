@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.log4j.Logger;
+import org.apache.shiro.subject.support.DefaultSubjectContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -153,7 +154,8 @@ public class ApiAuthController extends ApiBaseAction {
     @IgnoreAuth
     @PostMapping("login_by_mobile")
     public Object loginByMobile( @RequestParam Map<String, String> params ,HttpServletRequest requset) {
-    	   //校验手机号格式
+    	requset.setAttribute(DefaultSubjectContext.SESSION_CREATION_ENABLED, Boolean.TRUE);
+    	//校验手机号格式
     	if (params.get("mobile").equals("")) {
        	 return R.error("手机号不能为空！");
 		}
