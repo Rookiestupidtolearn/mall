@@ -62,7 +62,6 @@ public class ApiSmsController {
     public void captcha(HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException {
         response.setHeader("Cache-Control", "no-store, no-cache");
         response.setContentType("image/jpeg");
-        request.setAttribute(DefaultSubjectContext.SESSION_CREATION_ENABLED, Boolean.TRUE);
         //生成文字验证码
         String text = producer.createText();
         //生成图片验证码
@@ -83,7 +82,6 @@ public class ApiSmsController {
     @IgnoreAuth
     @PostMapping("/sendSms")
     public Object sendSms(HttpServletRequest request, @RequestParam Map<String, String> params) {
-    	request.setAttribute(DefaultSubjectContext.SESSION_CREATION_ENABLED, Boolean.TRUE);
     	logger.info("api/sendSms发送登录短信验证码入参："+params.toString());
     	SysSmsLogEntity smsLog = new SysSmsLogEntity();
        String validIP = RequestUtil.getIpAddrByRequest(request);
@@ -110,7 +108,7 @@ public class ApiSmsController {
         	logger.info("今日用手机号:"+params.get("mobile")+">>所在的IP地址"+validIP+"已发送"+countIP+"次");
 		}
         
-        if (count >=5 || countIP >=5) {
+        if (count >=5) {
         	 String imageCode = (String) request.getSession().getAttribute("imageCode");
         	if (StringUtils.isEmpty(params.get("imageCode"))) {
         		result.put("errno", 1);
@@ -126,7 +124,7 @@ public class ApiSmsController {
             	return result;
 			}
 
-            if (imageCode.equals(params.get("imageCode"))) {
+            if (!imageCode.equals(params.get("imageCode").toString())) {
             	result.put("errno", 1);
             	result.put("msg", "图形验证码错误");
             	result.put("count", count);

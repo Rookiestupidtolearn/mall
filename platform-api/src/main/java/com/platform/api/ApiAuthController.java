@@ -182,8 +182,8 @@ public class ApiAuthController extends ApiBaseAction {
 		Level2Cache level2 = CacheProviderHolder.getLevel2Cache(J2CacheUtils.INVALID_CACHE);
 		Integer count = (Integer) level2.get("DOUBAO_SMS_COUNT:" + mobile);
 		 String imageCode = (String) requset.getSession().getAttribute("imageCode");
-		if(count !=null &&count>4){
-			String  checkcode = params.get("imageCode");
+		if(count !=null &&count>=5){
+			String  checkcode = params.get("yzm");
 			if(StringUtils.isNullOrEmpty(checkcode)){
 			  	 return R.error("图形验证码不能为空！");
 			}
