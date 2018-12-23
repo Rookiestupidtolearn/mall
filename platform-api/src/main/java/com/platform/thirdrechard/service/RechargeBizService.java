@@ -134,7 +134,13 @@ public class RechargeBizService {
  		       	responseEntity.setCode("金额错误,不一致");
  		       	 return  responseEntity;
 			}
- 			if (!nEntity.getTradeCode().equals("1")) {
+ 			if (nEntity.getTradeCde() == null) {
+ 				logger.info("TradeCde 码不能为空！");
+ 				responseEntity.setCode("error");
+ 		       	responseEntity.setCode("充值失败");
+ 		       	 return  responseEntity;
+			}
+ 			if (!nEntity.getTradeCde().equals("1")) {
  				responseEntity.setCode("error");
  		       	responseEntity.setCode("充值失败");
  		       	 return  responseEntity;

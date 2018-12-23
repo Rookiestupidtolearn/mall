@@ -4,7 +4,7 @@ public class QueryMemberCardResponse {
 
 	private String tradeAmt;
 	private String cardTradeNbr ;
-	private String tradeCode;
+	private String tradeCde;
 
 	public String getTradeAmt() {
 		return tradeAmt;
@@ -18,13 +18,11 @@ public class QueryMemberCardResponse {
 	public void setCardTradeNbr(String cardTradeNbr) {
 		this.cardTradeNbr = cardTradeNbr;
 	}
-	public String getTradeCode() {
-		return tradeCode;
+	public String getTradeCde() {
+		return tradeCde;
 	}
-	public void setTradeCode(String tradeCode) {
-		this.tradeCode = tradeCode;
+	public void setTradeCde(String tradeCde) {
+		this.tradeCde = tradeCde;
 	}
-	
-	
 	
 }
