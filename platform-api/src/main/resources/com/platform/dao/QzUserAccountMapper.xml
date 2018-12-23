@@ -23,6 +23,23 @@
         where shop_user_id = #{shop_user_id} 
     </update>
     
+    <insert id="save" parameterType="com.platform.entity.QzUserAccountEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into qz_user_account(
+			`shop_user_id`,
+			`amount`,
+			`lock_amount`,
+			`last_update_time`,
+			`create_time`,
+			`version`)
+		values(
+			#{shop_user_id},
+			#{amount},
+			#{lock_amount},
+			#{last_update_time},
+			#{create_time},
+			#{version})
+	</insert>
+	 
      <update id="update" parameterType="com.platform.entity.QzUserAccountVo">
         update qz_user_account
         <set>

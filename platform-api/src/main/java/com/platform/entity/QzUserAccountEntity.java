@@ -25,6 +25,8 @@ public class QzUserAccountEntity implements Serializable {
     private Date lastUpdateTime;
     //创建时间
     private Date createTime;
+    
+    private Integer version;
 
     /**
      * 设置：主键
@@ -91,4 +93,14 @@ public class QzUserAccountEntity implements Serializable {
     public Date getCreateTime() {
         return createTime;
     }
+
+	public Integer getVersion() {
+		return version;
+	}
+
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
+    
+    
 }

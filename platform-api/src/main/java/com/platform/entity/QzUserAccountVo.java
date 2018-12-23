@@ -19,6 +19,8 @@ public class QzUserAccountVo implements Serializable{
     private Date create_time;
     
     private Integer shop_user_id;
+    
+    private Integer version;
 
 	public Long getId() {
 		return id;
@@ -66,6 +68,14 @@ public class QzUserAccountVo implements Serializable{
 
 	public void setLock_amount(BigDecimal lock_amount) {
 		this.lock_amount = lock_amount;
+	}
+
+	public Integer getVersion() {
+		return version;
+	}
+
+	public void setVersion(Integer version) {
+		this.version = version;
 	}
     
 }

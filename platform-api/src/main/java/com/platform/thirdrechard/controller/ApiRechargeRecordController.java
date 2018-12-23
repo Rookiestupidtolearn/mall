@@ -42,12 +42,12 @@ public class ApiRechargeRecordController  extends ApiBaseAction  {
          try {
         	 responseEntity  =  rechargeBizService.recharge(encrypt);
 			
-			logger.info("充值成功");
+			logger.info("充值处理完毕。。。。");
 			return responseEntity;
 		} catch (Exception e) {
 		  logger.error("充值失败",e);
-		  responseEntity.setCode("1000");
-			 responseEntity.setMsg("解析密文失败");
+		  responseEntity.setCode("error");
+			 responseEntity.setMsg("充值失败");
 			 return  responseEntity;
 		}
 		

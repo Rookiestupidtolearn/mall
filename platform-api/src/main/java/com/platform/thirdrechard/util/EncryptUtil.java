@@ -59,7 +59,7 @@ public class EncryptUtil {
 		TreeMap<String, Object> treeMap	= new TreeMap<String, Object>();
 		treeMap.put("amount", 			1);
 		treeMap.put("mobile", "13391506299");
-		treeMap.put("thirdTradeNo", "123123123");
+		treeMap.put("thirdTradeNo", "1231231233");
 		treeMap.put("platformType", "2");//充值类型
 		treeMap.put("cardType", "2");//充值类型
 		treeMap.put("queryCheckUrl", "");//充值类型

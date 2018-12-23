@@ -5,6 +5,7 @@ public class RechargeResponseEntity {
 	/**
 	 * success 充值成功
 	 * error  充值失败 
+	 * 900 正在处理中
 	 * 1000 解析密文失败
 	 * 1001 手机号错误 
 	 * 1002 金额错误  10万

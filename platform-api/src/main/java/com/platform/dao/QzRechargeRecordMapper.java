@@ -9,7 +9,7 @@ import com.platform.entity.QzRechargeRecordEntity;
  * @email 939961241@qq.com
  * @date 2018-12-17 13:35:56
  */
-public interface QzRechargeRecordDao extends BaseDao<QzRechargeRecordEntity> {
+public interface QzRechargeRecordMapper extends BaseDao<QzRechargeRecordEntity> {
 
 	QzRechargeRecordEntity queryByThirdTradeNo(String thirdTradeNo);
 }
