@@ -12,9 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -28,8 +26,11 @@ import com.platform.entity.QzRechargeRecordEntity;
 import com.platform.entity.QzUserAccountVo;
 import com.platform.entity.ThirdRechargeRecordEntity;
 import com.platform.entity.UserVo;
+import com.platform.thirdrechard.entity.QueryMemberCardRequest;
+import com.platform.thirdrechard.entity.QueryMemberCardResponse;
 import com.platform.thirdrechard.entity.RechargeResponseEntity;
 import com.platform.thirdrechard.util.EncryptUtil;
+import com.platform.thirdrechard.util.HttpCommonUtils;
 import com.platform.utils.GenerateCodeUtil;
 
 /**
@@ -65,13 +66,79 @@ public class RechargeBizService {
 	public RechargeResponseEntity recharge(String encrypt) throws Exception {
 		// 解密
 		String data = EncryptUtil.aesDecrypt(encrypt);
-		logger.info("解密后的密文是" + data);
+		logger.info("充值解密后的密文是》》》》》》》》" + data);
 		JSONObject jsonObject = JSONObject.parseObject(data);
 		RechargeResponseEntity responseEntity = this.checkOrder(jsonObject);
 		if (!responseEntity.getCode().equals("success")) {
 			return responseEntity;
 		}
+		
+//		"tradeAmt": 359,
+//        "cardTradeNbr": "4xQhl1k2Ki8jG6NEO726s0U5ELLPj0",
+//        "tradeCde": "1",
+		
 		// 校验9楼的是否已经充值了
+		String  thirdTradeNo = jsonObject.getString("thirdTradeNo");
+		String  platformType = jsonObject.getString("platformType");
+		String  mobile = jsonObject.getString("mobile");		 
+		String amount = jsonObject.getString("amount");
+    	QueryMemberCardRequest vo = new QueryMemberCardRequest ();
+        vo.setCardTradeNbr (thirdTradeNo);
+        vo.setCardTradeType (platformType);
+        vo.setUserMobile (mobile);
+         String  str1 = HttpCommonUtils.sendPost (jsonObject.getString("queryCheckUrl"),JSONObject.toJSONString (vo));
+         if (StringUtils.isEmpty(str1)) {
+        	 responseEntity.setCode("1006");
+        	 responseEntity.setCode("校验url失败");
+        	 return  responseEntity;
+ 		}
+		if (str1.contains("html")) {
+			 responseEntity.setCode("1006");
+        	 responseEntity.setCode("校验url失败");
+        	 return  responseEntity;
+		}
+		if (str1.contains("Error")) {
+		responseEntity.setCode("1006");
+       	 responseEntity.setCode("校验url失败");
+       	 return  responseEntity;
+		}
+		logger.info("查询9楼的充值情况参数返回结果:"+str1);
+ 		JSONObject json = JSONObject.parseObject(str1);
+ 		if (json.getString("state") == null ||  json.getString("state").equals("0")){
+ 			responseEntity.setCode("error");
+ 	       	 responseEntity.setCode("校验订单原始状态失败");
+ 	       	 return  responseEntity;
+		}
+ 		if (json.getString("data") != null ) {
+ 			QueryMemberCardResponse nEntity = JSONObject.parseObject(json.getString("data"), QueryMemberCardResponse.class);
+ 		
+ 			if (nEntity.getCardTradeNbr()==null) {
+ 				responseEntity.setCode("1003");
+ 		       	responseEntity.setCode("订单编号错误");
+ 		       	 return  responseEntity;
+			}
+ 			if (!nEntity.getCardTradeNbr().equals(thirdTradeNo)) {
+ 				responseEntity.setCode("1003");
+ 		       	responseEntity.setCode("订单编号错误");
+ 		       	 return  responseEntity;
+			}
+ 			if (nEntity.getTaadeAmt() == null) {
+ 				responseEntity.setCode("1002");
+ 		       	responseEntity.setCode("金额错误");
+ 		       	 return  responseEntity;
+			}
+ 			if (!nEntity.getTaadeAmt().equals(amount)) {
+ 				responseEntity.setCode("1002");
+ 		       	responseEntity.setCode("金额错误");
+ 		       	 return  responseEntity;
+			}
+ 			if (!nEntity.getTradeCode().equals("1")) {
+ 				responseEntity.setCode("error");
+ 		       	responseEntity.setCode("充值失败");
+ 		       	 return  responseEntity;
+			}
+ 			
+ 		}
 
 		// 开启同步锁
 		RechargeResponseEntity result = new RechargeResponseEntity();
@@ -318,6 +385,12 @@ public class RechargeBizService {
 		if (StringUtils.isEmpty(rechargeType)) {
 			responseEntity.setCode("1004");
 			responseEntity.setMsg("充值渠错误");
+			return responseEntity;
+		}
+		String queryCheckUrl = jsonObject.getString("queryCheckUrl");
+		if (StringUtils.isEmpty(queryCheckUrl)) {
+			responseEntity.setCode("1006");
+			responseEntity.setMsg("校验url不能为空");
 			return responseEntity;
 		}
 
