@@ -127,9 +127,10 @@ public class RechargeBizService {
  		       	responseEntity.setCode("金额错误");
  		       	 return  responseEntity;
 			}
- 			if (!nEntity.getTaadeAmt().equals(amount)) {
+ 			
+ 			if (new BigDecimal(amount).compareTo(new BigDecimal(nEntity.getTaadeAmt())) != 0) {
  				responseEntity.setCode("1002");
- 		       	responseEntity.setCode("金额错误");
+ 		       	responseEntity.setCode("金额错误,不一致");
  		       	 return  responseEntity;
 			}
  			if (!nEntity.getTradeCode().equals("1")) {
