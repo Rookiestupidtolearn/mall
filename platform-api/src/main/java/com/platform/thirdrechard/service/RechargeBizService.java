@@ -79,7 +79,7 @@ public class RechargeBizService {
 		
 		// 校验9楼的是否已经充值了
 		String  thirdTradeNo = jsonObject.getString("thirdTradeNo");
-		String  platformType = jsonObject.getString("platformType");
+		String  platformType = jsonObject.getString("cardType");
 		String  mobile = jsonObject.getString("mobile");		 
 		String amount = jsonObject.getString("amount");
     	QueryMemberCardRequest vo = new QueryMemberCardRequest ();
@@ -393,7 +393,13 @@ public class RechargeBizService {
 			responseEntity.setMsg("校验url不能为空");
 			return responseEntity;
 		}
-
+		String cardType =  jsonObject.getString("cardType");
+		if (StringUtils.isEmpty(cardType)) {
+			responseEntity.setCode("1007");
+			responseEntity.setMsg("校验会员卡类型失败");
+			return responseEntity;
+		}
+		
 		// 检查订单号是否重复
 		ThirdRechargeRecordEntity entity = thirdRechargeRecordDao.queryByThirdTradeNo(thirdTradeNo);
 		if (entity != null) {

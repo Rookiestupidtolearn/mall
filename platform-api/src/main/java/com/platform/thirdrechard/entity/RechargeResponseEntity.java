@@ -13,6 +13,7 @@ public class RechargeResponseEntity {
 	 * 1004 充值渠错误 ,2-奇速贷，3-其他
 	 * 1005 重复下订单
 	 * 1006 校验url失败
+	 * 1007 校验会员卡类型失败
 	 */
 	private String code;
 	private String msg;
