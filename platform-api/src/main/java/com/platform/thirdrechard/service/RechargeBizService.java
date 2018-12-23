@@ -122,13 +122,14 @@ public class RechargeBizService {
  		       	responseEntity.setCode("订单编号错误");
  		       	 return  responseEntity;
 			}
- 			if (nEntity.getTaadeAmt() == null) {
+ 			if (nEntity.getTradeAmt()== null) {
+ 				logger.info("金额不能为空。。。。");
  				responseEntity.setCode("1002");
  		       	responseEntity.setCode("金额错误");
  		       	 return  responseEntity;
 			}
  			
- 			if (new BigDecimal(amount).compareTo(new BigDecimal(nEntity.getTaadeAmt())) != 0) {
+ 			if (new BigDecimal(amount).compareTo(new BigDecimal(nEntity.getTradeAmt())) != 0) {
  				responseEntity.setCode("1002");
  		       	responseEntity.setCode("金额错误,不一致");
  		       	 return  responseEntity;
