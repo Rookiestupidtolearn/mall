@@ -198,14 +198,14 @@ public class ApiSendSMSService {
 
 	private Map<String, Object> toResponsFalseObject(String msg) {
 		Map<String, Object> obj = new HashMap<String, Object>();
-		obj.put("errno", 1);
+		obj.put("errno", 0);
 		obj.put("errmsg", msg);
 		return obj;
 	}
 
 	private Map<String, Object> toResponsScuuessObject(String msg) {
 		Map<String, Object> obj = new HashMap<String, Object>();
-		obj.put("errno", 0);
+		obj.put("errno", 1);
 		obj.put("errmsg", msg);
 		return obj;
 	}
