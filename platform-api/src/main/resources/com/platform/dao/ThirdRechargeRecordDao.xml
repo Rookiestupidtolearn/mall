@@ -17,6 +17,23 @@
         <result property="createTime" column="create_time"/>
     </resultMap>
 
+	<select id="queryByThirdTradeNo" resultType="com.platform.entity.ThirdRechargeRecordEntity">
+		select
+			`id`,
+			`mobile`,
+			`state`,
+			`amount`,
+			`third_trade_no`,
+			`trade_no`,
+			`card_type`,
+			`platform_type`,
+			`version`,
+			`update_time`,
+			`create_time`
+		from third_recharge_record
+		where third_trade_no = #{thirdTradeNo}
+	</select>
+
 	<select id="queryObject" resultType="com.platform.entity.ThirdRechargeRecordEntity">
 		select
 			`id`,

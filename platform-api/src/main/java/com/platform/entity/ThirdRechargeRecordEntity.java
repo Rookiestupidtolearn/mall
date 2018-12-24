@@ -37,7 +37,9 @@ public class ThirdRechargeRecordEntity implements Serializable {
     private Date updateTime;
     //创建时间
     private Date createTime;
-
+   
+    private String queryCheckUrl;
+    
     /**
      * 设置：主键
      */
@@ -181,4 +183,14 @@ public class ThirdRechargeRecordEntity implements Serializable {
     public Date getCreateTime() {
         return createTime;
     }
+
+	public String getQueryCheckUrl() {
+		return queryCheckUrl;
+	}
+
+	public void setQueryCheckUrl(String queryCheckUrl) {
+		this.queryCheckUrl = queryCheckUrl;
+	}
+    
+    
 }

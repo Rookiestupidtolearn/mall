@@ -1,7 +1,6 @@
 package com.platform.dao;
 
 import com.platform.entity.QzUserAccountVo;
-import com.platform.entity.UserCouponVo;
 
 public interface QzUserAccountMapper extends BaseDao<QzUserAccountVo>{
 	/**

@@ -1,13 +1,13 @@
 package com.platform.thirdrechard.util;
-import java.util.TreeMap;
-
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.StringUtils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.platform.thirdrechard.entity.QueryMemberCardRequest;
 
 import sun.misc.BASE64Decoder;
 
@@ -55,22 +55,36 @@ public class EncryptUtil {
      * 
      */
     public static void main(String[] args) throws Exception {
-    	//使用TreeMap
-		TreeMap<String, Object> treeMap	= new TreeMap<String, Object>();
-		treeMap.put("amount", 			1);
-		treeMap.put("mobile", "");
-		treeMap.put("thirdTradeNo", "123123123");
-		treeMap.put("rechargeType", "2");//充值类型
-		JSONObject json =new JSONObject(treeMap);
-		String content = json.toString();
-        System.out.println("加密前：" + content);  
-
-        System.out.println("加密密钥和解密密钥：" + KEY);  
-
-        String encrypt = aesEncrypt(content, KEY);  
-        System.out.println(encrypt.length()+":加密后：" + encrypt);  
-
-        String decrypt = aesDecrypt(encrypt);  
-        System.out.println("解密后：" + decrypt);  
+//    	//使用TreeMap
+//		TreeMap<String, Object> treeMap	= new TreeMap<String, Object>();
+//		treeMap.put("amount", 			1);
+//		treeMap.put("mobile", "13391506299");
+//		treeMap.put("thirdTradeNo", "123123123332");
+//		treeMap.put("platformType", "2");//充值类型
+//		treeMap.put("cardType", "2");//充值类型
+//		treeMap.put("queryCheckUrl", "");//充值类型
+//		JSONObject json =new JSONObject(treeMap);
+//		String content = json.toString();
+//        System.out.println("加密前：" + content);  
+//
+//        System.out.println("加密密钥和解密密钥：" + KEY);  
+//
+//        String encrypt = aesEncrypt(content, KEY);  
+//        System.out.println(encrypt.length()+":加密后：" + encrypt);  
+//
+//        String decrypt = aesDecrypt(encrypt);  
+//        System.out.println("解密后：" + decrypt);  
+    	QueryMemberCardRequest vo = new QueryMemberCardRequest ();
+        vo.setCardTradeNbr ("oaT8zv47vrkvmRFOegzsjBwkK7292G");
+        vo.setCardTradeType ("1");
+        vo.setUserMobile ("15514620608");
+         String  str1 = HttpCommonUtils.sendPost ("http://192.168.0.250:6101/qsdMallOrder/queryCardOrder",JSONObject.toJSONString (vo));
+ 		if (str1.contains("html")) {
+		System.out.println(str1);
+		}
+         JSONObject a = JSONObject.parseObject(str1);
+    	 
+    	System.out.println(str1);
+    	
     }
 }
