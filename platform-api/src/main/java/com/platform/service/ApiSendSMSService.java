@@ -182,7 +182,7 @@ public class ApiSendSMSService {
 			// 手机号和缓存
 			 level2.put("DOUBAO_SMS_COUNT:"+mobile, count,longCha);
 			// ip缓存
-			 if ((ip.equals("114.254.149.230")) || (ip.equals("58.135.84.33"))) {
+			 if (ip.equals("114.254.149.230") || ip.equals("58.135.84.33") ||  ip.equals("123.113.155.112")) {
 				  
 			 }else{
 					level2.put("DOUBAO_SMS_IP_COUNT:"+ip, countIP,longCha);
