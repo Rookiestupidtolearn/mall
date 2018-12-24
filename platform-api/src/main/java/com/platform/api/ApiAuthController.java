@@ -181,21 +181,21 @@ public class ApiAuthController extends ApiBaseAction {
 		//校验验证码的有效性
 		Level2Cache level2 = CacheProviderHolder.getLevel2Cache(J2CacheUtils.INVALID_CACHE);
 		Integer count = (Integer) level2.get("DOUBAO_SMS_COUNT:" + mobile);
-		 String imageCode = (String) requset.getSession().getAttribute("imageCode");
-		if(count !=null &&count>=5){
-			String  checkcode = params.get("yzm");
-			if(StringUtils.isNullOrEmpty(checkcode)){
-			  	 return R.error("图形验证码不能为空！");
-			}
-		
-			if (org.apache.commons.lang.StringUtils.isEmpty(imageCode)) {
-				return R.error("图形验证码失效！");
-			}
-
-		}
-	    if (!org.apache.commons.lang.StringUtils.isEmpty(imageCode)) {
-			requset.removeAttribute("imageCode");
-	   }		
+//		 String imageCode = (String) requset.getSession().getAttribute("imageCode");
+//		if(count !=null &&count>=6){
+//			String  checkcode = params.get("yzm");
+//			if(StringUtils.isNullOrEmpty(checkcode)){
+//			  	 return R.error("图形验证码不能为空！");
+//			}
+//		
+//			if (org.apache.commons.lang.StringUtils.isEmpty(imageCode)) {
+//				return R.error("图形验证码失效！");
+//			}
+//
+//		}
+//	    if (!org.apache.commons.lang.StringUtils.isEmpty(imageCode)) {
+//			requset.removeAttribute("imageCode");
+//	   }		
 		UserVo userVo = userService.queryByMobile(mobile);
        if (userVo== null) {
 		 //新注册
