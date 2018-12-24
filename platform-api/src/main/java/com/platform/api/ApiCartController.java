@@ -46,6 +46,8 @@ import com.qiniu.util.StringUtils;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import net.oschina.j2cache.CacheProviderHolder;
+import net.oschina.j2cache.Level2Cache;
 
 /**
  * 作者: @author Harmon <br>
@@ -182,8 +184,18 @@ public class ApiCartController extends ApiBaseAction {
     @PostMapping("add")
     @Transactional
     public Object add(@LoginUser UserVo loginUser) {
+    	if(null == loginUser){
+    		return this.toResponsObject(400, "请先登录", "");
+    	}
     	
-        JSONObject jsonParam = getJsonRequest();
+    	//防止重复提交
+    	Level2Cache level2 = CacheProviderHolder.getLevel2Cache(J2CacheUtils.INVALID_CACHE);
+    	if(null !=level2.get("USER_ADDCART:" + loginUser.getUserId())){
+    		return this.toResponsObject(400, "添加成功,已在购物车中等待亲~", "");
+    	}
+    	level2.put("USER_ADDCART:" + loginUser.getUserId(), loginUser.getUserId(), 1L);
+
+    	JSONObject jsonParam = getJsonRequest();
         Integer goodsId = jsonParam.getInteger("goodsId");
         Integer productId = jsonParam.getInteger("productId");
         Integer number = jsonParam.getInteger("number");

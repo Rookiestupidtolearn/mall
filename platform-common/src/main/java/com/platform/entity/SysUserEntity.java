@@ -73,6 +73,13 @@ public class SysUserEntity implements Serializable {
      * 部门名称
      */
     private String deptName;
+    
+    
+    /**
+     * 用户类型    0:商户  1:管理
+     */
+    private int type;
+    
 
     /**
      * 设置：
@@ -231,4 +238,13 @@ public class SysUserEntity implements Serializable {
     public void setDeptName(String deptName) {
         this.deptName = deptName;
     }
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
+	}
+    
 }

@@ -53,7 +53,12 @@
                     <Checkbox :label="role.roleId" v-for="role in roleList">{{role.roleName}}</Checkbox>
                 </Checkbox-group>
             </Form-item>
-
+            <Form-item label="类型" prop="type">
+                <Checkbox-group v-model="user.type">
+                    <Checkbox :label="0" >商户</Checkbox>
+                    <Checkbox :label="1" >管理</Checkbox>
+                </Checkbox-group>
+            </Form-item>
             <Form-item label="状态" prop="status">
                 <Radio-group v-model="user.status">
                     <Radio label="0">
