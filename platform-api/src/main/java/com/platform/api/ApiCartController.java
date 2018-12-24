@@ -210,9 +210,9 @@ public class ApiCartController extends ApiBaseAction {
         //判断购物车中是否存在此规格商品
         
         
-       String  locked   = Long.toString(loginUser.getUserId())+goodsId;
+//       String  locked   = Long.toString(loginUser.getUserId())+goodsId;
         
-        synchronized (locked) {
+        synchronized (this) {
             Map cartParam = new HashMap();
             cartParam.put("goods_id", goodsId);
             cartParam.put("product_id", productId);

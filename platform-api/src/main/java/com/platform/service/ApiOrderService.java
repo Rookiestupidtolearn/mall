@@ -562,7 +562,11 @@ public class ApiOrderService {
 			if (userAccount.compareTo(disCountAmount) == 0 || userAccount.compareTo(disCountAmount) > 0) {
 				couponAmount = disCountAmount;
 				account.setAmount(userAccount.subtract(couponAmount));
-				account.setLock_amount(account.getLock_amount().add(couponAmount));// 冻结金额
+				if(account.getLock_amount() == null){
+					account.setLock_amount(couponAmount);// 冻结金额
+				}else{
+					account.setLock_amount(account.getLock_amount().add(couponAmount));// 冻结金额
+				}
 				for(CartVo cart : carts){
 					// 获取产品配比值
 					GoodsCouponConfigVo goodsCoupon = goodsCouponConfigMapper.getUserCoupons(cart.getGoods_id(),
@@ -593,7 +597,11 @@ public class ApiOrderService {
 			if (userAccount.compareTo(disCountAmount) < 0) {
 				couponAmount = goodsMaxDiscount(carts, userAccount,order.getId());
 				account.setAmount(userAccount.subtract(couponAmount));
-				account.setLock_amount(account.getLock_amount().add(couponAmount));// 冻结金额
+				if(account.getLock_amount() == null){
+					account.setLock_amount(couponAmount);// 冻结金额
+				}else{
+					account.setLock_amount(account.getLock_amount().add(couponAmount));// 冻结金额
+				}
 			}
 			account.setLast_update_time(new Date());
 			qzUserAccountMapper.update(account);
@@ -613,7 +621,11 @@ public class ApiOrderService {
 		QzUserAccountVo userAmountVo = qzUserAccountMapper.queruUserAccountInfo(order.getUser_id());
 		if(userAmountVo != null){
 			userAmountVo.setAmount(userAmountVo.getAmount().add(order.getCoupon_price()));
-			userAmountVo.setLock_amount(userAmountVo.getLock_amount().subtract(order.getCoupon_price()));
+			if(userAmountVo.getLock_amount() == null){
+				userAmountVo.setLock_amount(new BigDecimal("0").subtract(order.getCoupon_price()));
+			}else{
+				userAmountVo.setLock_amount(userAmountVo.getLock_amount().subtract(order.getCoupon_price()));
+			}
 			userAmountVo.setLast_update_time(new Date());
 			qzUserAccountMapper.update(userAmountVo);
 			if(type == 1){
@@ -640,7 +652,11 @@ public class ApiOrderService {
 	public Object discountUserAmount(OrderVo order){
 		QzUserAccountVo userAmountVo = qzUserAccountMapper.queruUserAccountInfo(order.getUser_id());
 		if(userAmountVo != null){
-			userAmountVo.setLock_amount(userAmountVo.getLock_amount().subtract(order.getCoupon_price()));
+			if(userAmountVo.getLock_amount() == null){
+				userAmountVo.setLock_amount(new BigDecimal("0").subtract(order.getCoupon_price()));
+			}else{
+				userAmountVo.setLock_amount(userAmountVo.getLock_amount().subtract(order.getCoupon_price()));
+			}
 			userAmountVo.setLast_update_time(new Date());
 			qzUserAccountMapper.update(userAmountVo);
 			saveMoneyRecord(order.getUser_id(), "2",0, order, "支付成功，扣减商品优化金额", order.getCoupon_price());
@@ -675,7 +691,7 @@ public class ApiOrderService {
     		moneyRecord.setTradeNo(order.getOrder_sn());
     		moneyRecord.setRemark(remark);
     		if(userAmountVo != null){
-    			moneyRecord.setLockAmount(userAmountVo.getLock_amount());
+    			moneyRecord.setLockAmount(userAmountVo.getLock_amount() == null ? new BigDecimal("0") : userAmountVo.getLock_amount());
     			moneyRecord.setCurrentAmount(userAmountVo.getAmount());
     		}
     		apiMoneyRecordMapper.save(moneyRecord);
