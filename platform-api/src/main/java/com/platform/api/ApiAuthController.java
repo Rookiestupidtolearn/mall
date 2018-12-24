@@ -179,6 +179,14 @@ public class ApiAuthController extends ApiBaseAction {
 		//TODO
 		
 		//校验验证码的有效性
+	    Object yzm  = J2CacheUtils.get(J2CacheUtils.CHECK_CACHE,"DOUBAO:"+mobile);
+		if (yzm == null) {
+			return R.error("验证码已经失效！");
+		}
+		if (!params.get("code").toString().equals(yzm.toString())) {
+			return R.error("验证码已经失效！");
+		}
+		
 		Level2Cache level2 = CacheProviderHolder.getLevel2Cache(J2CacheUtils.INVALID_CACHE);
 		Integer count = (Integer) level2.get("DOUBAO_SMS_COUNT:" + mobile);
 //		 String imageCode = (String) requset.getSession().getAttribute("imageCode");
