@@ -50,7 +50,8 @@ var vm = new Vue({
         user: {
             status: 1,
             deptName: '',
-            roleIdList: []
+            roleIdList: [],
+            type:0
         },
         ruleValidate: {
             username: [
@@ -62,6 +63,9 @@ var vm = new Vue({
             ],
             mobile: [
                 {required: true, message: '手机号不能为空', trigger: 'blur'}
+            ],
+            type: [
+                     {required: true, message: '类型不能为空', trigger: 'blur'}
             ]
         }
     },
