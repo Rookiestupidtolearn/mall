@@ -30,6 +30,7 @@ Vue.prototype.$url= 'http://192.168.124.29:8084/platform/api/'; //本地环境
 //Vue.prototype.$url= 'http://117.50.60.55:6201/platform/api/'; //预发布环境
 //Vue.prototype.$url= 'http://192.168.124.50:6101/platform/api/'; //测试环境
 //Vue.prototype.$url= 'http://192.168.124.28:8080/platform/api/'; //冯蓉基本地
+//Vue.prototype.$url= 'http://192.168.124.144:8093/platform/api/'; //吴明龙本地
 
 //切换页面时滚动条自动滚动到顶部的方法
 router.afterEach((to,from,next) => {

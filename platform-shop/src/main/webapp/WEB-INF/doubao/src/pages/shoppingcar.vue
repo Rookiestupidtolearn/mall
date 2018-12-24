@@ -8,6 +8,28 @@
   		<span class="item">48小时快速退款</span>
   		<span class="item">免邮费</span>
   	</div>-->
+  	<!--商品已下架的弹窗-->
+  		<div class="bg" v-show="showTn"></div>
+  		<div class="bgShow" v-show="showTn">
+  			<div class="item" v-for="(item,index) in cartGoods" >
+            <div class="cart-goods">
+              <div class="info">
+                	<img class="img"  :src="item.list_pic_url"/>
+                  <div class="t">
+                    <span class="name">{{item.goods_name}}</span>
+                     <span class="num">x{{item.number}}</span>
+                  </div>
+                  <span class="price">￥{{item.market_price}}</span>
+              </div>
+            </div>
+          </div>
+  			<div class="font">该款商品<span class="red">已售罄/下架</span>，这款商品太火爆了，您晚了一步哦；</div>
+  			<ul class="btngroup">
+  				<li class="cancel" @click="cancel">取消</li>
+  				<li class="confirm">继续结算</li>
+  			</ul>
+  		</div>
+  		<!--其它主体内容-->
   	<div class="no-cart" v-if="cartGoods.length <= 0">
     <div class="c">
       <div class="title-box">购物车空空如也～</div>
@@ -72,6 +94,7 @@ export default {
   data () {
     return {
 //  	headFont:'购物车',
+			showTn:false, //已售罄/下架弹窗显示
     	cartGoods: [],
 	    cartTotal: {
 	      "goodsCount": 0,
@@ -91,6 +114,9 @@ export default {
 		this.getCartList();
   },
   methods:{
+  		cancel(){
+  			this.showTn = false;
+  		},
 	  	deleteCart(){
 	  			//获取已选择的商品
 			    let that = this;
@@ -310,6 +336,92 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only  active -->
 <style scoped>
+	.bg{
+		position:fixed;
+		left:0px;
+		top:0px;
+    background:rgba(0, 0, 0, 0.6);
+    width:100%;  
+    height:100%;
+    filter:alpha(opacity=60);  
+    opacity:0.6;  
+    z-Index:999;  
+	}
+	.bgShow{
+		position:fixed;
+    width:6rem;
+    top:2.3rem;
+    left:50%;
+    background-color:#fff;
+		margin-left: -3rem;
+    z-Index:9999;  
+    border-radius:.08rem;
+    -webkit-border-radius:.08rem;
+    padding-top:.3rem;
+	}
+	.bgShow .font{
+		font-size: .25rem;
+    color: #333;
+    padding: 0 .5rem;
+    text-align: left;
+    margin-top: .3rem;
+    padding-bottom:.5rem;
+	}
+	.bgShow .btngroup{
+		width:100%;
+		overflow: hidden;
+		font-size:.29rem;
+		border-top:1px solid #CBCBCB;
+	}
+	.bgShow .btngroup li.cancel{
+		border-right:1px solid #CBCBCB;
+		-webkit-box-sizing: border-box;
+	}
+	.bgShow .btngroup li.confirm{
+		color: #26A2FF;
+	}
+	.bgShow .btngroup li{
+		float:left;
+		width:50%;
+		padding:.25rem 0;
+	}
+	.bgShow .font .red{
+		color: red;
+	}
+	.bgShow .item{
+		overflow: hidden;
+	}
+	.bgShow img{
+		float:left;
+		width:1.25rem;
+	}
+	.bgShow .item .name{
+    font-size: .25rem;
+    color: #333;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 4rem;
+    display: inline-block;
+    margin-top: .1rem;
+	}
+	.bgShow .item .t{
+		float:left;
+		margin: .08rem 0;
+		text-align: left;
+    font-size: .25rem;
+    color: #333;
+    overflow: hidden;
+	}
+	.bgShow .item .num{
+		vertical-align: super;
+		margin: .08rem 0;
+	}
+	.bgShow .item .price{
+		  float: left;
+	    font-size: .29rem;
+	    color: #333;
+	}
 .midHover {
 		float:left;
 		height:1.25rem;
@@ -468,7 +580,6 @@ export default {
     color: #333;
     overflow: hidden;
 }
-
 
 .cart-div .item .name{
     font-size: .25rem;

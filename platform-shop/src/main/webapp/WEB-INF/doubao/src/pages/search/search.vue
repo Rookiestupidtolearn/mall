@@ -107,6 +107,7 @@ export default {
 			 let position = window.scrollY; //记录离开页面的位置 
 			 if (position == null) position = 0 ;
 			 if(this.$route.name == 'search'){
+			 			console.log(window.scrollY);
 				 		this.$cookie.setCookie('scrollSearch',window.scrollY);
 		 		}
 			 next();
@@ -114,6 +115,7 @@ export default {
 	   watch:{
 	 		goodsList:function(){
  				this.$nextTick(function(){
+ 					console.log(this.$cookie.getCookie('scrollSearch'))
  						if(this.$cookie.getCookie('scrollSearch') == '' || this.$cookie.getCookie('scrollSearch') == '0'  || this.$cookie  .getCookie('scrollSearch') == '-1'){
    					}else{
    						window.scrollTo(0,this.$cookie.getCookie('scrollSearch'));

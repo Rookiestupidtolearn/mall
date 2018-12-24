@@ -89,7 +89,7 @@
         		共{{disCountAmount}}币，开通即可使用
         	</div>
         	<div class="tips" v-else>
-        		还可支付{{usableAmount}}币，余额不足，剩余{{residueAmount}}币可用
+        		还可支付{{usableAmount}}克拉，余额不足，剩余{{residueAmount}}克拉可用
         	</div>
          </div>
     </div>
@@ -208,7 +208,7 @@
 //	 		}
 //	 	},
 		showTb(){
-			MessageBox( '克拉','斗宝俱乐部‘克拉’可在斗宝俱乐部平台消费时抵用现金，1克拉抵1元现金使用。');
+			MessageBox( '克拉','斗宝俱乐部"克拉"可在斗宝俱乐部平台消费时抵用现金，1克拉抵1元现金使用。');
 			document.getElementsByClassName('mint-msgbox-confirm')[0].innerText = '我知道了';
 		},
 	 	tapCoupon(){
