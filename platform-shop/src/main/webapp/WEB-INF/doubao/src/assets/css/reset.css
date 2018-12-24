@@ -56,10 +56,7 @@ body{	margin:0;	padding-bottom: 1.2rem;}
 /*注册*/
 .mint-field .mint-cell-title{		text-align: left;		font-size:.32rem;		width:1.7rem;}
 .mint-cell-wrapper{	padding:0 .4rem 0 .2rem;}
-.mint-cell:last-child{	margin-top:.1rem;}
-/*.mint-button--small{
-	width:2.1rem;
-}*/
+.mint-cell{	margin-top:.1rem;}
 /*智齿客服*/
 #zhichiBtnBox{bottom:2.5rem !important;}
 /*搜索高度自适应处理*/

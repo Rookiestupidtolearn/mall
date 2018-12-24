@@ -8,7 +8,7 @@
  			<p>快速登录</p>
  			<mt-field label="手机号码"  placeholder="请输入手机号码" type="tel" v-model="phone"  :attr="{ maxlength: 11 }" ></mt-field>
  			<mt-field placeholder="请输入图形验证码" v-model="imgcaptcha"  :attr="{ maxlength: 4}"  :style="{display:[ showImg ? 'block' : 'none']}">
-				<img :src="imgyzm" class="imgYzm"/>
+				<img :src="imgyzm" class="imgYzm" @click="refreshCode"/>
 			</mt-field>
  			<mt-field label="验证码" placeholder="请输入验证码" v-model="captcha"  :attr="{ maxlength: 4}" >
 				<mt-button type="primary" size="small" :disabled="disabled" @click="yzm" >{{count}}</mt-button>
@@ -59,6 +59,11 @@
 //	  		} 
 	  },
 	  methods:{
+	  	refreshCode(){
+	  		var randomData = new Date();
+    		this.imgyzm="http://wap.doubaoclub.com:6201/platform/api/image.jpg?date"+randomData.getMilliseconds();
+//	  	  this.imgyzm="http://192.168.124.28:8080/platform/api/image.jpg?date"+randomData.getMilliseconds();
+	  	},
 	  	fwxieyi(){
 	  		let that = this;
 	  		that.$cookie.setCookie('phone',this.phone);
@@ -136,22 +141,18 @@
 	  			this.$toast('手机号码格式不正确');
                 return false;
 	  		}
+	  		this.$http.defaults.withCredentials = true;
 			this.$http({
 		        method: 'post',
 		        url:that.$url+ 'sendSms',
 		        params:{
 		        	mobile:this.phone,
-		        	code:this.imgcaptcha
+		        	imageCode:this.imgcaptcha
 		        }
 	    	}).then(function (res) {
-//	    		var res ={"data":{"msg": "请传入图形验证码","code": 0,"count": 5}};
-	    		if(res.data.code == 0){
+//	    		var res ={"data":{"msg": "请传入图形验证码","errno": 0,"count": 5}};
+	    		if(res.data.errno == 0){
 	    			/*图形验证码是否显示*/
-			  		if (res.data.count >=5){
-			  			that.showImg = true;
-			    		that.imgyzm = window.location.protocol+'//'+window.location.host+'/platform/captcha.jpg'; //后台的图片
-//			    		that.$cookie.setCookie('showImg',that.showImg);
-			  		}else{
 	                    that.disabled = true;
 				  		let i = 60;
 				  		let countDown = setInterval(function(){
@@ -167,9 +168,12 @@
 				  				that.disabled = false;
 				  			}
 				  		}, 1000);
-			  		}
 		    	}else{
 		    		that.$toast({message:res.data.msg,duration:3000});
+		    		if (res.data.count >=5){
+			  			that.showImg = true;
+						that.refreshCode();
+			  		}
 		    	}
 			})
 	  	}

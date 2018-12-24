@@ -119,7 +119,15 @@ export default {
 	    	}).then(function (res) {
 	    		var res = res.data;
 	    		if(res.errno == 0){
-	    			window.location.reload();
+	    			MessageBox({
+						  title: ' ',
+						  message: '已确认收到商品 ',
+						  showCancelButton: true
+					},function(params){
+							if(params == 'confirm'){
+								window.location.reload();
+							}
+					});
 	    		}else{
 	    			that.$toast(res.errmsg);
 	    		}

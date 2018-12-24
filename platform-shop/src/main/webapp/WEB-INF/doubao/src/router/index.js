@@ -102,7 +102,7 @@ export default new Router({
     },{
       path: '/pages/ucenter/search',
       name: 'search',
-      component: search,
+      component: search
     },{
       path: '/pages/category/category',
       name: 'categoryPages',

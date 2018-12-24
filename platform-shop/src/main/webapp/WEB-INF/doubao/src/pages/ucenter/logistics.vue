@@ -2,7 +2,7 @@
 	<div class="container">
 		<!--多个物流-->
 	 	<div class="logistics" v-for="(item,index) in description">
-	 		<p class="top"><span class="left">{{item.shipmentName}}：20181115555</span><span class="right">预计{{item.arrivalTime}}送达</span></p>
+	 		<p class="top"><span class="left">{{item.shipmentName}}：{{description.shipmentOrder}}</span><span class="right">预计{{item.arrivalTime}}送达</span></p>
 	 		<div class="productInfo">
 	 			<img :src="item.goodUrl" />
 	 			<p class="name">{{item.goodName}}</p>
