@@ -263,6 +263,7 @@ public class GoodsServiceImpl implements GoodsService {
 	}
 
 	@Override
+	@Transactional
 	public int unSale(Integer id) {
 		SysUserEntity user = ShiroUtils.getUserEntity();
 		GoodsEntity goodsEntity = queryObject(id);
@@ -378,6 +379,7 @@ public class GoodsServiceImpl implements GoodsService {
 	}
 	
 	@Override
+	@Transactional
 	public int unSaleBatch(Integer[] ids) {
 		SysUserEntity user = ShiroUtils.getUserEntity();
 		List<GoodsEntity> goodsList = goodsDao.queryGoodsList(ids);

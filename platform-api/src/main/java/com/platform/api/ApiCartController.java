@@ -480,16 +480,15 @@ public class ApiCartController extends ApiBaseAction {
         }
         BigDecimal freightPrice = new BigDecimal(0.00);
         //默认收货地址
-        Map<String,Object> param = new HashMap<>();
-        param.put("user_id", loginUser.getUserId());
-        List addressEntities = addressService.queryList(param);
-        
+        if(!StringUtils.isNullOrEmpty(jsonParam.getString("addressId"))){
+        	addressId = Integer.parseInt(jsonParam.getString("addressId"));
+        }
+        AddressVo addVo = addressService.queryObject(addressId);
         Map<String,Object> map = new HashMap<>();
-
-        if (null == addressEntities || addressEntities.size() == 0) {
-            resultObj.put("checkedAddress", new AddressVo());
-        } else {
-            resultObj.put("checkedAddress", addressEntities.get(0));
+        if(null == addVo){
+        	resultObj.put("checkedAddress", new AddressVo());
+        }else{
+        	 resultObj.put("checkedAddress", addVo);
         }
         // * 获取要购买的商品和总价
         ArrayList checkedGoodsList = new ArrayList();
