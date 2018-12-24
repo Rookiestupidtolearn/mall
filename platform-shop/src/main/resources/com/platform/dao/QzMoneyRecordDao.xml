@@ -99,7 +99,10 @@
 			#{tarnAmount},
 			#{currentAmount},
 			#{createTime},
-			#{tradeNo},#{remark},#{#{lockAmount}})
+			#{tradeNo},
+			#{remark},
+			#{lockAmount}
+               )
 	</insert>
 	 
 	<update id="update" parameterType="com.platform.entity.QzMoneyRecordEntity">

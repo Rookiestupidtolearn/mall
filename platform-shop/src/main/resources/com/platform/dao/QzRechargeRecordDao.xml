@@ -58,6 +58,9 @@
 		<if test="name != null and name.trim() != ''">
 			AND name LIKE concat('%',#{name},'%')
 		</if>
+		<if test="state != null and state!= ''">
+			AND state =#{state}
+		</if>
         <choose>
             <when test="sidx != null and sidx.trim() != ''">
                 order by ${sidx} ${order}
@@ -77,6 +80,46 @@
         <if test="name != null and name.trim() != ''">
             AND name LIKE concat('%',#{name},'%')
         </if>
+        <if test="state != null and state!= ''">
+			AND state =#{state}
+		</if>
+	</select>
+	 
+	 	<select id="queryAuditList" resultType="com.platform.entity.QzRechargeRecordEntity">
+		select
+    		`id`,
+    		`shop_user_id`,
+    		`mobile`,
+    		`state`,
+    		`operate_id`,
+    		`operate_time`,
+    		`amount`,
+    		`memo`,
+    		`trade_no`,
+    		`recharge_type`,
+    		`audit_id`,
+    		`update_time`,
+    		`create_time`
+		from qz_recharge_record
+		WHERE 1=1
+		and state != 0 
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryAuditTotal" resultType="int">
+		select count(*) from qz_recharge_record
+		WHERE 1=1
+	   and state != 0
 	</select>
 	 
 	<insert id="save" parameterType="com.platform.entity.QzRechargeRecordEntity" useGeneratedKeys="true" keyProperty="id">
