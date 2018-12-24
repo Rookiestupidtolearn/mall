@@ -67,7 +67,7 @@ public class ApiSmsController {
         String text = producer.createText();
         //生成图片验证码
         BufferedImage image = producer.createImage(text);
-    	request.setAttribute(DefaultSubjectContext.SESSION_CREATION_ENABLED, Boolean.TRUE);
+//    	request.setAttribute(DefaultSubjectContext.SESSION_CREATION_ENABLED, Boolean.TRUE);
        HttpSession session = request.getSession();
        session.setAttribute("imageCode", text);
         ServletOutputStream out = response.getOutputStream();
@@ -110,28 +110,28 @@ public class ApiSmsController {
         	logger.info("今日用手机号:"+params.get("mobile")+">>所在的IP地址"+validIP+"已发送"+countIP+"次");
 		}
         
-        if (count >=6) {
-        	if (StringUtils.isEmpty(params.get("imageCode"))) {
-        		result.put("errno", 1);
-            	result.put("msg", "请传入图形验证码");
-            	result.put("count", count);
-            	return result;
-			}
-        	 String imageCode = (String) request.getSession().getAttribute("imageCode");
-            if (StringUtils.isEmpty(imageCode)) {
-            	result.put("errno", 1);
-            	result.put("msg", "图形验证码已失效");
-            	result.put("count", count);
-            	return result;
-			}
-
-            if (!imageCode.equals(params.get("imageCode").toString())) {
-            	result.put("errno", 1);
-            	result.put("msg", "图形验证码错误");
-            	result.put("count", count);
-            	return result;
-            }
-		}
+//        if (count >=6) {
+//        	if (StringUtils.isEmpty(params.get("imageCode"))) {
+//        		result.put("errno", 1);
+//            	result.put("msg", "请传入图形验证码");
+//            	result.put("count", count);
+//            	return result;
+//			}
+//        	 String imageCode = (String) request.getSession().getAttribute("imageCode");
+//            if (StringUtils.isEmpty(imageCode)) {
+//            	result.put("errno", 1);
+//            	result.put("msg", "图形验证码已失效");
+//            	result.put("count", count);
+//            	return result;
+//			}
+//
+//            if (!imageCode.equals(params.get("imageCode").toString())) {
+//            	result.put("errno", 1);
+//            	result.put("msg", "图形验证码错误");
+//            	result.put("count", count);
+//            	return result;
+//            }
+//		}
         
         return  apiSendSMSService.sendSms(params.get("mobile"), validIP, "1",null);
         
