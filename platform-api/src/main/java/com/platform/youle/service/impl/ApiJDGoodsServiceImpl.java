@@ -641,7 +641,6 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 				}
 				for (int i = 0; i < dateAttr.size(); i++) {
 					JSONObject obj = JSONObject.parseObject(dateAttr.get(i).toString());
-					System.out.println("子分类" + obj);
 					CategoryVo category = apiCategoryMapper.queryObject(Integer.parseInt(obj.get("code").toString()));
 					if (category != null) {
 						category.setName(obj.get("name").toString());
@@ -649,6 +648,15 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 						category.setParent_id(
 								obj.get("parentId") == null ? 0 : Integer.parseInt(obj.get("parentId").toString()));
 						category.setLevel(obj.get("level").toString());
+						List<GoodsVo> goods = apiGoodsMapper.quertGoodsByCategory(obj.get("code").toString());
+						if (!CollectionUtils.isEmpty(goods)) {
+							for (GoodsVo good : goods) {
+								if (good.getList_pic_url() != null) {
+									category.setWap_banner_url(good.getList_pic_url());
+								}
+								break;
+							}
+						}
 						apiCategoryMapper.update(category);
 						continue;
 					}
@@ -719,9 +727,9 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 					if (category != null) {
 						category.setName(obj.get("name").toString());
 						category.setIs_show(1);
-						category.setParent_id(
-								obj.get("parentId") == null ? 0 : Integer.parseInt(obj.get("parentId").toString()));
+						category.setParent_id(vo.getParent_id());
 						category.setLevel(obj.get("level").toString());
+						category.setWap_banner_url(vo.getWap_banner_url());
 						apiCategoryMapper.update(category);
 						continue;
 					}
@@ -738,8 +746,7 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 					vos.setId(Integer.parseInt(obj.get("code").toString()));
 					vos.setName(obj.get("name").toString());
 					vos.setIs_show(1);
-					vos.setParent_id(
-							obj.get("parentId") == null ? 0 : Integer.parseInt(obj.get("parentId").toString()));
+					vos.setParent_id(vo.getParent_id());
 					vos.setLevel(obj.get("level").toString());
 					apiCategoryMapper.save(vos);
 				}
