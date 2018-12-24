@@ -181,10 +181,10 @@ public class ApiAuthController extends ApiBaseAction {
 		//校验验证码的有效性
 	    Object yzm  = J2CacheUtils.get(J2CacheUtils.CHECK_CACHE,"DOUBAO:"+mobile);
 		if (yzm == null) {
-			return R.error("验证码已经失效！");
+			return R.error("请重新获取验证码！");
 		}
 		if (!params.get("code").toString().equals(yzm.toString())) {
-			return R.error("验证码已经失效！");
+			return R.error("验证码错误！");
 		}
 		
 		Level2Cache level2 = CacheProviderHolder.getLevel2Cache(J2CacheUtils.INVALID_CACHE);
