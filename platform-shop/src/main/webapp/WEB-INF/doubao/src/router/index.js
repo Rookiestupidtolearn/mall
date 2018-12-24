@@ -102,10 +102,10 @@ export default new Router({
     },{
       path: '/pages/ucenter/search',
       name: 'search',
-      component: search,
-      meta: {
-        keepAlive: true // 需要被缓存
-      }
+      component: search
+//    meta: {
+//      keepAlive: true // 需要被缓存
+//    }
     },{
       path: '/pages/category/category',
       name: 'categoryPages',

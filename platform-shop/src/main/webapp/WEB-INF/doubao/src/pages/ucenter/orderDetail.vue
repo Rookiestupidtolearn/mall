@@ -68,7 +68,7 @@
             </div>
             <div class="t">
                 <span class="label">运费：</span>
-                <span class="txt">￥{{orderInfo.freight_price}}</span>
+                <span class="txt">￥{{orderInfo.shipping_fee}}</span>
             </div>
         </div>
         <div class="pay-fee">

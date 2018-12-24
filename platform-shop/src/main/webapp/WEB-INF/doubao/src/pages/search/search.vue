@@ -65,6 +65,7 @@
 </template>
 
 <script>
+import { Indicator } from 'mint-ui';
 //	import headbar from '@/components/headbar.vue'
 export default {
 	  name: 'search',
@@ -101,7 +102,6 @@ export default {
 			}else{
 				this.cookie=false;  
 			}
-			
 	  },
 	  beforeRouteLeave(to, from, next) { 
 			 let position = window.scrollY; //记录离开页面的位置 
@@ -114,13 +114,13 @@ export default {
 	 }, 
 	   watch:{
 	 		goodsList:function(){
- 				this.$nextTick(function(){
- 					console.log(this.$cookie.getCookie('scrollSearch'))
- 						if(this.$cookie.getCookie('scrollSearch') == '' || this.$cookie.getCookie('scrollSearch') == '0'  || this.$cookie  .getCookie('scrollSearch') == '-1'){
+   				this.$nextTick(function(){
+   					console.log(this.$cookie.getCookie('scrollSearch'))
+   					if(this.$cookie.getCookie('scrollSearch') == '' || this.$cookie.getCookie('scrollSearch') == '0'  || this.$cookie  .getCookie('scrollSearch') == '-1'){
    					}else{
    						window.scrollTo(0,this.$cookie.getCookie('scrollSearch'));
    					}
- 				})
+   				})
 	 		}
 		},
 	  methods:{
@@ -214,27 +214,47 @@ export default {
 		    			console.log(response.data);
 				})
 	  	},
-	  	showList(data){
+	  	showList(dataCookie){
 	  		let that = this;
 	  		if (that.$cookie.getCookie("searchKey") !== that.value){
 	  			that.$cookie.delCookie('scrollSearch');
 	  		}
-	  		var data = {
-	  			keyword:that.value,
-	        	page:that.page,
-	        	size:that.size,
-	        	sort:that.currentSortType,
-	        	order:that.currentSortOrder,
-	        	categoryId:that.categoryId
-	  		}
-	  		that.$cookie.setCookie("search",data);
+	  		if(dataCookie == "" || dataCookie ==undefined){
+	  			var data = {
+		  			keyword:that.value,
+		        	page:that.page,
+		        	size:that.size,
+		        	sort:that.currentSortType,
+		        	order:that.currentSortOrder,
+		        	categoryId:that.categoryId
+		  		}
+  			}else if (dataCookie.isTrusted == true){
+  				that.currentSortType = 'id';
+  				that.currentSortOrder = 'desc';
+  				var data = {
+		  			keyword:that.value,
+		        	page:that.page,
+		        	size:that.size,
+		        	sort:that.currentSortType,
+		        	order:that.currentSortOrder,
+		        	categoryId:that.categoryId
+		  		}
+  			}else{
+  				var data = JSON.parse(dataCookie);
+  				that.currentSortType = data.sort;  
+  				that.currentSortOrder = data.order; 
+  				that.categoryId =  data.categoryId;
+  			}
+	  		that.$cookie.setCookie("search",JSON.stringify(data));
 	  		that.$cookie.setCookie("searchKey",that.value);
 //	  		获取商品列表
+			Indicator.open();
 	  		that.$http({
 		        method: 'post',
 		        url: that.$url+'goods/list',
 		        params:data
 	    	}).then(function (response) {
+	    		Indicator.close();
 	    		var response = response.data;
 	    		 that.searchStatus = true;
 		          that.categoryFilter = false;
@@ -374,12 +394,13 @@ export default {
     background-size: .15rem .21rem;
 }
 .sort-box-category{
-	position: absolute;
+	position: fixed;
     background: #fff;
     width: 100%;
     height: auto;
     overflow: hidden;
     padding: .40rem 0 0 0;
+    top:1.74rem;
     border-bottom: 1px solid #d9d9d9;
 }
 .sort-box-category .item{
