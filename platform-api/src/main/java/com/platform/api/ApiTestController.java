@@ -803,7 +803,7 @@ public class ApiTestController extends ApiBaseAction {
 	@PostMapping("orderDetail")
 	public Object orderDetail() {
 
-		ReponseOrderDetailEntity response = orderService.detail("3409468966");
+		ReponseOrderDetailEntity response = orderService.detail("3270103614");
 
 		return response;
 	}
