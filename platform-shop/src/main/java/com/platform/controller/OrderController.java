@@ -41,6 +41,23 @@ public class OrderController {
         return R.ok().put("page", pageUtil);
     }
 
+    /**
+     * 列表
+     */
+    @RequestMapping("/orderException")
+    public R orderException(@RequestParam Map<String, Object> params) {
+        // 查询列表数据
+        Query query = new Query(params);
+        query.put("orderType", "404"); 
+        
+        List<OrderEntity> orderList = orderService.queryList(query);
+        int total = orderService.queryTotal(query);
+
+        PageUtils pageUtil = new PageUtils(orderList, total, query.getLimit(), query.getPage());
+
+        return R.ok().put("page", pageUtil);
+    }
+    
 
     /**
      * 信息
