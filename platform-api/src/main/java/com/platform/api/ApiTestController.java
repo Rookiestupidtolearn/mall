@@ -962,6 +962,16 @@ public class ApiTestController extends ApiBaseAction {
     	level2.put(key, value,86400l);
 		return resultObj;
 	}
+	
+	
+	@IgnoreAuth
+	@ApiOperation(value = "校验获取图形验证码")
+	@PostMapping("getCheckoutImage")
+	public Object getCheckoutImage() {
+		 String imageCode = (String) request.getSession().getAttribute("imageCode");
+		return imageCode;
+	}
+	
 	public static void main(String[] args) {
 		for(int i=0;i<100;i++){
 			try {
