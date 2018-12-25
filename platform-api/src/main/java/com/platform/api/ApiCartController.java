@@ -188,17 +188,16 @@ public class ApiCartController extends ApiBaseAction {
     		return this.toResponsObject(400, "请先登录", "");
     	}
     	
-    	//防止重复提交
-    	Level2Cache level2 = CacheProviderHolder.getLevel2Cache(J2CacheUtils.INVALID_CACHE);
-    	if(null !=level2.get("USER_ADDCART:" + loginUser.getUserId())){
-    		return this.toResponsObject(400, "添加成功,已在购物车中等待亲~", "");
-    	}
-    	level2.put("USER_ADDCART:" + loginUser.getUserId(), loginUser.getUserId(), 60L);
-
     	JSONObject jsonParam = getJsonRequest();
         Integer goodsId = jsonParam.getInteger("goodsId");
         Integer productId = jsonParam.getInteger("productId");
         Integer number = jsonParam.getInteger("number");
+    	//防止重复提交
+    	Level2Cache level2 = CacheProviderHolder.getLevel2Cache(J2CacheUtils.INVALID_CACHE);
+    	if(null !=level2.get("USER_ADDCART:" + goodsId)){
+    		return this.toResponsObject(400, "添加成功,已在购物车中等待亲~", "");
+    	}
+    	level2.put("USER_ADDCART:" + goodsId, loginUser.getUserId(), 3L);
 
         //判断商品是否可以购买
         GoodsVo goodsInfo = goodsService.queryObject(goodsId);
