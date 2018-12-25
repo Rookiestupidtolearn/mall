@@ -193,7 +193,7 @@ public class ApiCartController extends ApiBaseAction {
     	if(null !=level2.get("USER_ADDCART:" + loginUser.getUserId())){
     		return this.toResponsObject(400, "添加成功,已在购物车中等待亲~", "");
     	}
-    	level2.put("USER_ADDCART:" + loginUser.getUserId(), loginUser.getUserId(), 1L);
+    	level2.put("USER_ADDCART:" + loginUser.getUserId(), loginUser.getUserId(), 60L);
 
     	JSONObject jsonParam = getJsonRequest();
         Integer goodsId = jsonParam.getInteger("goodsId");
@@ -495,12 +495,24 @@ public class ApiCartController extends ApiBaseAction {
         if(!StringUtils.isNullOrEmpty(jsonParam.getString("addressId"))){
         	addressId = Integer.parseInt(jsonParam.getString("addressId"));
         }
-        AddressVo addVo = addressService.queryObject(addressId);
         Map<String,Object> map = new HashMap<>();
-        if(null == addVo){
-        	resultObj.put("checkedAddress", new AddressVo());
+        if(addressId != null && addressId == 0){
+        	 Map<String,Object> paramMap = new HashMap<>();
+        	 paramMap.put("isDefault",1);
+        	 paramMap.put("user_id",loginUser.getUserId());
+        	List<AddressVo> addVoList = addressService.queryList(paramMap);
+        	if (CollectionUtils.isEmpty(addVoList)) {
+        		resultObj.put("checkedAddress", new AddressVo());
+			}else{
+				resultObj.put("checkedAddress", addVoList.get(0));
+			}
         }else{
-        	 resultObj.put("checkedAddress", addVo);
+	        AddressVo addVo = addressService.queryObject(addressId);
+	        if(null == addVo){
+	        	resultObj.put("checkedAddress", new AddressVo());
+	        }else{
+	        	 resultObj.put("checkedAddress", addVo);
+	        }
         }
         // * 获取要购买的商品和总价
         ArrayList checkedGoodsList = new ArrayList();

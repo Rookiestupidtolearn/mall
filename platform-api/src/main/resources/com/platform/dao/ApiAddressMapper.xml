@@ -35,6 +35,9 @@
             <if test="user_id != null">
                 and user_id = #{user_id}
             </if>
+            <if test="isDefault != null">
+                and is_default = #{isDefault}
+            </if>
         </where>
         <choose>
             <when test="sidx != null and sidx.trim() != ''">
