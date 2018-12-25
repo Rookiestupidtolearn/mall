@@ -11,18 +11,20 @@
   	<!--商品已下架的弹窗-->
   		<div class="bg" v-show="showTn"></div>
   		<div class="bgShow" v-show="showTn">
-  			<div class="item" v-for="(item,index) in cartGoods" >
-            <div class="cart-goods">
-              <div class="info">
-                	<img class="img"  :src="item.list_pic_url"/>
-                  <div class="t">
-                    <span class="name">{{item.goods_name}}</span>
-                     <span class="num">x{{item.number}}</span>
-                  </div>
-                  <span class="price">￥{{item.market_price}}</span>
-              </div>
-            </div>
-          </div>
+  			<div class="itemtotal">
+	  			<div class="item" v-for="(item,index) in cartGoods" >
+	            <div class="cart-goods">
+	              <div class="info">
+	                	<img class="img"  :src="item.list_pic_url"/>
+	                  <div class="t">
+	                    <span class="name">{{item.goods_name}}</span>
+	                     <span class="num">x{{item.number}}</span>
+	                  </div>
+	                  <span class="price">￥{{item.market_price}}</span>
+	              </div>
+	            </div>
+	          </div>
+	      	</div>
   			<div class="font">该款商品<span class="red">已售罄/下架</span>，这款商品太火爆了，您晚了一步哦；</div>
   			<ul class="btngroup">
   				<li class="cancel" @click="cancel">取消</li>
@@ -358,6 +360,10 @@ export default {
     border-radius:.08rem;
     -webkit-border-radius:.08rem;
     padding-top:.3rem;
+	}
+	.itemtotal{
+		max-height: 5rem;
+    overflow-y: scroll;
 	}
 	.bgShow .font{
 		font-size: .25rem;
