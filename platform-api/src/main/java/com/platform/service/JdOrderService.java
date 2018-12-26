@@ -66,6 +66,8 @@ public class JdOrderService {
 	private ApiGoodsMapper apiGoodsMapper;
 	@Autowired
 	private ApiOrderGoodsMapper apiOrderGoodsMapper;
+	@Autowired
+	private ApiOrderGoodsService apiOrderGoodsService;
 	
 	@Transactional
 	public String  jdOrderCreate(OrderVo info){
@@ -95,6 +97,7 @@ public class JdOrderService {
 	 * @param jdOrderVo
 	 * @return
 	 */
+	@Transactional
 	public Map<String, Object> jdOrderSubbmit(AddressVo addressVo, OrderVo info, JdOrderVo jdOrderVo) {
 		Map<String, Object> resultObj = new HashMap<String, Object>();
 		// 创建第三方订单开始校验数据
@@ -190,6 +193,17 @@ public class JdOrderService {
 		//订单已提交给三方
 		 info.setOrder_status(201);
 		  orderService.update(info);
+		  Map<String, Object> paMap =  new HashMap<>();
+		  paMap.put("order_id", info.getId());
+		  List<OrderGoodsVo> orGoodsVos = apiOrderGoodsService.queryList(paMap);
+		  if (!CollectionUtils.isEmpty(orGoodsVos)) {
+			  for (OrderGoodsVo orderGoodsVo :orGoodsVos) {
+				  orderGoodsVo.setGoodStatus(300); //300等待收货
+				  apiOrderGoodsService.update(orderGoodsVo);
+			}
+			  
+		  }
+		  
 		return resultObj;
 	}
 
