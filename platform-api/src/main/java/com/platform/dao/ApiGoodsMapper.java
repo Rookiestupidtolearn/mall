@@ -49,4 +49,6 @@ public interface ApiGoodsMapper extends BaseDao<GoodsVo> {
 	 * @return
 	 */
 	List<GoodsVo> queryGoods();
+	
+	List<GoodsVo> querBrotherCategory(String categoryId);
 }

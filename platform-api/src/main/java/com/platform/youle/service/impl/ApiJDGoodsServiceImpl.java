@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,8 +37,6 @@ import com.platform.dao.ApiGoodsGalleryMapper;
 import com.platform.dao.ApiGoodsMapper;
 import com.platform.dao.ApiJdProductIdsMapper;
 import com.platform.dao.ApiProductMapper;
-import com.platform.dao.JdGoodsImgPathMapper;
-import com.platform.dao.JdGoodsMapper;
 import com.platform.entity.BrandVo;
 import com.platform.entity.CategoryVo;
 import com.platform.entity.GoodsGalleryVo;
@@ -648,19 +647,10 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 						category.setParent_id(
 								obj.get("parentId") == null ? 0 : Integer.parseInt(obj.get("parentId").toString()));
 						category.setLevel(obj.get("level").toString());
-						List<GoodsVo> goods = apiGoodsMapper.quertGoodsByCategory(obj.get("code").toString());
-						if (!CollectionUtils.isEmpty(goods)) {
-							for (GoodsVo good : goods) {
-								if (good.getList_pic_url() != null) {
-									category.setWap_banner_url(good.getList_pic_url());
-								}
-								break;
-							}
-						}
+						category.setWap_banner_url(category.getWap_banner_url());
 						apiCategoryMapper.update(category);
 						continue;
 					}
-
 					CategoryVo vos = new CategoryVo();
 					List<GoodsVo> goods = apiGoodsMapper.quertGoodsByCategory(obj.get("code").toString());
 					if (!CollectionUtils.isEmpty(goods)) {
@@ -729,7 +719,15 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 						category.setIs_show(1);
 						category.setParent_id(vo.getParent_id());
 						category.setLevel(obj.get("level").toString());
-						category.setWap_banner_url(vo.getWap_banner_url());
+						List<GoodsVo> goods = apiGoodsMapper.quertGoodsByCategory(obj.get("code").toString());
+						if (!CollectionUtils.isEmpty(goods)) {
+							for (GoodsVo good : goods) {
+								if (good.getList_pic_url() != null) {
+									category.setWap_banner_url(good.getList_pic_url());
+								}
+								break;
+							}
+						}
 						apiCategoryMapper.update(category);
 						continue;
 					}
