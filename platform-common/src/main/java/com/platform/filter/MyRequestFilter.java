@@ -31,10 +31,13 @@ public class MyRequestFilter implements Filter {
 			HttpServletResponse hresp = (HttpServletResponse) resp;
 			
 			String responseHeafer = hreq.getHeader("Access-Control-Request-Headers");
+			String responseOrigin = hreq.getHeader("Origin");
+			String responseMets = hreq.getHeader("Access-Control-Allow-Methods");
+			
 			//跨域
-			hresp.setHeader("Access-Control-Allow-Origin", "*");
+			hresp.setHeader("Access-Control-Allow-Origin", responseOrigin);
 			//跨域 Header
-			hresp.setHeader("Access-Control-Allow-Methods", "*");
+			hresp.setHeader("Access-Control-Allow-Methods", responseMets);
 			hresp.setHeader("Access-Control-Allow-Headers", responseHeafer);
 			// 浏览器是会先发一次options请求，如果请求通过，则继续发送正式的post请求
 			// 配置options的请求返回
