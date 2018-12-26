@@ -507,6 +507,7 @@ public class ApiCartController extends ApiBaseAction {
 				for(AddressVo addRess : addVoList){
 					if(addRess.getIsDefault() == 1){
 						resultObj.put("checkedAddress", addRess);
+						break;
 					}
 				}
 				if(null == resultObj.get("checkedAddress")){

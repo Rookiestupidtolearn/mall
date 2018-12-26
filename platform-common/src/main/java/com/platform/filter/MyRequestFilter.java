@@ -36,6 +36,7 @@ public class MyRequestFilter implements Filter {
 			
 			//跨域
 			hresp.setHeader("Access-Control-Allow-Origin", responseOrigin);
+			hresp.setHeader("Access-Control-Allow-Credentials","true");
 			//跨域 Header
 			hresp.setHeader("Access-Control-Allow-Methods", responseMets);
 			hresp.setHeader("Access-Control-Allow-Headers", responseHeafer);
