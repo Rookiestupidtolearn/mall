@@ -542,16 +542,15 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 			JSONObject dateObj = JSONObject.parseObject(result);
 			if (dateObj.get("RESULT_DATA") == null) {
 				resultObj.put("status", "false");
-				resultObj.put("msg", "三方返回数据为空");
+				resultObj.put("msg", "查询一级分类三方返回数据为空");
+				return resultObj;
+			}
+			if(dateObj.get("RESULT_DATA") == null){
+				resultObj.put("status", "false");
+				resultObj.put("msg", "查询一级分类三方返回数据RESULT_DATA为空");
 				return resultObj;
 			}
 			String resultDate = dateObj.get("RESULT_DATA").toString();
-
-			if (StringUtil.isEmpty(resultDate)) {
-				resultObj.put("status", "false");
-				resultObj.put("msg", "三方返回数据为空");
-				return resultObj;
-			}
 			JSONArray dateAttr = JSONArray.parseArray(resultDate);
 			if (!CollectionUtils.isEmpty(dateAttr)) {
 				for (int i = 0; i < dateAttr.size(); i++) {
@@ -614,25 +613,15 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 					continue;
 				}
 				JSONObject dateObj = JSONObject.parseObject(result);
+				
 				if (dateObj.get("RESULT_DATA") == null) {
 					resultObj.put("status", "false");
-					resultObj.put("msg", "查询二级分类三方返回数据为空");
-					logger.info("[查询二级分类三方返回数据为空],父类id" + vo.getId());
-					continue;
-				}
-				if (dateObj.get("RESULT_DATA") == null) {
-					resultObj.put("status", "false");
-					resultObj.put("msg", "查询二级分类三方返回数据为空");
-					logger.info("[查询二级分类三方返回数据为空],父类id" + vo.getId());
+					resultObj.put("msg", "查询二级分类三方返回数据RESULT_DATA为空");
+					logger.info("[查询二级分类三方返回数据RESULT_DATA为空],父类id" + vo.getId());
 					continue;
 				}
 				String resultDate = dateObj.get("RESULT_DATA").toString();
-				if (StringUtils.isEmpty(resultDate)) {
-					resultObj.put("status", "false");
-					resultObj.put("msg", "查询二级分类三方返回数据为空");
-					logger.info("[查询二级分类三方返回数据为空],父类id" + vo.getId());
-					continue;
-				}
+				
 				JSONArray dateAttr = JSONArray.parseArray(resultDate);
 				if (CollectionUtils.isEmpty(dateAttr)) {
 					logger.info("[查询二级分类三方返回数据为空],父类id" + vo.getId());
@@ -698,14 +687,19 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 				if (StringUtils.isEmpty(result)) {
 					resultObj.put("status", "false");
 					resultObj.put("msg", "查询二级分类三方返回数据为空");
-					return resultObj;
+					continue;
 				}
 				JSONObject dateObj = JSONObject.parseObject(result);
+				if(dateObj.get("RESULT_DATA") == null){
+					resultObj.put("status", "false");
+					resultObj.put("msg", "查询二级分类三方返回数据RESULT_DATA为空");
+					continue;
+				}
 				String resultDate = dateObj.get("RESULT_DATA").toString();
 				if (StringUtils.isEmpty(resultDate)) {
 					resultObj.put("status", "false");
-					resultObj.put("msg", "查询二级分类三方返回数据为空");
-					return resultObj;
+					resultObj.put("msg", "查询二级分类三方返回数据RESULT_DATA为空");
+					continue;
 				}
 				JSONArray dateAttr = JSONArray.parseArray(resultDate);
 				if (CollectionUtils.isEmpty(dateAttr)) {
