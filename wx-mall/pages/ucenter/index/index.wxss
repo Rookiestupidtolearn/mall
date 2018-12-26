@@ -9,20 +9,25 @@ page{
     overflow: hidden;
     width: 100%;
 }
+button{
+  background-color:transparent;
+}
+.button-hover{
+  background-color:transparent;
+}
 .viewTop{
   display: flex;
 	flex-direction: column;
 	padding: 30rpx 0 40rpx 0;
 	align-items: center;
-	background: #333;
   width: 750rpx;
+  background: -webkit-linear-gradient(top,#fdd052,#f76c1d);
   border-radius:5px;
 }
 .userinfo {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	background: #333;
   width: 750rpx;
 }
 

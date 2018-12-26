@@ -67,6 +67,7 @@ export default {
 			}).then(action => {
 				if(action == 'confirm'){
 					var that = this;
+					that.$cookie.delCookie('addressId');
 					that.$http({
 				        method: 'post',
 				        url:that.$url+ 'address/delete.options',
