@@ -60,7 +60,7 @@ export default {
 		selectAddress(setId){
 		    //选择该收货地址
 //		    var _day = 60 * 60 * 24 *1;
-  			this.$cookie.setCookie('addressId',setId); //缓存地址id
+  			this.$cookie.setCookieTime('addressId',setId); //缓存地址id
 		    this.$router.push('/pages/category/checkout');
 		},
 		 addressAddOrUpdate (setId) {

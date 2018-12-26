@@ -349,6 +349,7 @@
 		    }
 		
 		    let that = this;
+		    that.$cookie.delCookie('addressId');
 		    that.$http({
 		    	method:'post',
 		    	url:that.$url + 'address/save.options',

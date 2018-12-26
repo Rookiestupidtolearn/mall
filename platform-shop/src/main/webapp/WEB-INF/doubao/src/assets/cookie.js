@@ -1,5 +1,10 @@
 // 设置 cookie
 	export default{
+		setCookieTime:function(cookieName, userName){ //有时间的cookie失效
+			var exp = new Date(); 
+			exp.setTime(exp.getTime() + 30*60*1000); //毫秒
+			document.cookie = cookieName + "="+ escape (userName) + ";expires=" + exp.toGMTString(); 
+		},
 		setCookie:function(cookieName, userName){
 			 document.cookie = cookieName + '=' + escape(userName) ;
 		},
