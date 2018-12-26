@@ -61,6 +61,9 @@
 		<if test="state != null and state!= ''">
 			AND state =#{state}
 		</if>
+		<if test="mobile != null and mobile!= ''">
+			AND mobile =#{mobile}
+		</if>
         <choose>
             <when test="sidx != null and sidx.trim() != ''">
                 order by ${sidx} ${order}
@@ -83,6 +86,9 @@
         <if test="state != null and state!= ''">
 			AND state =#{state}
 		</if>
+		<if test="mobile != null and mobile!= ''">
+			AND mobile =#{mobile}
+		</if>
 	</select>
 	 
 	 	<select id="queryAuditList" resultType="com.platform.entity.QzRechargeRecordEntity">
@@ -103,6 +109,9 @@
 		from qz_recharge_record
 		WHERE 1=1
 		and state != 0 
+		<if test="mobile != null and mobile!= ''">
+			AND mobile =#{mobile}
+		</if>
         <choose>
             <when test="sidx != null and sidx.trim() != ''">
                 order by ${sidx} ${order}
@@ -111,6 +120,7 @@
                 order by id desc
 			</otherwise>
         </choose>
+
 		<if test="offset != null and limit != null">
 			limit #{offset}, #{limit}
 		</if>
@@ -120,6 +130,9 @@
 		select count(*) from qz_recharge_record
 		WHERE 1=1
 	   and state != 0
+	<if test="mobile != null and mobile!= ''">
+			AND mobile =#{mobile}
+		</if>
 	</select>
 	 
 	<insert id="save" parameterType="com.platform.entity.QzRechargeRecordEntity" useGeneratedKeys="true" keyProperty="id">

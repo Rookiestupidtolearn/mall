@@ -187,20 +187,12 @@ public class ApiCartController extends ApiBaseAction {
     	if(null == loginUser){
     		return this.toResponsObject(400, "请先登录", "");
     	}
-    	
-    	//防止重复提交
-    	Level2Cache level2 = CacheProviderHolder.getLevel2Cache(J2CacheUtils.INVALID_CACHE);
-    	if(null !=level2.get("USER_ADDCART:" + loginUser.getUserId())){
-    		return this.toResponsObject(400, "添加成功,已在购物车中等待亲~", "");
-    	}
-    	level2.put("USER_ADDCART:" + loginUser.getUserId(), loginUser.getUserId(), 1L);
-
     	JSONObject jsonParam = getJsonRequest();
         Integer goodsId = jsonParam.getInteger("goodsId");
         Integer productId = jsonParam.getInteger("productId");
         Integer number = jsonParam.getInteger("number");
-
-        //判断商品是否可以购买
+    	
+    	 //判断商品是否可以购买
         GoodsVo goodsInfo = goodsService.queryObject(goodsId);
         if (null == goodsInfo || goodsInfo.getIs_delete() == 1 || goodsInfo.getIs_on_sale() != 1) {
             return this.toResponsObject(400, "商品已下架", "");
@@ -218,6 +210,15 @@ public class ApiCartController extends ApiBaseAction {
         if (null == productInfo || (productInfo.getGoods_number() == null ? 0 : productInfo.getGoods_number()) < number) {
             return this.toResponsObject(400, "库存不足", "");
         }
+    	
+    	//防止重复提交
+    	Level2Cache level2 = CacheProviderHolder.getLevel2Cache(J2CacheUtils.INVALID_CACHE);
+    	if(null !=level2.get("USER_ADDCART:" + goodsId+"-"+loginUser.getUserId())){
+    		return this.toResponsObject(400, "添加成功,已在购物车中等待亲~", "");
+    	}
+    	level2.put("USER_ADDCART:" + goodsId+"-"+loginUser.getUserId(), loginUser.getUserId(), 3L);
+
+       
 
         //判断购物车中是否存在此规格商品
         
@@ -495,12 +496,31 @@ public class ApiCartController extends ApiBaseAction {
         if(!StringUtils.isNullOrEmpty(jsonParam.getString("addressId"))){
         	addressId = Integer.parseInt(jsonParam.getString("addressId"));
         }
-        AddressVo addVo = addressService.queryObject(addressId);
         Map<String,Object> map = new HashMap<>();
-        if(null == addVo){
-        	resultObj.put("checkedAddress", new AddressVo());
+        if(addressId != null && addressId == 0){
+        	 Map<String,Object> paramMap = new HashMap<>();
+        	 paramMap.put("user_id",loginUser.getUserId());
+        	List<AddressVo> addVoList = addressService.queryList(paramMap);
+        	if (CollectionUtils.isEmpty(addVoList)) {
+        		resultObj.put("checkedAddress", new AddressVo());
+			}else{
+				for(AddressVo addRess : addVoList){
+					if(addRess.getIsDefault() == 1){
+						resultObj.put("checkedAddress", addRess);
+						break;
+					}
+				}
+				if(null == resultObj.get("checkedAddress")){
+					resultObj.put("checkedAddress", addVoList.get(0));
+				}
+			}
         }else{
-        	 resultObj.put("checkedAddress", addVo);
+	        AddressVo addVo = addressService.queryObject(addressId);
+	        if(null == addVo){
+	        	resultObj.put("checkedAddress", new AddressVo());
+	        }else{
+	        	 resultObj.put("checkedAddress", addVo);
+	        }
         }
         // * 获取要购买的商品和总价
         ArrayList checkedGoodsList = new ArrayList();

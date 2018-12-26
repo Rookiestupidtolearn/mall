@@ -67,7 +67,7 @@ public class ApiSmsController {
         String text = producer.createText();
         //生成图片验证码
         BufferedImage image = producer.createImage(text);
-//    	request.setAttribute(DefaultSubjectContext.SESSION_CREATION_ENABLED, Boolean.TRUE);
+       request.setAttribute(DefaultSubjectContext.SESSION_CREATION_ENABLED, Boolean.TRUE);
        HttpSession session = request.getSession();
        session.setAttribute("imageCode", text);
         ServletOutputStream out = response.getOutputStream();

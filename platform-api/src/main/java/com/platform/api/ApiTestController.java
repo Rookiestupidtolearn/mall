@@ -12,6 +12,7 @@ import org.apache.poi.ss.formula.functions.T;
 import org.apache.shiro.util.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -962,6 +963,16 @@ public class ApiTestController extends ApiBaseAction {
     	level2.put(key, value,86400l);
 		return resultObj;
 	}
+	
+	
+	@IgnoreAuth
+	@ApiOperation(value = "校验获取图形验证码")
+	@GetMapping("getCheckoutImage")
+	public Object getCheckoutImage() {
+		 String imageCode = (String) request.getSession().getAttribute("imageCode");
+		return imageCode;
+	}
+	
 	public static void main(String[] args) {
 		for(int i=0;i<100;i++){
 			try {

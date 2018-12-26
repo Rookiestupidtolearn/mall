@@ -97,7 +97,7 @@ vm = new Vue({
 			} ]
 		},
 		q : {
-			name : ''
+			mobile : ''
 		}
 	},
 	methods : {
@@ -172,7 +172,7 @@ vm = new Vue({
 			page = $("#jqGrid").jqGrid('getGridParam', 'page');
 			$("#jqGrid").jqGrid('setGridParam', {
 				postData : {
-					'name' : vm.q.name
+					'mobile' : vm.q.mobile
 				},
 				page : page
 			}).trigger("reloadGrid");
@@ -180,7 +180,7 @@ vm = new Vue({
 		},
 		reloadSearch : function() {
 			vm.q = {
-				name : ''
+				mobile : ''
 			}
 			vm.reload();
 		},

@@ -48,10 +48,10 @@ var vm = new Vue({
         title: null,
         roleList: {},
         user: {
-            status: 1,
+            status:1,
             deptName: '',
             roleIdList: [],
-            type:0
+            type:1
         },
         ruleValidate: {
             username: [
@@ -63,9 +63,6 @@ var vm = new Vue({
             ],
             mobile: [
                 {required: true, message: '手机号不能为空', trigger: 'blur'}
-            ],
-            type: [
-                     {required: true, message: '类型不能为空', trigger: 'blur'}
             ]
         }
     },
@@ -77,7 +74,7 @@ var vm = new Vue({
             vm.showList = false;
             vm.title = "新增(默认密码：888888)";
             vm.roleList = {};
-            vm.user = {status: 1, roleIdList: [], deptId: '', deptName: ''};
+            vm.user = {status: 1, roleIdList: [], deptId: '', deptName: '',type:1};
 
             //获取角色信息
             this.getRoleList();

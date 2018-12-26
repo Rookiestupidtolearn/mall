@@ -16,4 +16,6 @@ public interface GoodsCouponConfigDao extends BaseDao<GoodsCouponConfigEntity> {
 
 	List<GoodsCouponConfigEntity> selectGoodsIdsByGoodsId(Integer[] ids);
 
+	GoodsCouponConfigEntity findGoodsCouponConfigEntityByGoodsId(Integer goodsId);
+
 }
