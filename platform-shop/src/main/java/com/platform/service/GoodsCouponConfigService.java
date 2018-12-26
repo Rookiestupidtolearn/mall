@@ -82,4 +82,12 @@ public interface GoodsCouponConfigService {
 	 * @return
 	 */
 	List<GoodsCouponConfigEntity> selectGoodsIdsByGoodsId(Integer[] ids);
+	
+	
+	/**
+	 * 获取商品的配比值信息
+	 * @param goodsId
+	 * @return
+	 */
+	GoodsCouponConfigEntity findGoodsCouponConfigEntityByGoodsId(Integer goodsId);
 }

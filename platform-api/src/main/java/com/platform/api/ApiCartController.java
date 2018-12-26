@@ -497,13 +497,19 @@ public class ApiCartController extends ApiBaseAction {
         Map<String,Object> map = new HashMap<>();
         if(addressId != null && addressId == 0){
         	 Map<String,Object> paramMap = new HashMap<>();
-        	 paramMap.put("isDefault",1);
         	 paramMap.put("user_id",loginUser.getUserId());
         	List<AddressVo> addVoList = addressService.queryList(paramMap);
         	if (CollectionUtils.isEmpty(addVoList)) {
         		resultObj.put("checkedAddress", new AddressVo());
 			}else{
-				resultObj.put("checkedAddress", addVoList.get(0));
+				for(AddressVo addRess : addVoList){
+					if(addRess.getIsDefault() == 1){
+						resultObj.put("checkedAddress", addRess);
+					}
+				}
+				if(null == resultObj.get("checkedAddress")){
+					resultObj.put("checkedAddress", addVoList.get(0));
+				}
 			}
         }else{
 	        AddressVo addVo = addressService.queryObject(addressId);

@@ -37,7 +37,8 @@
 			register_ip,
 			avatar,
 			weixin_openid,
-			idcard
+			idcard,
+			type
 		from nideshop_user
 		where id = #{id}
 	</select>

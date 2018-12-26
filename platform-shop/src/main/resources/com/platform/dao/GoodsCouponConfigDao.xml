@@ -40,6 +40,10 @@
 		group by goods_coupon_config.goods_id
 	</select>
 	
+	
+	<select id="findGoodsCouponConfigEntityByGoodsId" resultType="com.platform.entity.GoodsCouponConfigEntity">
+		select *  from goods_coupon_config where goods_id = #{goodsId}
+	</select>
 
 	<select id="queryList" resultType="com.platform.entity.GoodsCouponConfigEntity">
 		SELECT  
