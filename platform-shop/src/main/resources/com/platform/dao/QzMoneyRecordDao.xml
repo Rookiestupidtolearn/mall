@@ -51,7 +51,7 @@
 		LEFT JOIN `nideshop_user` b  ON mr.`shop_user_id` = b.`id`
 		WHERE 1=1 and tran_type != 3
 		<if test="name != null and name.trim() != ''">
-			AND b.username LIKE concat('%',#{name},'%')
+			AND b.mobile LIKE concat('%',#{name},'%')
 		</if>
 		<if test="start_time != null and start_time.trim() != ''">
 			AND mr.create_time &gt; #{start_time}
