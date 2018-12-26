@@ -253,6 +253,7 @@ public class RechargeBizService {
 				accountEntity.setAmount(amount);
 				accountEntity.setLast_update_time(new Date());
 				accountEntity.setVersion(0);
+				accountEntity.setLock_amount(new BigDecimal(0));
 				logger.info("初次创建用户账户余额信息" + JSON.toJSONString(accountEntity));
 				qzUserAccountMapper.save(accountEntity);
 
@@ -295,6 +296,7 @@ public class RechargeBizService {
 					accountEntity.setAmount(amount);
 					accountEntity.setLast_update_time(new Date());
 					accountEntity.setVersion(0);
+					accountEntity.setLock_amount(new BigDecimal(0));
 					logger.info("初次创建用户账户余额信息" + JSON.toJSONString(accountEntity));
 					qzUserAccountMapper.save(accountEntity);
 				} else {
