@@ -165,7 +165,20 @@ public class JdOrderService {
 		entity.setCounty(jdOrderVo.getCounty());
 		entity.setTown(jdOrderVo.getTown());
 		JdOrderVo jdOrder = jdOrderMapper.queryByThirdOrder(jdOrderVo.getThirdOrder());
-
+	
+		 info.setOrder_status(201);
+		  orderService.update(info);
+		  Map<String, Object> paMap =  new HashMap<>();
+		  paMap.put("order_id", info.getId());
+		  List<OrderGoodsVo> orGoodsVos = apiOrderGoodsService.queryList(paMap);
+		  if (!CollectionUtils.isEmpty(orGoodsVos)) {
+			  for (OrderGoodsVo orderGoodsVo :orGoodsVos) {
+				  orderGoodsVo.setGoodStatus(300); //300等待收货
+				  apiOrderGoodsService.update(orderGoodsVo);
+			}
+			  
+		  }
+			//订单已提交给三方
 		ResponseOrderSubmitEntity response = apiOrderService.submit(entity);
 		if (response.getRESPONSE_STATUS().equals("false")) {
 			resultObj.put("errno", 1);
@@ -184,26 +197,11 @@ public class JdOrderService {
 		}
 
 		// 订单处理完的操作
-
 		jdOrder.setResponseStatus(response.getRESPONSE_STATUS());
 		jdOrder.setErrorMessage(response.getERROR_MESSAGE());
 		jdOrder.setErrorCode(response.getERROR_CODE());
 		jdOrderMapper.update(jdOrder);
 		   
-		//订单已提交给三方
-		 info.setOrder_status(201);
-		  orderService.update(info);
-		  Map<String, Object> paMap =  new HashMap<>();
-		  paMap.put("order_id", info.getId());
-		  List<OrderGoodsVo> orGoodsVos = apiOrderGoodsService.queryList(paMap);
-		  if (!CollectionUtils.isEmpty(orGoodsVos)) {
-			  for (OrderGoodsVo orderGoodsVo :orGoodsVos) {
-				  orderGoodsVo.setGoodStatus(300); //300等待收货
-				  apiOrderGoodsService.update(orderGoodsVo);
-			}
-			  
-		  }
-		  
 		return resultObj;
 	}
 
