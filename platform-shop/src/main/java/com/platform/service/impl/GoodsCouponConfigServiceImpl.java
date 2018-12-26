@@ -122,8 +122,8 @@ public class GoodsCouponConfigServiceImpl implements GoodsCouponConfigService {
 					goodsEntity = goods;
 					goodService.unSaleBatch(new Integer[]{goodsEntity.getId()});
 				}
-				List<GoodsCouponConfigEntity> goodsCouponConfigEntityList = goodsCouponConfigDao.selectGoodsIdsByGoodsId(new Integer[]{goodsIds[i]});
-				if(CollectionUtils.isEmpty(goodsCouponConfigEntityList)){
+				GoodsCouponConfigEntity goodsCouponConfigEntity = goodsCouponConfigDao.findGoodsCouponConfigEntityByGoodsId(goodsIds[i]);
+				if(null == goodsCouponConfigEntity){
 					GoodsCouponConfigEntity gccf = new GoodsCouponConfigEntity();
 					gccf.setGoodsId(goodsIds[i]);
 					gccf.setNormalMatching(Double.parseDouble(normalMatching));
@@ -135,13 +135,11 @@ public class GoodsCouponConfigServiceImpl implements GoodsCouponConfigService {
 					gccf.setUpdateTime(new Date());
 					goodsCouponConfigDao.save(gccf);
 				}else{
-					for(GoodsCouponConfigEntity goodsCouponConfigEntity : goodsCouponConfigEntityList){
-						goodsCouponConfigEntity.setNormalMatching(Double.parseDouble(normalMatching));
-						goodsCouponConfigEntity.setActivityMatching(Double.parseDouble(activityMatching));
-						goodsCouponConfigEntity.setUpdateTime(new Date());
-						goodsCouponConfigEntity.setUpdateUserId(user.getUserId());
-						goodsCouponConfigDao.update(goodsCouponConfigEntity);
-					}
+					goodsCouponConfigEntity.setNormalMatching(Double.parseDouble(normalMatching));
+					goodsCouponConfigEntity.setActivityMatching(Double.parseDouble(activityMatching));
+					goodsCouponConfigEntity.setUpdateTime(new Date());
+					goodsCouponConfigEntity.setUpdateUserId(user.getUserId());
+					goodsCouponConfigDao.update(goodsCouponConfigEntity);
 				}
 				//设置完规格，将操作下架的商品更新为申请上架的状态
 				if(null != goodsEntity){
@@ -154,5 +152,10 @@ public class GoodsCouponConfigServiceImpl implements GoodsCouponConfigService {
 			e.printStackTrace();
 		}
 		return new Integer[0];
+	}
+
+	@Override
+	public GoodsCouponConfigEntity findGoodsCouponConfigEntityByGoodsId(Integer goodsId) {
+		return goodsCouponConfigDao.findGoodsCouponConfigEntityByGoodsId(goodsId);
 	}
 }

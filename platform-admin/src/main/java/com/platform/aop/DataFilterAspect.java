@@ -51,8 +51,8 @@ public class DataFilterAspect {
         if (params != null && params instanceof Map) {
             SysUserEntity user = ShiroUtils.getUserEntity();
 
-            //如果不是超级管理员，则只能查询本部门及子部门数据
-            if (user.getUserId() != Constant.SUPER_ADMIN) {
+            //如果不是超级管理员或者后台管理账户，则只能查询本部门及子部门数据
+            if (user.getUserId() != Constant.SUPER_ADMIN && user.getType() != 1) {
                 Map map = (Map) params;
                 map.put("filterSql", getFilterSQL(user, point));
             }
