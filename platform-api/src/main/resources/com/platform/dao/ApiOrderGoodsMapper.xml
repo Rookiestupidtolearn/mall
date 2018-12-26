@@ -105,7 +105,7 @@
             </if>
             <if test="is_real != null">`is_real` = #{is_real},</if>
             <if test="goods_specifition_ids != null">`goods_specifition_ids` = #{goods_specifition_ids},</if>
-            <if test="list_pic_url != null">`list_pic_url` = #{list_pic_url}</if>
+            <if test="list_pic_url != null">`list_pic_url` = #{list_pic_url},</if>
             <if test="channel != null">`channel` = #{channel}, </if>
 			<if test="createTime != null">`create_time` = #{createTime}, </if>
 			<if test="goodStatus != null">`good_status` = #{goodStatus}</if>
