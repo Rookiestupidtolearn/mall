@@ -18,6 +18,8 @@ public class J2CacheUtils {
     public static  final String SHOP_CACHE_NAME = "shopCache";
     
     public static  final String SHOP_JD_GOOD_NAME = "jdGoodsCache";
+    
+    public static final String SHOP_CATEGORY_GOODS = "shopCategoryGoods";
     /**
      * 系统缓存
      */

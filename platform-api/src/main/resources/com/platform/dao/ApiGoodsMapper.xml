@@ -130,13 +130,12 @@
 
     <!-- 通过商品名及关键字搜索商品   这是一个ex的sql -->
     <select id="queryList" resultMap="goodsMap">
-    select distinct * from (
         select
         <if test="fields != null and fields != ''">
-           distinct ${fields}
+            ${fields}
         </if>
         <if test="fields == null or fields == ''">
-           distinct *
+            *
         </if>
         from nideshop_goods left join nideshop_product on nideshop_goods.id = nideshop_product.goods_id
         where 1 = 1 and nideshop_goods.is_delete != 1
@@ -176,55 +175,15 @@
                 #{item}
             </foreach>
         </if>
-        group by nideshop_goods.id
-        
-        union all 
-        
-        select
-        <if test="fields != null and fields != ''">
-           distinct ${fields}
-        </if>
-        <if test="fields == null or fields == ''">
-           distinct *
-        </if>
-        
-        from nideshop_goods left join nideshop_product on nideshop_goods.id = nideshop_product.goods_id
-        where 1 = 1 and nideshop_goods.is_delete != 1 and nideshop_goods.name like concat('%',#{keyword},'%')
-        <if test="is_new != null and is_new != ''">
-            and is_new = #{is_new}
-        </if>
-        <if test="is_hot != null and is_hot != ''">
-            and is_hot = #{is_hot}
-        </if>
-        <if test="brand_id != null and brand_id != ''">
-            and brand_id = #{brand_id}
-        </if>
-        <if test="category_id != null and category_id != ''">
-            and category_id = #{category_id}
-        </if>
-        <if test="is_delete != null">
-            and is_delete = #{is_delete}
-        </if>
-        <if test="is_on_sale != null and is_on_sale != ''">
-            and is_on_sale = #{is_on_sale}
-        </if>
-        <if test="categoryIds != null">
-            and category_id in
-            <foreach item="item" collection="categoryIds" open="(" separator="," close=")">
-                #{item}
-            </foreach>
-        </if>
-        <if test="goods_ids != null">
-            and id in
-            <foreach item="item" collection="goods_ids" open="(" separator="," close=")">
-                #{item}
-            </foreach>
-        </if>
-        group by nideshop_goods.id
-        ) a
-        <if test="sidx != null and sidx.trim() != ''">
-            order by ${sidx} ${order}
-        </if>
+        GROUP BY nideshop_goods.id
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+            <otherwise>
+                order by nideshop_goods.id desc
+            </otherwise>
+        </choose>
     </select>
 
     <select id="queryHotGoodsList" resultMap="goodsMap">
@@ -352,6 +311,12 @@
 		select * from
 	    nideshop_goods where category_id = #{categoryId}
 	</select>
+	
+	<select id = "querBrotherCategory" resultMap="goodsMap"> 
+		select * from
+	    nideshop_goods where category_id = #{categoryId} limit 1
+	</select>
+	
 	<select id = "queryGoodsBySn" resultMap="goodsMap"> 
 		select * from
 	    nideshop_goods where goods_sn = #{goodsn}

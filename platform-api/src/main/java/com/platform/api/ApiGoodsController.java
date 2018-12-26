@@ -18,6 +18,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.platform.annotation.IgnoreAuth;
 import com.platform.annotation.LoginUser;
+import com.platform.cache.J2CacheUtils;
 import com.platform.dao.ApiCategoryMapper;
 import com.platform.dao.ApiGoodsMapper;
 import com.platform.entity.AttributeVo;
@@ -357,10 +358,18 @@ public class ApiGoodsController extends ApiBaseAction {
         List<CategoryVo> brotherCategory = categoryService.queryList(params);
         if(!CollectionUtils.isEmpty(brotherCategory)){
         	for(CategoryVo sub : brotherCategory){
-        		List<GoodsVo> goods = apiGoodsMapper.quertGoodsByCategory(sub.getId().toString());
-        		if(!CollectionUtils.isEmpty(goods)){
+//        		List<GoodsVo> goods = apiGoodsMapper.querBrotherCategory(sub.getId().toString());
+        		if(sub.getWap_banner_url() != null){
         			newBrotherCategory.add(sub);
         		}
+//        		if(!CollectionUtils.isEmpty(goods)){
+//        			for(GoodsVo vo : goods){
+//        				if(vo.getIs_on_sale() == 1){
+//        					newBrotherCategory.add(sub);
+//        					break;
+//        				}
+//        			}
+//        		}
         	}
         }
         //
@@ -384,7 +393,8 @@ public class ApiGoodsController extends ApiBaseAction {
                        Integer brandId, String keyword, Integer isNew, Integer isHot,
                        @RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "size", defaultValue = "10") Integer size,
                        String sort, String order) {
-        Map params = new HashMap();
+        Map<String,Object> params = new HashMap<>();
+        String REDIS_CATEGORY_LOCK = "cagetoryLock";
         params.put("is_delete", 0);
         params.put("is_on_sale", 1);
         params.put("brand_id", brandId);
@@ -418,19 +428,30 @@ public class ApiGoodsController extends ApiBaseAction {
         filterCategory.add(rootCategory);
         //
         params.put("fields", "category_id,nideshop_goods.id,nideshop_goods.market_price");
-        List<GoodsVo> categoryEntityList = goodsService.queryList(params);
+        List<GoodsVo> categoryEntityList = new ArrayList<>();
+        Object goodsObj = J2CacheUtils.get(J2CacheUtils.SHOP_CATEGORY_GOODS,REDIS_CATEGORY_LOCK);
+        if(goodsObj != null){
+        	categoryEntityList =(List<GoodsVo>)goodsObj;
+        }else{
+        	categoryEntityList = goodsService.queryList(params);
+        	J2CacheUtils.put(J2CacheUtils.SHOP_CATEGORY_GOODS, REDIS_CATEGORY_LOCK, categoryEntityList);
+        }
         params.remove("fields");
-        params.put("group", "a.id");
+        params.put("group", "id");
         if (null != categoryEntityList && categoryEntityList.size() > 0) {
             List<Integer> categoryIds = new ArrayList();
             for (GoodsVo goodsVo : categoryEntityList) {
             	if(goodsVo!=null){
-            		categoryIds.add(goodsVo.getCategory_id());
+            		if(!categoryIds.contains(goodsVo.getCategory_id())){
+            			categoryIds.add(goodsVo.getCategory_id());
+            		}
             	}
             }
             //查找二级分类的parent_id
             Map categoryParam = new HashMap();
-            categoryParam.put("ids", categoryIds);
+            if(!CollectionUtils.isEmpty(categoryIds)){
+            	categoryParam.put("ids", categoryIds);
+            }
             categoryParam.put("fields", "parent_id");
             List<CategoryVo> parentCategoryList = categoryService.queryList(categoryParam);
             //
@@ -468,7 +489,9 @@ public class ApiGoodsController extends ApiBaseAction {
         			categoryIds.add(categoryEntity.getId());
         		}
         		categoryIds.add(categoryId);
-        		params.put("categoryIds", categoryIds);
+        		if(!CollectionUtils.isEmpty(categoryIds)){
+        			params.put("categoryIds", categoryIds);
+        		}
             }
         }
         //查询列表数据
@@ -478,7 +501,7 @@ public class ApiGoodsController extends ApiBaseAction {
             params.put("sidx", "market_price");
             params.put("order", order);
         }else{
-        	params.put("sidx", "a.id");
+        	params.put("sidx", "id");
             params.put("order", "desc");
         }
         Query query = new Query(params);

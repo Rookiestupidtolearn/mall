@@ -65,19 +65,19 @@ public class ApiCatalogController extends ApiBaseAction {
         	for(CategoryVo vo : data){
         		List<CategoryVo> subData = categoryService.quertSubCategorys(vo.getId());
         		if(!CollectionUtils.isEmpty(subData)){
-        			bgm:for(CategoryVo sub : subData){
-        				List<GoodsVo> goods = apiGoodsMapper.quertGoodsByCategory(sub.getId().toString());
-                		if(!CollectionUtils.isEmpty(goods)){
-                			for(GoodsVo goodsVo : goods){
-                				if(goodsVo.getIs_on_sale() == 1 || goodsVo.getIs_on_sale() == 3){
-                					newData.add(vo);
-                					break bgm;
-                				}
-                			}
-                		}
-                		if("热销".equals(sub.getName()) && "其他".equals(vo.getName())){
+        			for(CategoryVo sub : subData){
+//        				List<GoodsVo> goods = apiGoodsMapper.quertGoodsByCategory(sub.getId().toString());
+//                		if(!CollectionUtils.isEmpty(goods)){
+//                			newData.add(vo);
+//                			break;
+//                		}
+        				if(sub.getWap_banner_url() != null){
                 			newData.add(vo);
+                			break;
                 		}
+        				if("热销".equals(sub.getName()) && "其他".equals(sub.getName())){
+        					newData.add(vo);
+        				}
         			}
         		}
         	}
@@ -99,8 +99,11 @@ public class ApiCatalogController extends ApiBaseAction {
             List<CategoryVo> subCategorys = categoryService.queryList(params);
             if(!CollectionUtils.isEmpty(subCategorys)){
             	for(CategoryVo vo : subCategorys){
-            		List<GoodsVo> goods = apiGoodsMapper.quertGoodsByCategory(vo.getId().toString());
-            		if(!CollectionUtils.isEmpty(goods)){
+//            		List<GoodsVo> goods = apiGoodsMapper.quertGoodsByCategory(vo.getId().toString());
+//            		if(!CollectionUtils.isEmpty(goods)){
+//            			newCategorys.add(vo);
+//            		}
+            		if(vo.getWap_banner_url() != null){
             			newCategorys.add(vo);
             		}
             	}
@@ -137,8 +140,8 @@ public class ApiCatalogController extends ApiBaseAction {
             		if("热销".equals(vo.getName()) && "其他".equals(currentCategory.getName())){
             			newCategorys.add(vo);
             		}else{
-            			List<GoodsVo> goods = apiGoodsMapper.quertGoodsByCategory(vo.getId().toString());
-            			if(!CollectionUtils.isEmpty(goods)){
+//            			List<GoodsVo> goods = apiGoodsMapper.quertGoodsByCategory(vo.getId().toString());
+            			if(vo.getWap_banner_url() != null){
             				newCategorys.add(vo);
             			}
             		}
