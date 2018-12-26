@@ -10,7 +10,7 @@
 	  		<mt-picker :slots="slots" @change="onValuesChange"></mt-picker>
 	  	</div>
 	  <div class="fb-body">
-	    <textarea v-model="introduct"  class="content" @input="contentInput()"  placeholder="对我们网站、商品、服务，你还有什么建议吗？你还希望在严选上买到什么？请告诉我们..." maxlength="500" auto-focus="true" />
+	    <textarea v-model="introduct"  class="content" @input="contentInput()"  placeholder="对我们网站、商品、服务，你还有什么建议吗？你还希望在斗宝俱乐部上买到什么？请告诉我们..." maxlength="500" auto-focus="true" />
 	    <div class="text-count">{{introductLength}}/500</div>
 	  </div>
 	  <div class="fb-mobile">
