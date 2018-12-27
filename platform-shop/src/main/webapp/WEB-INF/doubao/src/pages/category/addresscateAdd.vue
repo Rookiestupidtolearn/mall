@@ -50,7 +50,7 @@
 //	import headbar from '@/components/headbar.vue'
 		
 	export default {
-	  name: 'addressAdd',
+	  name: 'addresscateAdd',
 //	  components:{headbar},
 	  data () {
 	    return {
@@ -415,6 +415,7 @@
     height: .44rem;
     line-height: .44rem;
     overflow: hidden;
+    font-size: .26rem;
 }
 
 .add-address .form-default{

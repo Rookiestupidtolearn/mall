@@ -215,10 +215,10 @@
 	 		this.$router.push('/pages/category/selCoupon?buyType=' + this.buyType+'&isBuy='+this.isBuy);
 	 	},
 	 	selectAddress(){
-	 		this.$router.push( '/pages/category/addressList'); //购物车选择地址
+	 		this.$router.push({path:'addresscateList'}); //购物车选择地址
 	 	},
 	 	addAddress(){
-	 		this.$router.push( '/pages/category/addressAdd');
+	 		this.$router.push({path:'addresscateAdd'});
 	 	},
 	 	submitOrder(){
 	 			let that = this;

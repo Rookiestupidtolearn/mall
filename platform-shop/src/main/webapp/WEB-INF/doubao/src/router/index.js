@@ -14,7 +14,6 @@ import order4 from '@/pages/ucenter/order4'  //个人中心-我的订单-已取�
 import coupon from '@/pages/ucenter/coupon'  //个人中心-我的优惠券
 import collect from '@/pages/ucenter/collect'  //个人中心-我的收藏
 import footprint from '@/pages/ucenter/footprint'  //个人中心-我的足迹
-import addressList from '@/pages/ucenter/addressList'  //个人中心-地址管理
 import accountSecurity from '@/pages/ucenter/accountSecurity'  //个人中心-账户安全
 import helpCenter from '@/pages/ucenter/helpCenter'  //个人中心-帮助中心
 import feedback from '@/pages/ucenter/feedback'  //个人中心-问题反馈
@@ -24,11 +23,8 @@ import goods from '@/pages/category/goods'  //商品详情
 import brandDetail from '@/pages/category/brandDetail'  //制造商详情
 import orderDetail from '@/pages/ucenter/orderDetail'  //订单详情
 import checkout from '@/pages/category/checkout'  //下单页面
-import addressAdd from '@/pages/category/addressAdd'  //选择地址页面
 import payResult from '@/pages/category/payResult'  //去付款页面
 import selCoupon from '@/pages/category/selCoupon'  //选择优惠券页面
-import addressList2 from '@/pages/category/addressList'  //购物车选择地址页面
-import addressAdd2 from '@/pages/ucenter/addressAdd'  //个人中心选择地址页面
 import amountMoney from '@/pages/ucenter/amountMoney'  //资金明细
 import pay from '@/pages/category/pay'  //支付订单
 import register from '@/pages/register/register'  //注册页面
@@ -40,6 +36,10 @@ import successPay from '@/pages/payment/successPay'  //支付成功
 import failPay from '@/pages/payment/failPay'  //支付失败
 import logistics from '@/pages/ucenter/logistics'  //物流页面
 import lookLogistics from '@/pages/ucenter/lookLogistics'  //物流页面
+import addressList from '@/pages/ucenter/addressList'  //个人中心-地址管理
+import addressAdd from '@/pages/ucenter/addressAdd'  //个人中心选择地址页面
+import addresscateList from '@/pages/category/addresscateList'  //购物车-地址管理
+import addresscateAdd from '@/pages/category/addresscateAdd'  //购物车选择地址页面
 
 Vue.use(Router)
 
@@ -124,9 +124,9 @@ export default new Router({
       name: 'checkout',
       component: checkout
     },{
-      path: '/pages/category/addressAdd',
-      name: 'addressAdd',
-      component: addressAdd
+      path: '/pages/category/addresscateAdd',
+      name: 'addresscateAdd',
+      component: addresscateAdd
     },{
       path: '/pages/category/payResult',
       name: 'payResult',
@@ -136,13 +136,13 @@ export default new Router({
       name: 'selCoupon',
       component: selCoupon
     },{
-      path: '/pages/category/addressList',
-      name: 'addressList2',
-      component: addressList2
+      path: '/pages/category/addresscateList',
+      name: 'addresscateList',
+      component: addresscateList
     },{
       path: '/pages/ucenter/addressAdd',
-      name: 'addressAdd2',
-      component: addressAdd2
+      name: 'addressAdd',
+      component: addressAdd
     },{
       path: '/pages/ucenter/amountMoney',
       name: 'amountMoney',

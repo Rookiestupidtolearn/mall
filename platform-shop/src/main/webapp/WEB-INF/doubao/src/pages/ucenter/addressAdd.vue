@@ -305,7 +305,7 @@
 		    });
 		},
 	 	cancelAddress(){
-	 		 this.$router.push('/pages/category/addressList');
+	 		 this.$router.push({path:'addressList'});
 	 	},
 	 	getAddressDetail() {
 		    let that = this;
@@ -415,6 +415,7 @@
     height: .44rem;
     line-height: .44rem;
     overflow: hidden;
+    font-size:.26rem;
 }
 
 .add-address .form-default{
