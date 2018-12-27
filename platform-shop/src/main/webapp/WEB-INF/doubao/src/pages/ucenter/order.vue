@@ -157,7 +157,7 @@ export default {
 	        }
 	    	}).then(function (response) {
 	    		var response = response.data;
-	    		if(response.errno != 401){
+	    		if(response.errno == 0){
 		    			if (type == 'loadMore') {
                 that.orderList = that.orderList.concat(response.data.data);
 	            } else {
@@ -168,6 +168,8 @@ export default {
 			    				that.show = true;
 			    			}
 							}
+		    	}else{
+		    		that.$toast(response.errmsg);
 		    	}
 	    		that.isMoreLoading = false;
 			  })

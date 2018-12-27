@@ -275,6 +275,8 @@ export default {
 	      	if (res.errno === 0) {
 		        that.cartGoods = res.data.cartList;
 		        that.cartTotal = res.data.cartTotal;
+	      	}else{
+	      		Toast(res.errmsg);
 	      	}
 	        that.checkedAllStatus = that.isCheckedAll();
 	    });
