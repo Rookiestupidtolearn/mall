@@ -377,7 +377,7 @@
 		    }).then(function (res) {
 		    	var res=res.data;
 		      if (res.errno === 0) {
-		        that.$router.push('/pages/ucenter/addressList');
+		        that.$router.push({ path: 'addressList'});
 		      }
 		    });
 

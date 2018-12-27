@@ -61,9 +61,10 @@
 	  methods:{
 	  	refreshCode(){
 	  		var randomData = new Date();
-//  		this.imgyzm="http://wap.doubaoclub.com:6201/platform/api/image.jpg?date"+randomData.getMilliseconds();  //预发布
-    		this.imgyzm="http://app.doubaoclub.com:6101/platform/api/image.jpg?date"+randomData.getMilliseconds(); //正式
+//  		this.imgyzm="http://simuwap.doubaoclub.com:6201/platform/api/image.jpg?date"+randomData.getMilliseconds();  //预发布
+//  		this.imgyzm="http://app.doubaoclub.com:6101/platform/api/image.jpg?date"+randomData.getMilliseconds(); //正式
 //	  	  this.imgyzm="http://192.168.124.28:8080/platform/api/image.jpg?date"+randomData.getMilliseconds();//冯蓉基本地
+	  	  this.imgyzm="http://117.50.60.55:6201/platform/api/image.jpg?date"+randomData.getMilliseconds();//预发布ip
 	  	},
 	  	fwxieyi(){
 	  		let that = this;

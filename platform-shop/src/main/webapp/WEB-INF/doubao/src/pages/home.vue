@@ -51,6 +51,10 @@ export default {
 
     }
   },
+  created(){
+  	/*楼上android 4.4.4样式单独处理*/
+	    	this.userAgent();
+  },
   mounted(){
   		let that = this;    
   	//banner
@@ -111,6 +115,10 @@ export default {
    		}
  },
  methods:{
+ 		userAgent(){
+ 			var userG = window.navigator.userAgent;
+ 			if(userG.indexOf('Android 4.4.4')>-1 && userG.indexOf('/537.36')>-1){}
+ 		},
 	 	andriod(e){   //与andriod和ios交互
 				var hrefD = window.location.href;
 				var delDevice = hrefD.split('?')[0];
