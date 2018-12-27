@@ -137,11 +137,13 @@ public class ApiSmsController {
         	
             String kaptcha = ShiroUtils.getKaptcha(Constants.KAPTCHA_SESSION_KEY);
             if(null == kaptcha){
+            	logger.info("获取短信验证码时，图形验证码已经失效");
             	result.put("errno", 1);
             	result.put("msg", "图像验证码已失效");
             	result.put("count", count);
                 return result;
             }
+            logger.info("自动生成的图形验证码是："+kaptcha);
             if (!params.get("imageCode").toString().equalsIgnoreCase(kaptcha)) {
             	result.put("errno", 1);
             	result.put("msg", "图形验证码错误");
