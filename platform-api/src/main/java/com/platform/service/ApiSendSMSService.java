@@ -85,7 +85,7 @@ public class ApiSendSMSService {
 		Integer count = (Integer) level2.get("DOUBAO_SMS_COUNT:" + mobile);
 
 		if (count != null) {
-			if (count > 10) {
+			if (count >= 10) {
 				return toResponsFalseObject("操作频繁，明天再试");
 			}
 			count += 1;
@@ -95,7 +95,7 @@ public class ApiSendSMSService {
 
 		Integer countIP = (Integer) level2.get("DOUBAO_SMS_IP_COUNT:" + ip);
 		if (countIP != null) {
-			if (countIP > 10) {
+			if (countIP >= 10) {
 				level2.put("DOUBAO_SMS_MOBILE_IP:" + mobile + "_" + ip, mobile + "_" + ip, longCha);
 				return toResponsFalseObject("操作频繁，明天再试");
 			}
