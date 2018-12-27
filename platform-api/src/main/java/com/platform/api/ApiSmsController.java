@@ -69,7 +69,7 @@ public class ApiSmsController {
         String text = producer.createText();
         //生成图片验证码
         BufferedImage image = producer.createImage(text);
-        request.setAttribute(DefaultSubjectContext.SESSION_CREATION_ENABLED, Boolean.TRUE);
+       // request.setAttribute(DefaultSubjectContext.SESSION_CREATION_ENABLED, Boolean.TRUE);
         ShiroUtils.setSessionAttribute(Constants.KAPTCHA_SESSION_KEY, text);
 //       HttpSession session = request.getSession();
 //       session.setAttribute("imageCode", text);
@@ -138,7 +138,7 @@ public class ApiSmsController {
             String kaptcha = ShiroUtils.getKaptcha(Constants.KAPTCHA_SESSION_KEY);
             if(null == kaptcha){
             	result.put("errno", 1);
-            	result.put("msg", "验证码已失效");
+            	result.put("msg", "图像验证码已失效");
             	result.put("count", count);
                 return result;
             }
