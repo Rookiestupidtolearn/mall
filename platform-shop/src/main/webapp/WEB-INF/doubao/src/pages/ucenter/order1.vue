@@ -11,11 +11,6 @@
 	  			</ul>
 			</div>
   		<div class="showList" v-if="orderList.length>0" >
-  			<ul class="nav_list">
-  				<router-link v-for="(item,index) in items" @click="selectStyle (item, index)"  tag="li" :to="item.to">
-  					<span :class="activeClass == index ? 'list_choice' : '' ">{{item.value}}</span>
-  				</router-link>
-  			</ul>
 	  		<ul class="" v-infinite-scroll="loadMore" infinite-scroll-disabled="isMoreLoading" infinite-scroll-distance="10" class="loadm">
 	 			 <li v-for="(item,index) in orderList" >
 					<router-link  :to = "'/pages/ucenter/orderDetail?id='+item.id" class="order" >
