@@ -47,6 +47,7 @@
 <script>
 	import { Toast } from 'mint-ui';
 	import { MessageBox } from 'mint-ui';
+	import { Indicator } from 'mint-ui';
 //	import headbar from '@/components/headbar.vue'
 		
 	export default {
@@ -350,6 +351,7 @@
 		
 		    let that = this;
 		    that.$cookie.delCookie('addressId');
+		    Indicator.open();
 		    that.$http({
 		    	method:'post',
 		    	url:that.$url + 'address/save.options',
@@ -375,6 +377,7 @@
 				      detailInfo: address.detailInfo
 		    	}
 		    }).then(function (res) {
+		    	Indicator.close();
 		    	var res=res.data;
 		      if (res.errno === 0) {
 		        that.$router.push({ path: 'addressList'});

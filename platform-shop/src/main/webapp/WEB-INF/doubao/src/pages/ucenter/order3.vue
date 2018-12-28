@@ -3,7 +3,7 @@
   	<!--公用头部-->
   		<!--<headbar :headFont = "headFont"></headbar>-->
   		
-				<div class="showList">
+				<div class="showList mt9" v-show="appShow">
 		  		<ul class="nav_list">
 		  				<router-link v-for="(item,index) in items" @click="selectStyle (item, index)"  tag="li" :to="item.to">
 		  					<span :class="activeClass == index ? 'list_choice' : '' ">{{item.value}}</span>
@@ -43,6 +43,7 @@ export default {
   data () {
     return {
 //  	headFont:'订单列表',
+			appShow:"",
     	orderList:[],
     	activeClass:3,
     	totalPages:'',
@@ -65,6 +66,21 @@ export default {
   },
   mounted(){
 			this.getProjectInfo();
+			var hrefD = window.location.href;
+				var delDevice = hrefD.split('?')[0];
+				var comHref =delDevice .substring(delDevice.length-1,0);  //android和ios公用链接头
+				if(hrefD.indexOf('device')>-1){
+	    		var device = appHref.split('?')[1].split('=')[1].split('&')[0];
+	    	}
+	    	if(device == 'android'){
+	    			this.appShow = false;
+	    			return false;
+	    	}else if(device == 'ios'){
+	    			this.appShow = false;
+						return false;
+	    	}else{
+	    		this.appShow = true;
+	    	}
   },
   methods:{
   	selectStyle (item, index) {
@@ -152,9 +168,6 @@ export default {
 		position: relative;
     top: -.12rem;
 	}
-	.loadm{
-		margin-top:.9rem;
-	}
 	.resetbtn{
 		display:inline-block !important;
 		height:auto !important;
@@ -231,5 +244,8 @@ font-size:.26rem;
 .noData{
 	font-size:.29rem;
 	margin-top:1.4rem;
+}
+.mt9{
+	margin-bottom:.9rem;
 }
 </style>

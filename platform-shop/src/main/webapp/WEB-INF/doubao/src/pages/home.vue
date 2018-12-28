@@ -132,7 +132,7 @@ export default {
 	    			window.android.productDetail(comHref + e); //调起andriod交互方法(由app发起。浏览器会报错正常)
 	    			return false;
 	    	}else if(device == 'ios'){
-	    		alert(hrefD)
+//	    		alert(hrefD)
 	    			var message = {'url':comHref + e}
 						window.webkit.messageHandlers.webViewApp.postMessage(message);
 						return false;
