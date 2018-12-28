@@ -23,6 +23,7 @@ import com.platform.utils.Constant;
 import com.platform.utils.DateUtils;
 import com.platform.utils.RRException;
 import com.platform.utils.StringUtils;
+import com.platform.youle.util.PropertiesUtil;
 
 import net.oschina.j2cache.CacheProviderHolder;
 import net.oschina.j2cache.Level2Cache;
@@ -135,7 +136,9 @@ public class ApiSendSMSService {
 			/**
 			 * 状态,发送编号,无效号码数,成功提交数,黑名单数和消息，无论发送的号码是多少，一个发送请求只返回一个sendid，如果响应的状态不是“0”，则只有状态和消息
 			 */
-
+         
+			  
+			
 			// 短信发送的URL 请登录zz.253.com 获取完整的URL接口信息
 			String smsSingleRequestServerUrl = "http://smssh1.253.com/msg/send/json";
 
@@ -150,12 +153,19 @@ public class ApiSendSMSService {
 					report);
 
 			String requestJson = JSON.toJSONString(smsSingleRequest);
+    
+			//添加发短信的开关 
+			String  isSend = PropertiesUtil.getValue("doubao.properties","sendSms");
+			if (isSend.equals("true")) {
+				result = ChuangLanSmsUtil.sendSmsByPost(smsSingleRequestServerUrl, requestJson);
+				Gson gson = new Gson();
+				Map<String, Object> map = new HashMap<String, Object>();
+				map = gson.fromJson(result, map.getClass());
+				codeValue = (String) map.get("code");
+			}else {
+				codeValue = "0";
+			}
 
-			result = ChuangLanSmsUtil.sendSmsByPost(smsSingleRequestServerUrl, requestJson);
-			Gson gson = new Gson();
-			Map<String, Object> map = new HashMap<String, Object>();
-			map = gson.fromJson(result, map.getClass());
-			codeValue = (String) map.get("code");
 
 		} catch (Exception e) {
 
