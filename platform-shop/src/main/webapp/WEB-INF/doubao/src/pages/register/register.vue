@@ -44,7 +44,6 @@
 	  		var phone =  that.$cookie.getCookie('phone');
 	  		var captcha =  that.$cookie.getCookie('captcha');
 	  		var checked =  that.$cookie.getCookie('checked');
-//	  		var showImg =  that.$cookie.getCookie('showImg');
 	  		if(phone !=="" ){
 	  			that.phone = phone;
 	  		}
@@ -54,9 +53,6 @@
 	  		if(checked !==""){
 	  			that.checked = JSON.parse(checked);
 	  		} 
-//	  		if(showImg !==""){
-//	  			that.showImg = JSON.parse(showImg);
-//	  		} 
 	  },
 	  methods:{
 	  	refreshCode(){
@@ -64,14 +60,14 @@
 //  		this.imgyzm="http://simuwap.doubaoclub.com:6201/platform/api/image.jpg?date"+randomData.getMilliseconds();  //预发布
 //  		this.imgyzm="http://app.doubaoclub.com:6101/platform/api/image.jpg?date"+randomData.getMilliseconds(); //正式
 //	  	  this.imgyzm="http://192.168.124.28:8080/platform/api/image.jpg?date"+randomData.getMilliseconds();//冯蓉基本地
-	  	  this.imgyzm="http://117.50.60.55:6201/platform/api/image.jpg?date"+randomData.getMilliseconds();//预发布ip
+//	  	  this.imgyzm="http://192.168.124.28:8080/platform/captcha.jpg?date"+randomData.getMilliseconds();//冯蓉基本地
+  	  this.imgyzm="http://117.50.60.55:6201/platform/captcha.jpg?date"+randomData.getMilliseconds();//预发布ip
 	  	},
 	  	fwxieyi(){
 	  		let that = this;
 	  		that.$cookie.setCookie('phone',this.phone);
 	  		that.$cookie.setCookie('captcha',this.captcha);
 	  		that.$cookie.setCookie('checked',this.checked);
-//	  		that.$cookie.setCookie('imgcaptcha',this.imgcaptcha);
 	  		that.$router.push('/pages/xieyi/ptfwxy');
 	  	},
 	  	submit(){
