@@ -191,7 +191,7 @@ public class ApiAuthController extends ApiBaseAction {
 		
 		Level2Cache level2 = CacheProviderHolder.getLevel2Cache(J2CacheUtils.INVALID_CACHE);
 		Integer count = (Integer) level2.get("DOUBAO_SMS_COUNT:" + mobile);
-		if(count !=null &&count>=6){
+	/*	if(count !=null &&count>=6){
 			String  checkcode = params.get("yzm");
 			if(StringUtils.isNullOrEmpty(checkcode)){
 			  	 return R.error("图形验证码不能为空！");
@@ -213,7 +213,7 @@ public class ApiAuthController extends ApiBaseAction {
 	        if (!checkcode.equalsIgnoreCase(kaptcha)) {
 	            return R.error("图形验证码不正确");
 	        }
-		}
+		}*/
 	
 		UserVo userVo = userService.queryByMobile(mobile);
        if (userVo== null) {
