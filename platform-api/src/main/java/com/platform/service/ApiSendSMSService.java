@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +29,7 @@ import net.oschina.j2cache.Level2Cache;
 
 @Service
 public class ApiSendSMSService {
+	private Logger logger = LoggerFactory.getLogger(getClass());
 	@Autowired
 	private SysConfigService sysConfigService;
 	@Autowired
@@ -82,7 +85,7 @@ public class ApiSendSMSService {
 		Integer count = (Integer) level2.get("DOUBAO_SMS_COUNT:" + mobile);
 
 		if (count != null) {
-			if (count > 10) {
+			if (count >= 10) {
 				return toResponsFalseObject("操作频繁，明天再试");
 			}
 			count += 1;
@@ -92,7 +95,7 @@ public class ApiSendSMSService {
 
 		Integer countIP = (Integer) level2.get("DOUBAO_SMS_IP_COUNT:" + ip);
 		if (countIP != null) {
-			if (countIP > 10) {
+			if (countIP >= 10) {
 				level2.put("DOUBAO_SMS_MOBILE_IP:" + mobile + "_" + ip, mobile + "_" + ip, longCha);
 				return toResponsFalseObject("操作频繁，明天再试");
 			}
@@ -179,6 +182,7 @@ public class ApiSendSMSService {
 			smsLogVo.setSms_text(msgContent);
 			smsLogVo.setSend_status(1); // 1成功 0失败
 			userService.saveSmsCodeLog(smsLogVo);
+			logger.info("手机号>>>"+mobile+"验证码是>>>"+sms_code);
 			// 手机号和缓存
 			 level2.put("DOUBAO_SMS_COUNT:"+mobile, count,longCha);
 			// ip缓存
