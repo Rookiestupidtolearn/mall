@@ -306,7 +306,7 @@
 		    });
 		},
 	 	cancelAddress(){
-	 		 this.$router.push('/pages/category/addressList');
+	 		 this.$router.push('/pages/category/addresscateList');
 	 	},
 	 	getAddressDetail() {
 		    let that = this;
