@@ -35,7 +35,7 @@ public class SysLoginController {
 
     @RequestMapping("captcha.jpg")
     public void captcha(HttpServletResponse response) throws ServletException, IOException {
-        response.setHeader("Cache-Control", "no-store, no-cache");
+//        response.setHeader("Cache-Control", "no-store, no-cache");
         response.setContentType("image/jpeg");
 
         //生成文字验证码
