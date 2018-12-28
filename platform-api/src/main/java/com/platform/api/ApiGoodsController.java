@@ -582,7 +582,7 @@ public class ApiGoodsController extends ApiBaseAction {
          List<CategoryVo> categoryList = apiCategoryMapper.queryCategoryList(parentIds);
          filterCategory.addAll(categoryList);
          for (CategoryVo categoryEntity : filterCategory) {
-             if (null != categoryId && categoryEntity.getId() == 0 || categoryEntity.getId() == categoryId) {
+             if (categoryEntity.getId().intValue() == 0 || categoryEntity.getId().intValue() == categoryId.intValue()) {
                  categoryEntity.setChecked(true);
              } else {
                  categoryEntity.setChecked(false);
@@ -633,10 +633,9 @@ public class ApiGoodsController extends ApiBaseAction {
          Query query = new Query(params);
          PageHelper.startPage(query.getPage(), query.getLimit());
          List<GoodsVo> goodsList = goodsService.queryList(query);
-         
-         System.out.println("================================================="); 
-        logger.info("商品个数"+goodsList.size());
-        logger.info("分类个数"+filterCategory.size());
+         logger.info("===========================通过关键字"+keyword+"进行检索的结果=======================");
+         logger.info("===========================商品个数:"+goodsList.size());
+         logger.info("===========================分类个数:"+filterCategory.size());
     	
         ApiPageUtils goodsData = new ApiPageUtils(new PageInfo(goodsList));
         goodsData.setFilterCategory(filterCategory);
