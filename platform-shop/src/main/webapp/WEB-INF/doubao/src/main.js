@@ -26,8 +26,8 @@ Vue.config.productionTip = false
 
 //接口配置
 //Vue.prototype.$url= '/platform/api/'; //本地代理
-Vue.prototype.$url= 'http://192.168.124.29:8084/platform/api/'; //本地环境
-//Vue.prototype.$url= 'http://117.50.60.55:6201/platform/api/'; //预发布环境
+//Vue.prototype.$url= 'http://192.168.124.29:8084/platform/api/'; //本地环境
+Vue.prototype.$url= 'http://117.50.60.55:6201/platform/api/'; //预发布环境
 //Vue.prototype.$url= 'http://39.105.231.159:6101/platform/api/'; //正式环境
 //Vue.prototype.$url= 'http://192.168.124.50:6101/platform/api/'; //测试环境
 //Vue.prototype.$url= 'http://192.168.124.28:8080/platform/api/'; //冯蓉基本地
@@ -56,7 +56,6 @@ var appHref = window.location.href;
 	if(tokenDevice == 'android'  || tokenDetail == 'android' ){
 		config.headers['X-Nideshop-Token'] = tokenApp;
 	}else if(tokenDevice == 'ios'  || tokenDetail == 'ios' ){
-		alert(window.location.href)
 		config.headers['X-Nideshop-Token'] = tokenApp;
 	}else{
 		 // 在发送请求之前做些什么
