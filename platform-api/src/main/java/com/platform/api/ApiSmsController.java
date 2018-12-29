@@ -141,10 +141,10 @@ public class ApiSmsController {
             	return result;
 			}
 
-        	 HttpSession session = request.getSession();
-              String  kaptcha  = session.getAttribute(Constants.KAPTCHA_SESSION_KEY).toString();
+     //   	 HttpSession session = request.getSession();
+//              String  kaptcha  = session.getAttribute(Constants.KAPTCHA_SESSION_KEY).toString();
         	
-//          String kaptcha = ShiroUtils.getKaptchaNoRemove(Constants.KAPTCHA_SESSION_KEY);
+          String kaptcha = ShiroUtils.getKaptchaNoRemove(Constants.KAPTCHA_SESSION_KEY);
             if(null == kaptcha){
             	logger.info("获取短信验证码时，图形验证码已经失效");
             	result.put("errno", 1);
