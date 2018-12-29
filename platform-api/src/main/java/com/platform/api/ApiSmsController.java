@@ -77,7 +77,9 @@ public class ApiSmsController {
         String text = producer.createText();
         //生成图片验证码
         BufferedImage image = producer.createImage(text);
-        ShiroUtils.setSessionAttribute(Constants.KAPTCHA_SESSION_KEY, text);
+        //ShiroUtils.setSessionAttribute(Constants.KAPTCHA_SESSION_KEY, text);
+        HttpSession session = request.getSession();
+        session.setAttribute(Constants.KAPTCHA_SESSION_KEY, text);
         ServletOutputStream out = response.getOutputStream();
         ImageIO.write(image, "jpg", out);
     }
@@ -139,7 +141,10 @@ public class ApiSmsController {
             	return result;
 			}
 
-          String kaptcha = ShiroUtils.getKaptchaNoRemove(Constants.KAPTCHA_SESSION_KEY);
+        	 HttpSession session = request.getSession();
+              String  kaptcha  = session.getAttribute(Constants.KAPTCHA_SESSION_KEY).toString();
+        	
+//          String kaptcha = ShiroUtils.getKaptchaNoRemove(Constants.KAPTCHA_SESSION_KEY);
             if(null == kaptcha){
             	logger.info("获取短信验证码时，图形验证码已经失效");
             	result.put("errno", 1);
