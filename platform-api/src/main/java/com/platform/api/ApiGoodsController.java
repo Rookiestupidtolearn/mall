@@ -393,7 +393,7 @@ public class ApiGoodsController extends ApiBaseAction {
             @ApiImplicitParam(name = "isNew", value = "新商品", paramType = "path", required = true),
             @ApiImplicitParam(name = "isHot", value = "热卖商品", paramType = "path", required = true)})
     @IgnoreAuth
-    @PostMapping(value = "listTest")
+    @PostMapping(value = "list")
     public Object list(@LoginUser UserVo loginUser, Integer categoryId,
                        Integer brandId, String keyword, Integer isNew, Integer isHot,
                        @RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "size", defaultValue = "10") Integer size,
@@ -535,14 +535,28 @@ public class ApiGoodsController extends ApiBaseAction {
     
     
     
+    /**
+     * 搜索商品
+     * @param loginUser
+     * @param categoryId
+     * @param brandId
+     * @param keyword
+     * @param isNew
+     * @param isHot
+     * @param page
+     * @param size
+     * @param sort
+     * @param order
+     * @return
+     */
     @ApiOperation(value = "获取商品列表")
     @ApiImplicitParams({@ApiImplicitParam(name = "categoryId", value = "分类id", paramType = "path", required = true),
             @ApiImplicitParam(name = "brandId", value = "品牌Id", paramType = "path", required = true),
             @ApiImplicitParam(name = "isNew", value = "新商品", paramType = "path", required = true),
             @ApiImplicitParam(name = "isHot", value = "热卖商品", paramType = "path", required = true)})
     @IgnoreAuth
-    @PostMapping(value = "list")
-    public Object listTest(@LoginUser UserVo loginUser, Integer categoryId,Integer brandId, String keyword, Integer isNew, Integer isHot,
+    @PostMapping(value = "searchGoodsList")
+    public Object searchGoodsList(@LoginUser UserVo loginUser, Integer categoryId,Integer brandId, String keyword, Integer isNew, Integer isHot,
             @RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "size", defaultValue = "10") Integer size,
             String sort, String order) {
     	//添加到搜索历史
