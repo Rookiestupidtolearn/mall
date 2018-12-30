@@ -77,9 +77,12 @@ public class ApiSmsController {
         String text = producer.createText();
         //生成图片验证码
         BufferedImage image = producer.createImage(text);
-        //ShiroUtils.setSessionAttribute(Constants.KAPTCHA_SESSION_KEY, text);
-        HttpSession session = request.getSession();
-        session.setAttribute(Constants.KAPTCHA_SESSION_KEY, text);
+         request.setAttribute(DefaultSubjectContext.SESSION_CREATION_ENABLED, Boolean.TRUE);
+         ShiroUtils.setSessionAttribute(Constants.KAPTCHA_SESSION_KEY, text);
+
+//        HttpSession session = request.getSession(true);
+//        session.setAttribute(Constants.KAPTCHA_SESSION_KEY, text);
+        
         ServletOutputStream out = response.getOutputStream();
         ImageIO.write(image, "jpg", out);
     }
