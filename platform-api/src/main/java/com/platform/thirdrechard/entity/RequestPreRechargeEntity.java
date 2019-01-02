@@ -3,10 +3,6 @@ package com.platform.thirdrechard.entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import javax.validation.constraints.Pattern;
-
-import org.hibernate.validator.constraints.NotEmpty;
-
 /**
  * 预支付请求实体
  * @author zct
@@ -22,30 +18,26 @@ public class RequestPreRechargeEntity implements Serializable{
 	/**
 	 * 商户号
 	 */
-	@NotEmpty(message=" 商户号不能为空")
 	private String  appId;
 	
-	
-	@NotEmpty(message="手机号码不能为空")
-    @Pattern(regexp = "^\\d{11}$", message = "手机号码格式错误")
+	/**
+	 * 手机号
+	 */
 	private  String phone;
 	
 	
 	/**
 	 * 渠道号
 	 */
-	@NotEmpty(message="渠道号不能为空")
 	private String  channelNo;
 	/**
 	 * 请求序列号
 	 */
-	@NotEmpty(message="requestId不能为空")
 	private String  requestId;
 	
 	/**
 	 * 订单号
 	 */
-	@NotEmpty(message="订单号不能为空")
 	private String orderNo;
 	
 	/**

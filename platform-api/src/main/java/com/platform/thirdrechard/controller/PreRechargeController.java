@@ -50,6 +50,7 @@ import com.platform.thirdrechard.entity.ThridCompany;
 import com.platform.thirdrechard.service.PreRechargeRecordService;
 import com.platform.thirdrechard.service.ThirdMerchantRechargeRecordService;
 import com.platform.thirdrechard.service.ThridCompanyService;
+import com.platform.thirdrechard.util.FieldValidation;
 import com.platform.thirdrechard.utils.GenerateOrderNoUtil;
 import com.platform.thirdrechard.utils.IpUtil;
 import com.platform.thirdrechard.utils.JedisUtil;
@@ -112,6 +113,11 @@ public class PreRechargeController {
 
 		logger.info("【签名】入参:" + reRechargeRecord.toString());
 
+		Map<String, Object> preFieldValidation = FieldValidation.preFieldValidation(reRechargeRecord, "1");
+		if(ReturnResult.FAIL_CODE.equals(preFieldValidation.get("code"))){
+			return preFieldValidation;
+		}
+		
 		ThridCompany thridCompany = thridCompanyService.getThridCompanyByAppId(reRechargeRecord.getAppId());
 
 		if (null == thridCompany) {
@@ -121,7 +127,7 @@ public class PreRechargeController {
 		if (StringUtil.isEmpty(thridCompany.getPublicKey())) {
 			return ReturnUtil.returnFail("商户信息未配置");
 		}
-
+		
 		Map<String, Object> successMap = ReturnUtil.returnSuccess();
 		successMap.put("sign", MsgDigestUtils.sign(reRechargeRecord.regSignVal(),thridCompany.getPrivateKey()));
 		return successMap;
@@ -143,6 +149,11 @@ public class PreRechargeController {
 
 		logger.info("【支付签名】入参:" + requestRecharge.toString());
 
+		Map<String, Object> reFieldValidation = FieldValidation.reFieldValidation(requestRecharge, "1");
+		if(ReturnResult.FAIL_CODE.equals(reFieldValidation.get("code"))){
+			return reFieldValidation;
+		}
+		
 		ThridCompany thridCompany = thridCompanyService.getThridCompanyByAppId(requestRecharge.getAppId());
 
 		if (null == thridCompany) {
@@ -174,6 +185,11 @@ public class PreRechargeController {
 
 		logger.info("【预充值】入参:" + reRechargeRecord.toString());
 
+		Map<String, Object> preFieldValidation = FieldValidation.preFieldValidation(reRechargeRecord, "2");
+		if(ReturnResult.FAIL_CODE.equals(preFieldValidation.get("code"))){
+			return preFieldValidation;
+		}
+		
 		ThridCompany thridCompany = thridCompanyService.getThridCompanyByAppId(reRechargeRecord.getAppId());
 
 		if (null == thridCompany) {
@@ -285,6 +301,12 @@ public class PreRechargeController {
 	public Map<String, Object> recharge(@Valid @RequestBody RequestRechargeEntity requestRecharge, HttpServletRequest request,
 			HttpServletResponse response) {
 		logger.info("充值】入参:" + requestRecharge.toString());
+		
+		Map<String, Object> reFieldValidation = FieldValidation.reFieldValidation(requestRecharge, "2");
+		if(ReturnResult.FAIL_CODE.equals(reFieldValidation.get("code"))){
+			return reFieldValidation;
+		}
+		
 		ThridCompany thridCompany = thridCompanyService.getThridCompanyByAppId(requestRecharge.getAppId());
 
 		if (null == thridCompany) {
@@ -370,8 +392,16 @@ public class PreRechargeController {
 	public Map<String, Object> queryOrder(@Valid @RequestBody RequestRechargeEntity requestRecharge, HttpServletRequest request,
 			HttpServletResponse response) {
 		logger.info("订单查询入参:" + requestRecharge.toString());
+		
+		Map<String, Object> reFieldValidation = FieldValidation.reFieldValidation(requestRecharge, "2");
+		if(ReturnResult.FAIL_CODE.equals(reFieldValidation.get("code"))){
+			return reFieldValidation;
+		}
+		
 		ThridCompany thridCompany = thridCompanyService.getThridCompanyByAppId(requestRecharge.getAppId());
 
+		
+		
 		if (null == thridCompany) {
 			return ReturnUtil.returnFail("商户无权限");
 		}
@@ -557,6 +587,13 @@ public class PreRechargeController {
 				record.setStatus("3");
 				record.setUpdateTime(new Date());
 				thirdMerchantRechargeRecordService.updateThirdMerchantRechargeRecord(record, example);
+			}else{
+				record = new ThirdMerchantRechargeRecord();
+				record.setMark("接口异常");
+				record.setSendNum(1);
+				record.setStatus("3");
+				record.setUpdateTime(new Date());
+				thirdMerchantRechargeRecordService.updateThirdMerchantRechargeRecord(record, example);
 			}
 		} catch (Exception e) {
 			logger.error("商户号："+appId+"，订单号："+orderNo+"回调通知商户出现异常：",e);
@@ -677,6 +714,8 @@ public class PreRechargeController {
 		}
 
 	}
+	
+
 
 	//回调通知三方
 	
@@ -684,7 +723,17 @@ public class PreRechargeController {
 	//定时任务查询异常
 
 
-
+	public static void main(String[] args) throws Exception {
+//		Map<String, String> generateKeyPair = RSA.generateKeyPair();
+//		String privateKey = generateKeyPair.get("privateKey");
+//		String publicKey = generateKeyPair.get("publicKey");
+//		String sign = MsgDigestUtils.sign("1|2|3|4|5", privateKey);
+//		System.out.println(sign);
+//		boolean verifySign = MsgDigestUtils.verifySign("1|2|3|4|5", sign, publicKey);
+//		System.out.println(verifySign);
+		
+		System.out.println(StringUtils.isBlank("ds  "));
+	}
 
 	
 
