@@ -251,7 +251,7 @@ export default {
 			Indicator.open();
 	  		that.$http({
 		        method: 'post',
-		        url: that.$url+'goods/list',
+		        url: that.$url+'goods/searchGoodsList',
 		        params:data
 	    	}).then(function (response) {
 	    		Indicator.close();
