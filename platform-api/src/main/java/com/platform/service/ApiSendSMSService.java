@@ -1,5 +1,6 @@
 package com.platform.service;
 
+import java.text.MessageFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -108,7 +109,8 @@ public class ApiSendSMSService {
 
 		// 生成验证码
 		String sms_code = CharUtil.getRandomNum(4);
-		String msgContent = "您的验证码是：" + sms_code + "，请在页面中提交验证码完成验证。";
+      	String  loginSmsTemplet = PropertiesUtil.getValue("doubao.properties","loginSmsTemplet");
+		String msgContent = MessageFormat.format(loginSmsTemplet, sms_code);
 		// 发送短信
 		String result = "";
 		String codeValue = "";
