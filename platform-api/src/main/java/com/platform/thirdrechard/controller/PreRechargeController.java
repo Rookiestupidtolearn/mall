@@ -1,12 +1,5 @@
 package com.platform.thirdrechard.controller;
 
-import com.platform.annotation.IgnoreAuth;
-import com.platform.entity.QzUserAccountVo;
-import com.platform.service.QzRechargeRecordApiService;
-import com.platform.entity.QzMoneyRecordEntity;
-import com.platform.entity.QzRechargeRecordEntity;
-import com.platform.service.QzMoneyRecordApiService;
-import com.platform.service.QzUserAccountApiService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -26,14 +19,25 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import redis.clients.jedis.Jedis;
 
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.util.StringUtil;
+import com.platform.annotation.IgnoreAuth;
+import com.platform.entity.QzMoneyRecordEntity;
+import com.platform.entity.QzRechargeRecordEntity;
+import com.platform.entity.QzUserAccountVo;
 import com.platform.nideshopuser.entity.NideshopUser;
 import com.platform.nideshopuser.service.NideshopuserService;
+import com.platform.service.QzMoneyRecordApiService;
+import com.platform.service.QzRechargeRecordApiService;
+import com.platform.service.QzUserAccountApiService;
 import com.platform.thirdrechard.constant.PreRechargeConstants.RechargeStatus;
 import com.platform.thirdrechard.constant.PreRechargeConstants.ReturnResult;
 import com.platform.thirdrechard.entity.RequestPreRechargeEntity;
