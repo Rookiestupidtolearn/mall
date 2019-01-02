@@ -5,6 +5,7 @@ import org.springframework.util.StringUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -165,6 +166,34 @@ public class DateUtils {
         }
         return nMinute;
     }
+    
+    /**
+     * 
+     * @param date
+     * @param type
+     *  day\minute\hour\second
+     * @return
+     */
+    public static Date dateAddTime (Date date,int add,String type){
+    	   Calendar calendar = Calendar.getInstance ();
+    	   calendar.setTime(date);
+        if ("day".equals(type)) {
+        	 calendar.add (Calendar.DATE, add);
+            return calendar.getTime();
+        } else if ("minute".equals(type)) {
+            calendar.add (Calendar.MINUTE, add);
+            return calendar.getTime();
+        } else if ("hour".equals(type)) {
+        	  calendar.add (Calendar.HOUR, add);
+              return calendar.getTime();
+        } else if ("second".equals(type)) {
+        	  calendar.add (Calendar.SECOND, add);
+              return calendar.getTime();
+        }
+     
+        return date;
+    }
+    
     public static void main(String[] args) {
        String starttime = "2018-12-21 22:59:59";
       Date startDate = DateUtils.strToDate(starttime);
@@ -172,8 +201,7 @@ public class DateUtils {
       String endttime = "2018-12-21 23:59:59";
       Date endDate = DateUtils.strToDate(endttime);
       
-     System.out.println(getBetweenDateByType(endDate,startDate,"day"));
-       
+System.out.println(DateUtils.dateAddTime(new Date(), 60, "second"));       
         
 
     }

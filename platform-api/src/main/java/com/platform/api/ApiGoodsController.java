@@ -28,6 +28,7 @@ import com.platform.entity.CategoryVo;
 import com.platform.entity.CommentPictureVo;
 import com.platform.entity.CommentVo;
 import com.platform.entity.CouponVo;
+import com.platform.entity.DoubaoSearchGoods;
 import com.platform.entity.FootprintVo;
 import com.platform.entity.GoodsGalleryVo;
 import com.platform.entity.GoodsIssueVo;
@@ -56,6 +57,7 @@ import com.platform.service.ApiRelatedGoodsService;
 import com.platform.service.ApiSearchHistoryService;
 import com.platform.service.ApiUserCouponService;
 import com.platform.service.ApiUserService;
+import com.platform.service.DoubaoSearchGoodsService;
 import com.platform.util.ApiBaseAction;
 import com.platform.util.ApiPageUtils;
 import com.platform.utils.Base64;
@@ -118,6 +120,9 @@ public class ApiGoodsController extends ApiBaseAction {
     private ApiCategoryMapper apiCategoryMapper;
     @Autowired
     private ApiGoodsMapper apiGoodsMapper;
+    @Autowired
+    private DoubaoSearchGoodsService doubaoSearchGoodsService;
+    
 
     /**
      */
@@ -380,7 +385,7 @@ public class ApiGoodsController extends ApiBaseAction {
     }
 
     /**
-     * 　　获取商品列表
+     　　获取商品列表
      */
     @ApiOperation(value = "获取商品列表")
     @ApiImplicitParams({@ApiImplicitParam(name = "categoryId", value = "分类id", paramType = "path", required = true),
@@ -527,6 +532,138 @@ public class ApiGoodsController extends ApiBaseAction {
         return toResponsSuccess(goodsData);
     }
 
+    
+    
+    
+    /**
+     * 搜索商品
+     * @param loginUser
+     * @param categoryId
+     * @param brandId
+     * @param keyword
+     * @param isNew
+     * @param isHot
+     * @param page
+     * @param size
+     * @param sort
+     * @param order
+     * @return
+     */
+    @ApiOperation(value = "获取商品列表")
+    @ApiImplicitParams({@ApiImplicitParam(name = "categoryId", value = "分类id", paramType = "path", required = true),
+            @ApiImplicitParam(name = "brandId", value = "品牌Id", paramType = "path", required = true),
+            @ApiImplicitParam(name = "isNew", value = "新商品", paramType = "path", required = true),
+            @ApiImplicitParam(name = "isHot", value = "热卖商品", paramType = "path", required = true)})
+    @IgnoreAuth
+    @PostMapping(value = "searchGoodsList")
+    public Object searchGoodsList(@LoginUser UserVo loginUser, Integer categoryId,Integer brandId, String keyword, Integer isNew, Integer isHot,
+            @RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "size", defaultValue = "10") Integer size,
+            String sort, String order) {
+    	//添加到搜索历史
+    	 if (!StringUtils.isNullOrEmpty(keyword)) {
+         	Long userId = getUserId();
+         	loginUser = userService.queryObject(userId);
+             SearchHistoryVo searchHistoryVo = new SearchHistoryVo();
+             searchHistoryVo.setAdd_time(System.currentTimeMillis() / 1000);
+             searchHistoryVo.setKeyword(keyword);
+             searchHistoryVo.setUser_id(null != loginUser ? loginUser.getUserId().toString() : "");
+             searchHistoryVo.setFrom("");
+             searchHistoryService.save(searchHistoryVo);
+         }
+    	
+    	//1、通过商品名检索临时表,获取所有的商品id和分类id    
+    	 List<DoubaoSearchGoods> doubaoSearchGoodsList =  doubaoSearchGoodsService.queryDoubaoSearchGoodsList(keyword);
+    	
+    	//2.1 通过分类id查询分类表(查询对应的所有的一级分类) 2.2   如果参数有分类id(关键字+分类id检索a表)  
+    	 List<Integer> categoryIds = new ArrayList<Integer>();
+    	 List<Integer> goodsIds = new ArrayList<Integer>();
+    	 for(DoubaoSearchGoods doubaoSearchGoods : doubaoSearchGoodsList){
+    		 categoryIds.add(doubaoSearchGoods.getCateGoryId());
+    		 goodsIds.add(doubaoSearchGoods.getId());
+    	 }
+    	 //查询一级分类
+    	 List<Integer>  parentIds =  apiCategoryMapper.queryParentIdsByCategoryId(categoryIds);
+    	 if(CollectionUtils.isEmpty(parentIds)){
+    		 logger.error("【商品搜索】根据关键字["+keyword+"]未查询到一级分类id");
+    	 }
+    	 //取出通过关键字搜索的分类
+    	 List<CategoryVo> filterCategory = new ArrayList();
+         CategoryVo rootCategory = new CategoryVo();
+         rootCategory.setId(0);
+         rootCategory.setName("全部");
+         rootCategory.setChecked(false);
+         filterCategory.add(rootCategory);
+         List<CategoryVo> categoryList = apiCategoryMapper.queryCategoryList(parentIds);
+         filterCategory.addAll(categoryList);
+         for (CategoryVo categoryEntity : filterCategory) {
+             if (categoryEntity.getId().intValue() == 0 || categoryEntity.getId().intValue() == categoryId.intValue()) {
+                 categoryEntity.setChecked(true);
+             } else {
+                 categoryEntity.setChecked(false);
+             }
+         }
+         
+         
+         //查询商品
+         List<Integer> categoryListParam = new ArrayList<Integer>();
+         Map<String,Object> params = new HashMap<>();
+         if(categoryId != null && categoryId != 0){
+        	 //查询一级分类下的二级分类id
+        	 Map categoryParam = new HashMap();
+      		categoryParam.put("parent_id", categoryId);
+      		categoryParam.put("fields", "id");
+      		List<CategoryVo> childIds = categoryService.queryList(categoryParam);
+      		for (CategoryVo categoryEntity : childIds) {
+      			categoryListParam.add(categoryEntity.getId());
+      		}
+      		categoryListParam.add(categoryId);
+      		if(!CollectionUtils.isEmpty(categoryListParam)){
+      			params.put("categoryIds", categoryListParam);
+      			params.put("keyword", keyword);
+      		}
+      		//获取商品id
+      		List<Integer> goodsIdsList = doubaoSearchGoodsService.qureyGoodsIdByparam(params);
+      		params.remove("categoryIds");
+      		params.remove("keyword");
+      		params.put("goods_ids", goodsIdsList);
+         }else{
+        	params.put("goods_ids", goodsIds);
+         }
+         params.put("is_delete", 0);
+         params.put("is_on_sale", 1);
+         params.put("brand_id", brandId);
+         params.put("is_new", isNew);
+         params.put("is_hot", isHot);
+         params.put("page", page);
+         params.put("limit", size);
+         params.put("fields", "nideshop_goods.id as id,nideshop_goods.name as name, nideshop_goods.list_pic_url as list_pic_url, nideshop_goods.market_price as market_price, nideshop_goods.retail_price, nideshop_goods.goods_brief,case when min(nideshop_product.market_price) != '' then min(nideshop_product.market_price) else 0 end product_market_price");
+         if (null != sort && sort.equals("price")) {
+             params.put("sidx", "market_price");
+             params.put("order", order);
+         }else{
+        	params.put("sidx", "id");
+            params.put("order", "desc");
+         }
+         Query query = new Query(params);
+         PageHelper.startPage(query.getPage(), query.getLimit());
+         List<GoodsVo> goodsList = goodsService.queryList(query);
+         logger.info("===========================通过关键字"+keyword+"进行检索的结果=======================");
+         logger.info("===========================商品个数:"+goodsList.size());
+         logger.info("===========================分类个数:"+filterCategory.size());
+    	
+        ApiPageUtils goodsData = new ApiPageUtils(new PageInfo(goodsList));
+        goodsData.setFilterCategory(filterCategory);
+        goodsData.setGoodsList(goodsList);
+        return toResponsSuccess(goodsData);
+    }
+    
+    
+    
+    
+    
+    
+    
+    
     /**
      * 　　商品列表筛选的分类列表
      */
