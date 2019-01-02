@@ -30,7 +30,7 @@ public interface ApiUserMapper extends BaseDao<UserVo> {
      * @return
      */
     SmsLogVo querySmsCodeByUserId(@Param("user_id") Long user_id);
-
+    SmsLogVo  querySmsCodeByMobile(String mobile);
     /**
      * 保存短信
      *

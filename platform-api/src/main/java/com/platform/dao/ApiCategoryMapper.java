@@ -48,4 +48,19 @@ public interface ApiCategoryMapper extends BaseDao<CategoryVo> {
 	 * @return
 	 */
 	List<CategoryVo> quertSubCategorys(Integer id);
+	
+	
+	/**
+	 * 根据分类id获取父级分类id
+	 * @param categoryIds
+	 * @return
+	 */
+	List<Integer> queryParentIdsByCategoryId(List<Integer> categoryIds);
+	
+	
+	/**
+	 * 获取分类集合
+	 * @param parentIds
+	 */
+	List<CategoryVo> queryCategoryList(List<Integer> parentIds);
 }
