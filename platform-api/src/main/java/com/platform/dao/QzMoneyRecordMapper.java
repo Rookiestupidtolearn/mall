@@ -3,6 +3,8 @@ package com.platform.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.platform.entity.QzMoneyRecordEntity;
 
 /**
@@ -19,4 +21,6 @@ public interface QzMoneyRecordMapper extends BaseDao<QzMoneyRecordEntity> {
 	 * @return
 	 */
 	List<QzMoneyRecordEntity> queryMoneyRecords(Map<String,Object> map);
+	
+	QzMoneyRecordEntity queryLastMoneyRecord(@Param("shopUserId") Integer shopUserId);
 }

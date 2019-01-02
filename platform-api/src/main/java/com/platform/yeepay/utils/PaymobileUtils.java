@@ -34,6 +34,8 @@ public class PaymobileUtils {
 	public static final String ORDERCALLBACKAPI_NAME = "OrderCallbackApi";
 	public static final String ORDER_FCALL_BACKAPI_NAME = "OrderFcallbackurlApi";
 	
+	public static final String AppIdRechargeCallbackApi_NAME = "AppIdRechargeCallbackApi";
+	
 	//编码格式UTF-8
 	public static final String CHARSET 			= "UTF-8";
 	
