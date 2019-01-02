@@ -12,6 +12,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.http.HttpHeaders;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
@@ -83,9 +84,10 @@ public class HttpCommonUtils {
 		   try {
 		       CloseableHttpClient httpclient = null;
 		       CloseableHttpResponse httpresponse = null;
+		       HttpPost httppost = new HttpPost(url);
 		       try {
 		           httpclient = HttpClients.createDefault();
-		           HttpPost httppost = new HttpPost(url);
+		           httppost.setHeader(HttpHeaders.CONNECTION, "close");
 		           StringEntity stringentity = new StringEntity(data,
 		                   ContentType.create("application/json", "UTF-8"));
 		           httppost.setEntity(stringentity);
@@ -99,6 +101,9 @@ public class HttpCommonUtils {
 		           if (httpresponse != null) {
 		               httpresponse.close();
 		           }
+		           if(httppost != null) {
+		        	   httppost.releaseConnection();
+		  	     }
 		       }
 		   } catch (Exception e) {
 		       e.printStackTrace();

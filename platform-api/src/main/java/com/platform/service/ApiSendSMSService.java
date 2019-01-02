@@ -191,6 +191,7 @@ public class ApiSendSMSService {
 			smsLogVo.setSmsCode(sms_code);
 			smsLogVo.setSms_text(msgContent);
 			smsLogVo.setSend_status(1); // 1成功 0失败
+			smsLogVo.setCreateTime(new Date());
 			userService.saveSmsCodeLog(smsLogVo);
 			logger.info("手机号>>>"+mobile+"验证码是>>>"+sms_code);
 			// 手机号和缓存
