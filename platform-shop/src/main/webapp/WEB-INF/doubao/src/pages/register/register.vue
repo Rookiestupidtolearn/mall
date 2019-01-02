@@ -57,12 +57,11 @@
 	  methods:{
 	  	refreshCode(){
 	  		var randomData = new Date();
-//  		this.imgyzm="http://simuwap.doubaoclub.com:6201/platform/api/image.jpg?date"+randomData.getMilliseconds();  //预发布
-    		this.imgyzm="http://app.doubaoclub.com:6101/platform/captcha.jpg?date"+randomData.getMilliseconds(); //正式
-//	  	  this.imgyzm="http://192.168.124.28:8080/platform/api/image.jpg?date"+randomData.getMilliseconds();//冯蓉基本地
-//	  	  this.imgyzm="http://192.168.124.28:8080/platform/captcha.jpg?date"+randomData.getMilliseconds();//冯蓉基本地
-//		this.imgyzm="http://117.50.60.55:6201/platform/captcha.jpg?date"+randomData.getMilliseconds();//预发布ip
-//		this.imgyzm="http://192.168.124.50:6101/platform/captcha.jpg?date"+randomData.getMilliseconds();//测试环境
+    	    this.imgyzm="http://app.doubaoclub.com:6101/platform/api/image.jpg?date"+randomData.getMilliseconds(); //正式
+//	  	    this.imgyzm="http://192.168.124.28:8080/platform/api/image.jpg?date"+randomData.getMilliseconds();//冯蓉基本地
+//	  	    this.imgyzm="http://192.168.124.28:8080/platform/captcha.jpg?date"+randomData.getMilliseconds();//冯蓉基本地
+//        this.imgyzm="http://192.168.124.50:6101/platform/captcha.jpg?date"+randomData.getMilliseconds();//测试环境
+	//  		this.imgyzm="http://simuwap.doubaoclub.com:6201/platform/api/image.jpg?date"+randomData.getMilliseconds();  //预发布
 	  	},
 	  	fwxieyi(){
 	  		let that = this;
@@ -141,6 +140,7 @@
                 return false;
 	  		}
 	  		this.$http.defaults.withCredentials = true;
+	  		//that.refreshCode();
 			this.$http({
 		        method: 'post',
 		        url:that.$url+ 'sendSms',
@@ -149,6 +149,7 @@
 		        	imageCode:this.imgcaptcha
 		        }
 	    	}).then(function (res) {
+	    	
 //	    		var res ={"data":{"msg": "请传入图形验证码","errno": 0,"count": 5}};
 	    		if(res.data.errno == 0){
 	    			/*图形验证码是否显示*/

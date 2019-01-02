@@ -312,10 +312,6 @@ export default {
 			    }).then(function (res) {
 			      if (res.errno === 0) {
 			        console.log(res.data);
-			        that.setData({
-			          //cartGoods: res.data.cartList,
-			          //cartTotal: res.data.cartTotal
-			        });
 			      }
 		        that.checkedAllStatus = that.isCheckedAll();
 		    });
@@ -370,7 +366,7 @@ export default {
 	.bgShow .font{
 		font-size: .25rem;
     color: #333;
-    padding: 0 .5rem;
+    padding: 0 .3rem;
     text-align: left;
     margin-top: .3rem;
     padding-bottom:.5rem;
@@ -401,7 +397,8 @@ export default {
 	}
 	.bgShow img{
 		float:left;
-		width:1.25rem;
+		width:1.05rem;
+		margin:0 .2rem;
 	}
 	.bgShow .item .name{
     font-size: .25rem;
