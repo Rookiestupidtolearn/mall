@@ -20,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.google.code.kaptcha.Constants;
 import com.platform.annotation.IgnoreAuth;
 import com.platform.cache.J2CacheUtils;
 import com.platform.entity.FullUserInfo;
@@ -31,6 +32,7 @@ import com.platform.util.ApiBaseAction;
 import com.platform.util.ApiUserUtils;
 import com.platform.util.CommonUtil;
 import com.platform.utils.R;
+import com.platform.utils.ShiroUtils;
 import com.platform.validator.Assert;
 import com.qiniu.util.StringUtils;
 
@@ -189,22 +191,20 @@ public class ApiAuthController extends ApiBaseAction {
 		
 		Level2Cache level2 = CacheProviderHolder.getLevel2Cache(J2CacheUtils.INVALID_CACHE);
 		Integer count = (Integer) level2.get("DOUBAO_SMS_COUNT:" + mobile);
-//		if(count !=null &&count>=6){
-//			String  checkcode = params.get("yzm");
-//			if(StringUtils.isNullOrEmpty(checkcode)){
-//			  	 return R.error("图形验证码不能为空！");
-//			}
-//			 String imageCode = (String) requset.getSession().getAttribute("imageCode");
-//			if (org.apache.commons.lang.StringUtils.isEmpty(imageCode)) {
-//				return R.error("图形验证码失效！");
-//			}
-//			
-//			if (!checkcode.equals(imageCode)) {
-//				return R.error("图形验证码不正确！");
-//			}
-//			requset.removeAttribute("imageCode");
-//		  
-//		}
+	   if(count !=null &&count>=6){
+			String  checkcode = params.get("yzm");
+			if(StringUtils.isNullOrEmpty(checkcode)){
+			  	 return R.error("图形验证码不能为空！");
+			}
+ 
+	        String kaptcha = ShiroUtils.getKaptcha(Constants.KAPTCHA_SESSION_KEY);
+	        if(null == kaptcha){
+	            return R.error("图形验证码已失效");
+	        }
+	        if (!checkcode.equalsIgnoreCase(kaptcha)) {
+	            return R.error("图形验证码不正确");
+	        }
+		}
 	
 		UserVo userVo = userService.queryByMobile(mobile);
        if (userVo== null) {

@@ -28,6 +28,9 @@ public class SmsLogVo implements Serializable {
     private Integer send_status;
     //
     private String sms_text;
+    
+    //创建时间
+    private Date createTime;
 
     public Long getId() {
         return id;
@@ -86,4 +89,14 @@ public class SmsLogVo implements Serializable {
     public void setSms_text(String sms_text) {
         this.sms_text = sms_text;
     }
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+    
+    
 }

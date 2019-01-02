@@ -168,6 +168,13 @@
         left join nideshop_sms_log b on a.user_id = b.user_id and b.log_date > a.log_date
         where a.user_id = #{user_id} and b.id is null
     </select>
+    
+        <select id="querySmsCodeByMobile" parameterType="java.lang.String" resultType="com.platform.entity.SmsLogVo">
+         SELECT * FROM `nideshop_sms_log` 
+         WHERE phone = #{mobile}
+         ORDER BY create_time DESC LIMIT 0,1
+    </select>
+    
 
     <insert id="saveSmsCodeLog" parameterType="com.platform.entity.SmsLogVo">
         insert into nideshop_sms_log(
@@ -177,7 +184,9 @@
         `log_date`,
         `sms_code`,
         `send_status`,
-        `sms_text`)
+        `sms_text`,
+         `create_time`
+        )
         values(
         #{id},
         #{user_id},
@@ -185,7 +194,8 @@
         #{log_date},
         #{smsCode},
         #{send_status},
-        #{sms_text}
+        #{sms_text},
+         #{createTime}
         )
     </insert>
     
