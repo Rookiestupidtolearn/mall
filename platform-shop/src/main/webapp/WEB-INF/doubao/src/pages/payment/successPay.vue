@@ -1,22 +1,23 @@
 <template>
   <div class="failPay">
   	<h4>支付成功</h4>
-  	<!--<p>订单编号  {{paycard}}</p>
-  	<p>支付金额  {{paymoney}}</p>-->
   	<div class="buttongroup">
   		<span @click="look">查看订单</span>
   		<span @click="success">完成</span>
   	</div>
+  	<returnhome :scrollshow = "scrollshow"></returnhome>
   </div>
 </template>
 
 <script>
+	import returnhome from '@/components/returnHome';
+	
 export default {
   name: 'successPay',
+  components:{returnhome},
   data () {
     return {
-    	paymoney:'12345678910',
-    	paycard:'111.11元'
+    	scrollshow:true
     }
   },
   mounted(){

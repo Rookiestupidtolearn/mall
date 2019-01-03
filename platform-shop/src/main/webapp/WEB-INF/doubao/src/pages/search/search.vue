@@ -61,17 +61,20 @@
 		    <img class="icon" src="http://yanxuan.nosdn.127.net/hxm/yanxuan-wap/p/20161201/style/img/icon-normal/noSearchResult-7572a94f32.png"/>
 		    <p class="text">您寻找的商品还未上架</p>
 		 </div>
+		 <returnhome :scrollshow = "scrollshow"></returnhome>
  	</div>
 </template>
 
 <script>
 import { Indicator } from 'mint-ui';
-//	import headbar from '@/components/headbar.vue'
+import returnhome from '@/components/returnHome';
+
 export default {
 	  name: 'search',
-//	  components:{headbar},
+	  components:{returnhome},
 	  data () {
 	    return {
+	    	scrollshow:true,
 	    	cookie:true,
     		value:'',
     		searchStatus:false,

@@ -9,14 +9,19 @@
 	 		</div>
 	 		<div class="btn" @click="looklog(item.orderId)">查看物流</div>
 		</div>
+		<returnhome :scrollshow = "scrollshow"></returnhome>
 	</div>
 </template>
 
 <script>
+	import returnhome from '@/components/returnHome';
+	
 	export default {
 	  name: 'logistics',
+	  components:{returnhome},
 	  data () {
 	    return {
+	    	scrollshow:true,
 	    	description:'',
 	    	openD:true
 	    }

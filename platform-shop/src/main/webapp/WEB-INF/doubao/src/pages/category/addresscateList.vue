@@ -23,19 +23,23 @@
 	      <p class="text">收货地址在哪里</p>
 	    </div>
 	    <div class="add-address" @click="addressAddOrUpdate('0')" data-address-id="0">新建</div>
+	    <returnhome :scrollshow = "scrollshow"></returnhome>
 	</div>
 </template>
 
 <script>
 import { MessageBox } from 'mint-ui';
+import returnhome from '@/components/returnHome';
 //import headbar from '@/components/headbar.vue'
 		
 export default {
 	name: 'addresscateList',
+	components:{returnhome},
 //	components:{headbar},
   data () {
     return {
 //  	headFont:'地址列表',
+		scrollshow:true,
     	addressList:[],
     	deleteList:[]
     }

@@ -26,12 +26,13 @@
 			</div>
 	</div>
 		<!--公用底部导航-->
-  	<tabbar :selected="selected" :tabs='tabs' :style="{'display':[showAN ? 'none' : 'block']}"></tabbar> 
+  	<tabbar :selected="selected" :tabs='tabs' :style="{'display':[showAN ? 'none' : 'block']}"></tabbar>
   </div>
 </template>
 
 <script>
-	import tabbar from '@/components/tabbar'
+	import tabbar from '@/components/tabbar';
+	import returnHome from '@/components/returnHome';
 	import { Indicator } from 'mint-ui';
 	
 export default {

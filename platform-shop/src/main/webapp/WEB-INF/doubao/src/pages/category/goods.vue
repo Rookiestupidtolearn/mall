@@ -119,20 +119,24 @@
 			  <button :class="undercarriage ? 'disabled' : 'r'" v-if="undercarriage">{{undercarriName}}</button>
 			  <button :class="undercarriage ? 'disabled' : 'r'" v-else @click="addToCart">{{undercarriName}}</button>
 			</div>
+			<returnhome :scrollshow = "scrollshow"></returnhome>
   </div>
 </template>
 
 <script>
 	import { Toast } from 'mint-ui';
 	import { Indicator } from 'mint-ui';
+	import returnhome from '@/components/returnHome';
 //	import headbar from '@/components/headbar.vue'
 		
 	export default {
 	  name: 'goods',
 //	  components:{headbar},
+		components:{returnhome},
 	  data () {
 	    return {
 //	    	headFont:'商品详情',
+			scrollshow:true,
 	    	market_price:'',
 	    	idm:'',
 	    	banner:[],
@@ -179,7 +183,7 @@
 	  		this.relaed();
 	    	//商品详情
 	  		this.Detail();
-	    	
+	  		
 	  },
 	destroyed(){
  		document.getElementById('zhichiBtnBox').style.display= 'none'; //默认隐藏智齿
@@ -303,7 +307,7 @@
 					zhiManager.set('abstract_info',that.goods.name);  //商品信息的简述内容（选传） 无描述用的标题
 					zhiManager.set('label_info',that.market_price);	  //商品标签例：价格（选传）
 					zhiManager.set('thumbnail_info',that.banner[0].img_url);  //商品的缩略图（选传）
-					
+					zhiManager.set('invite', 0); //关闭开启自动邀请
 	
 				}
 			}else{
@@ -1179,4 +1183,7 @@ overflow: hidden;
     /*background: url(http://nos.netease.com/mailpub/hxm/yanxuan-wap/p/20150730/style/img/icon-normal/detailTagArrow-18bee52dab.png) 95% center no-repeat;
     background-size: .1075rem .1875rem;*/
 }
+.returnHome span{
+    	margin-top:1.05rem !important;
+	}
 </style>

@@ -14,19 +14,22 @@
 	    </div>
 	  </div>
 	  </div>
+	  <returnhome :scrollshow = "scrollshow"></returnhome>
 	</div> 
 </template>
 
 <script>
 	import { MessageBox } from 'mint-ui';
+	import returnhome from '@/components/returnHome';
 //	import headbar from '@/components/headbar.vue';	
 		
 export default {
   name: 'helpCenter',
-//components:{headbar},
+	components:{returnhome},
   data () {
     return {
 //  	headFont:'帮助中心',
+		scrollshow:true,
     	helpImg:'../../static/images/go.png',
 	    listArray: [
 	      {

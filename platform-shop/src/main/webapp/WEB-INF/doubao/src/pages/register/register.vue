@@ -20,14 +20,19 @@
  			<i @click="fwxieyi">《平台服务协议》</i>
  		</p>
  		<mt-button type="primary" size="large" class="mtButton" @click="submit">登录</mt-button>
+ 		<returnhome :scrollshow = "scrollshow"></returnhome>
   </div>
 </template>
 
 <script>
+	import returnhome from '@/components/returnHome';
+	
 	export default {
 	  name: 'coupon',
+	  components:{returnhome},
 	  data () {
 	    return {
+	    	scrollshow:true,
 	    	phone:'',
 	    	captcha:'',
 	    	imgcaptcha:'',

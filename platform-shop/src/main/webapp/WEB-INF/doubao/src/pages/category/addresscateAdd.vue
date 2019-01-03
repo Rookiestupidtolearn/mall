@@ -41,6 +41,7 @@
 		      </div>
 		    </div>
 		</div>
+		<returnhome :scrollshow = "scrollshow"></returnhome>
  	</div>
 </template>
 
@@ -48,14 +49,17 @@
 	import { Toast } from 'mint-ui';
 	import { MessageBox } from 'mint-ui';
 	import { Indicator } from 'mint-ui';
+	import returnhome from '@/components/returnHome';
 //	import headbar from '@/components/headbar.vue'
 		
 	export default {
 	  name: 'addresscateAdd',
 //	  components:{headbar},
+		components:{returnhome},
 	  data () {
 	    return {
 //	    	headFont:'商品详情',
+			scrollshow:true,
 	    	address: {
 		      id:0,
 		      province_id: 0,

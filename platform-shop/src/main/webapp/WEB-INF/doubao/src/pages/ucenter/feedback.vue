@@ -20,6 +20,7 @@
 	    </div>
 	  </div>
 		  <div class="fb-btn" @click="sbmitFeedback">提交</div>
+		  <returnhome :scrollshow = "scrollshow"></returnhome>
 	</div>
 </template>
 
@@ -27,14 +28,16 @@
 	import { MessageBox } from 'mint-ui';
 	import { Picker } from 'mint-ui';
 	import { Toast } from 'mint-ui';
+	import returnhome from '@/components/returnHome';
 //	import headbar from '@/components/headbar.vue';
 		
 	export default {
 	  name: 'feedback',
-//	  components:{headbar},
+	  components:{returnhome},
 	  data () {
 	    return {
 //	    	headFont:'问题反馈',
+			scrollshow:true,
 	    	values:'请选择反馈类型',
 	    	values2:'',
 	    	introduct:'',

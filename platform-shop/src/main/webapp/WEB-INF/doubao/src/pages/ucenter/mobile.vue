@@ -2,7 +2,7 @@
  	<div class="container">
  		<!--公共头部-->
  		<!--<headbar :headFont="headFont"></headbar>-->
- 		
+ 		<returnhome :scrollshow = "scrollshow"></returnhome>
  		<div class="weibind "  :style="{display:[!bindResult ? 'none' : 'block' ]}">
 	 		<div class="noBind">
 				<div class="userinfo">
@@ -42,14 +42,16 @@
 <script>
 	import { MessageBox } from 'mint-ui';
 	import { Toast } from 'mint-ui';
+	import returnhome from '@/components/returnHome';
 //	import headbar from '@/components/headbar.vue'
 		
 	export default {
 	  name: 'feedback',
-//	  components:{headbar},
+		components:{returnhome},
 	  data () {
 	    return {
 //	    	headFont:"绑定手机",
+			scrollshow:true,
 	        telephone: '',
 	        teleyzm:'',
 	        bindResult:true,

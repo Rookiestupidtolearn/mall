@@ -29,14 +29,19 @@
 				<div class="bottom" @click="close" v-else>收起<img src="../../../static/images/logistics/tjt.png"/></div>
 			</div>
 		</div>
+		<returnhome :scrollshow = "scrollshow"></returnhome>
 	</div>
 </template>
 
 <script>
+	import returnhome from '@/components/returnHome';
+	
 	export default {
 	  name: 'logistics',
+	   components:{returnhome},
 	  data () {
 	    return {
+	    	scrollshow:true,
 	    	openD:true,
 	    	description:''
 	    }
