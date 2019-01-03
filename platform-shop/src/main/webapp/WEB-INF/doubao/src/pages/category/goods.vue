@@ -805,7 +805,7 @@ div{
 	font-size:.29rem;
 	background-color:#fff
 }
-.detail >>> p img{
+.detail >>>  img{
 	vertical-align: top;
     margin-top: -.001rem;
     height: auto !important;
@@ -1183,7 +1183,4 @@ overflow: hidden;
     /*background: url(http://nos.netease.com/mailpub/hxm/yanxuan-wap/p/20150730/style/img/icon-normal/detailTagArrow-18bee52dab.png) 95% center no-repeat;
     background-size: .1075rem .1875rem;*/
 }
-.returnHome span{
-    	margin-top:1.05rem !important;
-	}
 </style>
