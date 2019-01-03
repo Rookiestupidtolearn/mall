@@ -62,7 +62,7 @@ public class PreRechargeRecordService {
 
 		}
 
-		return preRechargeRecords.get(0);
+		return preRechargeRecords.get(preRechargeRecords.size()-1);
 	}
 
     /**
@@ -97,12 +97,4 @@ public class PreRechargeRecordService {
 		return updateByPrimaryKeySelective > 0?true:false;		
 	}
 	
-	
-	
-	public static void main(String[] args) {
-		DateTime now = new DateTime();
-		DateTime minusDays = now.minusDays(1);
-		System.out.println(now.toString("yyyy-MM-dd"));
-		;
-	}
 }

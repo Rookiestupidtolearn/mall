@@ -236,11 +236,11 @@ public class PreRechargeController {
 		//查询历史是否有支付单子
 		ThirdPreCompanyRechargeRecord oldThirdPreCompanyRechargeRecord = preRechargeRecordService.getPreRechargeRecordByThirdOrder(reRechargeRecord.getOrderNo(), reRechargeRecord.getAppId());
 		if (null != oldThirdPreCompanyRechargeRecord) {
-			Date updateTime = oldThirdPreCompanyRechargeRecord.getCreateTime();
+			Date updateTime = oldThirdPreCompanyRechargeRecord.getUpdateTime();
 			if ("0".equals(oldThirdPreCompanyRechargeRecord.getStatus()) ) {
 				return ReturnUtil.returnFail("当前订单正在处理中");
 			} else if("1".equals(oldThirdPreCompanyRechargeRecord.getStatus())){
-				if((new Date().getTime() - updateTime.getTime()) >= 1000 * 60 * 60 * 24){
+				if((new Date().getTime() - updateTime.getTime()) >= 1000 * 60 * 60 * 23.5){
 					oldThirdPreCompanyRechargeRecord.setStatus(RechargeStatus.INVALID);
             		oldThirdPreCompanyRechargeRecord.setRemark("订单失效");
             		oldThirdPreCompanyRechargeRecord.setUpdateTime(new Date());
@@ -301,6 +301,10 @@ public class PreRechargeController {
 			logger.error("【预充值】异常", e);
             RedisUtils.releaseDistributedLock(jedis, key, Long.toString(requestId));
             return ReturnUtil.returnFail("未知异常");
+		}finally{
+			if(jedis != null){
+				jedis.close();
+			}
 		}
 
 	}
@@ -346,10 +350,10 @@ public class PreRechargeController {
         ThirdPreCompanyRechargeRecord oldThirdPreCompanyRechargeRecord = preRechargeRecordService.getPreRechargeRecordByThirdOrder(requestRecharge.getOrderNo(), requestRecharge.getAppId());
         //状态0或3的单子 可以支付
         if (null != oldThirdPreCompanyRechargeRecord) {
-            if ( "1".equals(oldThirdPreCompanyRechargeRecord.getStatus())) {
-            	Date updateTime = oldThirdPreCompanyRechargeRecord.getCreateTime();
+            if ( RechargeStatus.PROCESS.equals(oldThirdPreCompanyRechargeRecord.getStatus())) {
+            	Date updateTime = oldThirdPreCompanyRechargeRecord.getUpdateTime();
             	//是否失效
-            	if((new Date().getTime() - updateTime.getTime()) >= 1000 * 60 * 60 * 24){
+            	if((new Date().getTime() - updateTime.getTime()) >= 1000 * 60 * 60 * 23.5){
             		oldThirdPreCompanyRechargeRecord.setStatus(RechargeStatus.INVALID);
             		oldThirdPreCompanyRechargeRecord.setRemark("订单失效");
             		oldThirdPreCompanyRechargeRecord.setUpdateTime(new Date());
@@ -373,7 +377,7 @@ public class PreRechargeController {
                     }
                     return returnFail;
             	}
-            } else if ("2".equals(oldThirdPreCompanyRechargeRecord.getStatus())) {
+            } else if (RechargeStatus.SUCCESS.equals(oldThirdPreCompanyRechargeRecord.getStatus())) {
                 return ReturnUtil.returnFail("订单已经支付成功,请勿重复支付");
             }else if (RechargeStatus.INVALID.equals(oldThirdPreCompanyRechargeRecord.getStatus())){
             	oldThirdPreCompanyRechargeRecord.setOrderNo(GenerateOrderNoUtil.gen(oldThirdPreCompanyRechargeRecord.getChannelThird(),oldThirdPreCompanyRechargeRecord.getAppId()));
@@ -390,6 +394,9 @@ public class PreRechargeController {
 		String key = requestRecharge.getAppId() + "-"  + requestRecharge.getOrderNo() +"-pay";
 		Boolean locked = RedisUtils.tryGetDistributedLock(jedis, key,Long.toString(requestId), 1000 * 60);
 
+		if(jedis != null){
+			jedis.close();
+		}
 		if (!locked) {
 			return ReturnUtil.returnFail("当前订单正在处理中");
 		}
@@ -401,6 +408,9 @@ public class PreRechargeController {
         Map<String, Object> stringObjectMap = yeepayOrderBizService.yeepayRechargeSubmmit(nideshopUser, oldThirdPreCompanyRechargeRecord, IpUtil.getIpAddr(request));
         Map<String, Object> successMap = ReturnUtil.returnSuccess();
         if (null != stringObjectMap) {
+        	if(StringUtils.isEmpty(String.valueOf(stringObjectMap.get("payurl")))){
+        		return ReturnUtil.returnFail("订单支付异常,请重新提交");
+        	}
             successMap.put("payUrl", stringObjectMap.get("payurl"));
         } else {
             return ReturnUtil.returnFail("订单支付异常,请重新提交");
@@ -408,9 +418,10 @@ public class PreRechargeController {
 
         //修改三方支付表
         oldThirdPreCompanyRechargeRecord.setUpdateTime(new Date());
-        if ("3".equals(oldThirdPreCompanyRechargeRecord.getStatus())) {
-            oldThirdPreCompanyRechargeRecord.setRemark("历史支付失败订单，重新支付");
-        }
+//        if ("3".equals(oldThirdPreCompanyRechargeRecord.getStatus())) {
+//            oldThirdPreCompanyRechargeRecord.setRemark("历史支付失败订单，重新支付");
+//        }
+        oldThirdPreCompanyRechargeRecord.setRemark("支付中");
         oldThirdPreCompanyRechargeRecord.setStatus("1");
         if (preRechargeRecordService.updateByPrimaryKeySelective(oldThirdPreCompanyRechargeRecord)) {
         	return successMap;			
@@ -618,7 +629,7 @@ public class PreRechargeController {
 				if("SUCCESS".equals(sendHttpRequest)){
 					record = new ThirdMerchantRechargeRecord();
 					record.setMark("回调成功");
-					record.setSendNum(1);
+					record.setSendNum(i+1);
 					record.setStatus("1");
 					record.setUpdateTime(new Date());
 					thirdMerchantRechargeRecordService.updateThirdMerchantRechargeRecord(record, example);
@@ -626,21 +637,21 @@ public class PreRechargeController {
 				}else if("ERROR".equals(sendHttpRequest)){
 					record = new ThirdMerchantRechargeRecord();
 					record.setMark("回调失败");
-					record.setSendNum(1);
+					record.setSendNum(i+1);
 					record.setStatus("2");
 					record.setUpdateTime(new Date());
 					thirdMerchantRechargeRecordService.updateThirdMerchantRechargeRecord(record, example);
 				}else if("failed".equals(sendHttpRequest)){
 					record = new ThirdMerchantRechargeRecord();
 					record.setMark("接口异常");
-					record.setSendNum(1);
+					record.setSendNum(i+1);
 					record.setStatus("3");
 					record.setUpdateTime(new Date());
 					thirdMerchantRechargeRecordService.updateThirdMerchantRechargeRecord(record, example);
 				}else{
 					record = new ThirdMerchantRechargeRecord();
 					record.setMark("接口异常");
-					record.setSendNum(1);
+					record.setSendNum(i+1);
 					record.setStatus("3");
 					record.setUpdateTime(new Date());
 					thirdMerchantRechargeRecordService.updateThirdMerchantRechargeRecord(record, example);
