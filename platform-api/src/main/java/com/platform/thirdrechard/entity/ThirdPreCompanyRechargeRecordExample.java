@@ -817,6 +817,11 @@ public class ThirdPreCompanyRechargeRecordExample {
             addCriterion("create_time >=", value, "createTime");
             return (Criteria) this;
         }
+        
+        public Criteria andCreateTimeGreaterThanOrEqualTo(String value) {
+            addCriterion("create_time >=", value, "createTime");
+            return (Criteria) this;
+        }
 
         public Criteria andCreateTimeLessThan(Date value) {
             addCriterion("create_time <", value, "createTime");
@@ -824,6 +829,11 @@ public class ThirdPreCompanyRechargeRecordExample {
         }
 
         public Criteria andCreateTimeLessThanOrEqualTo(Date value) {
+            addCriterion("create_time <=", value, "createTime");
+            return (Criteria) this;
+        }
+        
+        public Criteria andCreateTimeLessThanOrEqualTo(String value) {
             addCriterion("create_time <=", value, "createTime");
             return (Criteria) this;
         }

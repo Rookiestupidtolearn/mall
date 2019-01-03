@@ -40,6 +40,8 @@ public class PreRechargeConstants {
 			
 			public static  final String PROCESS ="1" ;
 			
+			public static  final String INVALID ="4" ;
+			
 		}
 		
 		
