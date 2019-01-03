@@ -25,6 +25,13 @@
     <select id="queryObject" resultMap="categoryMap">
 		select * from nideshop_category where id = #{value}
 	</select>
+	
+	<select id="queryCategoryList" resultMap="categoryMap" resultType="com.platform.entity.CategoryVo">
+		select * from nideshop_category where is_show = 1 and id in 
+		<foreach collection="list" open="(" separator="," close=")" item="id">
+			#{id}
+		</foreach>
+	</select>
 
     <select id="queryList" resultMap="categoryMap">
         select
@@ -64,6 +71,14 @@
     <select id="queryTotal" resultType="int">
 		select count(*) from nideshop_category 
 	</select>
+	
+	<select id="queryParentIdsByCategoryId" resultType="java.lang.Integer">
+		select parent_id from nideshop_category where is_show = 1 and id in 
+		<foreach collection="list" open="(" separator="," close=")" item="id">
+			#{id}
+		</foreach>
+	</select>
+	
 
     <insert id="save" parameterType="com.platform.entity.CategoryVo">
 		insert into nideshop_category

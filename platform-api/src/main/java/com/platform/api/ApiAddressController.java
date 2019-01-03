@@ -11,6 +11,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +32,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/address")
 public class ApiAddressController extends ApiBaseAction {
+	private Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
     private ApiAddressService addressService;
 
@@ -109,12 +113,22 @@ public class ApiAddressController extends ApiBaseAction {
     public Object delete(@LoginUser UserVo loginUser) {
         JSONObject jsonParam = this.getJsonRequest();
         Integer id = jsonParam.getIntValue("id");
-
-        AddressVo entity = addressService.queryObject(id);
-        //判断越权行为
-        if(loginUser.getUserId().intValue()!=entity.getUserId()){
-        	return toResponsObject(403, "您无权查看", "");
+        if(id == null){
+        	return toResponsObject(403, "删除指定的收货地址的id不能为空", "");
         }
+        logger.info("删除指定的收货地址"+id);
+        AddressVo entity = addressService.queryObject(id);
+        if (entity == null) {
+        	logger.info("删除指定的收货地址为空");
+        	return toResponsObject(403, "删除指定的收货地址对象为空", "");
+		} 
+        logger.info("要删除的收货地址对象信息"+JSONObject.toJSONString(entity));
+        if (loginUser.getUserId() != null) {
+            //判断越权行为
+            if(loginUser.getUserId().intValue()!=entity.getUserId()){
+            	return toResponsObject(403, "您无权查看", "");
+            }
+		}
         addressService.delete(id);
         return toResponsSuccess("");
     }

@@ -74,11 +74,15 @@ public class EncryptUtil {
 //
 //        String decrypt = aesDecrypt(encrypt);  
 //        System.out.println("解密后：" + decrypt);  
+    	
+    //	{"amount":"359","cardType":"1","mobile":"15228131703","platformType":"suyouqian","queryCheckUrl":"http://sulaiqian.huaqianyueshang.com/qsdMallOrder/queryCardOrder","thirdTradeNo":"3g4no5h730n5xBE8Qpp3TdG09c3n5m"}
+
+    	
     	QueryMemberCardRequest vo = new QueryMemberCardRequest ();
-        vo.setCardTradeNbr ("oaT8zv47vrkvmRFOegzsjBwkK7292G");
+        vo.setCardTradeNbr ("3g4no5h730n5xBE8Qpp3TdG09c3n5m");
         vo.setCardTradeType ("1");
-        vo.setUserMobile ("15514620608");
-         String  str1 = HttpCommonUtils.sendPost ("http://192.168.0.250:6101/qsdMallOrder/queryCardOrder",JSONObject.toJSONString (vo));
+        vo.setUserMobile ("15228131703");
+         String  str1 = HttpCommonUtils.sendPost ("http://sulaiqian.huaqianyueshang.com/qsdMallOrder/queryCardOrder",JSONObject.toJSONString (vo));
  		if (str1.contains("html")) {
 		System.out.println(str1);
 		}

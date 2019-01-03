@@ -170,7 +170,7 @@
             </foreach>
         </if>
         <if test="goods_ids != null">
-            and id in
+            and nideshop_goods.id in
             <foreach item="item" collection="goods_ids" open="(" separator="," close=")">
                 #{item}
             </foreach>

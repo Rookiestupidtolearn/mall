@@ -1,9 +1,10 @@
 package com.platform.utils;
 
-import com.platform.entity.SysUserEntity;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
+
+import com.platform.entity.SysUserEntity;
 
 /**
  * Shiro工具类
@@ -35,6 +36,7 @@ public class ShiroUtils {
     }
 
     public static Object getSessionAttribute(Object key) {
+    
         return getSession().getAttribute(key);
     }
 
@@ -56,5 +58,15 @@ public class ShiroUtils {
         }
         return kaptcha;
     }
-
+    
+    public static String getKaptchaNoRemove(String key) {
+        String kaptcha;
+        try {
+            kaptcha = getSessionAttribute(key).toString();
+        } catch (Exception e) {
+            return null;
+        }
+        return kaptcha;
+    }
+    
 }
