@@ -44,7 +44,7 @@ public class GoodsController {
     /**
      * 查看列表
      */
-    @RequestMapping("/list")
+  /*  @RequestMapping("/list")
     @RequiresPermissions("goods:list")
     public R list(@RequestParam Map<String, Object> params) {//{_search=false, nd=1545018244178, limit=10, page=1, sidx=null, order=asc, _=1545018243857, offset=0, isDelete=0}
         //查询列表数据
@@ -82,8 +82,8 @@ public class GoodsController {
         	
         	query = new Query(params);
         	query.put("isDelete", 0);
-        	/*query.put("page",Integer.parseInt(params.get("page").toString()));
-        	query.put("limit",Integer.parseInt(params.get("limit").toString()));*/
+        	query.put("page",Integer.parseInt(params.get("page").toString()));
+        	query.put("limit",Integer.parseInt(params.get("limit").toString()));
         	goodsList = goodsService.queryList(query);
         }
         
@@ -92,7 +92,47 @@ public class GoodsController {
         PageUtils pageUtil = new PageUtils(goodsList, total, query.getLimit(), query.getPage());
 
         return R.ok().put("page", pageUtil);
+    }*/
+    
+    
+    //商品查询
+    @RequestMapping("/list")
+    @RequiresPermissions("goods:list")
+    public R queryGoodsList(@RequestParam Map<String, Object> params){
+    	 Query query = new Query(params);
+         query.put("isDelete", 0);
+         String min_retail_price = (String)params.get("min_retail_price");
+         String max_retail_price = (String)params.get("max_retail_price");
+         String min_pure_interest_rate = (String) params.get("min_pure_interest_rate");
+         String max_pure_interest_rate = (String) params.get("max_pure_interest_rate");
+         
+         List<GoodsEntity> goodsList = null;
+         if(StringUtil.isNotEmpty(min_retail_price) || StringUtil.isNotEmpty(max_retail_price) || StringUtil.isNotEmpty(min_pure_interest_rate) || StringUtil.isNotEmpty(max_pure_interest_rate)){
+         	Map<String,Object> paramMap = new HashMap<String,Object>();
+         	paramMap.put("min_retail_price",StringUtil.isEmpty(min_retail_price) ? "":min_retail_price);
+        	paramMap.put("max_retail_price", StringUtil.isEmpty(max_retail_price) ? "":max_retail_price);
+        	paramMap.put("min_pure_interest_rate", StringUtil.isEmpty(min_pure_interest_rate) ? "":min_pure_interest_rate);
+        	paramMap.put("max_pure_interest_rate", StringUtil.isEmpty(max_pure_interest_rate) ? "":max_pure_interest_rate); 
+        	//查询 商品
+        	Integer[] goodsIds = goodsPureInterestRateService.queryGoodsIdsByPrice(paramMap);
+        	if(goodsIds.length > 0){
+        		query.put("goodss", goodsIds);
+        	}
+        	goodsList = goodsService.queryList(query);
+         }else{ 
+        	goodsList = goodsService.queryList(query);
+         }
+         int total = goodsService.queryTotal(query);
+
+         PageUtils pageUtil = new PageUtils(goodsList, total, query.getLimit(), query.getPage());
+
+         return R.ok().put("page", pageUtil);
     }
+    
+    
+    
+    
+    
 
     /**
      * 查看信息

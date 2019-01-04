@@ -15,7 +15,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @EnableWebMvc
 @EnableSwagger2
-@ComponentScan(basePackages="com.platform.api")
+@ComponentScan(basePackages={"com.platform.api","com.platform.thirdrechard"})
 public class SwaggerConfig {
 
     @Bean
@@ -23,7 +23,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(this.apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.platform.api"))
+                .apis(RequestHandlerSelectors.basePackage("com.platform"))
                 .paths(PathSelectors.any())
                 .build();
     }

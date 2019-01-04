@@ -1,14 +1,19 @@
 package com.platform.thirdrechard.service;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.platform.dao.ThirdPreCompanyRechargeRecordMapper;
+
 import org.apache.shiro.util.CollectionUtils;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.platform.thirdrechard.entity.ThirdPreCompanyRechargeRecord;
 import com.platform.thirdrechard.entity.ThirdPreCompanyRechargeRecordExample;
+import com.platform.thirdrechard.entity.ThirdPreCompanyRechargeRecordExample.Criteria;
 
 /**
  * 
@@ -57,7 +62,7 @@ public class PreRechargeRecordService {
 
 		}
 
-		return preRechargeRecords.get(0);
+		return preRechargeRecords.get(preRechargeRecords.size()-1);
 	}
 
     /**
@@ -91,8 +96,5 @@ public class PreRechargeRecordService {
 		int updateByPrimaryKeySelective = thirdPreCompanyRechargeRecordMapper.updateByPrimaryKeySelective(record);
 		return updateByPrimaryKeySelective > 0?true:false;		
 	}
-	
-	
-	
 	
 }

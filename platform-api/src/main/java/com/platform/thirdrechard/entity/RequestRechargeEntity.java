@@ -2,8 +2,6 @@ package com.platform.thirdrechard.entity;
 
 import java.io.Serializable;
 
-import org.hibernate.validator.constraints.NotEmpty;
-
 /**
  * 
  * 确认支付
@@ -21,14 +19,12 @@ public class RequestRechargeEntity implements Serializable{
 	/**
 	 * 商户号
 	 */
-	@NotEmpty(message=" 商户号不能为空")
 	private String  appId;
 	
 	
 	/**
 	 * 订单号
 	 */
-	@NotEmpty(message="订单号不能为空")
 	private String orderNo;
 	
 	
