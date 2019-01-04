@@ -119,18 +119,20 @@ public class PreRechargeController {
 		logger.info("【签名】入参:" + reRechargeRecord.toString());
 
 		Map<String, Object> preFieldValidation = FieldValidation.preFieldValidation(reRechargeRecord, "1");
-		if(ReturnResult.FAIL_CODE.equals(preFieldValidation.get("code"))){
+		if(ReturnResult.FAIL.equals(preFieldValidation.get("msg"))){
 			return preFieldValidation;
 		}
 		
 		ThridCompany thridCompany = thridCompanyService.getThridCompanyByAppId(reRechargeRecord.getAppId());
 
 		if (null == thridCompany) {
-			return ReturnUtil.returnFail("商户无权限");
+			//return ReturnUtil.returnFail("商户无权限");
+			return ReturnUtil.returnAny(ReturnResult.FAIL, "100020", "商户无权限");
 		}
 
 		if (StringUtil.isEmpty(thridCompany.getPublicKey())) {
-			return ReturnUtil.returnFail("商户信息未配置");
+			//return ReturnUtil.returnFail("商户信息未配置");
+			return ReturnUtil.returnAny(ReturnResult.FAIL, "100021", "商户信息未配置");
 		}
 		
 		Map<String, Object> successMap = ReturnUtil.returnSuccess();
@@ -155,18 +157,20 @@ public class PreRechargeController {
 		logger.info("【支付签名】入参:" + requestRecharge.toString());
 
 		Map<String, Object> reFieldValidation = FieldValidation.reFieldValidation(requestRecharge, "1");
-		if(ReturnResult.FAIL_CODE.equals(reFieldValidation.get("code"))){
+		if(ReturnResult.FAIL.equals(reFieldValidation.get("msg"))){
 			return reFieldValidation;
 		}
 		
 		ThridCompany thridCompany = thridCompanyService.getThridCompanyByAppId(requestRecharge.getAppId());
 
 		if (null == thridCompany) {
-			return ReturnUtil.returnFail("商户无权限");
+			//return ReturnUtil.returnFail("商户无权限");
+			return ReturnUtil.returnAny(ReturnResult.FAIL, "100020", "商户无权限");
 		}
 
 		if (StringUtil.isEmpty(thridCompany.getPublicKey())) {
-			return ReturnUtil.returnFail("商户信息未配置");
+			//return ReturnUtil.returnFail("商户信息未配置");
+			return ReturnUtil.returnAny(ReturnResult.FAIL, "100021", "商户信息未配置");
 		}
 
 		Map<String, Object> successMap = ReturnUtil.returnSuccess();
@@ -191,25 +195,28 @@ public class PreRechargeController {
 		logger.info("【预充值】入参:" + reRechargeRecord.toString());
 
 		Map<String, Object> preFieldValidation = FieldValidation.preFieldValidation(reRechargeRecord, "2");
-		if(ReturnResult.FAIL_CODE.equals(preFieldValidation.get("code"))){
+		if(ReturnResult.FAIL.equals(preFieldValidation.get("msg"))){
 			return preFieldValidation;
 		}
 		
 		ThridCompany thridCompany = thridCompanyService.getThridCompanyByAppId(reRechargeRecord.getAppId());
 
 		if (null == thridCompany) {
-			return ReturnUtil.returnFail("商户无权限");
+			//return ReturnUtil.returnFail("商户无权限");
+			return ReturnUtil.returnAny(ReturnResult.FAIL, "100020", "商户无权限");
 		}
 
 		if (StringUtil.isEmpty(thridCompany.getPublicKey())) {
-			return ReturnUtil.returnFail("商户信息未配置");
+			//return ReturnUtil.returnFail("商户信息未配置");
+			return ReturnUtil.returnAny(ReturnResult.FAIL, "100021", "商户信息未配置");
 		}
 
         //reRechargeRecord.setSignature(MsgDigestUtils.sign(reRechargeRecord.regSignVal(),thridCompany.getPrivateKey()));
 
 		if (!MsgDigestUtils.verifySign(reRechargeRecord.regSignVal(), reRechargeRecord.getSignature(),
 				thridCompany.getPublicKey())) {
-			return ReturnUtil.returnFail("验签失败");
+			//return ReturnUtil.returnFail("验签失败");
+			return ReturnUtil.returnAny(ReturnResult.FAIL, "100022", "验签失败");
 		}
 
 		//校验金额，必须为正整数
@@ -230,7 +237,8 @@ public class PreRechargeController {
 		Boolean locked = RedisUtils.tryGetDistributedLock(jedis,key,Long.toString(requestId), 1000 * 120);
 
 		if (!locked) {
-			return ReturnUtil.returnFail("当前订单正在处理中");
+			//return ReturnUtil.returnFail("当前订单正在处理中");
+			return ReturnUtil.returnAny(ReturnResult.FAIL, "100030", "当前订单正在处理中");
 		}
 
 		//查询历史是否有支付单子
@@ -238,23 +246,29 @@ public class PreRechargeController {
 		if (null != oldThirdPreCompanyRechargeRecord) {
 			Date updateTime = oldThirdPreCompanyRechargeRecord.getUpdateTime();
 			if ("0".equals(oldThirdPreCompanyRechargeRecord.getStatus()) ) {
-				return ReturnUtil.returnFail("当前订单正在处理中");
+				//return ReturnUtil.returnFail("当前订单正在处理中");
+				return ReturnUtil.returnAny(ReturnResult.FAIL, "100030", "当前订单正在处理中");
 			} else if("1".equals(oldThirdPreCompanyRechargeRecord.getStatus())){
 				if((new Date().getTime() - updateTime.getTime()) >= 1000 * 60 * 60 * 23.5){
 					oldThirdPreCompanyRechargeRecord.setStatus(RechargeStatus.INVALID);
             		oldThirdPreCompanyRechargeRecord.setRemark("订单失效");
             		oldThirdPreCompanyRechargeRecord.setUpdateTime(new Date());
 					preRechargeRecordService.updateByPrimaryKeySelective(oldThirdPreCompanyRechargeRecord);
-					return ReturnUtil.returnFail("订单已经失效,请重新支付");
+					//return ReturnUtil.returnFail("订单已经失效,请重新支付");
+					return ReturnUtil.returnAny(ReturnResult.FAIL, "100031", "订单已经失效,请重新支付");
 				}
-				return ReturnUtil.returnFail("当前订单正在处理中");
+				//return ReturnUtil.returnFail("当前订单正在处理中");
+				return ReturnUtil.returnAny(ReturnResult.FAIL, "100030", "当前订单正在处理中");
 			}else if ("2".equals(oldThirdPreCompanyRechargeRecord.getStatus())) {
-				return ReturnUtil.returnFail("订单支付成功,请勿重复支付");
+				//return ReturnUtil.returnFail("订单支付成功,请勿重复支付");
+				return ReturnUtil.returnAny(ReturnResult.FAIL, "100032", "订单支付成功,请勿重复支付");
 			}else if("4".equals(oldThirdPreCompanyRechargeRecord.getStatus())){
-				return ReturnUtil.returnFail("订单已经失效,请重新支付");
+				//return ReturnUtil.returnFail("订单已经失效,请重新支付");
+				return ReturnUtil.returnAny(ReturnResult.FAIL, "100031", "订单已经失效,请重新支付");
 			}
 			else {
-				return ReturnUtil.returnFail("订单支付失败,请重新支付");
+				//return ReturnUtil.returnFail("订单支付失败,请重新支付");
+				return ReturnUtil.returnAny(ReturnResult.FAIL, "100033", "订单支付失败,请重新支付");
 			}
 		}
 
@@ -270,7 +284,8 @@ public class PreRechargeController {
 				Boolean isSave = nideshopuserService.saveNideshopUser(nideshopUser);
 				if (!isSave) {
 					RedisUtils.releaseDistributedLock(jedis, key, Long.toString(requestId));
-                    return ReturnUtil.returnFail("开户失败");
+                    //return ReturnUtil.returnFail("开户失败");
+					return ReturnUtil.returnAny(ReturnResult.FAIL, "100040", "开户失败");
 				}
 			}
 
@@ -294,13 +309,15 @@ public class PreRechargeController {
                 return ReturnUtil.returnSuccess();
 			} else {
 				RedisUtils.releaseDistributedLock(jedis, key, Long.toString(requestId));
-                return ReturnUtil.returnFail("充值失败");
+                //return ReturnUtil.returnFail("充值失败");
+				return ReturnUtil.returnAny(ReturnResult.FAIL, "100050", "充值失败");
 			}
 
 		} catch (Exception e) {
 			logger.error("【预充值】异常", e);
             RedisUtils.releaseDistributedLock(jedis, key, Long.toString(requestId));
-            return ReturnUtil.returnFail("未知异常");
+            //return ReturnUtil.returnFail("未知异常");
+            return ReturnUtil.returnAny(ReturnResult.FAIL, "200000", "未知异常,请联系管理员");
 		}finally{
 			if(jedis != null){
 				jedis.close();
@@ -325,24 +342,27 @@ public class PreRechargeController {
 		logger.info("充值】入参:" + requestRecharge.toString());
 		
 		Map<String, Object> reFieldValidation = FieldValidation.reFieldValidation(requestRecharge, "2");
-		if(ReturnResult.FAIL_CODE.equals(reFieldValidation.get("code"))){
+		if(ReturnResult.FAIL.equals(reFieldValidation.get("msg"))){
 			return reFieldValidation;
 		}
 		
 		ThridCompany thridCompany = thridCompanyService.getThridCompanyByAppId(requestRecharge.getAppId());
 
 		if (null == thridCompany) {
-			return ReturnUtil.returnFail("商户无权限");
+			//return ReturnUtil.returnFail("商户无权限");
+			return ReturnUtil.returnAny(ReturnResult.FAIL, "100020", "商户无权限");
 		}
 
 		if (StringUtil.isEmpty(thridCompany.getPublicKey())) {
-			return ReturnUtil.returnFail("商户信息未配置");
+			//return ReturnUtil.returnFail("商户信息未配置");
+			return ReturnUtil.returnAny(ReturnResult.FAIL, "100021", "商户信息未配置");
 		}
 
         //requestRecharge.setSignature(MsgDigestUtils.sign(requestRecharge.regSignVal(),thridCompany.getPrivateKey()));
 
 		if (!MsgDigestUtils.verifySign(requestRecharge.regSignVal(), requestRecharge.getSignature(),thridCompany.getPublicKey())) {
-			return ReturnUtil.returnFail("验签失败");
+			//return ReturnUtil.returnFail("验签失败");
+			return ReturnUtil.returnAny(ReturnResult.FAIL, "100022", "验签失败");
 		}
 
 		Jedis jedis = JedisUtil.getInstance().getJedis();
@@ -358,10 +378,11 @@ public class PreRechargeController {
             		oldThirdPreCompanyRechargeRecord.setRemark("订单失效");
             		oldThirdPreCompanyRechargeRecord.setUpdateTime(new Date());
 					preRechargeRecordService.updateByPrimaryKeySelective(oldThirdPreCompanyRechargeRecord);
-            		return ReturnUtil.returnFail("订单已经失效,请重新调用支付接口");
+            		//return ReturnUtil.returnFail("订单已经失效,请重新调用支付接口");
+            		return ReturnUtil.returnAny(ReturnResult.FAIL, "100031", "订单已经失效,请重新支付");
             	}else{
             		YeeTradeOrderEntity yee = yeeTradeOrderService.queryObjectByYeeOrder(oldThirdPreCompanyRechargeRecord.getOrderNo());
-                	Map<String, Object> returnFail = ReturnUtil.returnFail("当前订单正在处理中,请勿重复操作");
+                	Map<String, Object> returnFail = ReturnUtil.returnAny(ReturnResult.SUCCESS, "100034", "当前订单正在处理中,请勿重复操作");
                 	String str = yee.getResponseMsg();
                 	str = str.trim();
             		str = str.substring(1, str.length()-1);
@@ -378,12 +399,14 @@ public class PreRechargeController {
                     return returnFail;
             	}
             } else if (RechargeStatus.SUCCESS.equals(oldThirdPreCompanyRechargeRecord.getStatus())) {
-                return ReturnUtil.returnFail("订单已经支付成功,请勿重复支付");
+                //return ReturnUtil.returnFail("订单已经支付成功,请勿重复支付");
+            	return ReturnUtil.returnAny(ReturnResult.FAIL, "100032", "订单支付成功,请勿重复支付");
             }else if (RechargeStatus.INVALID.equals(oldThirdPreCompanyRechargeRecord.getStatus())){
             	oldThirdPreCompanyRechargeRecord.setOrderNo(GenerateOrderNoUtil.gen(oldThirdPreCompanyRechargeRecord.getChannelThird(),oldThirdPreCompanyRechargeRecord.getAppId()));
             }
         } else {
-            return ReturnUtil.returnFail("订单不存在,请先调用预支付接口");
+            //return ReturnUtil.returnFail("订单不存在,请先调用预支付接口");
+        	return ReturnUtil.returnAny(ReturnResult.FAIL, "100035", "订单不存在,请先调用预支付接口");
         }
 
 		Long requestId = System.currentTimeMillis();
@@ -398,7 +421,8 @@ public class PreRechargeController {
 			jedis.close();
 		}
 		if (!locked) {
-			return ReturnUtil.returnFail("当前订单正在处理中");
+			//return ReturnUtil.returnFail("当前订单正在处理中");
+			return ReturnUtil.returnAny(ReturnResult.FAIL, "100030", "当前订单正在处理中");
 		}
 
         String phone = oldThirdPreCompanyRechargeRecord.getPhone();
@@ -409,26 +433,55 @@ public class PreRechargeController {
         Map<String, Object> successMap = ReturnUtil.returnSuccess();
         if (null != stringObjectMap) {
         	if(StringUtils.isEmpty(String.valueOf(stringObjectMap.get("payurl")))){
-        		return ReturnUtil.returnFail("订单支付异常,请重新提交");
+        		return ReturnUtil.returnAny(ReturnResult.FAIL, "100036", "订单支付异常,请重新提交");
+        		//return ReturnUtil.returnFail("订单支付异常,请重新提交");
         	}
             successMap.put("payUrl", stringObjectMap.get("payurl"));
         } else {
-            return ReturnUtil.returnFail("订单支付异常,请重新提交");
+        	return ReturnUtil.returnAny(ReturnResult.FAIL, "100036", "订单支付异常,请重新提交");
+            //return ReturnUtil.returnFail("订单支付异常,请重新提交");
         }
 
+        //如果为失效订单，需要新增
+        if(RechargeStatus.INVALID.equals(oldThirdPreCompanyRechargeRecord.getStatus())){
+        	//订单失效，需要重新创建
+            ThirdPreCompanyRechargeRecord thirdPreCompanyRechargeRecord = new ThirdPreCompanyRechargeRecord();
+			thirdPreCompanyRechargeRecord.setAppId(oldThirdPreCompanyRechargeRecord.getAppId());
+			thirdPreCompanyRechargeRecord.setOrderNo(oldThirdPreCompanyRechargeRecord.getOrderNo());
+			thirdPreCompanyRechargeRecord.setOrderThird(oldThirdPreCompanyRechargeRecord.getOrderThird());
+			thirdPreCompanyRechargeRecord.setAmount(oldThirdPreCompanyRechargeRecord.getAmount());
+			thirdPreCompanyRechargeRecord.setPhone(oldThirdPreCompanyRechargeRecord.getPhone());
+			thirdPreCompanyRechargeRecord.setChannelPay("yeepay");
+			thirdPreCompanyRechargeRecord.setChannelThird(oldThirdPreCompanyRechargeRecord.getChannelThird());
+			thirdPreCompanyRechargeRecord.setStatus(RechargeStatus.PROCESS);
+			thirdPreCompanyRechargeRecord.setCreateTime(new Date());
+			thirdPreCompanyRechargeRecord.setRemark("支付中");
+            thirdPreCompanyRechargeRecord.setUpdateTime(new Date());
+            if (preRechargeRecordService.savePreRechargeRecord(thirdPreCompanyRechargeRecord)) {
+           		return successMap;			
+	   	    } else {
+	   			logger.error("支付时，修改商户订单失败，商户号:"+thirdPreCompanyRechargeRecord.getAppId()+",系统订单号:"+thirdPreCompanyRechargeRecord.getOrderNo()+",商户订单号:"+thirdPreCompanyRechargeRecord.getOrderThird());
+	   			//return ReturnUtil.returnFail("订单支付异常,请重新提交");
+	   			return ReturnUtil.returnAny(ReturnResult.FAIL, "100037", "订单系统处理出现异常，请联系系统管理员");
+	   		}
+        }else{
+        	 oldThirdPreCompanyRechargeRecord.setUpdateTime(new Date());
+//           if ("3".equals(oldThirdPreCompanyRechargeRecord.getStatus())) {
+//               oldThirdPreCompanyRechargeRecord.setRemark("历史支付失败订单，重新支付");
+//           }
+           oldThirdPreCompanyRechargeRecord.setRemark("支付中");
+           oldThirdPreCompanyRechargeRecord.setStatus(RechargeStatus.PROCESS);
+            if (preRechargeRecordService.updateByPrimaryKeySelective(oldThirdPreCompanyRechargeRecord)) {
+           		return successMap;			
+	   	    } else {
+	   			logger.error("支付时，修改商户订单失败，商户号:"+oldThirdPreCompanyRechargeRecord.getAppId()+",系统订单号:"+oldThirdPreCompanyRechargeRecord.getOrderNo()+",商户订单号:"+oldThirdPreCompanyRechargeRecord.getOrderThird());
+	   			//return ReturnUtil.returnFail("订单支付异常,请重新提交");
+	   			return ReturnUtil.returnAny(ReturnResult.FAIL, "100037", "订单系统处理出现异常，请联系系统管理员");
+	   		}
+        }
+        
         //修改三方支付表
-        oldThirdPreCompanyRechargeRecord.setUpdateTime(new Date());
-//        if ("3".equals(oldThirdPreCompanyRechargeRecord.getStatus())) {
-//            oldThirdPreCompanyRechargeRecord.setRemark("历史支付失败订单，重新支付");
-//        }
-        oldThirdPreCompanyRechargeRecord.setRemark("支付中");
-        oldThirdPreCompanyRechargeRecord.setStatus("1");
-        if (preRechargeRecordService.updateByPrimaryKeySelective(oldThirdPreCompanyRechargeRecord)) {
-        	return successMap;			
-		} else {
-			logger.error("支付时，修改商户订单失败，商户号:"+oldThirdPreCompanyRechargeRecord.getAppId()+",系统订单号:"+oldThirdPreCompanyRechargeRecord.getOrderNo()+",商户订单号:"+oldThirdPreCompanyRechargeRecord.getOrderThird());
-			return ReturnUtil.returnFail("订单支付异常,请重新提交");
-		}
+       
 	}
 
 	/**
@@ -460,21 +513,25 @@ public class PreRechargeController {
 		
 		
 		if (null == thridCompany) {
-			return ReturnUtil.returnFail("商户无权限");
+			//return ReturnUtil.returnFail("商户无权限");
+			return ReturnUtil.returnAny(ReturnResult.FAIL, "100020", "商户无权限");
 		}
 
 		if (StringUtil.isEmpty(thridCompany.getPublicKey())) {
-			return ReturnUtil.returnFail("商户信息未配置");
+//			return ReturnUtil.returnFail("商户信息未配置");
+			return ReturnUtil.returnAny(ReturnResult.FAIL, "100021", "商户信息未配置");
 		}
 
 		if (!MsgDigestUtils.verifySign(requestRecharge.regSignVal(), requestRecharge.getSignature(),thridCompany.getPublicKey())) {
-			return ReturnUtil.returnFail("验签失败");
+			//return ReturnUtil.returnFail("验签失败");
+			return ReturnUtil.returnAny(ReturnResult.FAIL, "100022", "验签失败");
 		}
 
 		ThirdPreCompanyRechargeRecord preRechargeRecordByThirdOrder = preRechargeRecordService.getPreRechargeRecordByThirdOrder(requestRecharge.getOrderNo(), requestRecharge.getAppId());
 		
 		if (null == preRechargeRecordByThirdOrder) {
-			return ReturnUtil.returnFail("订单不存在");
+			//return ReturnUtil.returnFail("订单不存在");
+			return ReturnUtil.returnAny(ReturnResult.FAIL, "100038", "您选择的订单不存在,请选择正确的订单号");
 		}else {			
 			Map<String, Object> successMap = ReturnUtil.returnSuccess();
 			successMap.put("state", preRechargeRecordByThirdOrder.getStatus());
