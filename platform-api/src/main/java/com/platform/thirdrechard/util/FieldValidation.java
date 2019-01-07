@@ -87,13 +87,13 @@ public class FieldValidation {
 		           
 		           if (reRechargeRecord.getAmount().intValue() <= 0 ) {
 		            //   return ReturnUtil.returnFail("金额必须为大于零的正整数");
-		               return ReturnUtil.returnAny(ReturnResult.FAIL, "100017", "金额必须为大于零的正整数");
+		               return ReturnUtil.returnAny(ReturnResult.FAIL, "100018", "金额必须为大于零的正整数");
 		           }
 		           
 		    } catch (Exception e) {
 		    		e.printStackTrace();
 		           // return ReturnUtil.returnFail("金额必须为正整数");
-		            return ReturnUtil.returnAny(ReturnResult.FAIL, "100018", "金额必须为正整数");
+		            return ReturnUtil.returnAny(ReturnResult.FAIL, "100017", "金额必须为正整数");
 		    }
 			
 			if(!"1".equals(flag)){

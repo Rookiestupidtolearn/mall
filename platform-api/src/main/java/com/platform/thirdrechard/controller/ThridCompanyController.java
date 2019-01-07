@@ -10,6 +10,7 @@ import javax.validation.Valid;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,6 +47,27 @@ public class ThridCompanyController {
     @PostMapping("addMerchant")
     @ApiOperation(value = "添加商户")
     public Map<String, Object> addMerchant(@Valid @RequestBody ThridCompany thridCompany,HttpServletRequest request, HttpServletResponse response){
+    	
+    	String appid = thridCompany.getAppid();
+    	if(StringUtils.isEmpty(appid)){
+    		return ReturnUtil.returnAny(ReturnResult.FAIL, ReturnResult.FAIL_CODE, "appid不能为空！");
+    	}
+    	
+    	if(appid.contains(" ") || appid.contains(" ") || appid.contains("	")){
+    		return ReturnUtil.returnAny(ReturnResult.FAIL, ReturnResult.FAIL_CODE, "appid不能存在空格！");
+    	}
+    	
+    	String name = thridCompany.getName();
+    	
+    	if(StringUtils.isBlank(name)){
+    		return ReturnUtil.returnAny(ReturnResult.FAIL, ReturnResult.FAIL_CODE, "name不能为空，或者首尾存在空格");
+    	}
+    	
+    	ThridCompany thridCompanyByAppId = thirdCompanyService.getThridCompanyByAppId(appid);
+    	if(thridCompanyByAppId != null){
+    		return ReturnUtil.returnAny(ReturnResult.FAIL, ReturnResult.FAIL_CODE, "此商户号已经存在");
+    	}
+    	
     	if(thirdCompanyService.add(thridCompany)){
     		return ReturnUtil.returnSuccess();
     	}
