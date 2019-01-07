@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 import com.platform.cache.J2CacheUtils;
 import com.platform.entity.SmsConfig;
 import com.platform.entity.SmsLogVo;
+import com.platform.entity.SysConfigEntity;
 import com.platform.util.sms.chuanglan.ChuangLanSmsUtil;
 import com.platform.util.sms.chuanglan.SmsSendRequest;
 import com.platform.utils.CharUtil;
@@ -139,7 +140,6 @@ public class ApiSendSMSService {
 			 * 状态,发送编号,无效号码数,成功提交数,黑名单数和消息，无论发送的号码是多少，一个发送请求只返回一个sendid，如果响应的状态不是“0”，则只有状态和消息
 			 */
          
-			  
 			
 			// 短信发送的URL 请登录zz.253.com 获取完整的URL接口信息
 			String smsSingleRequestServerUrl = "http://smssh1.253.com/msg/send/json";
@@ -157,7 +157,15 @@ public class ApiSendSMSService {
 			String requestJson = JSON.toJSONString(smsSingleRequest);
     
 			//添加发短信的开关 
-			String  isSend = PropertiesUtil.getValue("doubao.properties","sendSms");
+			String isSend = "";
+			SysConfigEntity smsConfig = sysConfigService.getConfigObject("sendSms", SysConfigEntity.class);
+			if (smsConfig == null) {
+				isSend = "true";
+			}
+            if (smsConfig != null && smsConfig.getValue().equals("true") && smsConfig.getStatus()==1) {
+            	isSend = "true";
+			}
+			
 			if (isSend.equals("true")) {
 				result = ChuangLanSmsUtil.sendSmsByPost(smsSingleRequestServerUrl, requestJson);
 				Gson gson = new Gson();
