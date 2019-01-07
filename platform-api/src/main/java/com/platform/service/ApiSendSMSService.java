@@ -225,7 +225,12 @@ public class ApiSendSMSService {
 
 	}
 
-	
+	/**
+	 * 发送营销短信
+	 * @param mobile
+	 * @param content
+	 * @return
+	 */
 	public  Map<String, Object>  sendSms(String mobile,String content){
 			if (org.apache.commons.lang.StringUtils.isEmpty(mobile)) {
 				return toResponsFalseObject("手机号不能为空");
@@ -246,7 +251,7 @@ public class ApiSendSMSService {
 				return toResponsFalseObject("发送的短信内容不能为空！");
 			}
 			// 获取云存储配置信息
-			SmsConfig config = sysConfigService.getConfigObject(Constant.SMS_CONFIG_KEY, SmsConfig.class);
+			SmsConfig config = sysConfigService.getConfigObject(Constant.SMS_CONFIG_MARKET_KEY, SmsConfig.class);
 			if (StringUtils.isNullOrEmpty(config)) {
 				throw new RRException("请先配置短信平台信息");
 			}

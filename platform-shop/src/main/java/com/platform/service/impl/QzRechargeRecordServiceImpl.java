@@ -1,6 +1,7 @@
 package com.platform.service.impl;
 
 import java.math.BigDecimal;
+import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -18,13 +19,16 @@ import com.platform.entity.QzRechargeRecordEntity;
 import com.platform.entity.QzUserAccountEntity;
 import com.platform.entity.SysUserEntity;
 import com.platform.entity.UserEntity;
+import com.platform.service.ApiSendSMSService;
 import com.platform.service.QzMoneyRecordService;
 import com.platform.service.QzRechargeRecordService;
 import com.platform.service.QzUserAccountService;
 import com.platform.service.UserService;
+import com.platform.utils.DateUtils;
 import com.platform.utils.GenerateCodeUtil;
 import com.platform.utils.R;
 import com.platform.utils.ShiroUtils;
+import com.platform.youle.util.PropertiesUtil;
 
 /**
  * 用户充值记录Service实现类
@@ -46,6 +50,8 @@ public class QzRechargeRecordServiceImpl implements QzRechargeRecordService {
 	private QzRechargeRecordDao qzRechargeRecordDao;
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private ApiSendSMSService apiSendSMSService;
 
 	@Override
 	public QzRechargeRecordEntity queryObject(Long id) {
@@ -191,7 +197,10 @@ public class QzRechargeRecordServiceImpl implements QzRechargeRecordService {
 				log.info("用户账户余额信息"+JSON.toJSONString(account));
 				qzUserAccountService.update(account);
 			}
-
+          //发送充值短信
+			String  loginSmsTemplet = PropertiesUtil.getValue("doubao.properties","rechargeSmsTemplet");
+			String msgContent = MessageFormat.format(loginSmsTemplet, qzRechargeRecordEntity.getMobile(),DateUtils.formatChina(new Date()),qzRechargeRecordEntity.getAmount());
+			apiSendSMSService.sendSms(qzRechargeRecordEntity.getMobile(), msgContent);
 			
 		}
 		  //审核状态
