@@ -973,7 +973,7 @@ public class ApiTestController extends ApiBaseAction {
 	@PostMapping("sendSms")
 	public void chengeRedis(String mobile) {
            
-		String count  = "您的账号18210113374于2019年01月07到账1克拉，去使用http://wap.doubaoclub.com";
+		String count  = "您的账号18210113374于2019年01月07到账1克拉，去使用 http://app.doubaoclub.com ";
 		
 		apiSendSMSService.sendSms("18210113374", count);
 	}
