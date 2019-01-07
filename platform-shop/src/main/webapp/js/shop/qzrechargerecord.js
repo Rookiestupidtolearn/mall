@@ -19,8 +19,8 @@ $(function() {
 			width : 40
 		}, {
 			label : '手机号码',
-			name : 'userPhone',
-			index : 'user_phone',
+			name : 'mobile',
+			index : 'mobile',
 			width : 80
 		}, {
 			label : '充值金额(元)',

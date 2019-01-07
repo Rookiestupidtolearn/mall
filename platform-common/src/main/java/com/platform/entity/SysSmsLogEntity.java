@@ -17,7 +17,7 @@ public class SysSmsLogEntity implements Serializable {
     /**
      * 主键
      */
-    private String id;
+    private Integer id;
     /**
      * 操作人
      */
@@ -80,14 +80,14 @@ public class SysSmsLogEntity implements Serializable {
     /**
      * 设置：主键
      */
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
     /**
      * 获取：主键
      */
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 

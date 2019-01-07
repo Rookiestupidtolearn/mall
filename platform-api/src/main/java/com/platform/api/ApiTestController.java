@@ -41,6 +41,7 @@ import com.platform.entity.ProductVo;
 import com.platform.entity.ThirdPartyRegionEntity;
 import com.platform.entity.UserVo;
 import com.platform.service.ApiGoodsPureInterestRateService;
+import com.platform.service.ApiSendSMSService;
 import com.platform.service.ApiUserService;
 import com.platform.service.JdOrderService;
 import com.platform.service.ThirdPartyRegionService;
@@ -963,7 +964,6 @@ public class ApiTestController extends ApiBaseAction {
     	level2.put(key, value,86400l);
 		return resultObj;
 	}
-	
 	
 	@IgnoreAuth
 	@ApiOperation(value = "校验获取图形验证码")

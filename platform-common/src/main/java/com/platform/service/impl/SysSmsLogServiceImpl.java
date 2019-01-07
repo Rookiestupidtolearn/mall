@@ -45,7 +45,6 @@ public class SysSmsLogServiceImpl implements SysSmsLogService {
 
     @Override
     public int save(SysSmsLogEntity smsLog) {
-        smsLog.setId(IdUtil.createIdbyUUID());
         return smsLogDao.save(smsLog);
     }
 

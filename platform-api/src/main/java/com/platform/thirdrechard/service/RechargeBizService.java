@@ -1,6 +1,7 @@
 package com.platform.thirdrechard.service;
 
 import java.math.BigDecimal;
+import java.text.MessageFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.platform.config.SmsType;
 import com.platform.dao.ApiUserMapper;
 import com.platform.dao.QzMoneyRecordMapper;
 import com.platform.dao.QzRechargeRecordMapper;
@@ -26,12 +28,15 @@ import com.platform.entity.QzRechargeRecordEntity;
 import com.platform.entity.QzUserAccountVo;
 import com.platform.entity.ThirdRechargeRecordEntity;
 import com.platform.entity.UserVo;
+import com.platform.service.ApiSendSMSService;
 import com.platform.thirdrechard.entity.QueryMemberCardRequest;
 import com.platform.thirdrechard.entity.QueryMemberCardResponse;
 import com.platform.thirdrechard.entity.RechargeResponseEntity;
 import com.platform.thirdrechard.util.EncryptUtil;
 import com.platform.thirdrechard.util.HttpCommonUtils;
+import com.platform.utils.DateUtils;
 import com.platform.utils.GenerateCodeUtil;
+import com.platform.youle.util.PropertiesUtil;
 
 /**
  * 用户充值记录Service实现类
@@ -55,6 +60,9 @@ public class RechargeBizService {
 
 	@Autowired
 	private QzMoneyRecordMapper qzMoneyRecordDao;
+	
+	@Autowired
+	private ApiSendSMSService apiSendSMSService;
 
 	/**
 	 * 充值
@@ -89,24 +97,24 @@ public class RechargeBizService {
          String  str1 = HttpCommonUtils.sendPost (jsonObject.getString("queryCheckUrl"),JSONObject.toJSONString (vo));
          if (StringUtils.isEmpty(str1)) {
         	 responseEntity.setCode("1006");
-        	 responseEntity.setCode("校验url失败");
+        	 responseEntity.setMsg("校验url失败");
         	 return  responseEntity;
  		}
 		if (str1.contains("html")) {
 			 responseEntity.setCode("1006");
-        	 responseEntity.setCode("校验url失败");
+        	 responseEntity.setMsg("校验url失败");
         	 return  responseEntity;
 		}
 		if (str1.contains("Error")) {
 		responseEntity.setCode("1006");
-       	 responseEntity.setCode("校验url失败");
+       	 responseEntity.setMsg("校验url失败");
        	 return  responseEntity;
 		}
 		logger.info("查询9楼的充值情况参数返回结果:"+str1);
  		JSONObject json = JSONObject.parseObject(str1);
  		if (json.getString("state") == null ||  json.getString("state").equals("0")){
  			responseEntity.setCode("error");
- 	       	 responseEntity.setCode("校验订单原始状态失败");
+ 	       	 responseEntity.setMsg("校验订单原始状态失败");
  	       	 return  responseEntity;
 		}
  		if (json.getString("data") != null ) {
@@ -114,35 +122,35 @@ public class RechargeBizService {
  		
  			if (nEntity.getCardTradeNbr()==null) {
  				responseEntity.setCode("1003");
- 		       	responseEntity.setCode("订单编号错误");
+ 		       	responseEntity.setMsg("订单编号错误");
  		       	 return  responseEntity;
 			}
  			if (!nEntity.getCardTradeNbr().equals(thirdTradeNo)) {
  				responseEntity.setCode("1003");
- 		       	responseEntity.setCode("订单编号错误");
+ 		       	responseEntity.setMsg("订单编号错误");
  		       	 return  responseEntity;
 			}
  			if (nEntity.getTradeAmt()== null) {
  				logger.info("金额不能为空。。。。");
  				responseEntity.setCode("1002");
- 		       	responseEntity.setCode("金额错误");
+ 		       	responseEntity.setMsg("金额错误");
  		       	 return  responseEntity;
 			}
  			
  			if (new BigDecimal(amount).compareTo(new BigDecimal(nEntity.getTradeAmt())) != 0) {
  				responseEntity.setCode("1002");
- 		       	responseEntity.setCode("金额错误,不一致");
+ 		       	responseEntity.setMsg("金额错误,不一致");
  		       	 return  responseEntity;
 			}
  			if (nEntity.getTradeCde() == null) {
  				logger.info("TradeCde 码不能为空！");
  				responseEntity.setCode("error");
- 		       	responseEntity.setCode("充值失败");
+ 		       	responseEntity.setMsg("充值失败");
  		       	 return  responseEntity;
 			}
  			if (!nEntity.getTradeCde().equals("1")) {
  				responseEntity.setCode("error");
- 		       	responseEntity.setCode("充值失败");
+ 		       	responseEntity.setMsg("充值失败");
  		       	 return  responseEntity;
 			}
  			
@@ -186,6 +194,11 @@ public class RechargeBizService {
 			entity.setTradeNo(tradeNo);
 			entity.setVersion(0);
 			thirdRechargeRecordDao.save(entity);
+			//发送充值完成的短信
+
+			String  loginSmsTemplet = PropertiesUtil.getValue("doubao.properties","rechargeSmsTemplet");
+			String msgContent = MessageFormat.format(loginSmsTemplet, entity.getMobile(),DateUtils.formatChina(new Date()),entity.getAmount());
+			apiSendSMSService.sendSms(entity.getMobile(), msgContent);
 		}
 	
 		return responseEntity;
