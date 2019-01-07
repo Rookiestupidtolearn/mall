@@ -29,7 +29,7 @@
 
 <script>
 import { MessageBox } from 'mint-ui';
-import returnhome from '@/components/returnhome'
+import returnhome from '@/components/returnHome'
 //import headbar from '@/components/headbar.vue';
 		
 export default {

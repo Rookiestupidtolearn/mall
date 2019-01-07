@@ -62,11 +62,11 @@
 	  methods:{
 	  	refreshCode(){
 	  		var randomData = new Date();
-    	    this.imgyzm="http://app.doubaoclub.com:6101/platform/api/image.jpg?date"+randomData.getMilliseconds(); //正式
+//  	    this.imgyzm="http://app.doubaoclub.com:6101/platform/api/image.jpg?date"+randomData.getMilliseconds(); //正式
 //	  	    this.imgyzm="http://192.168.124.28:8080/platform/api/image.jpg?date"+randomData.getMilliseconds();//冯蓉基本地
 //	  	    this.imgyzm="http://192.168.124.28:8080/platform/captcha.jpg?date"+randomData.getMilliseconds();//冯蓉基本地
 //        this.imgyzm="http://192.168.124.50:6101/platform/captcha.jpg?date"+randomData.getMilliseconds();//测试环境
-	//  		this.imgyzm="http://simuwap.doubaoclub.com:6201/platform/api/image.jpg?date"+randomData.getMilliseconds();  //预发布
+	  		this.imgyzm="http://simuwap.doubaoclub.com:6201/platform/api/image.jpg?date"+randomData.getMilliseconds();  //预发布
 	  	},
 	  	fwxieyi(){
 	  		let that = this;

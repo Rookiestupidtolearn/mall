@@ -41,6 +41,7 @@
 			<p class="loading" v-else><span class="lon">没有更多数据了</span></p>
 		</div>
 		<div class="noData" v-show="show">没有更多数据了</div>
+		<returnHome :scrollshow = "scrollshow"></returnHome>
 	</div>
 </template>
 
@@ -50,17 +51,17 @@
 	import { Indicator } from 'mint-ui';
 
 	import showTan from '@/components/showTan.vue';
+	import returnHome from '@/components/returnHome.vue';
 	//import headbar from '@/components/headbar.vue';
 
 	export default {
-		components: {
-			showTan
-		},
 		name: 'order',
 		//components:{headbar},
+		components:{showTan,returnHome},
 		data() {
 			return {
 				//  	headFont:'订单列表',
+				scrollshow:true,
 				showTn: false, //是否显示弹窗
 				appShow: "",
 				orderList: [],

@@ -28,6 +28,7 @@
 	         <p class="loading" v-else><span class="lon">没有更多数据了</span></p>
         </div>
         <div class="noData" v-show="show">没有更多数据了</div>
+        <returnHome :scrollshow = "scrollshow"></returnHome>
   </div>
 </template>
 
@@ -35,14 +36,17 @@
 import { InfiniteScroll } from 'mint-ui';
 import { MessageBox } from 'mint-ui';
 import { Indicator } from 'mint-ui';
+import returnHome from '@/components/returnHome.vue';
 //import headbar from '@/components/headbar.vue';
 		
 export default {
   name: 'order',
+  components:{returnHome},
 //components:{headbar},
   data () {
     return {
 //  	headFont:'订单列表',
+			scrollshow:true,
 			appShow:"",
     	orderList:[],
     	activeClass:3,

@@ -76,17 +76,20 @@
             <span class="txt">￥{{orderInfo.actual_price}}</span>
         </div>
     </div>
-    
+    <returnHome :scrollshow = "scrollshow"></returnHome>
 	</div>
 </template>
 
 <script>
 import { MessageBox } from 'mint-ui';
-		
+import returnHome from '@/components/returnHome.vue';
+
 export default {
   name: 'orderDetail',
+  components:{returnHome},
   data () {
     return {
+    	scrollshow:true,
     	orderInfo:{},
     	cancelBtnShow:false,
     	orderGoods:[],

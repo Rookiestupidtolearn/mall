@@ -49,7 +49,7 @@
 	import { Toast } from 'mint-ui';
 	import { MessageBox } from 'mint-ui';
 	import { Indicator } from 'mint-ui';
-	import returnhome from '@/components/returnhome'
+	import returnhome from '@/components/returnHome'
 		
 	export default {
 	  name: 'addressAdd',
