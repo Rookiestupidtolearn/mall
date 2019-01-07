@@ -656,7 +656,7 @@ public class PreRechargeController {
 			
 			ThridCompany thridCompanyByAppId = thridCompanyService.getThridCompanyByAppId(appId);
 			String callBackUrl = thridCompanyByAppId.getCallBackUrl(); //回调地址
-			String publicKey = thridCompanyByAppId.getPublicKey();
+			//String publicKey = thridCompanyByAppId.getPublicKey();
 			//String encrypt = RSA.encrypt(JSON.toJSONString(dataMap), publicKey);
 			
 			Map<String, String> paramMap = new HashMap<String, String>();
