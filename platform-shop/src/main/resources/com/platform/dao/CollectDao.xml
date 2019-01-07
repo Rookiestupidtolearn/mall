@@ -24,6 +24,10 @@
         from nideshop_collect a
         left join nideshop_user b on a.user_id = b.id
         left join nideshop_goods c on a.value_id = c.id
+        where 1=1 
+        <if test="name != null and name.trim() != ''">
+         	and c.name LIKE concat('%',#{name},'%')
+        </if>
         <choose>
             <when test="sidx != null and sidx.trim() != ''">
                 order by ${sidx} ${order}
@@ -38,7 +42,10 @@
     </select>
 
     <select id="queryTotal" resultType="int">
-		select count(*) from nideshop_collect 
+		select count(*) from nideshop_collect a left join nideshop_goods c on a.value_id = c.id where 1=1 
+		<if test="name != null and name.trim() != ''">
+         	and c.name LIKE concat('%',#{name},'%')
+        </if>
 	</select>
 
     <insert id="save" parameterType="com.platform.entity.CollectEntity" useGeneratedKeys="true" keyProperty="id">
