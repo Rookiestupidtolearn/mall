@@ -126,9 +126,6 @@ public class ApiTestController extends ApiBaseAction {
 	private ApiJDGoodsService apiJDGoodsService;
 	@Autowired
 	private AbsApiRootCateService absApiRootCateService;
-	
-	@Autowired
-	private ApiSendSMSService apiSendSMSService;
 
 	// 查询库存默认地址
 	private String DEFAULT_ADDRESS = "1_72_2799";
@@ -967,17 +964,6 @@ public class ApiTestController extends ApiBaseAction {
     	level2.put(key, value,86400l);
 		return resultObj;
 	}
-	
-	@IgnoreAuth
-	@ApiOperation(value = "1.3")
-	@PostMapping("sendSms")
-	public void chengeRedis(String mobile) {
-           
-		String count  = "您的账号18210113374于2019年01月07到账1克拉，去使用 http://app.doubaoclub.com ";
-		
-		apiSendSMSService.sendSms("18210113374", count);
-	}
-	
 	
 	@IgnoreAuth
 	@ApiOperation(value = "校验获取图形验证码")
