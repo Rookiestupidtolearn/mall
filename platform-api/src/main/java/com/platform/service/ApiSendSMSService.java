@@ -274,7 +274,7 @@ public class ApiSendSMSService {
 			Map<String, Object> map = new HashMap<String, Object>();
 		
 				// 设置您要发送的内容：其中“【】”中括号为运营商签名符号，多签名内容前置添加提交
-				String msg = config.getSign() + content;
+				String msg = config.getSign() + content+" 退订回T";
 				
 				// 短信发送的URL 请登录zz.253.com 获取完整的URL接口信息
 				String smsSingleRequestServerUrl = "http://smssh1.253.com/msg/send/json";
