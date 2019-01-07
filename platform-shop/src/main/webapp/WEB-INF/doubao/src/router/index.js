@@ -37,6 +37,8 @@ import addressList from '@/pages/ucenter/addressList'  //个人中心-地址管�
 import addressAdd from '@/pages/ucenter/addressAdd'  //个人中心-添加地址
 import addresscateList from '@/pages/category/addresscateList'  //购物车-地址管理
 import addresscateAdd from '@/pages/category/addresscateAdd'  //购物车-添加地址
+/*活动*/
+import kelarule from '@/pages/activity/kelarule'  //克拉使用规则
 
 Vue.use(Router)
 
@@ -48,6 +50,10 @@ export default new Router({
       path: '/',
       name: 'home',
       component: home,
+    },{
+      path: '/pages/activity/kelarule',
+      name: 'kelarule',
+      component: kelarule
     },{
       path: '/pages/classification',
       name: 'classification',
