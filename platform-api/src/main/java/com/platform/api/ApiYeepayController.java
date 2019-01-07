@@ -2,6 +2,7 @@ package com.platform.api;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.MessageFormat;
 import java.util.Date;
 import java.util.TreeMap;
 
@@ -21,11 +22,16 @@ import com.platform.dao.QzUserAccountMapper;
 import com.platform.entity.OrderVo;
 import com.platform.entity.QzMoneyRecordVo;
 import com.platform.entity.QzUserAccountVo;
+import com.platform.entity.UserVo;
 import com.platform.entity.YeeTradeOrderEntity;
 import com.platform.service.ApiOrderService;
+import com.platform.service.ApiSendSMSService;
+import com.platform.service.ApiUserService;
 import com.platform.service.YeeTradeOrderService;
 import com.platform.util.ApiBaseAction;
+import com.platform.utils.DateUtils;
 import com.platform.yeepay.utils.PaymobileUtils;
+import com.platform.youle.util.PropertiesUtil;
 
 import io.swagger.annotations.Api;
 
@@ -41,6 +47,10 @@ public class ApiYeepayController extends ApiBaseAction {
 	private ApiOrderService apiOrderService;
     @Autowired
     private ApiOrderService orderService;
+    @Autowired
+    private ApiSendSMSService apiSendSMSService;
+    @Autowired
+    private ApiUserService apiUserService;
 
 	@IgnoreAuth
 	@GetMapping("yeepayOrderFCallback")
@@ -155,6 +165,17 @@ public class ApiYeepayController extends ApiBaseAction {
 						order.setOrder_type("1");//正常
 						apiOrderService.update(order);
 						orderService.discountUserAmount(order);//支付成功，扣减平台比
+						UserVo user = apiUserService.queryObject(order.getUser_id());
+						//发送扣减短信
+						String  smsTemplet = PropertiesUtil.getValue("doubao.properties","consumeSmsTemplet");
+						String msgContent = MessageFormat.format(smsTemplet, user.getMobile(),DateUtils.formatChina(new Date()),entity.getAmount());
+						apiSendSMSService.sendSms(user.getMobile(), msgContent);
+					    //订单支付成功短信
+						String  paySuccessSmsTemplet = PropertiesUtil.getValue("doubao.properties","paySuccessSmsTemplet");
+						String content = MessageFormat.format(paySuccessSmsTemplet, DateUtils.formatChina(new Date()),order.getOrder_sn());
+						apiSendSMSService.sendSms(user.getMobile(), content);
+						
+					
 					}
 				}
 

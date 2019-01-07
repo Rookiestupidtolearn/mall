@@ -33,6 +33,7 @@ public class Constant {
      * 短信配置KEY
      */
     public final static String SMS_CONFIG_KEY = "SMS_CONFIG_KEY";
+    public final static String SMS_CONFIG_MARKET_KEY = "SMS_CONFIG_MARKET_KEY";
     /**
      * 权限前缀
      */

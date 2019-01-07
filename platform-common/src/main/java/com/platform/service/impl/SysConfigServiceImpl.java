@@ -53,6 +53,12 @@ public class SysConfigServiceImpl implements SysConfigService {
 	}
 
 	@Override
+	public String queryByKey(String key) {
+		String value = sysConfigDao.queryByKey(key);
+		return value;
+	}
+	
+	@Override
 	public String getValue(String key, String defaultValue) {
 		String value = sysConfigDao.queryByKey(key);
 		if(StringUtils.isBlank(value)){
