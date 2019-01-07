@@ -23,6 +23,7 @@ public class DateUtils {
      * 时间格式(yyyy-MM-dd)
      */
     public final static String DATE_PATTERN = "yyyy-MM-dd";
+    public final static String DATE_PATTERN_CHINA = "yyyy年MM月dd日";
     /**
      * 无分隔符日期格式 "yyyyMMddHHmmssSSS"
      */
@@ -50,6 +51,9 @@ public class DateUtils {
         return format(date, DATE_PATTERN);
     }
 
+    public static String formatChina(Date date) {
+        return format(date, DATE_PATTERN_CHINA);
+    }
     public static String format(Date date, String pattern) {
         if (date != null) {
             SimpleDateFormat df = new SimpleDateFormat(pattern);
