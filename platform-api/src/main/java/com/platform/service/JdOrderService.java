@@ -31,6 +31,7 @@ import com.platform.entity.JdOrderVo;
 import com.platform.entity.OrderGoodsVo;
 import com.platform.entity.OrderLogisticVo;
 import com.platform.entity.OrderVo;
+import com.platform.entity.UserVo;
 import com.platform.utils.DateUtils;
 import com.platform.youle.constant.Constants.Urls;
 import com.platform.youle.entity.RequestBaseEntity;
@@ -74,6 +75,9 @@ public class JdOrderService {
 	
 	@Autowired
 	private ApiSendSMSService apiSendSMSService;
+	
+    @Autowired
+    private ApiUserService apiUserService;
 	
 	@Transactional
 	public String  jdOrderCreate(OrderVo info){
@@ -200,6 +204,12 @@ public class JdOrderService {
 			resultObj.put("errno", 0);
 			resultObj.put("errmsg", "创建第三方订单成功");
 			jdOrder.setOrderStatus(9);
+			
+			//发货提醒
+			UserVo user = apiUserService.queryObject(info.getUser_id());
+			String  smsTemplet = PropertiesUtil.getValue("doubao.properties","sendGoodsSmsTemplet");
+			String content = MessageFormat.format(smsTemplet,jdOrder.getThirdOrder());
+			apiSendSMSService.sendSms(user.getMobile(), content);
 		}
 
 		// 订单处理完的操作
@@ -208,10 +218,7 @@ public class JdOrderService {
 		jdOrder.setErrorCode(response.getERROR_CODE());
 		jdOrderMapper.update(jdOrder);
 		
-		//发货提醒
-		String  smsTemplet = PropertiesUtil.getValue("doubao.properties","sendGoodsSmsTemplet");
-		String content = MessageFormat.format(smsTemplet,jdOrder.getThirdOrder());
-		apiSendSMSService.sendSms(jdOrder.getMobile(), content);
+
 		
 		
 		return resultObj;
