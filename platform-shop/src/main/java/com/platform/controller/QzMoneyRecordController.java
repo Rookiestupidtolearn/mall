@@ -124,7 +124,7 @@ public class QzMoneyRecordController {
 
         ExcelExport ee = new ExcelExport("平台流水列表");
 
-        String[] header = new String[]{"会员名称", "会员id","手机号","身份证件号","资金变动类型","金额变动标志","变动金额","冻结金额","当前余额","创建时间","交易流水号"};
+        String[] header = new String[]{"会员名称", "会员id","手机号","身份证件号","资金变动类型","金额变动标志","交易类型","变动金额","冻结金额","当前余额","创建时间","交易流水号"};
 
         List<Map<String, Object>> list = new ArrayList<>();
 
@@ -141,6 +141,13 @@ public class QzMoneyRecordController {
                 map.put("LOCKAMOUNT", record.getLockAmount());
                 map.put("CURRENTAMOUNT", record.getCurrentAmount());
                 map.put("CREATEDATE", record.getCreateTime());
+                if("1".equals(record.getRechargeType())){
+                	 map.put("RECHARGETYPE", "后台充值");
+                }else if("2".equals(record.getRechargeType())){
+               	 	map.put("RECHARGETYPE", "速来钱充值");
+                }else{
+               	 	map.put("RECHARGETYPE", "其他充值");
+                }
                 map.put("TRANNO", record.getTradeNo());
                 list.add(map);
             }
