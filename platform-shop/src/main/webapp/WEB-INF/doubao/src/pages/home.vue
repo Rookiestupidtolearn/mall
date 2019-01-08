@@ -162,6 +162,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+	#home{
+		padding-bottom: 1.2rem;
+	}
 	.mint-tabbar{
 		position: fixed;
 	}

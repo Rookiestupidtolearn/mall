@@ -1,7 +1,7 @@
 <template>
  	<div class="kela">
  		<!--公用头部-->
- 		<img src="../../../static/images/activity/kelatop.jpg"/>
+ 		<div class="kelatop"></div>
  		<div class="content">
  			<div class="first">
 	 			<p>尊敬的用户（以下简称为“您”）您好，欢迎您使用斗宝俱乐部，现您与斗宝俱乐部(包含微信小程序、手机客户端、网站等平台，以下简称为“俱乐部”)经营者成都斗宝科技有限公司就俱乐部“克拉”的相关服务事宜进行明确，并自愿签订本协议使用俱乐部“克拉”服务。</p>
@@ -56,16 +56,15 @@
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style>
-body{padding-bottom: 0 !important;}
-</style>
 <style scoped>
 .kela {
 	background-color:#f94379;
 	padding-bottom:.2rem;
 }
-.kela img{
-	width:100%;
+.kela .kelatop{
+	background: url('../../../static/images/activity/kelatop.jpg') center center no-repeat;
+	background-size:100%;
+	height:3.96rem;
 }
 .kela .content{
 	background-color:#fff;
@@ -73,6 +72,7 @@ body{padding-bottom: 0 !important;}
 	padding:0 .35rem;
 	margin:0 auto;
 	-webkit-border-radius:5px;
+	margin-top: .35rem;
 }
 .kela .content .first{
 	padding-bottom: .45rem;

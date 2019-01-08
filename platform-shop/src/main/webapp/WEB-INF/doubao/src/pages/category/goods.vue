@@ -1156,7 +1156,9 @@ overflow: hidden;
     line-height: .36rem;
     color: #999;
 }
-
+.container{
+	padding-bottom: .6rem;
+}
 
 .goods-info .price{
     height: .35rem;
