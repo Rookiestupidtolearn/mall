@@ -876,7 +876,7 @@ public class ApiTestController extends ApiBaseAction {
 	@PostMapping("orderCancel")
 	public Object orderCancel() {
 
-		ResponseCancelEntity response = orderService.cancel("jd201811091752324423052");
+		ResponseCancelEntity response = orderService.cancel("jd201901081428434016708");
 
 		return response;
 	}
@@ -886,7 +886,7 @@ public class ApiTestController extends ApiBaseAction {
 	@PostMapping("cancelByOrderKey")
 	public Object cancelByOrderKey() {
 
-		ResponseBaseEntity response = orderService.cancelByOrderKey("jd201811091752324423052", "3409468966");
+		ResponseBaseEntity<?> response = orderService.cancelByOrderKey("jd201901081428434016708", "4083973564");
 
 		return response;
 	}
