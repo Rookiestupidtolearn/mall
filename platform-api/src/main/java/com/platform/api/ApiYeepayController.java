@@ -166,10 +166,12 @@ public class ApiYeepayController extends ApiBaseAction {
 						apiOrderService.update(order);
 						orderService.discountUserAmount(order);//支付成功，扣减平台比
 						UserVo user = apiUserService.queryObject(order.getUser_id());
-						//发送扣减短信
-						String  smsTemplet = PropertiesUtil.getValue("doubao.properties","consumeSmsTemplet");
-						String msgContent = MessageFormat.format(smsTemplet, user.getMobile(),DateUtils.formatChina(new Date()),entity.getAmount());
-						apiSendSMSService.sendSms(user.getMobile(), msgContent);
+						if (order.getCoupon_price() != null && order.getCoupon_price().compareTo(new BigDecimal("0")) > 0) {
+							//发送扣减短信
+							String  smsTemplet = PropertiesUtil.getValue("doubao.properties","consumeSmsTemplet");
+							String msgContent = MessageFormat.format(smsTemplet, user.getMobile(),DateUtils.formatChina(new Date()),order.getCoupon_price());
+							apiSendSMSService.sendSms(user.getMobile(), msgContent);
+						}
 					    //订单支付成功短信
 						String  paySuccessSmsTemplet = PropertiesUtil.getValue("doubao.properties","paySuccessSmsTemplet");
 						String content = MessageFormat.format(paySuccessSmsTemplet, DateUtils.formatChina(new Date()),order.getOrder_sn());
@@ -193,8 +195,8 @@ public class ApiYeepayController extends ApiBaseAction {
 	
 	
 	public static void main(String[] args) {
-	BigDecimal aBigDecimal= 	new BigDecimal("12.48");
-	BigDecimal aBigDecimal2= 	new BigDecimal("12.48");
+	BigDecimal aBigDecimal= 	new BigDecimal("-1");
+	BigDecimal aBigDecimal2= 	new BigDecimal("0");
 		System.out.println(aBigDecimal.compareTo(aBigDecimal2));
 	
 	}
