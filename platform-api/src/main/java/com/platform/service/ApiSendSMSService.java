@@ -301,7 +301,9 @@ public class ApiSendSMSService {
 				}
 				
 				if (isSend.equals("true")) {
+					logger.info("请求创蓝的营销短信的参数"+requestJson);
 					result = ChuangLanSmsUtil.sendSmsByPost(smsSingleRequestServerUrl, requestJson);
+					logger.info("创蓝返回的营销短信的结果"+result);
 					Gson gson = new Gson();
 			
 					map = gson.fromJson(result, map.getClass());
