@@ -186,7 +186,10 @@
 	  		
 	  },
 	destroyed(){
- 		document.getElementById('zhichiBtnBox').style.display= 'none'; //默认隐藏智齿
+// 		document.getElementById('zhichiBtnBox').style.display= 'none'; //默认隐藏智齿
+ 		document.body.removeChild(document.getElementById('zhichiBtnBox'));
+ 		document.body.removeChild(document.getElementById('ZCPanel'));
+ 		document.body.removeChild(document.getElementById('bubbleMsg'));
 	},
 	watch:{
 		$route(to,from){
