@@ -1,5 +1,5 @@
 <template>
-	<div class="container">
+	<div class="container" ref="input1">
 		
 		 <div class="order-info">
         <div class="item-a">下单时间：{{orderInfo.add_time}}</div>
@@ -9,7 +9,7 @@
             <div class="r">
             	<!--9 已完成   0 待付款   300,201待收货   101,103已取消-->
                 <div v-if="orderInfo.order_status == 9" >
-            	 	<div class="btn active" @click="tipsShow">退货申请</div>
+                	<a href="javascript:;"  class="zhiCustomBtn btn active" id="btn" @click="ccHref">退货申请</a>
                 </div>
                  <div v-else-if="orderInfo.order_status == 300 || orderInfo.order_status == 201 || orderInfo.order_status == 200">
                  	<div class="btn" @click="hrefwul(orderInfo.id)">查看物流</div>
@@ -99,6 +99,7 @@ export default {
   mounted(){
   	let that = this;   
   	let id = this.$route.query.id;
+  	
     	that.$http({
 	        method: 'post',
 	        url:that.$url+ 'order/detail',
@@ -111,6 +112,12 @@ export default {
 		})
   },
   methods:{
+  	ccHref(){
+  		var orderNumber = this.orderInfo.order_sn;
+  		var orderMobile = this.orderInfo.mobile;
+  		var locationHref = 'https://www.sobot.com/chat/pc/index.html?sysNum=e5ef8967b4114644a4c290bf0729f959&&title_info=订单编号:'+orderNumber+'&&url_info=" "&&abstract_info=联系方式:'+orderMobile;
+		window.location.href = locationHref;
+  	},
   	confirmOrder(id){
   		var that = this;    
 	    	that.$http({
@@ -137,9 +144,9 @@ export default {
 	    		
 			  })
   	},
-  	tipsShow(){
-  		MessageBox( '退货申请','您好，请联系客服400-114-8066');
-  	},
+//	tipsShow(){
+//		MessageBox( '退货申请','您好，请联系客服400-114-8066');
+//	},
   	hrefwul(e){
   		this.$router.push('/pages/ucenter/logistics?id='+e);
   	},
