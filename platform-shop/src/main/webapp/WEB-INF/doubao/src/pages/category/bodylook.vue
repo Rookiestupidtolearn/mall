@@ -68,7 +68,7 @@
 		        <span class="title">大家都在看</span>
 		      </div>
 		      <div class="b">
-		        <div class="item" v-for="item in relatedGoods" @click="detailHref('/pages/category/bodylook?id='+item.id)">
+		        <div class="item" v-for="item in relatedGoods" @click="detailHref('/pages/goods/goods?id='+item.id)">
 		            <img class="img" :src="item.list_pic_url" background-size="cover"/>
 		            <p class="name">{{item.name}}</p>
 		            <p class="price">￥{{item.market_price}}</p>
@@ -130,7 +130,7 @@
 //	import headbar from '@/components/headbar.vue'
 		
 	export default {
-	  name: 'goods',
+	  name: 'bodylook',
 //	  components:{headbar},
 		components:{returnhome},
 	  data () {
@@ -191,7 +191,19 @@
  		document.body.removeChild(document.getElementById('ZCPanel'));
  		document.body.removeChild(document.getElementById('bubbleMsg'));
 	},
+//	watch:{
+//		$route(to,from){
+//			this.relateds();
+//		}
+//	},
 	methods:{
+//		relateds(){
+//			if(parseInt(this.$route.query.id) && this.$route.query.id !== this.idm){
+//				this.idm=this.$route.query.id;
+//			    this.Detail();
+//			    this.relaed();
+//			}
+//		},
 		relaed(){
 			let that = this;
 			Indicator.open();

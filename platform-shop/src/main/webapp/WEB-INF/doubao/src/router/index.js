@@ -37,6 +37,7 @@ import addressList from '@/pages/ucenter/addressList'  //个人中心-地址管�
 import addressAdd from '@/pages/ucenter/addressAdd'  //个人中心-添加地址
 import addresscateList from '@/pages/category/addresscateList'  //购物车-地址管理
 import addresscateAdd from '@/pages/category/addresscateAdd'  //购物车-添加地址
+import bodylook from '@/pages/category/bodylook'  //商品详情-大家都在看
 /*活动*/
 import kelarule from '@/pages/activity/kelarule'  //克拉使用规则
 
@@ -50,6 +51,10 @@ export default new Router({
       path: '/',
       name: 'home',
       component: home,
+    },{
+      path: '/pages/category/bodylook',
+      name: 'bodylook',
+      component: bodylook
     },{
       path: '/pages/activity/kelarule',
       name: 'kelarule',
