@@ -319,11 +319,11 @@ public class ApiCartService {
 					String pid = goods.getGoods_sn().substring(2, goods.getGoods_sn().length());
 					// 库存
 					Map<String, Object> stockMap = jdOrderService.checkStockSingle(pid, cart.getNumber(), address);
-					if (!stockMap.get("code").equals("200")) {
+					if (stockMap.get("code").equals("200")) {
 						resultObj.put("errno", "100");
 						resultObj.put("errmsg", "不可出售");
 						Integer[] arr1 = { cart.getGoods_id() };
-						apiGoodsService.unSaleBatch(arr1, 3);
+//						apiGoodsService.unSaleBatch(arr1, 3);
 						unStoreCarts.add(cart);
 						continue;
 					}
