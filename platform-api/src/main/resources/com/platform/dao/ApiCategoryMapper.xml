@@ -69,24 +69,25 @@
     </select>
 
 
-    <select id="queryListOfGoosNotNull" resultMap="categoryMap">
-        <if test="fields != null and fields != ''">
-            ${fields}
-        </if>
-        <if test="fields == null or fields == ''">
-            *
-        </if>
-        from nideshop_category a
-        where exists (select id
-        from nideshop_goods b
-        where a.is_show=1 and b.category_id=a.id
-        and parent_id = #{parent_id})
-        order by a.id asc
-        <if test="offset != null and limit != null">
-            limit #{offset}, #{limit}
-        </if>
+    <!--<select id="queryListOfGoosNotNull" resultMap="categoryMap">-->
+        <!--select-->
+        <!--<if test="fields != null and fields != ''">-->
+            <!--${fields}-->
+        <!--</if>-->
+        <!--<if test="fields == null or fields == ''">-->
+            <!--*-->
+        <!--</if>-->
+        <!--from nideshop_category a-->
+        <!--where exists (select id-->
+        <!--from nideshop_goods b-->
+        <!--where a.is_show=1 and b.category_id=a.id-->
+        <!--and parent_id = #{parent_id})-->
+        <!--order by a.id asc-->
+        <!--<if test="offset != null and limit != null">-->
+            <!--limit #{offset}, #{limit}-->
+        <!--</if>-->
 
-    </select>
+    <!--</select>-->
 
     <select id="queryTotal" resultType="int">
 		select count(*) from nideshop_category 
