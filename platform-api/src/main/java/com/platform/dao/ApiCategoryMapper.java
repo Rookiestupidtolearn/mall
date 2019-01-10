@@ -69,5 +69,5 @@ public interface ApiCategoryMapper extends BaseDao<CategoryVo> {
 	 * 获取商品不为空的分类集合
 	 * @param map
 	 */
-	List<CategoryVo> queryListOfGoosNotNull(Map<String, Object> map);
+	List<CategoryVo> queryListOfGoodsNotNull(Map<String, Object> map);
 }

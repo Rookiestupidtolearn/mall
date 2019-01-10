@@ -134,8 +134,8 @@ public class ApiCatalogController extends ApiBaseAction {
         //获取子分类数据
         if (null != currentCategory && null != currentCategory.getId()) {
             params.put("parent_id", currentCategory.getId());
-            //List<CategoryVo> subCategorys = categoryService.queryList(params);
-            List<CategoryVo> subCategorys = categoryService.queryListOfGoosNotNull(params);
+//            List<CategoryVo> subCategorys = categoryService.queryList(params);
+            List<CategoryVo> subCategorys = categoryService.queryListOfGoodsNotNull(params);
             if(!CollectionUtils.isEmpty(subCategorys)){
             	for(CategoryVo vo : subCategorys){
             		if("热销".equals(vo.getName()) && "其他".equals(currentCategory.getName())){
