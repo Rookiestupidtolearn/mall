@@ -68,7 +68,7 @@
         </if>
     </select>
 
-    <select id="queryListOfGoosNotNull" resultMap="categoryMap">
+    <select id="queryListOfGoodsNotNull" resultMap="categoryMap">
         select
         <if test="fields != null and fields != ''">
             ${fields}
