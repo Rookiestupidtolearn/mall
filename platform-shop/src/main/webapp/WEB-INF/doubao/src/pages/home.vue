@@ -5,14 +5,14 @@
   	</div>
     <mt-swipe :auto="3000" class="swiper" >
 		  <mt-swipe-item v-for="item in banner">
-		  	<a :href="item.link"><img :src="item.image_url"/></a>
+		  	<img :src="item.image_url" @click="mtlb(item.link)"/>
 		  </mt-swipe-item>
 		</mt-swipe>
 	<div class="m-menu" >
-			<router-link :to="item.url" class="item" v-for="item in channel">
+			<div @click="qdjh(item.url)" class="item" v-for="item in channel">
 				<img :src="item.icon_url"/>
 				<p>{{item.name}}</p>
-			</router-link>
+			</div>
 		</div>
 		<div class="h">
 			<p class="txt">人气推荐</p>
@@ -112,7 +112,45 @@ export default {
    		}
  },
  methods:{
-	 	andriod(e){   //与andriod和ios交互
+	 	mtlb(e){   //与轮播andriod和ios交互
+				var hrefD = window.location.href;
+				if(hrefD.indexOf('device')>-1){
+	    		var device = hrefD.split('?')[1].split('=')[1];
+	    	}
+	//  	http://192.168.124.29:8080/#/?device=andriod
+//				alert(device);
+	    	if(device == 'android'){
+	    			window.android.productDetail(e); //调起andriod交互方法(由app发起。浏览器会报错正常)
+	    			return false;
+	    	}else if(device == 'ios'){
+//	    		alert(hrefD)
+	    			var message = {'url': e}
+						window.webkit.messageHandlers.webViewApp.postMessage(message);
+						return false;
+	    	}else{
+	    		window.location.href =e;
+	    	}
+	 	},
+	 	qdjh(e){   //与渠道分类andriod和ios交互
+				var hrefD = window.location.href;
+				var delDevice = hrefD.split('#')[0];
+				var comHref =delDevice .substring(delDevice.length-1,0);  //android和ios公用链接头
+				if(hrefD.indexOf('device')>-1){
+	    		var device = hrefD.split('?')[1].split('=')[1];
+	    	}
+	//  	http://192.168.124.29:8081/#/?device=andriod;
+	    	if(device == 'android'){
+	    			window.android.toSecondary(comHref +'/#/'+ e); //调起andriod交互方法(由app发起。浏览器会报错正常)
+	    			return false;
+	    	}else if(device == 'ios'){
+	    			var message = {'url':comHref+'/#/' + e}
+						window.webkit.messageHandlers.webViewApp.postMessage(message);
+						return false;
+	    	}else{
+	    		this.$router.push(e);
+	    	}
+	 	},
+	 	andriod(e){   //商品详情与andriod和ios交互
 				var hrefD = window.location.href;
 				var delDevice = hrefD.split('?')[0];
 				var comHref =delDevice .substring(delDevice.length-1,0);  //android和ios公用链接头
