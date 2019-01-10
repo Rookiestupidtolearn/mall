@@ -113,10 +113,17 @@ export default {
   },
   methods:{
   	ccHref(){
-  		var orderNumber = this.orderInfo.order_sn;
-  		var orderMobile = this.orderInfo.mobile;
-  		var locationHref = 'https://www.sobot.com/chat/pc/index.html?sysNum=e5ef8967b4114644a4c290bf0729f959&&title_info=订单编号:'+orderNumber+'&&url_info=" "&&abstract_info=联系方式:'+orderMobile;
-		window.location.href = locationHref;
+  		let that = this;
+  		var orderMobile = '';
+  		that.$http({
+	        method: 'post',
+	        url:that.$url+ 'user/userInfo',
+	    	}).then(function (res) {
+				orderMobile = res.data.data.mobile;
+				var orderNumber = that.orderInfo.order_sn;
+				var orderHref = window.location.href;
+				window.location.href = 'https://www.sobot.com/chat/pc/index.html?sysNum=e5ef8967b4114644a4c290bf0729f959&&title_info=订单编号:'+orderNumber+'&&url_info='+escape(orderHref)+'&&abstract_info=联系方式:'+orderMobile;
+		  })
   	},
   	confirmOrder(id){
   		var that = this;    
