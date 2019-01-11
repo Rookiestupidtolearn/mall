@@ -13,7 +13,7 @@
   		<div class="showList" v-if="orderList.length>0" >
 	  		<ul class="" v-infinite-scroll="loadMore" infinite-scroll-disabled="isMoreLoading" infinite-scroll-distance="10" class="loadm">
 	 			 <li v-for="(item,index) in orderList" >
-					<router-link  :to = "'/pages/ucenter/orderDetail?id='+item.id" class="order" >
+					<div class="order" @click="orderDetail('/pages/ucenter/orderDetail?id='+item.id)">
 		            <div class="h">
 		                <div class="l">订单编号：{{item.order_sn}}</div>
 		                <div class="r">{{item.order_status_text}}</div>
@@ -21,7 +21,7 @@
 		            <div class="b">
 		                <div class="l">实付：￥{{item.actual_price}}</div>
 		            </div>
-		        </router-link>
+		        </div>
 		        </li>
 	        </ul>
 	        <p class="loading" v-if="isLoading"><img src="../../../static/images/timg.gif" class="timg"/><span class="lon">加载中...</span></p>
@@ -87,6 +87,24 @@ export default {
 	    	}
   },
   methods:{
+  	orderDetail(e){
+				var appHref = window.location.href;
+				var device = '';
+				var comHref = window.location.host;
+				if(appHref.indexOf('device')>-1){
+					device = appHref.split('?')[1].split('=')[1].split('&')[0];
+				}
+		    	if(device == 'android'){
+		    			window.android.productDetail(comHref +'/#'+e); //调起andriod交互方法(由app发起。浏览器会报错正常)
+		    			return false;
+		    	}else if(device == 'ios'){
+		    			var message = {'url':comHref +'/#'+ e}
+							window.webkit.messageHandlers.webViewApp.postMessage(message);
+							return false;
+		    	}else{
+		    		this.$router.push(e);
+		    	}
+			},
   	selectStyle (item, index) {
   			this.activeClass = index;
 　},
