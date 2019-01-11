@@ -2,7 +2,7 @@
  	<div class="container">
  		<div class="icon">
  			<img :src="logo"/>
- 			<h3>斗宝商城</h3>
+ 			<h3>斗宝俱乐部</h3>
  		</div>
  		<div class="form">
  			<p>快速登录</p>
