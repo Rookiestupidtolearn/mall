@@ -79,7 +79,7 @@
         from nideshop_category a
         where exists (select id
         from nideshop_goods b
-        where a.is_show=1 and b.category_id=a.id
+        where a.is_show=1 and a.is_on_sale=1 and b.category_id=a.id
         and parent_id = #{parent_id})
         order by a.id asc
         <if test="offset != null and limit != null">

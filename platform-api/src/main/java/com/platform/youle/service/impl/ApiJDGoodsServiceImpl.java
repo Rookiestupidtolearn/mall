@@ -32,6 +32,7 @@ import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
@@ -787,16 +788,39 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 					list.add(goodsVos.get(j).getId());
 				}
 			}
-			if (!CollectionUtils.isEmpty(list)) {
-//				Integer[] goodIds = new Integer[list.size()];
-//				for (int t = 0; t < list.size(); t++) {
-//					goodIds[t] = list.get(t);
-//				}
+			if (!CollectionUtils.isEmpty(list)) {//不为空时批量更新
+
 				Integer[] goodIds = list.toArray(new Integer[0]);
-				apiGoodsService.unSaleBatch(goodIds, 2);
+				int count=5000;
+				int runSize=goodIds.length/count;
+				Integer[]  newgoodIds=null;
+				Executor fixedThreadPool = Executors.newFixedThreadPool(runSize);
+				CountDownLatch countDownLatch=new CountDownLatch(runSize);
+
+				try {
+					for (int i = 0;i < runSize;i++) { //把list分段
+						if((i+1)==runSize){
+							int startIndex = (i*count);
+							int endIndex = goodIds.length;
+							newgoodIds =Arrays.copyOfRange(goodIds, startIndex, endIndex);
+						}else{
+							int startIndex = i*count;
+							int endIndex = (i+1)*count;
+							newgoodIds =Arrays.copyOfRange(goodIds, startIndex, endIndex);
+						}
+						fixedThreadPool.execute(new UpdateBathJDGoods(countDownLatch,newgoodIds));//执行任务
+
+					}
+
+					countDownLatch.await();
+					((ExecutorService) fixedThreadPool).shutdown();
+				} catch (InterruptedException e) {
+				   logger.error("批量操作执行下架商品出现异常",e);
+				}
 			}
 		}
 		return ids;
+
 	}
 
 	/**
@@ -974,7 +998,20 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 		}
 		return goodsImg.toString();
 	}
+	class UpdateBathJDGoods implements Runnable{
+		public UpdateBathJDGoods(CountDownLatch await, Integer[] goodIds) {
+			this.await = await;
+			this.goodIds = goodIds;
+		}
 
+		CountDownLatch await=null;
+		Integer[] goodIds=null;
+		@Override
+		public void run() {
+			apiGoodsService.unSaleBatch(goodIds, 2);
+			await.countDown();
+		}
+	}
 
 	class SaveJDGoodsJob implements Runnable{ // 定义执行任务
 
@@ -1075,7 +1112,7 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 										: getGoodsImg(resultDate.get("PRODUCT_DESCRIPTION").toString()));
 								vo.setAdd_time(new Date());
 								vo.setUpdate_time(new Date());
-								vo.setSource("JD");
+								vo.setSource(productObj.get("features") == null ? "" :productObj.get("features").toString());
 								Map<String, Object> param = stock(productObj.get("productId").toString(), 100,
 										DEFAULT_ADDRESS);
 								if (param.get("num") != null) {
@@ -1143,7 +1180,7 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 										: getGoodsImg(resultDate.get("PRODUCT_DESCRIPTION").toString()));
 								good.setAdd_time(good.getAdd_time());
 								good.setUpdate_time(new Date());
-								good.setSource("JD");
+								good.setSource(productObj.get("features") == null ? "" :productObj.get("features").toString());
 								Map<String, Object> param = stock(productObj.get("productId").toString(), 100,
 										DEFAULT_ADDRESS);
 								if (param.get("num") != null) {
