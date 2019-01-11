@@ -154,7 +154,7 @@ public class ApiPayController extends ApiBaseAction {
 				}
 				// 上下架状态
 				Map<String, Object> saleStatusMap = jdOrderService.checkSaleStatusSingle(Integer.parseInt(pid));
-				if (saleStatusMap.get("code").equals("200")) {
+				if (!saleStatusMap.get("code").equals("200")) {
 					resultObj.put("errno", "1");
 					resultObj.put("errmsg", "不可出售");
 					unsells.add(orderGoodsVo);
