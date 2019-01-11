@@ -12,13 +12,13 @@
   		<div class="bg" v-show="showTn"></div>
   		<div class="bgShow" v-show="showTn">
   			<div class="itemtotal">
-	  			<div class="item" v-for="(item,index) in cartGoods" >
+	  			<div class="item" v-for="(item,index) in unsells" >
 	            <div class="cart-goods">
 	              <div class="info">
 	                	<img class="img"  :src="item.list_pic_url"/>
 	                  <div class="t">
-	                    <span class="name">{{item.goods_name}}</span>
-	                     <span class="num">x{{item.number}}</span>
+	                    <span class="name">{{item.name}}</span>
+	                     <span class="num">x{{item.cart_num}}</span>
 	                  </div>
 	                  <span class="price">￥{{item.market_price}}</span>
 	              </div>
@@ -28,7 +28,7 @@
   			<div class="font">该款商品<span class="red">已售罄/下架</span>，这款商品太火爆了，您晚了一步哦；</div>
   			<ul class="btngroup">
   				<li class="cancel" @click="cancel">取消</li>
-  				<li class="confirm">继续结算</li>
+  				<li class="confirm" @click="goOrder">继续结算</li>
   			</ul>
   		</div>
   		<!--其它主体内容-->
@@ -97,6 +97,7 @@ export default {
     return {
 //  	headFont:'购物车',
 			showTn:false, //已售罄/下架弹窗显示
+			unsells:[],
     	cartGoods: [],
 	    cartTotal: {
 	      "goodsCount": 0,
@@ -177,7 +178,27 @@ export default {
 			    if (checkedGoods.length <= 0) {
 			      return false;
 			    }
-		    	this.$router.push('/pages/category/checkout?isBuy=false')
+			    /*三方状态下架或无库存*/
+		      var goodIds = checkedGoods.map(function (v) {
+		        return v.goods_id+'_'+v.number;
+		      }); 
+		     that.$http({
+		        method: 'post',
+		        url: that.$url+'cart/payBeforeCheck.options',
+		        data:{ goodIds: goodIds.join(','), }
+		     }).then(function (res) {
+			     	var res = res.data;
+			     	if(res.errno == 0){
+			     		that.$router.push('/pages/category/checkout?isBuy=false');
+			     	}else{
+			     		that.showTn = true;
+			     		that.unsells = res.unsells;
+			     	}
+		      });
+			      
+	  	},
+	  	goOrder(){  //弹窗的继续结算
+	  		this.$router.push('/pages/category/checkout?isBuy=false');
 	  	},
 	  	checkedAll(){
 	  			let that = this;
@@ -192,7 +213,6 @@ export default {
 			     }).then(function (res) {
 			     	var res = res.data;
 			        if (res.errno === 0) {
-//			          console.log(res.data);
 			            that.cartGoods = res.data.cartList,
 			            that.cartTotal = res.data.cartTotal
 			        }else{
