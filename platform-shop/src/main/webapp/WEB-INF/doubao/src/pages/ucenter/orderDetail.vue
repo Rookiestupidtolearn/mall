@@ -1,6 +1,6 @@
 <template>
 	<div class="container" ref="input1">
-		
+		<showTan :showTn="showTn" :unsells="unsells" :data-c="showTn"></showTan>
 		 <div class="order-info">
         <div class="item-a">下单时间：{{orderInfo.add_time}}</div>
         <div class="item-b">订单编号：{{orderInfo.order_sn}}</div>
@@ -82,13 +82,16 @@
 
 <script>
 import { MessageBox } from 'mint-ui';
+import showTan from '@/components/showTan.vue';
 import returnHome from '@/components/returnHome.vue';
 
 export default {
   name: 'orderDetail',
-  components:{returnHome},
+  components:{showTan,returnHome},
   data () {
     return {
+    	showTn: false, //是否显示弹窗
+    	unsells:[],
     	scrollshow:true,
     	orderInfo:{},
     	cancelBtnShow:false,
@@ -167,11 +170,15 @@ export default {
 	        }
 	    	}).then(function (res) {
 	    		var res = res.data;
+	    		console.log(res);
 	    		if(res.errno == 0){
 	    			window.location.href= res.payurl;
-	    		}else{
-	    			that.$toast(res.errmsg);
-	    		}
+	    		}else if(res.errno == 1) {
+						that.showTn = true;
+						that.unsells = res.unsells;
+					}else{
+						that.$toast(res.errmsg);
+					}
 			})
   	},
 

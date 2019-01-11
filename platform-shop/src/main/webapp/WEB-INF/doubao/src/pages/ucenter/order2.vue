@@ -21,7 +21,7 @@
 		            <div class="b">
 		                <div class="l">实付：￥{{item.actual_price}}</div>
 		                <div class="r">
-		                	<div class="btn active" @click.prevent="confirmOrder(item.id)">确认收货</div>
+		                	<div class="btn active" @click.stop="confirmOrder(item.id)">确认收货</div>
 		                	<router-link class="btn" :to="'/pages/ucenter/logistics?id='+item.id">查看物流</router-link>
 		                </div>
 		            </div>

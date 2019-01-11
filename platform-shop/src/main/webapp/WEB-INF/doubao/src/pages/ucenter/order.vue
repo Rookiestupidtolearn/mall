@@ -2,7 +2,7 @@
 	<div class="hello">
 		<!--公用头部-->
 		<!--<headbar :headFont = "headFont"></headbar>-->
-		<showTan :showTn="showTn"></showTan>
+		<showTan :showTn="showTn" :unsells="unsells"></showTan>
 		<div class="showList mt9" v-show="appShow">
 			<ul class="nav_list">
 				<router-link v-for="(item,index) in items" @click="selectStyle (item, index)" tag="li" :to="item.to">
@@ -26,11 +26,11 @@
 				            	 				<div class="btn active" @click.prevent="tipsShow">退货申请</div>
 				                </div>-->
 								<div v-if="item.order_status == 300 || item.order_status == 201 || item.order_status == 200">
-									<div class="btn active" @click.prevent="confirmOrder(item.id)">确认收货</div>
+									<div class="btn active" @click.stop="confirmOrder(item.id)">确认收货</div>
 									<router-link class="btn" :to="'/pages/ucenter/logistics?id='+item.id">查看物流</router-link>
 								</div>
 								<div v-else-if="item.order_status == 0">
-									<div class="btn active" @click.prevent="payOrder(item.id)">去付款</div>
+									<div class="btn active" @click.stop="payOrder(item.id)">去付款</div>
 								</div>
 							</div>
 						</div>
@@ -63,6 +63,7 @@
 				//  	headFont:'订单列表',
 				scrollshow:true,
 				showTn: false, //是否显示弹窗
+				unsells:[],
 				appShow: "",
 				orderList: [],
 				activeClass: 0,
@@ -174,9 +175,13 @@
 					}
 				}).then(function(res) {
 					var res = res.data;
+					console.log(res);
 					if(res.errno == 0) {
 						window.location.href = res.payurl;
-					} else {
+					}else if(res.errno == 1) {
+						that.showTn = true;
+						that.unsells = res.unsells;
+					}else{
 						that.$toast(res.errmsg);
 					}
 				})

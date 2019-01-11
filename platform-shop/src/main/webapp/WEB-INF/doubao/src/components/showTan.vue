@@ -1,11 +1,11 @@
 <template>
 	<div class="sellOut">
   		<!--商品已下架的弹窗-->
-  		<div class="bg" v-show="showTan"></div>
-  		<div class="bgShow" v-show="showTan">
+  		<div class="bg" v-show="showTn" ></div>
+  		<div class="bgShow" v-show="showTn">
   			<div class="font">订单中商品均已<span class="red">已售罄</span>，这些商品太火爆了，您晚了一步哦；</div>
-  			<!--<div class="itemtotal">
-	  			<div class="item" v-for="(item,index) in cartGoods" >
+  			<div class="itemtotal">
+	  			<div class="item" v-for="(item,index) in unsells" >
 	            <div class="cart-goods">
 	              <div class="info">
 	                	<img class="img"  :src="item.list_pic_url"/>
@@ -17,7 +17,7 @@
 	              </div>
 	            </div>
 	          </div>
-	      	</div>-->
+	      	</div>
   			<ul class="btngroup" @click="cancelShop">知道了，去重新下单</ul>
   		</div>
 	</div>
@@ -29,11 +29,13 @@
 	  name: 'showTan',
 	  data () {
 	    return {
-	    	showTan:this.showTn
+	    	showTan:this.showTn,
+	    	showUnsells:this.unsells
 	    }
 	  },
 	   props:{
-	   	showTn:Boolean
+	   	showTn:Boolean,
+	   	unsells:''
 	   },
 	   methods:{
 	   	cancelShop(){
@@ -71,6 +73,7 @@
 	.itemtotal{
 		max-height: 5rem;
     	overflow-y: scroll;
+    	padding-bottom:.5rem;
 	}
 	.bgShow .font{
 		font-size: .25rem;

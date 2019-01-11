@@ -2,7 +2,7 @@
   <div class="hello">
   	<!--公用头部-->
   		<!--<headbar :headFont = "headFont"></headbar>-->
-  		
+  		<showTan :showTn="showTn" :unsells="unsells"></showTan>
 		<div class="showList mt9" v-show="appShow">
 	  		<ul class="nav_list">
 	  				<router-link v-for="(item,index) in items" @click="selectStyle (item, index)"  tag="li" :to="item.to">
@@ -21,7 +21,7 @@
 		            <div class="b">
 		                <div class="l">实付：￥{{item.actual_price}}</div>
 		                <div class="r">
-		                	<mt-button type="danger"  class="resetbtn" size="small" @click.prevent="payOrder(item.id)" >去付款</mt-button>
+		                	<mt-button type="danger"  class="resetbtn" size="small" @click.stop="payOrder(item.id)" >去付款</mt-button>
 		                </div>
 		            </div>
 		        </div>
@@ -39,17 +39,20 @@
 import { InfiniteScroll } from 'mint-ui';
 import { MessageBox } from 'mint-ui';
 import { Indicator } from 'mint-ui';
+import showTan from '@/components/showTan.vue';
 import returnHome from '@/components/returnHome.vue';
 //import headbar from '@/components/headbar.vue';
 		
 export default {
   name: 'order',
-  components:{returnHome},
+  components:{showTan,returnHome},
 //components:{headbar},
   data () {
     return {
 //  	headFont:'订单列表',
 			scrollshow:true,
+			showTn: false, //是否显示弹窗
+			unsells:[],
 			appShow:"",
     	orderList:[],
     	activeClass:1,
@@ -121,11 +124,15 @@ export default {
 	        }
 	    	}).then(function (res) {
 	    		var res = res.data;
+	    		console.log(res)
 	    		if(res.errno == 0){
 	    			window.location.href= res.payurl;
-	    		}else{
-	    			that.$toast(res.errmsg);
-	    		}
+	    		}else if(res.errno == 1) {
+						that.showTn = true;
+						that.unsells = res.unsells;
+					}else{
+						that.$toast(res.errmsg);
+					}
 			})
   	},
   	loadMore() {

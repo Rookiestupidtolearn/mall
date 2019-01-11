@@ -72,7 +72,7 @@
 	    background:rgba(188, 188, 188, 0.3);
 	    padding: 0 0.1rem;
 	    height:1.9rem;
-	    z-Index:999;  
+	    z-Index:99;  
 	    display: table-cell;
 	    vertical-align: middle;
 	}
