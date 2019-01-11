@@ -94,7 +94,7 @@ export default {
   	orderDetail(e){
 				var appHref = window.location.href;
 				var device = '';
-				var comHref = window.location.host;
+				var comHref = window.location.origin;
 				if(appHref.indexOf('device')>-1){
 					device = appHref.split('?')[1].split('=')[1].split('&')[0];
 				}
