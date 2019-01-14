@@ -17,7 +17,9 @@
  		<p class="last">
  			<input type="checkbox" id="checkbox"  v-model="checked" />
  			<span>已同意并阅读</span>
- 			<i @click="fwxieyi">《平台服务协议》</i>
+ 			<i @click="klrule">《斗宝俱乐部“克拉”使用规则》</i>
+ 			<i @click="yhzcxy">《斗宝俱乐部用户注册协议》</i>
+ 			<i @click="ysqxy">《隐私权协议》</i>
  		</p>
  		<mt-button type="primary" size="large" class="mtButton" @click="submit">登录</mt-button>
  		<returnhome :scrollshow = "scrollshow"></returnhome>
@@ -68,12 +70,26 @@
 //        this.imgyzm="http://192.168.124.50:6101/platform/captcha.jpg?date"+randomData.getMilliseconds();//测试环境
 	  		this.imgyzm="http://simuwap.doubaoclub.com:6201/platform/api/image.jpg?date"+randomData.getMilliseconds();  //预发布
 	  	},
-	  	fwxieyi(){
+	  	klrule(){
 	  		let that = this;
 	  		that.$cookie.setCookie('phone',this.phone);
 	  		that.$cookie.setCookie('captcha',this.captcha);
 	  		that.$cookie.setCookie('checked',this.checked);
-	  		that.$router.push('/pages/xieyi/ptfwxy');
+	  		that.$router.push('/pages/xieyi/klrule');
+	  	},
+	  	yhzcxy(){
+	  		let that = this;
+	  		that.$cookie.setCookie('phone',this.phone);
+	  		that.$cookie.setCookie('captcha',this.captcha);
+	  		that.$cookie.setCookie('checked',this.checked);
+	  		that.$router.push('/pages/xieyi/yhzcxy');
+	  	},
+	  	ysqxy(){
+	  		let that = this;
+	  		that.$cookie.setCookie('phone',this.phone);
+	  		that.$cookie.setCookie('captcha',this.captcha);
+	  		that.$cookie.setCookie('checked',this.checked);
+	  		that.$router.push('/pages/xieyi/ysqxy');
 	  	},
 	  	submit(){
 	  		let that = this;

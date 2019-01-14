@@ -4,7 +4,7 @@
   		<!--<headbar :headFont = "headFont"></headbar>-->
   		
  		<div class="cate-over ">
-	 		<div class="cate-nav">
+	 		<div class="cate-nav" ref="box">
 	            <div v-for="item in brotherCategory"  :class="idm == item.id ? 'active' : ''" class="item" @click="switchCate(item.id)">
 	                <div class="name">{{item.name}}</div>
 	            </div>
@@ -41,12 +41,22 @@
 	    	goodsList:[],
 	    	currentCategory:'',
 	    	idm:'',
+	    	indexId:'',
 	    }
 	  },
 	  mounted(){
 	  		this.idm = this.$route.query.id;
 		  	this.categoryShow();
 	    	this.listShow();
+	  },
+	  watch:{
+	  	brotherCategory:function(){
+	  		this.$nextTick(function(){
+	  			var activeIndex = document.getElementsByClassName('active')[0];
+	  			var activeIndexLeft = activeIndex.offsetLeft;
+	  			this.$refs.box.scrollLeft = activeIndexLeft;
+	  		})
+	  	}
 	  },
 	  methods:{
 	  	andriod(e){   //与andriod和ios交互
@@ -72,7 +82,6 @@
 	 	},
 	  	switchCate(idItem){
 	  		this.idm = idItem;
-	  		this.categoryShow();
 	  		this.listShow();
 	  	},
 	  	listShow(){

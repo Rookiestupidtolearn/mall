@@ -25,7 +25,9 @@ import checkout from '@/pages/category/checkout'  //下单页面
 import selCoupon from '@/pages/category/selCoupon'  //选择优惠券页面
 import amountMoney from '@/pages/ucenter/amountMoney'  //资金明细
 import register from '@/pages/register/register'  //注册页面
-import ptfwxy from '@/pages/xieyi/ptfwxy'  //平台服务协议
+import klrule from '@/pages/xieyi/klrule'  //斗宝俱乐部“克拉”使用规则
+import yhzcxy from '@/pages/xieyi/yhzcxy'  //斗宝俱乐部用户注册协议
+import ysqxy from '@/pages/xieyi/ysqxy'  //隐私权协议
 import namecard from '@/pages/ucenter/namecard'  //账户安全-姓名,身份认证
 import account from '@/pages/ucenter/account'  //账户中心
 import userservice from '@/pages/ucenter/userservice'  //客户服务
@@ -51,6 +53,18 @@ export default new Router({
       path: '/',
       name: 'home',
       component: home,
+    },{
+      path: '/pages/xieyi/klrule',
+      name: 'klrule',
+      component: klrule,
+    },{
+      path: '/pages/xieyi/yhzcxy',
+      name: 'yhzcxy',
+      component: yhzcxy,
+    },{
+      path: '/pages/xieyi/ysqxy',
+      name: 'ysqxy',
+      component: ysqxy,
     },{
       path: '/pages/category/bodylook',
       name: 'bodylook',
@@ -151,10 +165,6 @@ export default new Router({
       path: '/pages/register/register',
       name: 'register',
       component: register
-    },{
-      path: '/pages/xieyi/ptfwxy',
-      name: 'ptfwxy',
-      component: ptfwxy
     },{
       path: '/pages/ucenter/namecard',
       name: 'namecard',
