@@ -72,4 +72,9 @@ public class YeeTradeOrderService {
     public int deleteBatch(Integer[] ids) {
         return yeeTradeOrderDao.deleteBatch(ids);
     }
+
+	public YeeTradeOrderEntity queryObjectByYeeOrder(String orderNo) {
+		
+		return yeeTradeOrderDao.queryObjectByYeeOrder(orderNo);
+	}
 }

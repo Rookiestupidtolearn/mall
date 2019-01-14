@@ -159,4 +159,21 @@
 			AND mr.create_time &lt;  #{end_time}
 		</if>
 	</select>
+	
+	<select id="queryLastMoneyRecord" resultMap="qzMoneyRecordMap" parameterType="java.lang.Integer">
+		select
+			`id`,
+			`shop_user_id`,
+			`tran_type`,
+			`tran_flag`,
+			`tarn_amount`,
+			`current_amount`,
+			`create_time`,
+			`trade_no`,
+			`remark`,
+			`lock_amount`
+		from qz_money_record
+		where shop_user_id = #{shopUserId} order by `id` desc LIMIT 1
+	</select>
+	
 </mapper>
