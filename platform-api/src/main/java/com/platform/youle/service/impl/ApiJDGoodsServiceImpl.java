@@ -303,12 +303,12 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 
 			productIds = getJdProductIds(json);
 			int productIdsListSize=productIds.size();
-			int count=5000;
+			int count=1000;
 			int runSize=productIdsListSize/count;
 			List<String> newList=null;
 			fixedThreadPool = Executors.newFixedThreadPool(runSize);
 			CountDownLatch countDownLatch=new CountDownLatch(runSize);
-
+			logger.info("开始多线程执行更新京东商品"+"-----共有"+productIdsListSize+" ---开启线程个数"+runSize);
 			for (int i = 0;i < runSize;i++) { //把list分段
 				if((i+1)==runSize){
 					int startIndex = (i*count);
@@ -323,10 +323,15 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 
 			}
 			countDownLatch.await();
-			fixedThreadPool.shutdown();
+
+			logger.info("京东商品更新完成");
 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+		}finally {
+			if(null!=fixedThreadPool) {
+				fixedThreadPool.shutdown();
+			}
 		}
 
 
@@ -788,38 +793,45 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 					list.add(goodsVos.get(j).getId());
 				}
 			}
-			if (!CollectionUtils.isEmpty(list)) {//不为空时批量更新
+			if (!CollectionUtils.isEmpty(list)) { //不为空时批量更新
 
 				Integer[] goodIds = list.toArray(new Integer[0]);
-				int count=5000;
-				int runSize=goodIds.length/count;
-				Integer[]  newgoodIds=null;
-				Executor fixedThreadPool = Executors.newFixedThreadPool(runSize);
-				CountDownLatch countDownLatch=new CountDownLatch(runSize);
-
+				int count = 1000;
+				int runSize = goodIds.length / count;
+				Integer[] newgoodIds = null;
+				ExecutorService fixedThreadPool = Executors.newFixedThreadPool(runSize);
+				CountDownLatch countDownLatch = new CountDownLatch(runSize);
+				logger.info("开启多个线程执行批量更新----共有"+goodIds.length+"个商品---开启线程数"+runSize);
 				try {
-					for (int i = 0;i < runSize;i++) { //把list分段
-						if((i+1)==runSize){
-							int startIndex = (i*count);
+					for (int i = 0; i < runSize; i++) { //把list分段
+						if ((i + 1) == runSize) {
+							int startIndex = (i * count);
 							int endIndex = goodIds.length;
-							newgoodIds =Arrays.copyOfRange(goodIds, startIndex, endIndex);
-						}else{
-							int startIndex = i*count;
-							int endIndex = (i+1)*count;
-							newgoodIds =Arrays.copyOfRange(goodIds, startIndex, endIndex);
+							newgoodIds = Arrays.copyOfRange(goodIds, startIndex, endIndex);
+						} else {
+							int startIndex = i * count;
+							int endIndex = (i + 1) * count;
+							newgoodIds = Arrays.copyOfRange(goodIds, startIndex, endIndex);
 						}
-						fixedThreadPool.execute(new UpdateBathJDGoods(countDownLatch,newgoodIds));//执行任务
+						fixedThreadPool.execute(new UpdateBathJDGoods(countDownLatch, newgoodIds));//执行任务
 
 					}
 
 					countDownLatch.await();
-					((ExecutorService) fixedThreadPool).shutdown();
+
+					logger.info("批量操作执行下架商品完成");
 				} catch (InterruptedException e) {
-				   logger.error("批量操作执行下架商品出现异常",e);
+					logger.error("批量操作执行下架商品出现异常", e);
+				} finally {
+					if(null!=fixedThreadPool) {
+						 fixedThreadPool.shutdown();
+					}
 				}
 			}
 		}
-		return ids;
+
+
+			return ids;
 
 	}
 
@@ -1018,6 +1030,7 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 		public SaveJDGoodsJob(List<String> productIds, JSONObject resultObj,CountDownLatch countDownLatch) {
 			this.productIds = productIds;
 			this.resultObj = resultObj;
+			this.countDownLatch=countDownLatch;
 		}
 
 		List<String> productIds=null;
@@ -1112,7 +1125,7 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 										: getGoodsImg(resultDate.get("PRODUCT_DESCRIPTION").toString()));
 								vo.setAdd_time(new Date());
 								vo.setUpdate_time(new Date());
-								vo.setSource(productObj.get("features") == null ? "" :productObj.get("features").toString());
+								vo.setSource(productObj.get("type") == null ? "" :productObj.get("type").toString());
 								Map<String, Object> param = stock(productObj.get("productId").toString(), 100,
 										DEFAULT_ADDRESS);
 								if (param.get("num") != null) {
@@ -1180,7 +1193,7 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 										: getGoodsImg(resultDate.get("PRODUCT_DESCRIPTION").toString()));
 								good.setAdd_time(good.getAdd_time());
 								good.setUpdate_time(new Date());
-								good.setSource(productObj.get("features") == null ? "" :productObj.get("features").toString());
+								good.setSource(productObj.get("type") == null ? "" :productObj.get("type").toString());
 								Map<String, Object> param = stock(productObj.get("productId").toString(), 100,
 										DEFAULT_ADDRESS);
 								if (param.get("num") != null) {
