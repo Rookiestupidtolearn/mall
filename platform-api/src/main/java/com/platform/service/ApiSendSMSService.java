@@ -292,7 +292,7 @@ public class ApiSendSMSService {
 	    
 				//添加发短信的开关 
 				String isSend = "";
-				String smsConfig = sysConfigService.queryByKey("sendSms");
+				String smsConfig = sysConfigService.queryByKey("sendSms_market");
 				if (smsConfig == null) {
 					isSend = "true";
 				}
