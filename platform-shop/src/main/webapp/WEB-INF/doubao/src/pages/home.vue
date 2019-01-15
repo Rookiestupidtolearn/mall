@@ -1,7 +1,8 @@
 <template>
   <div class="hello"  id="home" ref="viewBox">
   	<div class="searchTop" @click="searchRoute">
-  				<mt-search v-model="value"  cancel-text="取消"  placeholder="商品搜索" class="wusearch" ></mt-search>
+  				<!--<mt-search v-model="value"  placeholder="商品搜索" class="wusearch" ></mt-search>-->
+  				<img src="../../static/images/search.jpg" class="search"/>
   	</div>
     <mt-swipe :auto="3000" class="swiper" >
 		  <mt-swipe-item v-for="item in banner">
@@ -321,6 +322,9 @@ padding:.2rem 0;
 font-size: 0;
 width: 20%;
 flex: 1;
+}
+.search{
+		vertical-align: top;
 }
 .m-menu .item img{
 	width:.6rem;

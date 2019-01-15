@@ -49,7 +49,7 @@
 			    <div class="cate-item">
 				    <div class="b">
 				      <router-link class="item" :class=" [(iindex + 1) % 2 == 0 ? 'item-b' : '']" :to="'/pages/goods/goods?id='+iitem.id" v-for="(iitem,iindex) in goodsList" >
-				        <img class="img" :src="iitem.list_pic_url" background-size="cover"/>
+				        <img class="img" v-lazy="iitem.list_pic_url" background-size="cover"/>
 				        <p class="name">{{iitem.name}}</p>
 				        <p class="price">￥{{iitem.market_price}}</p>
 				      </router-link>
@@ -67,6 +67,7 @@
 
 <script>
 import { Indicator } from 'mint-ui';
+import { Lazyload } from 'mint-ui';
 import returnhome from '@/components/returnHome';
 
 export default {

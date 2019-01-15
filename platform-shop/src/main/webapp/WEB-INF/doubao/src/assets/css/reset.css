@@ -53,6 +53,7 @@ body{	margin:0;	}
 .mint-indicator-wrapper{	padding: .2rem .5rem !important;}
 .mt88{	margin-top:.88rem !important;}
 .mint-msgbox-btns button{	font-size:.28rem;}
+.mint-searchbar-cancel { font-size:.28rem;}
 /*注册*/
 .mint-field .mint-cell-title{		text-align: left;		font-size:.32rem;		width:1.7rem;}
 .mint-cell-wrapper{	padding:0 .4rem 0 .2rem;}

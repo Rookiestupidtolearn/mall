@@ -1,18 +1,16 @@
 <template>
   <div class="classification">
-  	<!--头部返回-->
-  	<!--<headbar :headFont = "headFont"></headbar>-->
-  	
   	<!--主体内容-->
   	<div class="searchTop" @click="searchRoute">
-  				<mt-search v-model="value"  cancel-text="取消"  placeholder="商品搜索" class="wusearch"></mt-search>
+  				<!--<mt-search v-model="value"  placeholder="商品搜索" class="wusearch" ></mt-search>-->
+  				<img src="../../static/images/search.jpg" class="search"/>
   	</div>
   	<div class="content">
 	  	<div class="catalog" >
 	  		<p  v-for ="item in categoryList"  class = "item" :class="[item.id == currentCategory.id ?  'active'  :  '' ]"  @click="switchCate(item.id)">{{item.name}}</p>
 	  	</div>
 	  	<div class="rightca">
-	  		<a href=""><img class="topb" :src="currentCategory.wap_banner_url" alt="" /></a>
+	  		<a href=""><img class="topb" v-lazy="currentCategory.wap_banner_url" alt="" /></a>
 	  		<p class="front_name">{{currentCategory.front_name}}</p>
 	  		<div class="hd">
             <span class="line"></span>
@@ -35,6 +33,7 @@
 <script>
 	import tabbar from '@/components/tabbar.vue'
 	import { Indicator } from 'mint-ui';
+	import { Lazyload } from 'mint-ui';
 //	import headbar from '@/components/headbar'
 	
 export default {
@@ -256,6 +255,9 @@ width:auto;
 		.wusearch{
 			font-size:.3rem !important;
 			height:100%;
+		}
+		.search{
+			vertical-align: top;
 		}
 		.content{
 			overflow: hidden;
