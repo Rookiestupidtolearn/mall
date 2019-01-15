@@ -163,6 +163,7 @@ public class ApiYeepayController extends ApiBaseAction {
 						order.setPay_status(1);
 						order.setOrder_status(200); // 支付成功，待提交京东订单
 						order.setOrder_type("1");//正常
+						order.setPay_time(new Date());//订单支付时间
 						apiOrderService.update(order);
 						orderService.discountUserAmount(order);//支付成功，扣减平台比
 						UserVo user = apiUserService.queryObject(order.getUser_id());
