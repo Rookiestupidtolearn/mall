@@ -41,6 +41,7 @@ import com.platform.entity.ProductVo;
 import com.platform.entity.ThirdPartyRegionEntity;
 import com.platform.entity.UserVo;
 import com.platform.service.ApiGoodsPureInterestRateService;
+import com.platform.service.ApiSendSMSService;
 import com.platform.service.ApiUserService;
 import com.platform.service.JdOrderService;
 import com.platform.service.ThirdPartyRegionService;
@@ -855,7 +856,7 @@ public class ApiTestController extends ApiBaseAction {
 	@PostMapping("orderTrack")
 	public Object orderTrack() {
 
-		ResponseOrderTrackEntity response = orderService.orderTrack("jd201812161347078370654");
+		ResponseOrderTrackEntity response = orderService.orderTrack("jd201901081428434016708_2");
 
 		return response;
 	}
@@ -875,7 +876,7 @@ public class ApiTestController extends ApiBaseAction {
 	@PostMapping("orderCancel")
 	public Object orderCancel() {
 
-		ResponseCancelEntity response = orderService.cancel("jd201811091752324423052");
+		ResponseCancelEntity response = orderService.cancel("jd201901081428434016708");
 
 		return response;
 	}
@@ -885,7 +886,7 @@ public class ApiTestController extends ApiBaseAction {
 	@PostMapping("cancelByOrderKey")
 	public Object cancelByOrderKey() {
 
-		ResponseBaseEntity response = orderService.cancelByOrderKey("jd201811091752324423052", "3409468966");
+		ResponseBaseEntity<?> response = orderService.cancelByOrderKey("jd201901081428434016708", "4083973564");
 
 		return response;
 	}
@@ -963,7 +964,6 @@ public class ApiTestController extends ApiBaseAction {
     	level2.put(key, value,86400l);
 		return resultObj;
 	}
-	
 	
 	@IgnoreAuth
 	@ApiOperation(value = "校验获取图形验证码")

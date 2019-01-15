@@ -62,4 +62,6 @@ public interface SysConfigService {
      */
     public <T> T getConfigObject(String key, Class<T> clazz);
 
+	String queryByKey(String key);
+
 }

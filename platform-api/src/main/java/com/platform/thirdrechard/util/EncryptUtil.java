@@ -1,4 +1,6 @@
 package com.platform.thirdrechard.util;
+import java.util.TreeMap;
+
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.spec.SecretKeySpec;
@@ -56,39 +58,39 @@ public class EncryptUtil {
      */
     public static void main(String[] args) throws Exception {
 //    	//使用TreeMap
-//		TreeMap<String, Object> treeMap	= new TreeMap<String, Object>();
-//		treeMap.put("amount", 			1);
-//		treeMap.put("mobile", "13391506299");
-//		treeMap.put("thirdTradeNo", "123123123332");
-//		treeMap.put("platformType", "2");//充值类型
-//		treeMap.put("cardType", "2");//充值类型
-//		treeMap.put("queryCheckUrl", "");//充值类型
-//		JSONObject json =new JSONObject(treeMap);
-//		String content = json.toString();
-//        System.out.println("加密前：" + content);  
-//
-//        System.out.println("加密密钥和解密密钥：" + KEY);  
-//
-//        String encrypt = aesEncrypt(content, KEY);  
-//        System.out.println(encrypt.length()+":加密后：" + encrypt);  
-//
-//        String decrypt = aesDecrypt(encrypt);  
-//        System.out.println("解密后：" + decrypt);  
+		TreeMap<String, Object> treeMap	= new TreeMap<String, Object>();
+		treeMap.put("amount", 			1);
+		treeMap.put("mobile", "17732087738");
+		treeMap.put("thirdTradeNo", "123123123332sa");
+		treeMap.put("platformType", "2");//充值类型
+		treeMap.put("cardType", "2");//充值类型
+		treeMap.put("queryCheckUrl", "http://sulaiqian.huaqianyueshang.com/qsdMallOrder/queryCardOrder");//充值类型
+		JSONObject json =new JSONObject(treeMap);
+		String content = json.toString();
+        System.out.println("加密前：" + content);  
+
+        System.out.println("加密密钥和解密密钥：" + KEY);  
+
+        String encrypt = aesEncrypt(content, KEY);  
+        System.out.println(encrypt.length()+":加密后：" + encrypt);  
+
+        String decrypt = aesDecrypt(encrypt);  
+        System.out.println("解密后：" + decrypt);  
     	
     //	{"amount":"359","cardType":"1","mobile":"15228131703","platformType":"suyouqian","queryCheckUrl":"http://sulaiqian.huaqianyueshang.com/qsdMallOrder/queryCardOrder","thirdTradeNo":"3g4no5h730n5xBE8Qpp3TdG09c3n5m"}
 
     	
-    	QueryMemberCardRequest vo = new QueryMemberCardRequest ();
-        vo.setCardTradeNbr ("3g4no5h730n5xBE8Qpp3TdG09c3n5m");
-        vo.setCardTradeType ("1");
-        vo.setUserMobile ("15228131703");
-         String  str1 = HttpCommonUtils.sendPost ("http://sulaiqian.huaqianyueshang.com/qsdMallOrder/queryCardOrder",JSONObject.toJSONString (vo));
- 		if (str1.contains("html")) {
-		System.out.println(str1);
-		}
-         JSONObject a = JSONObject.parseObject(str1);
-    	 
-    	System.out.println(str1);
+//    	QueryMemberCardRequest vo = new QueryMemberCardRequest ();
+//        vo.setCardTradeNbr ("3g4no5h730n5xBE8Qpp3TdG09c3n5m");
+//        vo.setCardTradeType ("1");
+//        vo.setUserMobile ("17732087731");
+//         String  str1 = HttpCommonUtils.sendPost ("http://sulaiqian.huaqianyueshang.com/qsdMallOrder/queryCardOrder",JSONObject.toJSONString (vo));
+// 		if (str1.contains("html")) {
+//		System.out.println(str1);
+//		}
+//         JSONObject a = JSONObject.parseObject(str1);
+//    	 
+//    	System.out.println(str1);
     	
     }
 }

@@ -2,6 +2,7 @@ package com.platform.youle.util;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Properties;
 
 public class PropertiesUtil {
@@ -17,7 +18,8 @@ public class PropertiesUtil {
     public static String getValue(String fileName,String key) {
     	try {
 	        prop = new Properties();
-	        prop.load(PropertiesUtil.class.getClassLoader().getResourceAsStream(fileName));
+	       // prop.load(PropertiesUtil.class.getClassLoader().getResourceAsStream(fileName));
+	        prop.load(new InputStreamReader(PropertiesUtil.class.getClassLoader().getResourceAsStream(fileName), "UTF-8"));    
 	    } catch (FileNotFoundException e) {
 	        e.printStackTrace();
 	    } catch (IOException e) {

@@ -51,6 +51,7 @@ import com.platform.util.ApiBaseAction;
 import com.platform.utils.GenerateCodeUtil;
 import com.platform.utils.R;
 import com.platform.yeepay.entity.YeepayOrderPayRequestEntity;
+import com.platform.yeepay.service.RefundBizService;
 import com.platform.yeepay.service.YeepayOrderBizService;
 import com.platform.youle.constant.Constants.Urls;
 import com.platform.youle.entity.GoodsImagePathVo;
@@ -125,6 +126,8 @@ public class ApiTestYeepayController extends ApiBaseAction {
 	private ApiJDGoodsService apiJDGoodsService;
 	@Autowired
 	private  YeepayOrderBizService  yeepayOrderBizService;
+	@Autowired
+	private RefundBizService refundBizService;
 	
 	// 查询库存默认地址
 	private String DEFAULT_ADDRESS = "1_72_2799";
@@ -844,5 +847,14 @@ public class ApiTestYeepayController extends ApiBaseAction {
 	}
 	
 	
+//	@IgnoreAuth
+//	@ApiOperation(value = "4.4 订单退款接口")
+//	@PostMapping("direct_refund")
+//	public Object direct_refund(String origyborderid) throws ServletException, IOException {
+//      //411901034563595591
+//		 
+//		
+//		return refundBizService.directRefund(origyborderid, new BigDecimal("42.15"));
+//	}
 	
 }
