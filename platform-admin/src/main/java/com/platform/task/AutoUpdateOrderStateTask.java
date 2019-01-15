@@ -54,11 +54,10 @@ public class AutoUpdateOrderStateTask {
 				//判断距离现在是否超过7天
 				 int cha = DateUtils.getBetweenDateByType(new Date(), order.getAdd_time(), "day");
 				if (cha >7) {
-					logger.info("开始修改订单的状态为收货，订单的id"+order.getId());
+					logger.info("开始修改订单的状态为收货，订单的id是："+order.getId());
 					order.setOrder_status(301);  //用户确认收货
 					order.setConfirm_time(new Date());
 					orderService.update(order);
-				
 				}
 			
 			}
