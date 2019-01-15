@@ -3,6 +3,7 @@ package com.platform.api;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.TreeMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +30,15 @@ import com.platform.dao.ApiAddressMapper;
 import com.platform.dao.ApiMoneyRecordMapper;
 import com.platform.dao.QzUserAccountMapper;
 import com.platform.entity.AddressVo;
+import com.platform.entity.CartVo;
+import com.platform.entity.GoodsVo;
 import com.platform.entity.OrderGoodsVo;
 import com.platform.entity.OrderVo;
 import com.platform.entity.QzMoneyRecordVo;
 import com.platform.entity.QzUserAccountVo;
 import com.platform.entity.UserVo;
 import com.platform.entity.YeeTradeOrderEntity;
+import com.platform.service.ApiGoodsService;
 import com.platform.service.ApiOrderGoodsService;
 import com.platform.service.ApiOrderService;
 import com.platform.service.JdOrderService;
@@ -46,6 +51,7 @@ import com.platform.utils.DateUtils;
 import com.platform.utils.MapUtils;
 import com.platform.utils.ResourceUtil;
 import com.platform.utils.XmlUtil;
+import com.sun.tools.classfile.StackMapTable_attribute.append_frame;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -74,7 +80,12 @@ public class ApiPayController extends ApiBaseAction {
 	private JdOrderService jdOrderService;
     @Autowired
     private ApiAddressMapper apiAddressMapper;
+	@Autowired
+	private ApiOrderGoodsService apiOrderGoodsService;
 	
+	@Autowired
+	private ApiGoodsService apiGoodsService;
+    
     /**
      */
     @ApiOperation(value = "跳转")
@@ -118,32 +129,67 @@ public class ApiPayController extends ApiBaseAction {
         AddressVo addressVo = apiAddressMapper.queryObject(orderInfo.getAddress_id());
     		// 库存
   		String address = addressVo.getProvince() + "_" + addressVo.getCity() + "_" + addressVo.getCounty();
-  		// 批量查库存
-  		Map<String, Object> stockMap = jdOrderService.stockBatch(orderInfo.getPid_num(), address);
-  		if (!stockMap.get("code").equals("200")) {
-  			resultObj.put("errno", "100");
-  			resultObj.put("errmsg", "不可出售");
-  			return resultObj;
-  		}
-//  		 上下架状态
-  		String pids = "";
-  		 String pidNums = orderInfo.getPid_num();
-  		 String pidNum[] = pidNums.split(",");
-  		 for (int i = 0; i < pidNum.length; i++) {
-  			    String pidNumSingle = pidNum[i].split("_")[0]; //11_11
-  			    pids+= pidNumSingle+",";
-  		}
-  		 
-  		 if (StringUtils.isNotEmpty(pids)) {
-  			 pids = pids.substring(0, pids.length() - 1);
-  		}
-  		 
-  		Map<String, Object> saleStatusMap = jdOrderService.checkBatchSaleStatus(pids);
-  		if (!saleStatusMap.get("code").equals("200")) {
-  			resultObj.put("errno", "100");
-  			resultObj.put("errmsg", "不可出售");
-  			return resultObj;
-  		}
+  		 Map<String, Object> map = new HashMap<>();
+  		 map.put("order_id", orderId);
+  		 List<OrderGoodsVo> list =   apiOrderGoodsService.queryList(map);
+  		
+  		List<OrderGoodsVo>  unsells = new ArrayList<>();
+		for (OrderGoodsVo orderGoodsVo : list) {
+			GoodsVo goods = apiGoodsService.queryObject(orderGoodsVo.getGoods_id());
+			if (goods == null) {
+				continue;
+			}
+			// 判断是三方的还是自己的产品
+			String source = goods.getSource();
+			if (source.equals("JD")) {
+				// 检验库存+上下架状态
+				String pid = goods.getGoods_sn().substring(2, goods.getGoods_sn().length());
+				// 库存
+				Map<String, Object> stockMap = jdOrderService.checkStockSingle(pid, orderGoodsVo.getNumber(), address);
+				if (!stockMap.get("code").equals("200")) {
+					resultObj.put("errno", "1");
+					resultObj.put("errmsg", "不可出售");
+					unsells.add(orderGoodsVo);
+					continue;
+				}
+				// 上下架状态
+				Map<String, Object> saleStatusMap = jdOrderService.checkSaleStatusSingle(Integer.parseInt(pid));
+				if (!saleStatusMap.get("code").equals("200")) {
+					resultObj.put("errno", "1");
+					resultObj.put("errmsg", "不可出售");
+					unsells.add(orderGoodsVo);
+					continue;
+				}
+			}
+			if (source.equals("system")) {
+				// 校验自己的库存和上下架状态
+				if (goods.getGoods_number() < orderGoodsVo.getNumber()) {
+					logger.info(
+							"【系统商品库存不足无法正常下单】商品id:" + orderGoodsVo.getGoods_id() + "剩余库存：" + goods.getGoods_number());
+					unsells.add(orderGoodsVo);
+					continue;
+				}
+				if (goods.getIs_on_sale() == 0) {
+					logger.info("【系统商品已经下架无法正常下单】商品上下架状态为：" + goods.getIs_on_sale());
+					unsells.add(orderGoodsVo);
+					continue;
+				}
+
+			}
+
+		}
+  		
+   	 if (!CollectionUtils.isEmpty(unsells)) {
+			 resultObj.put("unsells", unsells); 
+			 resultObj.put("errno", "1");
+			 resultObj.put("errmsg", "不可售");
+			 resultObj.put("count", unsells.size()); 
+			 return resultObj;
+   		 
+		}
+  		
+  		
+  		
     	   String payurl = "";
     	   YeeTradeOrderEntity  yeepayOrder  =  yeeTradeOrderService.queryObjectByTradeNo(orderInfo.getShipping_no());
     	   if (yeepayOrder != null && yeepayOrder.getResponseMsg() !=null) {

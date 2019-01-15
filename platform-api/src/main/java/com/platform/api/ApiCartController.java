@@ -40,6 +40,7 @@ import com.platform.service.ApiGoodsSpecificationService;
 import com.platform.service.ApiOrderService;
 import com.platform.service.ApiProductService;
 import com.platform.service.ApiUserService;
+import com.platform.service.JdOrderService;
 import com.platform.util.ApiBaseAction;
 import com.platform.util.PayMatchingUtil;
 import com.qiniu.util.StringUtils;
@@ -74,9 +75,12 @@ public class ApiCartController extends ApiBaseAction {
     private PayMatchingUtil payMatchingUtils;
     @Autowired
     private GoodsCouponConfigMapper goodsCouponConfigMapper;
-    
+	@Autowired
+	private JdOrderService jdOrderService;
     @Autowired
     private ApiUserService userService;
+	// 查询库存默认地址
+	private String DEFAULT_ADDRESS = "1_72_2799";
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	
     /**
@@ -477,6 +481,82 @@ public class ApiCartController extends ApiBaseAction {
         return toResponsSuccess(resultObj);
     }
 
+    @ApiOperation(value = "订单提交前的检验和填写相关订单信息")
+    @PostMapping("payBeforeCheck")
+    public Object payBeforeCheck(@LoginUser UserVo loginUser){
+    	 Map<String, Object> resultObj = new HashMap();
+    	 List<GoodsVo>  unsells = new ArrayList<>();
+    	 JSONObject jsonParam = getJsonRequest();
+    	 String goodIds = "";
+         if(!StringUtils.isNullOrEmpty(jsonParam.getString("goodIds"))){
+        	 goodIds = jsonParam.getString("goodIds");
+         }
+    	 String[] goodid = goodIds.split(",");//xx_xx
+    	 for (int i = 0; i < goodid.length; i++) {
+    		    String id_num[] = goodid[i].split("_");
+    		 
+				GoodsVo goods = goodsService.queryObject(Integer.valueOf(id_num[0]));
+				if (goods == null) {
+					continue;
+				}
+				// 判断是三方的还是自己的产品
+				String source = goods.getSource();
+				if (source.equals("JD")) {
+					// 检验库存+上下架状态
+					String pid = goods.getGoods_sn().substring(2, goods.getGoods_sn().length());
+					// 库存
+					Map<String, Object> stockMap = jdOrderService.checkStockSingle(pid, Integer.valueOf(id_num[1]), DEFAULT_ADDRESS);
+					if (!stockMap.get("code").equals("200")) {
+						resultObj.put("errno", "1");
+						resultObj.put("errmsg", "不可出售");
+						goods.setCart_num(Integer.valueOf(id_num[1]));
+						unsells.add(goods);
+						continue;
+					}
+					// 上下架状态
+					Map<String, Object> saleStatusMap = jdOrderService.checkSaleStatusSingle(Integer.parseInt(pid));
+					if (!saleStatusMap.get("code").equals("200")) {
+						resultObj.put("errno", "1");
+						resultObj.put("errmsg", "不可出售");
+						goods.setCart_num(Integer.valueOf(id_num[1]));
+						unsells.add(goods);
+						continue;
+					}
+				}
+				if (source.equals("system")) {
+					// 校验自己的库存和上下架状态
+					if (goods.getGoods_number() < Integer.valueOf(id_num[1])) {
+						logger.info(
+								"【系统商品库存不足无法正常下单】商品id:" + Integer.valueOf(id_num[0])+ "剩余库存：" + goods.getGoods_number());
+						goods.setCart_num(Integer.valueOf(id_num[1]));
+						unsells.add(goods);
+						continue;
+					}
+					if (goods.getIs_on_sale() == 0) {
+						logger.info("【系统商品已经下架无法正常下单】商品上下架状态为：" + goods.getIs_on_sale());
+						goods.setCart_num(Integer.valueOf(id_num[1]));
+						unsells.add(goods);
+						continue;
+					}
+
+				}
+    		 
+    		 
+		}
+    	 if (!CollectionUtils.isEmpty(unsells)) {
+			 resultObj.put("unsells", unsells); 
+			 resultObj.put("errno", "1");
+			 resultObj.put("errmsg", "不可售");
+			 resultObj.put("count", unsells.size()); 
+			 return resultObj;
+    		 
+		}
+    	 
+    	 return toResponsSuccess(resultObj);
+    	
+    }
+    
+    
     /**
      * 订单提交前的检验和填写相关订单信息
      */

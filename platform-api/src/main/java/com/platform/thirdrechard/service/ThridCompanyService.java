@@ -39,5 +39,8 @@ public class ThridCompanyService {
 		return thridCompany.get(0);
 	}
 	
-	
+	public boolean add(ThridCompany thridCompany){
+		int insert = thridCompanyMapper.insert(thridCompany);
+		return insert == 0 ? false : true ;
+	}
 }
