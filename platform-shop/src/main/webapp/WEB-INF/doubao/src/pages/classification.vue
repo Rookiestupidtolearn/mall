@@ -10,7 +10,7 @@
 	  		<p  v-for ="item in categoryList"  class = "item" :class="[item.id == currentCategory.id ?  'active'  :  '' ]"  @click="switchCate(item.id)">{{item.name}}</p>
 	  	</div>
 	  	<div class="rightca">
-	  		<a href=""><img class="topb" v-lazy="currentCategory.wap_banner_url" alt="" /></a>
+	  		<a href=""><img class="topb" :src="currentCategory.wap_banner_url" alt="" /></a>
 	  		<p class="front_name">{{currentCategory.front_name}}</p>
 	  		<div class="hd">
             <span class="line"></span>
@@ -19,7 +19,7 @@
         </div>
         <div class="bd">
         	<a v-for="item in currentCategory.subCategoryList" @click="andriod('/pages/category/category?id='+item.id)">
-		        <img :src="item.wap_banner_url"/>
+		        <img v-lazy="item.wap_banner_url"/>
 		       	<p>{{item.name}}</p>
 	        </a>
         </div>
