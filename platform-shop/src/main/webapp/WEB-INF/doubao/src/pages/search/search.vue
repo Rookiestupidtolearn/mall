@@ -48,11 +48,11 @@
 			    <!--商品渲染-->
 			    <div class="cate-item">
 				    <div class="b">
-				      <router-link class="item" :class=" [(iindex + 1) % 2 == 0 ? 'item-b' : '']" :to="'/pages/goods/goods?id='+iitem.id" v-for="(iitem,iindex) in goodsList" >
+				      <div class="item" :class=" [(iindex + 1) % 2 == 0 ? 'item-b' : '']" @click="andriod('/pages/goods/goods?id='+iitem.id)" v-for="(iitem,iindex) in goodsList" >
 				        <img class="img" v-lazy="iitem.list_pic_url" background-size="cover"/>
 				        <p class="name">{{iitem.name}}</p>
 				        <p class="price">￥{{iitem.market_price}}</p>
-				      </router-link>
+				      </div>
 				    </div>
 				  </div>
 			</div>
@@ -133,6 +133,24 @@ export default {
 	 		}
 		},
 	  methods:{
+	  	andriod(e){   //商品详情与andriod和ios交互
+				var appHref = window.location.href;
+				var device = '';
+				var comHref = window.location.origin;
+				if(appHref.indexOf('device')>-1){
+					device = appHref.split('?')[1].split('=')[1].split('&')[0];
+				}
+		    	if(device == 'android'){
+		    			window.android.productDetail(comHref +'/#'+e); //调起andriod交互方法(由app发起。浏览器会报错正常)
+		    			return false;
+		    	}else if(device == 'ios'){
+		    			var message = {'url':comHref +'/#'+ e}
+							window.webkit.messageHandlers.webViewApp.postMessage(message);
+							return false;
+		    	}else{
+		    		this.$router.push(e);
+		    	}
+	 	},
 	  	onKeywordTap(keyword){
 	  		this.getSearchResult(keyword);
 	  	},
