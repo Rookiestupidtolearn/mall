@@ -54,6 +54,8 @@ public class HttpUtil {
         URL Url = new URL(url);
         trustAllHttpsCertificates();
         HttpURLConnection httpConnection = (HttpURLConnection) Url.openConnection();
+        System.setProperty("sun.net.client.defaultConnectTimeout", "30000");
+        System.setProperty("sun.net.client.defaultReadTimeout", "30000");
         // 设置请求时间
         httpConnection.setConnectTimeout(TIMEOUT);
         // 设置 header
