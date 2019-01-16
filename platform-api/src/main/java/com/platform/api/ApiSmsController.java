@@ -104,18 +104,18 @@ public class ApiSmsController {
         	 return R.error("手机号不能为空！");
 		}
         Map<String, Object> result = new HashMap<String, Object>();
-//        SmsLogVo vo   = apiUserMapper.querySmsCodeByMobile(params.get("mobile"));
-//        if(vo != null){
-//        	Date enDate = DateUtils.dateAddTime(vo.getCreateTime(), 60, "second");
-//        	int cha = DateUtils.getBetweenDateByType(enDate, new Date(), "second");
-//        	 if (cha< 60 && cha>0 ) {
-//        		   //一分钟内不能重复获取
-//             	result.put("errno", 1);
-//             	result.put("msg", "请在"+cha+"秒后获取");
-//             	return result;  
-//			}
-//        	
-//        }
+        SmsLogVo vo   = apiUserMapper.querySmsCodeByMobile(params.get("mobile"));
+        if(vo != null){
+        	Date enDate = DateUtils.dateAddTime(vo.getCreateTime(), 60, "second");
+        	int cha = DateUtils.getBetweenDateByType(enDate, new Date(), "second");
+        	 if (cha< 60 && cha>0 ) {
+        		   //一分钟内不能重复获取
+             	result.put("errno", 1);
+             	result.put("msg", "请在"+cha+"秒后获取");
+             	return result;  
+			}
+        	
+        }
    
         
     	//校验图形验证码
