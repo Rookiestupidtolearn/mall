@@ -4,7 +4,7 @@
   		<!--<headbar :headFont = "headFont"></headbar>-->
   		
 	 	<div class="searchTop" >
-	 		<form action="" target="frameFile">
+	 		<form action="" ref="formSubmit">
 	  			<mt-search v-model="value"  @keyup.enter.native="showList" @input="inputFocus" cancel-text="取消"  placeholder="商品搜索" class="wusearch" ></mt-search>
 	  		</form>
 	  	</div>
@@ -106,6 +106,11 @@ export default {
 			}else{
 				this.cookie=false;  
 			}
+			/*表单提交阻止默认行为*/
+			var domSu = this.$refs.formSubmit;
+			domSu.addEventListener('submit',function(){
+				event.preventDefault();
+			})
 	  },
 	  beforeRouteLeave(to, from, next) { 
 			 let position = window.scrollY; //记录离开页面的位置 
