@@ -104,18 +104,18 @@ public class ApiSmsController {
         	 return R.error("手机号不能为空！");
 		}
         Map<String, Object> result = new HashMap<String, Object>();
-        SmsLogVo vo   = apiUserMapper.querySmsCodeByMobile(params.get("mobile"));
-        if(vo != null){
-        	Date enDate = DateUtils.dateAddTime(vo.getCreateTime(), 60, "second");
-        	int cha = DateUtils.getBetweenDateByType(enDate, new Date(), "second");
-        	 if (cha< 60 && cha>0 ) {
-        		   //一分钟内不能重复获取
-             	result.put("errno", 1);
-             	result.put("msg", "请在"+cha+"秒后获取");
-             	return result;  
-			}
-        	
-        }
+//        SmsLogVo vo   = apiUserMapper.querySmsCodeByMobile(params.get("mobile"));
+//        if(vo != null){
+//        	Date enDate = DateUtils.dateAddTime(vo.getCreateTime(), 60, "second");
+//        	int cha = DateUtils.getBetweenDateByType(enDate, new Date(), "second");
+//        	 if (cha< 60 && cha>0 ) {
+//        		   //一分钟内不能重复获取
+//             	result.put("errno", 1);
+//             	result.put("msg", "请在"+cha+"秒后获取");
+//             	return result;  
+//			}
+//        	
+//        }
    
         
     	//校验图形验证码
@@ -129,14 +129,9 @@ public class ApiSmsController {
         	countIP = 0;
 		}
 		 
-        if (count !=null) {
-            logger.info("今日手机号"+params.get("mobile")+"已发送"+count+"次");
-		}
-        if (countIP !=null) {
-        	logger.info("今日用手机号:"+params.get("mobile")+">>所在的IP地址"+validIP+"已发送"+countIP+"次");
-		}
+
         
-        if (count >=6) {
+        if (count >=5) {
         	if (StringUtils.isEmpty(params.get("imageCode"))) {
         		result.put("errno", 1);
             	result.put("msg", "请传入图形验证码");
