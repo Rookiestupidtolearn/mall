@@ -314,7 +314,7 @@ public class ApiCartService {
 				}
 				// 判断是三方的还是自己的产品
 				String source = goods.getSource();
-				if (source.equals("JD")) {
+				if (source.equals("JD") || source.equals("jindong")) {
 					// 检验库存+上下架状态
 					String pid = goods.getGoods_sn().substring(2, goods.getGoods_sn().length());
 					// 库存
