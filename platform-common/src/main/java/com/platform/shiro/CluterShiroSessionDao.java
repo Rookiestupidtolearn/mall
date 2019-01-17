@@ -55,5 +55,6 @@ public class CluterShiroSessionDao extends EnterpriseCacheSessionDAO {
 
     private void setShiroSession(String key, Session session) {
         J2CacheUtils.put(key, session);
+
     }
 }

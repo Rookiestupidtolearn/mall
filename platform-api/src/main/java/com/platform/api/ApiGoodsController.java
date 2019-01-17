@@ -360,7 +360,7 @@ public class ApiGoodsController extends ApiBaseAction {
         Map params = new HashMap();
         params.put("parent_id", currentCategory.getParent_id());
         List<CategoryVo> newBrotherCategory = new ArrayList<>();
-        List<CategoryVo> brotherCategory = categoryService.queryList(params);
+        List<CategoryVo> brotherCategory = categoryService.queryListOfGoodsNotNull(params);
         if(!CollectionUtils.isEmpty(brotherCategory)){
         	for(CategoryVo sub : brotherCategory){
 //        		List<GoodsVo> goods = apiGoodsMapper.querBrotherCategory(sub.getId().toString());

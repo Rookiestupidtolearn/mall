@@ -366,6 +366,12 @@
     <select id="queryAllJDGoods" resultMap="goodsMap">
     	select * from nideshop_goods where source = 'JD'
     </select>
+
+
+    <select id="queryAllJDGoodsID" resultMap="goodsMap">
+    	select id,goods_sn from nideshop_goods where source = 'JD'
+    </select>
+
     <select id="queryGoods" resultMap="goodsMap">
     	select * from nideshop_goods where is_on_sale in (0,2) and source = 'JD'
     </select>

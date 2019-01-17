@@ -49,7 +49,7 @@ public class ApiCatalogController extends ApiBaseAction {
     @PostMapping(value = "index")
     public Object index(Integer id,
                         @RequestParam(value = "page", defaultValue = "1") Integer page,
-                        @RequestParam(value = "size", defaultValue = "10") Integer size) {
+                        @RequestParam(value = "size", defaultValue = "20") Integer size) {
         Map<String, Object> resultObj = new HashMap();
         Map params = new HashMap();
         params.put("page", page);
@@ -96,7 +96,7 @@ public class ApiCatalogController extends ApiBaseAction {
         //获取子分类数据
         if (null != currentCategory && null != currentCategory.getId()) {
             params.put("parent_id", currentCategory.getId());
-            List<CategoryVo> subCategorys = categoryService.queryList(params);
+            List<CategoryVo> subCategorys = categoryService.queryListOfGoodsNotNull(params);
             if(!CollectionUtils.isEmpty(subCategorys)){
             	for(CategoryVo vo : subCategorys){
 //            		List<GoodsVo> goods = apiGoodsMapper.quertGoodsByCategory(vo.getId().toString());
@@ -134,7 +134,8 @@ public class ApiCatalogController extends ApiBaseAction {
         //获取子分类数据
         if (null != currentCategory && null != currentCategory.getId()) {
             params.put("parent_id", currentCategory.getId());
-            List<CategoryVo> subCategorys = categoryService.queryList(params);
+//            List<CategoryVo> subCategorys = categoryService.queryList(params);
+            List<CategoryVo> subCategorys = categoryService.queryListOfGoodsNotNull(params);
             if(!CollectionUtils.isEmpty(subCategorys)){
             	for(CategoryVo vo : subCategorys){
             		if("热销".equals(vo.getName()) && "其他".equals(currentCategory.getName())){
