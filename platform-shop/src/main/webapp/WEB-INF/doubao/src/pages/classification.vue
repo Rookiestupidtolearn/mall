@@ -2,8 +2,7 @@
   <div class="classification">
   	<!--主体内容-->
   	<div class="searchTop" @click="searchRoute">
-  				<!--<mt-search v-model="value"  placeholder="商品搜索" class="wusearch" ></mt-search>-->
-  				<img src="../../static/images/search.jpg" class="search"/>
+  				<input type="text" placeholder="商品搜索" class="wusearch"  disabled="disabled"/>
   	</div>
   	<div class="content">
 	  	<div class="catalog" >
@@ -19,7 +18,7 @@
         </div>
         <div class="bd">
         	<a v-for="item in currentCategory.subCategoryList" @click="andriod('/pages/category/category?id='+item.id)">
-		        <img v-lazy="item.wap_banner_url"/>
+		        <img :src="item.wap_banner_url"/>
 		       	<p>{{item.name}}</p>
 	        </a>
         </div>
@@ -33,7 +32,6 @@
 <script>
 	import tabbar from '@/components/tabbar.vue'
 	import { Indicator } from 'mint-ui';
-	import { Lazyload } from 'mint-ui';
 //	import headbar from '@/components/headbar'
 	
 export default {
@@ -253,9 +251,19 @@ width:auto;
 		overflow: hidden;
 	}
 		.wusearch{
-			font-size:.3rem !important;
-			height:100%;
-		}
+    width: 6.9rem;
+    padding: 0 0 0 .35rem;
+    font-size: .28rem;
+    height: .71rem;
+    border: .12rem solid #d9d9d9;
+    background: url(http://yanxuan.nosdn.127.net/hxm/yanxuan-wap/p/20161201/style/img/icon-normal/search2-2fb94833aa.png) no-repeat .1rem .25rem;
+    background-size: .2rem;
+    background-color: #fff;
+	}
+	.wusearch::-webkit-input-placeholder {
+			font-size: .24rem;
+			color:#555;
+	 }
 		.search{
 			vertical-align: top;
 		}

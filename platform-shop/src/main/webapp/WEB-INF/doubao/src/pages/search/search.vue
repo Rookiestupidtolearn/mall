@@ -4,8 +4,10 @@
   		<!--<headbar :headFont = "headFont"></headbar>-->
   		
 	 	<div class="searchTop" >
-	 		<form action="" ref="formSubmit">
-	  			<mt-search v-model="value"  @keyup.enter.native="showList" @input="inputFocus" cancel-text="取消"  placeholder="商品搜索" class="wusearch" ></mt-search>
+	 		<form action="" ref="formSubmit" >
+	  			<!--<mt-search v-model="value"  @keyup.13="showResult()" @input="inputFocus" cancel-text="取消"  placeholder="商品搜索" class="wusearch" ></mt-search>-->
+	  			<input type="search"  v-model="value"  @input="inputFocus" placeholder="商品搜索" class="wusearch"  @keyup.13="showResult()" @focus="onFocus"/>
+	  			<span @click="blur"  v-show="oncancel">取消</span>
 	  		</form>
 	  	</div>
 	  	<div class="no-search" :style="{display: [value || defaultKeyword || cookie? 'none' : 'block']}" >
@@ -49,7 +51,7 @@
 			    <div class="cate-item">
 				    <div class="b">
 				      <div class="item" :class=" [(iindex + 1) % 2 == 0 ? 'item-b' : '']" @click="andriod('/pages/goods/goods?id='+iitem.id)" v-for="(iitem,iindex) in goodsList" >
-				        <img class="img" v-lazy="iitem.list_pic_url" background-size="cover"/>
+				        <img class="img" :src="iitem.list_pic_url" background-size="cover"/>
 				        <p class="name">{{iitem.name}}</p>
 				        <p class="price">￥{{iitem.market_price}}</p>
 				      </div>
@@ -67,7 +69,6 @@
 
 <script>
 import { Indicator } from 'mint-ui';
-import { Lazyload } from 'mint-ui';
 import returnhome from '@/components/returnHome';
 
 export default {
@@ -75,6 +76,7 @@ export default {
 	  components:{returnhome},
 	  data () {
 	    return {
+	    	oncancel:false,
 	    	scrollshow:true,
 	    	cookie:true,
     		value:'',
@@ -133,6 +135,17 @@ export default {
 	 		}
 		},
 	  methods:{
+	  	blur(){
+	  		this.value =  '';
+	  		document.getElementsByClassName('wusearch')[0].blur();
+	  		this.oncancel = false;
+	  	},
+	  	onFocus(){
+	  		this.oncancel = true;
+	  	},
+	  	showResult(){
+	  		this.showList();
+	  	},
 	  	andriod(e){   //商品详情与andriod和ios交互
 				var appHref = window.location.href;
 				var device = '';
@@ -233,16 +246,17 @@ export default {
 	  	inputFocus(){
 	  		var that = this;
       		that.searchStatus =  false,
-			   that.$http({
-			        method: 'post',
-			        url: that.$url+'search/helper',
-			        params:{keyword:that.value}
-		    	}).then(function (response) {
-		    			console.log(response.data);
-				})
+		   that.$http({
+		        method: 'post',
+		        url: that.$url+'search/helper',
+		        params:{keyword:that.value}
+	    	}).then(function (response) {
+	    			console.log(response.data);
+			})
 	  	},
 	  	showList(dataCookie){
 	  		let that = this;
+	  		that.oncancel = false; //搜索框取消按钮隐藏
 	  		if (that.$cookie.getCookie("searchKey") !== that.value){
 	  			that.$cookie.delCookie('scrollSearch');
 	  		}
@@ -302,10 +316,6 @@ export default {
 .cate-item .b .item:last-child{
 	margin-bottom:.3rem !important;
 }
-.wusearch{
-	font-size:.28rem !important;
-	height:100%;
-}
 .no-search{
     height: auto;
     overflow: hidden;
@@ -314,7 +324,7 @@ export default {
 .serach-keywords{
     background: #fff;
     width: 7.50rem;
-    height: auto;
+    height: .93rem;
     overflow: hidden;
     margin-bottom: .20rem;
 }
@@ -546,9 +556,30 @@ export default {
     text-align: center;
     color: #999;
 }
-.searchTop{
-	position: fixed;
-    width: 100%;
-    top: 0;
+form{
+	position: relative;
 }
+form span{
+	position: absolute;
+	top:0;
+	right:0;
+	font-size: .28rem;
+	color:#26a2ff;
+	padding:.27rem;
+	background-color: #d9d9d9;
+}
+.wusearch{
+    width: 7.5rem;
+    padding: 0 0 0 .35rem;
+    font-size: .28rem;
+    height: .95rem;
+    border: .12rem solid #d9d9d9;
+    background: url(http://yanxuan.nosdn.127.net/hxm/yanxuan-wap/p/20161201/style/img/icon-normal/search2-2fb94833aa.png) no-repeat .1rem .25rem;
+    background-size: .2rem;
+    background-color: #fff;
+}
+.wusearch::-webkit-input-placeholder {
+	font-size:.24rem;
+	color:#555;
+ }
 </style>

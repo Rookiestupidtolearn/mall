@@ -1,8 +1,7 @@
 <template>
   <div class="hello"  id="home" ref="viewBox">
   	<div class="searchTop" @click="searchRoute">
-  				<!--<mt-search v-model="value"  placeholder="商品搜索" class="wusearch" ></mt-search>-->
-  				<img src="../../static/images/search.jpg" class="search"/>
+  				<input type="text" placeholder="商品搜索" class="wusearch"  disabled="disabled"/>
   	</div>
     <mt-swipe :auto="3000" class="swiper" >
 		  <mt-swipe-item v-for="item in banner">
@@ -346,4 +345,18 @@ background-color: #fff;
 	font-size:.33rem;
 	line-height:.36rem;
 }
+.wusearch{
+    width: 6.9rem;
+    padding: 0 0 0 .35rem;
+    font-size: .28rem;
+    height: .71rem;
+    border: .12rem solid #d9d9d9;
+    background: url(http://yanxuan.nosdn.127.net/hxm/yanxuan-wap/p/20161201/style/img/icon-normal/search2-2fb94833aa.png) no-repeat .1rem .25rem;
+    background-size: .2rem;
+    background-color: #fff;
+}
+.wusearch::-webkit-input-placeholder {
+		font-size: .24rem;
+		color:#555;
+ }
 </style>

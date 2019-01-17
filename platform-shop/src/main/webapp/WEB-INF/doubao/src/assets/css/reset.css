@@ -63,8 +63,7 @@ body{	margin:0;	}
 /*搜索高度自适应处理*/
 .mint-searchbar-inner {height: .62rem !important; padding: .04rem .06rem !important;}
 .mint-searchbar{padding: .12rem .14rem !important;}
-.searchTop{	position: fixed;    top: 0;    z-index: 2;    width: 7.5rem !important;    height:.95rem !important;}
-.wusearch{	height:.95rem !important;}
+.searchTop{	position: fixed;    top: 0;    z-index: 2;    width: 7.5rem;    height:.95rem; font-size: 0}
 .mint-msgbox-message{ line-height:initial !important;}
 /*克拉按钮*/
 .mint-switch-input:checked + .mint-switch-core {    border-color:#cc9966 !important;    background-color: #cc9966 !important;}
