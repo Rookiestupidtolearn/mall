@@ -603,17 +603,61 @@ public class ApiCartController extends ApiBaseAction {
 	        }
         }
         // * 获取要购买的商品和总价
-        ArrayList checkedGoodsList = new ArrayList();
+        List<CartVo> checkedGoodsList = new ArrayList();
         BigDecimal goodsTotalPrice = BigDecimal.ZERO;
         if (type.equals("cart")) {
             Map<String, Object> cartData = (Map<String, Object>) this.getCart(loginUser);
 
             for (CartVo cartEntity : (List<CartVo>) cartData.get("cartList")) {
                 if (cartEntity.getChecked() == 1) {
-                    checkedGoodsList.add(cartEntity);
+                	GoodsVo goods = goodsService.queryObject(cartEntity.getGoods_id());
+        			if (goods == null) {
+        				continue;
+        			}
+        			// 判断是三方的还是自己的产品
+        			String source = goods.getSource();
+        			if (source.equals("JD") || source.equals("jindong")) {
+        				// 检验库存+上下架状态
+        				String pid = goods.getGoods_sn().substring(2, goods.getGoods_sn().length());
+        				// 库存
+        				Map<String, Object> stockMap = jdOrderService.checkStockSingle(pid, cartEntity.getNumber(), DEFAULT_ADDRESS);
+        				if (!stockMap.get("code").equals("200")) {
+        					resultObj.put("errno", "100");
+        					resultObj.put("errmsg", "不可出售");
+        					Integer[] arr1 = { cartEntity.getGoods_id() };
+        					goodsService.unSaleBatch(arr1, 3);
+        					continue;
+        				}
+        				// 上下架状态
+        				Map<String, Object> saleStatusMap = jdOrderService.checkSaleStatusSingle(Integer.parseInt(pid));
+        				if (!saleStatusMap.get("code").equals("200")) {
+        					resultObj.put("errno", "100");
+        					resultObj.put("errmsg", "不可出售");
+        					Integer[] arr1 = { cartEntity.getGoods_id() };
+        					goodsService.unSaleBatch(arr1, 3);
+        					continue;
+        				}
+        			    checkedGoodsList.add(cartEntity);
+        			    goodsTotalPrice.add(cartEntity.getMarket_price());
+        			}
+        			if (source.equals("system")) {
+        				// 校验自己的库存和上下架状态
+        				if (goods.getGoods_number() < cartEntity.getNumber()) {
+        					logger.info(
+        							"【系统商品库存不足无法正常下单】商品id:" + cartEntity.getGoods_id() + "剩余库存：" + goods.getGoods_number());
+        					continue;
+        				}
+        				if (goods.getIs_on_sale() == 0) {
+        					logger.info("【系统商品已经下架无法正常下单】商品上下架状态为：" + goods.getIs_on_sale());
+        					continue;
+        				}
+        			    checkedGoodsList.add(cartEntity);
+        			    goodsTotalPrice = goodsTotalPrice.add( cartEntity.getMarket_price().multiply(new BigDecimal(cartEntity.getNumber())));
+        			}
+                	
                 }
             }
-            goodsTotalPrice = (BigDecimal) ((HashMap) cartData.get("cartTotal")).get("checkedGoodsAmount");
+        //    goodsTotalPrice = (BigDecimal) ((HashMap) cartData.get("cartTotal")).get("checkedGoodsAmount");
         } else { // 是直接购买的
             BuyGoodsVo goodsVO = (BuyGoodsVo) J2CacheUtils.get(J2CacheUtils.SHOP_CACHE_NAME, "goods" + loginUser.getUserId() + "");
             if(goodsVO != null){
@@ -677,10 +721,11 @@ public class ApiCartController extends ApiBaseAction {
         BigDecimal actualPrice = orderTotalPrice.subtract(couponPrice).subtract(couponAmount);  //减去其它支付的金额后，要实际支付的金额
         
         //校验商品是否有库存,是否下架
-        JSONObject resObj = cartService.queryJdGoodsStatus(checkedGoodsList,addressId);
+//        JSONObject resObj = cartService.queryJdGoodsStatus(checkedGoodsList,addressId);
+//        
+//        resultObj.put("unSaleCarts", resObj.get("unSaleCarts"));//下架商品
+//        resultObj.put("unStoreCarts", resObj.get("unStoreCarts"));//无库存商品
         
-        resultObj.put("unSaleCarts", resObj.get("unSaleCarts"));//下架商品
-        resultObj.put("unStoreCarts", resObj.get("unStoreCarts"));//无库存商品
         resultObj.put("disCountAmount", couponAmount);//优惠金额
         resultObj.put("userAmount", userAmount);
         resultObj.put("freightPrice", freightPrice);  //配送费
@@ -692,6 +737,7 @@ public class ApiCartController extends ApiBaseAction {
         return toResponsSuccess(resultObj);
     }
 
+    
     /**
      * 选择优惠券列表
      */
