@@ -129,14 +129,9 @@ public class ApiSmsController {
         	countIP = 0;
 		}
 		 
-        if (count !=null) {
-            logger.info("今日手机号"+params.get("mobile")+"已发送"+count+"次");
-		}
-        if (countIP !=null) {
-        	logger.info("今日用手机号:"+params.get("mobile")+">>所在的IP地址"+validIP+"已发送"+countIP+"次");
-		}
+
         
-        if (count >=6) {
+        if (count >=5) {
         	if (StringUtils.isEmpty(params.get("imageCode"))) {
         		result.put("errno", 1);
             	result.put("msg", "请传入图形验证码");

@@ -215,9 +215,15 @@ public class ApiSendSMSService {
 				  
 			 }else{
 					level2.put("DOUBAO_SMS_IP_COUNT:"+ip, countIP,longCha);
+					 if (countIP !=null) {
+				        	logger.info("今日用手机号:"+mobile+">>所在的IP地址"+ip+"已发送"+countIP+"次");
+						}
 			 }
 			Map<String, Object> re = toResponsScuuessObject("短信发送成功");
 			re.put("count", count);
+	        if (count !=null) {
+	            logger.info("今日手机号"+mobile+"已发送"+count+"次");
+			}
 			return re;
 		} else {
 			return toResponsFalseObject("短信发送失败");
@@ -292,7 +298,7 @@ public class ApiSendSMSService {
 	    
 				//添加发短信的开关 
 				String isSend = "";
-				String smsConfig = sysConfigService.queryByKey("sendSms");
+				String smsConfig = sysConfigService.queryByKey("sendSms_market");
 				if (smsConfig == null) {
 					isSend = "true";
 				}
