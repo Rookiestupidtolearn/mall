@@ -257,14 +257,18 @@ public class ApiGoodsController extends ApiBaseAction {
         comment.put("count", commentCount);
         comment.put("data", commentInfo);
         //当前用户是否收藏
-        Map collectParam = new HashMap();
-        collectParam.put("user_id", getUserId());
-        collectParam.put("value_id", id);
-        collectParam.put("type_id", 0);
-        Integer userHasCollect = collectService.queryTotal(collectParam);
-        if (userHasCollect > 0) {
-            userHasCollect = 1;
+        Integer userHasCollect=0;
+        if(null!=userId && 0!=userId){//用户登录才查
+            Map collectParam = new HashMap();
+            collectParam.put("user_id", getUserId());
+            collectParam.put("value_id", id);
+            collectParam.put("type_id", 0);
+            userHasCollect = collectService.queryTotal(collectParam);
+            if (userHasCollect > 0) {
+                userHasCollect = 1;
+            }
         }
+
         
         if(null != userId){
         	//记录用户的足迹
