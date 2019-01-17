@@ -39,7 +39,20 @@
 	   methods:{
 	   	returnHome(){
 	   		console.log('点击返回首页');
-	   		this.$router.push({ path :'/'});
+	   		var appHref = window.location.href;
+			if(appHref.indexOf('device')>-1){
+				var device = appHref.substring(appHref.indexOf('device')).split('=')[1].split('&')[0];
+			}
+	    	if(device == 'android'){
+	    			window.android.goHome(); //调起andriod交互方法(由app发起。浏览器会报错正常)
+	    			return false;
+	    	}else if(device == 'ios'){
+	    			var message = {'url': 'goHome'}
+					window.webkit.messageHandlers.webViewApp.postMessage(message);
+					return false;
+	    	}else{
+	    		this.$router.push({ path :'/'});
+	    	}
 	   	},
 	   	show(){
 	   		this.scrolldown = true;

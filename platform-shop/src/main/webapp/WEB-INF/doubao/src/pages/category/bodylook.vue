@@ -319,7 +319,22 @@
 			
 		},
 		detailHref(e){
-			this.$router.push(e)
+			var appHref = window.location.href;
+			var device = '';
+			var comHref = window.location.origin;
+			if(appHref.indexOf('device')>-1){
+				device = appHref.split('&')[1].split('=')[1];
+			}
+	    	if(device == 'android'){
+	    			window.android.productDetail(comHref +'/#'+e); //调起andriod交互方法(由app发起。浏览器会报错正常)
+	    			return false;
+	    	}else if(device == 'ios'){
+	    			var message = {'url':comHref +'/#'+ e}
+						window.webkit.messageHandlers.webViewApp.postMessage(message);
+						return false;
+	    	}else{
+	    		this.$router.push(e);
+	    	}
 		},
 	  	cutNumber(){
       		this.number = (this.number - 1 > 1) ? this.number - 1 : 1

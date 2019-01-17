@@ -251,14 +251,15 @@ width:auto;
 		overflow: hidden;
 	}
 		.wusearch{
-    width: 6.9rem;
+    width: 7.5rem;
     padding: 0 0 0 .35rem;
     font-size: .28rem;
-    height: .71rem;
+    height: .95rem;
     border: .12rem solid #d9d9d9;
     background: url(http://yanxuan.nosdn.127.net/hxm/yanxuan-wap/p/20161201/style/img/icon-normal/search2-2fb94833aa.png) no-repeat .1rem .25rem;
     background-size: .2rem;
     background-color: #fff;
+    box-sizing: border-box;
 	}
 	.wusearch::-webkit-input-placeholder {
 			font-size: .24rem;

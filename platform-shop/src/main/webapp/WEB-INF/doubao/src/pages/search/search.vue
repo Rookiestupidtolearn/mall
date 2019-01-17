@@ -162,8 +162,8 @@ export default {
 		    			return false;
 		    	}else if(device == 'ios'){
 		    			var message = {'url':comHref +'/#'+ e}
-							window.webkit.messageHandlers.webViewApp.postMessage(message);
-							return false;
+						window.webkit.messageHandlers.webViewApp.postMessage(message);
+						return false;
 		    	}else{
 		    		this.$router.push(e);
 		    	}

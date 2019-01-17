@@ -250,8 +250,21 @@ export default {
 				        url:that.$url+ 'order/cancelOrder.options',
 				        data:{orderId:id}
 			    	}).then(function (res) {
-			    		if(res.data.errno == 0){
-			    			that.$router.push('/pages/ucenter/order')
+				    	if(res.data.errno == 0){
+			    			var hrefD = window.location.href;
+							if(hrefD.indexOf('device')>-1){
+					    		var device = hrefD.split('&')[1].split('=')[1];
+					    	}
+					    	if(device == 'android'){
+					    			window.android.goOrderList(); //调起andriod交互方法(由app发起。浏览器会报错正常)
+					    			return false;
+					    	}else if(device == 'ios'){
+					    			var message = {'url': 'goOrderList'}
+									window.webkit.messageHandlers.webViewApp.postMessage(message);
+									return false;
+					    	}else{
+					    		that.$router.push('/pages/ucenter/order');
+					    	}
 			    		}else{
 			    			MessageBox({
 							  	title: ' ',
