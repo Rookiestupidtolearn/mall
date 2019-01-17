@@ -18,7 +18,7 @@
 	            </div>
 	          </div>
 	      	</div>
-  			<ul class="btngroup" @click="cancelShop">知道了，去重新下单</ul>
+  			<ul class="btngroupT" @click="cancelShop">知道了，去重新下单</ul>
   		</div>
 	</div>
 </template>
@@ -83,7 +83,7 @@
 	    margin-top: .3rem;
 	    padding-bottom:.5rem;
 	}
-	.bgShow .btngroup{
+	.bgShow .btngroupT{
 		width:100%;
 		overflow: hidden;
 		font-size:.29rem;
