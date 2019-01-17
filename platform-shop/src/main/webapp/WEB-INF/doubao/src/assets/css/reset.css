@@ -67,3 +67,4 @@ body{	margin:0;	}
 .mint-msgbox-message{ line-height:initial !important;}
 /*克拉按钮*/
 .mint-switch-input:checked + .mint-switch-core {    border-color:#cc9966 !important;    background-color: #cc9966 !important;}
+input::-webkit-search-cancel-button{ display: none; }

@@ -30,7 +30,7 @@
 		      <div class="item" hover-class="navigator-hover" v-for="item in hotKeyword">{{item}}</div>
 		    </div>
 	  	</div>
- 		<div class="search-result"  :data-c="searchStatus"  :data-d="goodsList.length"  v-if="searchStatus && goodsList.length" >
+ 		<div class="search-result"  :data-c="searchStatus"  :data-d="goodsList.length"  v-if="searchStatus && goodsList.length" v-show="dishow">
 		    <div class="sort ">
 			    <div class="sort-box">
 				      <div  class="item" :class="[currentSortType == 'default' ? 'active' : '']" @click="openSortFilter('defaultSort')" >
@@ -76,6 +76,7 @@ export default {
 	  components:{returnhome},
 	  data () {
 	    return {
+	    	dishow:false,
 	    	oncancel:false,
 	    	scrollshow:true,
 	    	cookie:true,
@@ -138,7 +139,10 @@ export default {
 	  	blur(){
 	  		this.value =  '';
 	  		document.getElementsByClassName('wusearch')[0].blur();
-	  		this.oncancel = false;
+	  		this.oncancel = false; //取消按钮
+	  		this.dishow=false; //结果页面
+	  		this.$cookie.delCookie('search');
+	  		this.$cookie.delCookie('searchKey');
 	  	},
 	  	onFocus(){
 	  		this.oncancel = true;
@@ -194,6 +198,8 @@ export default {
 		      this.showList();
 	  	},
 	  	openSortFilter(currentId){
+	  		this.$cookie.delCookie('scrollSearch'); //每次点击重置为0
+	  		window.scrollTo(0,0);
 		    switch (currentId) {
 		      case 'categoryFilter':
 		          this.categoryFilter =  !this.categoryFilter;
@@ -256,7 +262,8 @@ export default {
 	  	},
 	  	showList(dataCookie){
 	  		let that = this;
-	  		that.oncancel = false; //搜索框取消按钮隐藏
+//	  		that.oncancel = false; //搜索框取消按钮隐藏
+			that.dishow=true; //显示结果页
 	  		if (that.$cookie.getCookie("searchKey") !== that.value){
 	  			that.$cookie.delCookie('scrollSearch');
 	  		}
