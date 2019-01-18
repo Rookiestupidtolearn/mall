@@ -28,7 +28,9 @@ public class GoodsCouponConfigVo implements Serializable{
 	 private String del_flag;
 	 private Double activity_matching; 
 	 private Double normal_matching;
-
+	 private Integer order_id;
+     private BigDecimal coupon_price;
+     
 	public Integer getId() {
 		return id;
 	}
@@ -123,6 +125,22 @@ public class GoodsCouponConfigVo implements Serializable{
 
 	public void setPayMatching(double payMatching) {
 		this.payMatching = payMatching;
+	}
+
+	public Integer getOrder_id() {
+		return order_id;
+	}
+
+	public void setOrder_id(Integer order_id) {
+		this.order_id = order_id;
+	}
+
+	public BigDecimal getCoupon_price() {
+		return coupon_price;
+	}
+
+	public void setCoupon_price(BigDecimal coupon_price) {
+		this.coupon_price = coupon_price;
 	}
 	 
 }

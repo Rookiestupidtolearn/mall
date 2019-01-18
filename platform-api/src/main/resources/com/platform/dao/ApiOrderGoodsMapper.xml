@@ -21,6 +21,12 @@
          <result property="channel" column="channel"/>
         <result property="createTime" column="create_time"/>
         <result property="goodStatus" column="good_status"/>
+        <result property="goods_total_price" column="goods_total_price"/>
+        <result property="caller_price" column="caller_price"/>
+        <result property="caller_total_price" column="caller_total_price"/>
+        <result property="logistics_no" column="logistics_no"/>
+         <result property="shipment_name" column="shipment_name"/>
+        
     </resultMap>
 
     <select id="queryObject" resultMap="orderGoodsMap">
@@ -60,14 +66,18 @@
 			`goods_sn`, 
 			`product_id`, 
 			`number`, 
+			`goods_total_price`, 
 			`market_price`, 
 			`retail_price`, 
+			`caller_price`, 
+			`caller_total_price`, 
 			`goods_specifition_name_value`, 
 			`is_real`, 
 			`goods_specifition_ids`, 
 			`list_pic_url`,
 			`channel`,
 			`create_time`,
+			`logistics_no`,
 			`good_status`)
 		
 		values
@@ -78,14 +88,18 @@
 			#{goods_sn},
 			#{product_id},
 			#{number},
+			#{goods_total_price},
 			#{market_price},
 			#{retail_price},
+			#{caller_price},
+			#{caller_total_price},
 			#{goods_specifition_name_value},
 			#{is_real},
 			#{goods_specifition_ids},
 			#{list_pic_url},
 	    	#{channel},
 			#{createTime},
+			#{logistics_no},
 			#{goodStatus})
 	</insert>
 
@@ -108,7 +122,9 @@
             <if test="list_pic_url != null">`list_pic_url` = #{list_pic_url},</if>
             <if test="channel != null">`channel` = #{channel}, </if>
 			<if test="createTime != null">`create_time` = #{createTime}, </if>
-			<if test="goodStatus != null">`good_status` = #{goodStatus}</if>
+			<if test="goodStatus != null">`good_status` = #{goodStatus},</if>
+			<if test="shipment_name != null">`shipment_name` = #{shipment_name},</if>
+			<if test="logistics_no != null">`logistics_no` = #{logistics_no}</if>
         </set>
         where id = #{id}
     </update>

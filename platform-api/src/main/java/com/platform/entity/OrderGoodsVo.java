@@ -46,6 +46,12 @@ public class OrderGoodsVo implements Serializable {
     private Date createTime;
     //订单的状态 0-初始;
     private Integer goodStatus;
+    
+    private BigDecimal goods_total_price ; //商品总价格
+    private BigDecimal caller_price;           // 单品克拉金额
+    private BigDecimal caller_total_price;  // 使用的克拉总金额
+    private String logistics_no  ;         //物流单号 
+    private String shipment_name;  //快递公司
 
     public Integer getId() {
         return id;
@@ -173,6 +179,46 @@ public class OrderGoodsVo implements Serializable {
 
 	public void setGoodStatus(Integer goodStatus) {
 		this.goodStatus = goodStatus;
+	}
+
+	public BigDecimal getGoods_total_price() {
+		return goods_total_price;
+	}
+
+	public void setGoods_total_price(BigDecimal goods_total_price) {
+		this.goods_total_price = goods_total_price;
+	}
+
+	public BigDecimal getCaller_price() {
+		return caller_price;
+	}
+
+	public void setCaller_price(BigDecimal caller_price) {
+		this.caller_price = caller_price;
+	}
+
+	public BigDecimal getCaller_total_price() {
+		return caller_total_price;
+	}
+
+	public void setCaller_total_price(BigDecimal caller_total_price) {
+		this.caller_total_price = caller_total_price;
+	}
+
+	public String getLogistics_no() {
+		return logistics_no;
+	}
+
+	public void setLogistics_no(String logistics_no) {
+		this.logistics_no = logistics_no;
+	}
+
+	public String getShipment_name() {
+		return shipment_name;
+	}
+
+	public void setShipment_name(String shipment_name) {
+		this.shipment_name = shipment_name;
 	}
     
     

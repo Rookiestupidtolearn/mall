@@ -319,8 +319,7 @@ public class ApiOrderService {
 
 				}
 
-				goodsTotalPrice = goodsTotalPrice
-						.add(cartItem.getMarket_price().multiply(new BigDecimal(cartItem.getNumber())));
+				goodsTotalPrice = goodsTotalPrice.add(cartItem.getMarket_price().multiply(new BigDecimal(cartItem.getNumber())));
 				orderGoodsList.add(cartItem);
 				soureMap.put(cartItem.getGoods_id().toString(), source);
 			}
@@ -399,12 +398,11 @@ public class ApiOrderService {
 			orderInfo.setOrder_type("0");
 		}
 		orderInfo.setCoupon_price(couponAmount);
-
 		
 		// 开启事务，插入订单信息和订单商品
 		apiOrderMapper.save(orderInfo);
 		//查询可以抵扣金额
-		discountAmount = queryUserDisCountAmount(orderGoodsList,orderInfo);
+		discountAmount = this.queryUserDisCountAmount(orderGoodsList,orderInfo);
 		if (null == orderInfo.getId()) {
 			resultObj.put("errno", 1);
 			resultObj.put("errmsg", "订单提交失败");
@@ -420,9 +418,20 @@ public class ApiOrderService {
 		 */
 
 		String pidNums = "";
-		// 统计商品总价
+		BigDecimal  retail_price = BigDecimal.ZERO ;  //结算总价
+		Integer  goods_total_num = 0; // 商品总数量
+	
 		List<OrderGoodsVo> orderGoodsData = new ArrayList<OrderGoodsVo>();// 目前没用
 		for (CartVo goodsItem : orderGoodsList) {
+		    BigDecimal 	coupon_price  =  BigDecimal.ZERO;
+		     Map<String, Object> map = new HashMap<String, Object>();
+		     map.put("order_id", orderInfo.getId());
+		     map.put("goods_id", goodsItem.getGoods_id());
+			 List<GoodsCouponConfigVo> configVos = goodsCouponConfigMapper.getCouponList(map);
+            if (!CollectionUtils.isEmpty(configVos)) {
+            	coupon_price = configVos.get(0).getCoupon_price();
+			}
+			
 			OrderGoodsVo orderGoodsVo = new OrderGoodsVo();
 			orderGoodsVo.setOrder_id(orderInfo.getId());
 			orderGoodsVo.setGoods_id(goodsItem.getGoods_id());
@@ -431,8 +440,12 @@ public class ApiOrderService {
 			orderGoodsVo.setGoods_name(goodsItem.getGoods_name());
 			orderGoodsVo.setList_pic_url(goodsItem.getList_pic_url());
 			orderGoodsVo.setMarket_price(goodsItem.getMarket_price());
+			//商品总价格
+			orderGoodsVo.setGoods_total_price(goodsItem.getMarket_price().multiply(new BigDecimal(goodsItem.getNumber())));
 			orderGoodsVo.setRetail_price(goodsItem.getRetail_price());
 			orderGoodsVo.setNumber(goodsItem.getNumber());
+			orderGoodsVo.setCaller_price(coupon_price);
+			orderGoodsVo.setCaller_total_price(coupon_price.multiply(new BigDecimal(goodsItem.getNumber())));
 			orderGoodsVo.setGoods_specifition_name_value(goodsItem.getGoods_specifition_name_value());
 			orderGoodsVo.setGoods_specifition_ids(goodsItem.getGoods_specifition_ids());
 			orderGoodsVo.setChannel(soureMap.get(goodsItem.getGoods_id() + ""));
@@ -441,6 +454,11 @@ public class ApiOrderService {
 			apiOrderGoodsMapper.save(orderGoodsVo);
 			pidNums += orderGoodsVo.getGoods_sn().substring(2, orderGoodsVo.getGoods_sn().length()) + "_"
 					+ orderGoodsVo.getNumber() + ",";
+			//结算总价
+			retail_price = goodsItem.getRetail_price().multiply(new BigDecimal("1")).add(retail_price);
+			//商品的总数量
+			goods_total_num += goodsItem.getNumber();
+			
 		}
 		if (StringUtils.isNotEmpty(pidNums)) {
 			pidNums = pidNums.substring(0, pidNums.length() - 1);
@@ -453,6 +471,8 @@ public class ApiOrderService {
 		BigDecimal actual_price =  order.getActual_price().subtract(discountAmount);
 		actual_price = actual_price.add(orderInfo.getShipping_fee());
 		order.setActual_price(actual_price);
+		order.setRetail_price(retail_price);
+		order.setGoods_total_num(goods_total_num);
 		apiOrderMapper.update(order);
 		// 清空已购买的商品
 		apiCartMapper.deleteByCart(loginUser.getUserId(), 1, 1);
@@ -528,6 +548,7 @@ public class ApiOrderService {
 	 * @param carts
 	 * @return
 	 */
+	@Transactional
 	public BigDecimal queryUserDisCountAmount(List<CartVo> carts,OrderVo order) {
 		BigDecimal disCountAmount = BigDecimal.ZERO;
 		BigDecimal couponAmount = BigDecimal.ZERO;
