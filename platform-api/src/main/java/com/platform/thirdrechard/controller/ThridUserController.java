@@ -59,13 +59,13 @@ public class ThridUserController {
                 userVo =apiUserService.saveFromThrid(userVo);
                 map.put("code","success");
                 map.put("msg","成功");
-                map.put("data",userVo.getUserId());
+                map.put("userId",userVo.getUserId());
                 logger.info("成功创建第三方用户，手机号为=="+mobile+"用户id为"+user.getUserId());
                 return R.ok(map);
             }else {
                 map.put("code","success");
                 map.put("msg","成功");
-                map.put("data",user.getUserId());
+                map.put("userId",user.getUserId());
                 logger.info("用户已存在成功返回用户，手机号为=="+mobile+"用户id为"+user.getUserId());
                 return R.ok(map);
 
