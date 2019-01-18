@@ -45,7 +45,9 @@ export default {
 	        url:that.$url+ 'collect/list.options',
 	        data:{typeId:0}
     	}).then(function (res) {
-    		that.collectList = res.data.data;
+    		if(res.data.errno != 401){
+    			that.collectList = res.data.data;
+    		}
 		})
   	}
   }
