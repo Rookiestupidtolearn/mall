@@ -12,10 +12,7 @@ import org.apache.poi.ss.formula.functions.T;
 import org.apache.shiro.util.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
@@ -135,6 +132,15 @@ public class ApiTestController extends ApiBaseAction {
 	/**
 	 * 获取用户信息
 	 */
+	@PostMapping("user/userInfo")
+	@IgnoreAuth
+	public String userInfo(String mobile) {
+		Map<String,String> paramMap =new HashMap<>();
+		paramMap.put("mobile",mobile);
+		UserVo userVo=userService.thridQueryUserInfo(paramMap);
+		return userVo.getUserId().toString();
+	}
+
 	@PostMapping("userInfo")
 	public R userInfo(@LoginUser UserVo user) {
 		return R.ok().put("user", user);

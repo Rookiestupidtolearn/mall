@@ -56,4 +56,12 @@ public interface ApiUserMapper extends BaseDao<UserVo> {
      * @return
      */
 	List<UserVo> queryUserInfo(Map paramMap);
+
+    UserVo thridQueryUserInfo(Map paramMap);
+
+    /**
+     * 添加第三方用户
+     * @return
+     */
+	 void saveFromThrid(UserVo userVo);
 }
