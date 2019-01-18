@@ -9,13 +9,16 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.platform.cache.J2CacheUtils;
 import com.platform.dao.ApiOrderGoodsMapper;
+import com.platform.dao.ApiOrderMapper;
 import com.platform.dao.JdOrderMapper;
 import com.platform.entity.JdOrderVo;
 import com.platform.entity.OrderGoodsVo;
+import com.platform.entity.OrderVo;
 import com.platform.youle.entity.ReponseOrderDetailEntity;
 import com.platform.youle.entity.ResponseOrderTrackEntity;
 import com.platform.youle.service.AbsApiOrderService;
@@ -26,6 +29,7 @@ import com.platform.youle.service.AbsApiOrderService;
  * @author Administrator
  *
  */
+@Component("autoUpdateLogisticsStateTask")
 public class AutoUpdateLogisticsStateTask {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
@@ -40,6 +44,9 @@ public class AutoUpdateLogisticsStateTask {
 
 	@Autowired
 	private ApiOrderGoodsMapper apiOrderGoodsMapper;
+	
+	@Autowired
+	private ApiOrderMapper apiOrderMapper;
 	
 	public void updateLogisticsState() {
 		logger.info("更新物流信息开始:" + autoUpdateLogisticsStateTask);
@@ -57,7 +64,7 @@ public class AutoUpdateLogisticsStateTask {
 			}
 			// 处理业务
 			Map<String, Object> map = new HashMap<>();
-			map.put("jdSatus", "waiting_shipment");
+			map.put("jdStatus", "waiting_shipment");
 			List<JdOrderVo> list = jdOrderMapper.queryList(map);
 			if (!CollectionUtils.isEmpty(list)) {
 				// 查询京东的订单状态
@@ -71,11 +78,13 @@ public class AutoUpdateLogisticsStateTask {
 						logger.info("查询京东的订单详情状态失败！，暂不做处理");
 						continue;
 					}
-					if (StringUtils.isEmpty(resultOrderDetail.getStatus())) {
+					
+					if (resultOrderDetail.getRESULT_DATA() == null) {
 						logger.info("查询京东的订单详情状态为空！，暂不做处理，三方单号为：" + jdOrder.getOrderKey());
 						continue;
 					}
-					String status = resultOrderDetail.getStatus();
+					
+					String status = resultOrderDetail.getRESULT_DATA().getStatus();
 					if (status.equals("waiting_shipment")) {
 						logger.info("查询京东的订单详情状态为等待发货！，暂不做处理");
 						continue;
@@ -95,12 +104,17 @@ public class AutoUpdateLogisticsStateTask {
 						continue;
 					}
 					// 查询是否有物流单号
-					String shipment_order = response.getShipment_order();
+					if (response.getRESULT_DATA() == null) {
+						logger.info("查询京东的订单详情状态失败:" + response.getERROR_MESSAGE());
+						continue;
+					}
+					String shipment_order = response.getRESULT_DATA().getShipment_order();
+					String  shipmentName = response.getRESULT_DATA().getShipment_name();
 					if (StringUtils.isNotEmpty(shipment_order)) {
 						// 更新jd_order,nideshop_order_goods
 						jdOrder.setJdStatus(status);
 						jdOrder.setOrderStatus(3);// 已发货
-					   this.updateLogisticsNo(jdOrder, response.getShipment_order(), response.getShipment_name());
+					   this.updateLogisticsNo(jdOrder, shipment_order, shipmentName);
 					}
 
 				}
@@ -123,9 +137,23 @@ public class AutoUpdateLogisticsStateTask {
 	@Transactional
    private void updateLogisticsNo(JdOrderVo jdOrderVo,String logisticsNo,String shipmentName){
 	     logger.info("开始更新物流状态京东订单号"+jdOrderVo.getThirdOrder()+"，订单的id"+jdOrderVo.getId());
-		 jdOrderMapper.update(jdOrderVo);
+	
 		 //查询子订单
-		 List<OrderGoodsVo> orderGoodsVos =  apiOrderGoodsMapper.queryOrderGoods(jdOrderVo.getId());
+		 Map<String, Object> map  = new HashMap<>();
+		 map.put("orderSn", jdOrderVo.getThirdOrder());
+		 //查询本地订单
+		 List<OrderVo> shopOrder  = apiOrderMapper.queryList(map);
+		Integer orderId = null;
+		 if (!CollectionUtils.isEmpty(shopOrder)) {
+			 orderId = shopOrder.get(0).getId();
+		}
+		 if (orderId == null) {
+			logger.info("未查询到本地订单"+jdOrderVo.getThirdOrder());
+			return ;
+		}
+		 Map<String, Object> mapGoods  = new HashMap<>();
+		 mapGoods.put("order_id", orderId);
+		 List<OrderGoodsVo> orderGoodsVos =  apiOrderGoodsMapper.queryList(mapGoods);
 		 if (!CollectionUtils.isEmpty(orderGoodsVos)) {
 			  for (OrderGoodsVo  orderGoods :orderGoodsVos) {
 				 if (StringUtils.isEmpty(orderGoods.getLogistics_no())) {
@@ -137,7 +165,7 @@ public class AutoUpdateLogisticsStateTask {
 			}
 			 
 		}
-		 
+		 jdOrderMapper.update(jdOrderVo);
    }
 	
 	

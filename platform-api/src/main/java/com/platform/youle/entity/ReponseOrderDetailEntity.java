@@ -1,17 +1,7 @@
 package com.platform.youle.entity;
 
-import java.util.Map;
+import com.platform.youle.entity.result.ResultDadaOrderDetailEntity;
 
-public class ReponseOrderDetailEntity extends ResponseBaseEntity<Map> {
+public class ReponseOrderDetailEntity extends ResponseBaseEntity<ResultDadaOrderDetailEntity> {
 
-	private String status;
-
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-	
 }

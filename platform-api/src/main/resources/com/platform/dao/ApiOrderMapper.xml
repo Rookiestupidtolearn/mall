@@ -62,6 +62,9 @@
              <if test="shippingNo != null  and shippingNo != '' ">
                 and shipping_no = #{shippingNo}
             </if>
+             <if test="orderSn != null  and orderSn != '' ">
+                and order_sn = #{orderSn}
+            </if>
              <if test="orderStatus != null ">
                 and order_status = #{orderStatus}
             </if>

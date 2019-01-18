@@ -124,7 +124,7 @@
 			<if test="createTime != null">`create_time` = #{createTime}, </if>
 			<if test="goodStatus != null">`good_status` = #{goodStatus},</if>
 			<if test="shipment_name != null">`shipment_name` = #{shipment_name},</if>
-			<if test="logistics_no != null">`logistics_no` = #{logisticsNo}</if>
+			<if test="logistics_no != null">`logistics_no` = #{logistics_no}</if>
         </set>
         where id = #{id}
     </update>
