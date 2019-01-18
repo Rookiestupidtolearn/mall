@@ -56,7 +56,7 @@ public class ApiUserService {
         userDao.save(userVo);
     }
     public UserVo saveFromThrid(UserVo userVo) {
-        userDao.save(userVo);
+        userDao.saveFromThrid(userVo);
         return userVo;
     }
 
