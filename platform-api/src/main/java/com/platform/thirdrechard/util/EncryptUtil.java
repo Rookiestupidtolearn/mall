@@ -59,12 +59,12 @@ public class EncryptUtil {
     public static void main(String[] args) throws Exception {
 //    	//使用TreeMap
 		TreeMap<String, Object> treeMap	= new TreeMap<String, Object>();
-		treeMap.put("amount", 			1);
-		treeMap.put("mobile", "17732087738");
-		treeMap.put("thirdTradeNo", "123123123332sa");
-		treeMap.put("platformType", "2");//充值类型
-		treeMap.put("cardType", "2");//充值类型
-		treeMap.put("queryCheckUrl", "http://sulaiqian.huaqianyueshang.com/qsdMallOrder/queryCardOrder");//充值类型
+//		treeMap.put("amount", 			1);
+		treeMap.put("mobile", "15236185888");
+//		treeMap.put("thirdTradeNo", "123123123332sa");
+//		treeMap.put("platformType", "2");//充值类型
+//		treeMap.put("cardType", "2");//充值类型
+//		treeMap.put("queryCheckUrl", "http://sulaiqian.huaqianyueshang.com/qsdMallOrder/queryCardOrder");//充值类型
 		JSONObject json =new JSONObject(treeMap);
 		String content = json.toString();
         System.out.println("加密前：" + content);  

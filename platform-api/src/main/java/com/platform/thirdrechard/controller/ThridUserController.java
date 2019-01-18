@@ -34,6 +34,7 @@ public class ThridUserController {
     @PostMapping("checkUser")
     public R checkUser(String encrypt ){
         try {
+            logger.info("第三方传过来的数据是》》》》》》》》" + encrypt);
         if (StringUtils.isEmpty(encrypt)) {
             return R.error(1000,"解析密文失败");
         }
@@ -60,7 +61,7 @@ public class ThridUserController {
                 map.put("code","success");
                 map.put("msg","成功");
                 map.put("userId",userVo.getUserId());
-                logger.info("成功创建第三方用户，手机号为=="+mobile+"用户id为"+user.getUserId());
+                logger.info("成功创建第三方用户，手机号为=="+mobile+"用户id为"+userVo.getUserId());
                 return R.ok(map);
             }else {
                 map.put("code","success");
@@ -74,7 +75,7 @@ public class ThridUserController {
             e.printStackTrace();
         }
 
-        return R.error(1002,"未知错误");
+        return R.error(1002,"密文错误");
     }
 
     /**
