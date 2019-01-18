@@ -55,6 +55,10 @@ public class ApiUserService {
     public void save(UserVo userVo) {
         userDao.save(userVo);
     }
+    public UserVo saveFromThrid(UserVo userVo) {
+        userDao.save(userVo);
+        return userVo;
+    }
 
     public void update(UserVo user) {
         userDao.update(user);
@@ -133,6 +137,9 @@ public class ApiUserService {
 	public List<UserVo> queryUserInfo(Map paramMap) {
 		return userDao.queryUserInfo(paramMap);
 	}
+    public UserVo thridQueryUserInfo(Map paramMap) {
+        return userDao.thridQueryUserInfo(paramMap);
+    }
 
     
 }

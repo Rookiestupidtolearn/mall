@@ -5,8 +5,8 @@
 
     <!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="com.platform.entity.UserVo" id="userMap">
-        <result property="userId" column="id"/>
-          <result property="username" column="username"/>
+        <result property="userId" column="id"  />
+        <result property="username" column="username"/>
         <result property="password" column="password"/>
         <result property="gender" column="gender"/>
         <result property="birthday" column="birthday"/>
@@ -53,7 +53,7 @@
 	</select>
 	
 	
-	<select id="queryUserInfo" parameterType="java.util.Map" resultType="com.platform.entity.UserVo">
+	<select id="queryUserInfo" parameterType="java.util.Map" resultMap="userMap">
 		select * from nideshop_user where 1=1
 		<if test="userid != null"> and id = #{userid}</if>
 		<if test="username != null and username.trim() != ''"> and username = #{username}</if>
@@ -62,6 +62,16 @@
 		<if test="mobile != null and mobile.trim() != ''"> and mobile = #{mobile}</if>
 		<if test="weixinOpenid != null and weixinOpenid.trim() != ''"> and weixinOpenid = #{weixinOpenid}</if>
 	</select>
+
+    <select id="thridQueryUserInfo" parameterType="java.util.Map" resultMap="userMap">
+        select * from nideshop_user where 1=1
+        <if test="userid != null"> and id = #{userid}</if>
+        <if test="username != null and username.trim() != ''"> and username = #{username}</if>
+        <if test="gender != null"> and gender = #{gender} </if>
+        <if test="nickname != null and nickname.trim() != ''"> and nickname = #{nickname}</if>
+        <if test="mobile != null and mobile.trim() != ''"> and mobile = #{mobile}</if>
+        <if test="weixinOpenid != null and weixinOpenid.trim() != ''"> and weixinOpenid = #{weixinOpenid}</if>
+    </select>
 
     <select id="queryByOpenId" resultMap="userMap">
         select * from nideshop_user
@@ -228,4 +238,46 @@
 			where shop_user_id = #{userId}  and tran_type != 3 order by create_time desc
     </select>
 
+    <!--<insert id="addUser" parameterType="SysRole" useGeneratedKeys="true" keyProperty="userId" keyColumn="id">-->
+	<!--insert into nideshop_user (-->
+		<!--name,status-->
+	<!--)-->
+	<!--values(-->
+	<!--        #{name,jdbcType=VARCHAR},-->
+		<!--#{status,jdbcType=VARCHAR},-->
+	<!--)-->
+<!--</insert>-->
+
+    <insert id="saveFromThrid"  parameterType="com.platform.entity.UserVo" useGeneratedKeys="true" keyProperty="userId" keyColumn="id">
+	insert into nideshop_user(
+			`username`,
+			`password`,
+			`gender`,
+			`birthday`,
+			`register_time`,
+			`last_login_time`,
+			`last_login_ip`,
+			`user_level_id`,
+			`nickname`,
+			`mobile`,
+			`register_ip`,
+			`avatar`,
+			`weixin_openid`,
+			`idcard`)
+		values(
+			#{username},
+			#{password},
+			#{gender},
+			#{birthday},
+			#{registerTime},
+			#{lastLoginTime},
+			#{lastLoginIp},
+			#{userLevelId},
+			#{nickname},
+			#{mobile},
+			#{registerIp},
+			#{avatar},
+			#{weixinOpenid},
+			#{idcard})
+	</insert>
 </mapper>
