@@ -319,8 +319,7 @@ public class ApiOrderService {
 
 				}
 
-				goodsTotalPrice = goodsTotalPrice
-						.add(cartItem.getMarket_price().multiply(new BigDecimal(cartItem.getNumber())));
+				goodsTotalPrice = goodsTotalPrice.add(cartItem.getMarket_price().multiply(new BigDecimal(cartItem.getNumber())));
 				orderGoodsList.add(cartItem);
 				soureMap.put(cartItem.getGoods_id().toString(), source);
 			}
@@ -425,8 +424,11 @@ public class ApiOrderService {
 		List<OrderGoodsVo> orderGoodsData = new ArrayList<OrderGoodsVo>();// 目前没用
 		for (CartVo goodsItem : orderGoodsList) {
 		    BigDecimal 	coupon_price  =  BigDecimal.ZERO;
-			 List<GoodsCouponConfigVo> configVos = goodsCouponConfigMapper.getCouponList(orderInfo.getId(), goodsItem.getGoods_id());
-            if (CollectionUtils.isEmpty(configVos)) {
+		     Map<String, Object> map = new HashMap<String, Object>();
+		     map.put("order_id", orderInfo.getId());
+		     map.put("goods_id", goodsItem.getGoods_id());
+			 List<GoodsCouponConfigVo> configVos = goodsCouponConfigMapper.getCouponList(map);
+            if (!CollectionUtils.isEmpty(configVos)) {
             	coupon_price = configVos.get(0).getCoupon_price();
 			}
 			
@@ -469,6 +471,8 @@ public class ApiOrderService {
 		BigDecimal actual_price =  order.getActual_price().subtract(discountAmount);
 		actual_price = actual_price.add(orderInfo.getShipping_fee());
 		order.setActual_price(actual_price);
+		order.setRetail_price(retail_price);
+		order.setGoods_total_num(goods_total_num);
 		apiOrderMapper.update(order);
 		// 清空已购买的商品
 		apiCartMapper.deleteByCart(loginUser.getUserId(), 1, 1);
@@ -544,6 +548,7 @@ public class ApiOrderService {
 	 * @param carts
 	 * @return
 	 */
+	@Transactional
 	public BigDecimal queryUserDisCountAmount(List<CartVo> carts,OrderVo order) {
 		BigDecimal disCountAmount = BigDecimal.ZERO;
 		BigDecimal couponAmount = BigDecimal.ZERO;

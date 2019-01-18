@@ -638,7 +638,7 @@ public class ApiCartController extends ApiBaseAction {
         					continue;
         				}
         			    checkedGoodsList.add(cartEntity);
-        			    goodsTotalPrice =  goodsTotalPrice.add(cartEntity.getMarket_price());
+        			    goodsTotalPrice =  goodsTotalPrice.add(cartEntity.getMarket_price().multiply(new BigDecimal(cartEntity.getNumber())));
         			}
         			if (source.equals("system")) {
         				// 校验自己的库存和上下架状态

@@ -205,6 +205,8 @@
             <if test="callback_status != null">`callback_status` = #{callback_status},</if>
             <if test="full_cut_price != null">`full_cut_price` = #{full_cut_price},</if>
             <if test="order_type != null">`order_type` = #{order_type},</if>
+             <if test="goods_total_num != null">`goods_total_num` = #{goods_total_num},</if>
+              <if test="retail_price != null">`retail_price` = #{retail_price},</if>
             <if test="pid_num != null">`pid_num` = #{pid_num}</if>
         </set>
         where id = #{id}
