@@ -3,14 +3,14 @@
  		<!--公用头部-->
   		<!--<headbar :headFont = "headFont"></headbar>-->
   	<div v-if="collectList.length>0"  class="collect-list">
-	    <router-link :to="'/pages/goods/goods?id='+item.value_id" class="item" v-for="item in collectList" >
+	    <div @click="android('/pages/goods/goods?id='+item.value_id)" class="item" v-for="item in collectList" >
 	      <img class="img" :src="item.list_pic_url"/>
 	      <div class="info">
 	        <div class="name">{{item.name}}</div>
 	        <!--<div class="subtitle">{{item.goods_brief}}</div>-->
 	        <div class="price">￥{{item.market_price}}</div>
 	      </div>
-	    </router-link>
+	    </div>
     </div>
     <div v-else class="noData">
 	   	没有更多数据了
@@ -32,17 +32,22 @@ export default {
     }
   },
   mounted(){
-  	var that = this;    
+  	this.list();
+  },
+  methods:{
+  	android(e){
+  		this.$cookie.interactive(e);  //与android和ios交互
+  	},
+  	list(){
+  		let that = this;    
     	that.$http({
 	        method: 'post',
 	        url:that.$url+ 'collect/list.options',
 	        data:{typeId:0}
     	}).then(function (res) {
-    			that.collectList = res.data.data;
-		  })
-  },
-  methods:{
-  	
+    		that.collectList = res.data.data;
+		})
+  	}
   }
 }
 </script>
