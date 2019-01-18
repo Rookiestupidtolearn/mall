@@ -161,7 +161,7 @@ public class JdOrderService {
 		jdOrderVo.setTown(addressVo.getTown());
 		jdOrderVo.setAddress(info.getAddress());
 		jdOrderVo.setMobile(info.getMobile());
-
+		jdOrderVo.setOrderStatus(0);//初始
 		jdOrderMapper.save(jdOrderVo);
 		// 处理订单
 		RequestOrderSubmitEntity entity = new RequestOrderSubmitEntity();
@@ -203,8 +203,8 @@ public class JdOrderService {
 			jdOrder.setOrderSplit(resultEntity.getOrder_split());
 			resultObj.put("errno", 0);
 			resultObj.put("errmsg", "创建第三方订单成功");
-			jdOrder.setOrderStatus(9);
-			
+			jdOrder.setOrderStatus(2);//等待发货
+			jdOrder.setJdStatus("waiting_shipment");//等待发货
 			//发货提醒
 			UserVo user = apiUserService.queryObject(info.getUser_id());
 			String  smsTemplet = PropertiesUtil.getValue("doubao.properties","sendGoodsSmsTemplet");

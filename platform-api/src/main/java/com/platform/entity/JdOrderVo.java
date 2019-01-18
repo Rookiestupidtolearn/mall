@@ -21,6 +21,7 @@ public class JdOrderVo implements Serializable {
     private Integer shopUserId;
     //订单状态 0-初始,5-失败，9-成功
     private Integer orderStatus;
+    private String jdStatus;
     //第三方订单号（本系统的）
     private String thirdOrder;
     //订单编号（三方返回的）
@@ -372,6 +373,15 @@ public class JdOrderVo implements Serializable {
 	public void setResultData(String resultData) {
 		this.resultData = resultData;
 	}
-    
+
+	public String getJdStatus() {
+		return jdStatus;
+	}
+
+	public void setJdStatus(String jdStatus) {
+		this.jdStatus = jdStatus;
+	}
+
+
     
 }
