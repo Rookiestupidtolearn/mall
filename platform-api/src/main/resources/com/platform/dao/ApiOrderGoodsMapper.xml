@@ -25,6 +25,7 @@
         <result property="caller_price" column="caller_price"/>
         <result property="caller_total_price" column="caller_total_price"/>
         <result property="logistics_no" column="logistics_no"/>
+         <result property="shipment_name" column="shipment_name"/>
         
     </resultMap>
 
@@ -122,6 +123,7 @@
             <if test="channel != null">`channel` = #{channel}, </if>
 			<if test="createTime != null">`create_time` = #{createTime}, </if>
 			<if test="goodStatus != null">`good_status` = #{goodStatus},</if>
+			<if test="shipment_name != null">`shipment_name` = #{shipment_name},</if>
 			<if test="logistics_no != null">`logistics_no` = #{logisticsNo}</if>
         </set>
         where id = #{id}

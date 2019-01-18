@@ -51,6 +51,7 @@ public class OrderGoodsVo implements Serializable {
     private BigDecimal caller_price;           // 单品克拉金额
     private BigDecimal caller_total_price;  // 使用的克拉总金额
     private String logistics_no  ;         //物流单号 
+    private String shipment_name;  //快递公司
 
     public Integer getId() {
         return id;
@@ -210,6 +211,14 @@ public class OrderGoodsVo implements Serializable {
 
 	public void setLogistics_no(String logistics_no) {
 		this.logistics_no = logistics_no;
+	}
+
+	public String getShipment_name() {
+		return shipment_name;
+	}
+
+	public void setShipment_name(String shipment_name) {
+		this.shipment_name = shipment_name;
 	}
     
     
