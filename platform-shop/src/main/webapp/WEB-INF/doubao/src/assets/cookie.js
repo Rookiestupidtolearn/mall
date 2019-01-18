@@ -1,4 +1,5 @@
-// 设置 cookie
+	import router from '@/router'
+	// 设置 cookie
 	export default{
 		setCookieTime:function(cookieName, userName){ //有时间的cookie失效
 			var exp = new Date(); 
@@ -41,7 +42,7 @@
 						window.webkit.messageHandlers.webViewApp.postMessage(message);
 						return false;
 	    	}else{
-	    		this.$router.push(e);
+	    		router.push(e);
 	    	}
 		}
 	}
