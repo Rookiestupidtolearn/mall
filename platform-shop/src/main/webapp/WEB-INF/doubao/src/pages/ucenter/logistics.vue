@@ -11,7 +11,7 @@
 	 			<img :src="item.goodUrl" />
 	 			<p class="name">{{item.goodName}}</p>
 	 		</div>
-	 		<div class="btn" @click="looklog(item.orderId)">查看物流</div>
+	 		<div class="btn" @click="looklog('/pages/ucenter/lookLogistics?id='+item.orderId)">查看物流</div>
 		</div>
 		<returnhome :scrollshow = "scrollshow"></returnhome>
 	</div>
@@ -56,7 +56,7 @@
 	  		this.openD = !this.openD;
 	  	},
 	  	looklog(e){
-	  		this.$router.push('/pages/ucenter/lookLogistics?id='+e)
+	  		this.$cookie.interactive(e);  //与android和ios交互
 	  	}
        }
 	}

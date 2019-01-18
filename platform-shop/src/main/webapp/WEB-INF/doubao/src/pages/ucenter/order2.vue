@@ -22,7 +22,7 @@
 		                <div class="l">实付：￥{{item.actual_price}}</div>
 		                <div class="r">
 		                	<div class="btn active" @click.stop="confirmOrder(item.id)">确认收货</div>
-		                	<router-link class="btn" :to="'/pages/ucenter/logistics?id='+item.id">查看物流</router-link>
+		                	<div class="btn" @click.stop="hrefwul('/pages/ucenter/logistics?id='+item.id)">查看物流</div>
 		                </div>
 		            </div>
 		        </div>
@@ -91,23 +91,11 @@ export default {
 	    	}
   },
   methods:{
+  	hrefwul(e){
+  		this.$cookie.interactive(e);  //与android和ios交互
+  	},
   	orderDetail(e){
-				var appHref = window.location.href;
-				var device = '';
-				var comHref = window.location.origin;
-				if(appHref.indexOf('device')>-1){
-					device = appHref.split('?')[1].split('=')[1].split('&')[0];
-				}
-		    	if(device == 'android'){
-		    			window.android.productDetail(comHref +'/#'+e); //调起andriod交互方法(由app发起。浏览器会报错正常)
-		    			return false;
-		    	}else if(device == 'ios'){
-		    			var message = {'url':comHref +'/#'+ e}
-							window.webkit.messageHandlers.webViewApp.postMessage(message);
-							return false;
-		    	}else{
-		    		this.$router.push(e);
-		    	}
+				this.$cookie.interactive(e);  //与android和ios交互
 			},
   	confirmOrder(id){
   		var that = this;    

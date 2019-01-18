@@ -150,23 +150,8 @@ export default {
 	  	showResult(){
 	  		this.showList();
 	  	},
-	  	andriod(e){   //商品详情与andriod和ios交互
-				var appHref = window.location.href;
-				var device = '';
-				var comHref = window.location.origin;
-				if(appHref.indexOf('device')>-1){
-					device = appHref.split('?')[1].split('=')[1].split('&')[0];
-				}
-		    	if(device == 'android'){
-		    			window.android.productDetail(comHref +'/#'+e); //调起andriod交互方法(由app发起。浏览器会报错正常)
-		    			return false;
-		    	}else if(device == 'ios'){
-		    			var message = {'url':comHref +'/#'+ e}
-						window.webkit.messageHandlers.webViewApp.postMessage(message);
-						return false;
-		    	}else{
-		    		this.$router.push(e);
-		    	}
+	  	andriod(e){   
+			this.$cookie.interactive(e);  //商品详情与andriod和ios交互
 	 	},
 	  	onKeywordTap(keyword){
 	  		this.getSearchResult(keyword);

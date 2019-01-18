@@ -117,13 +117,10 @@ export default {
 				if(hrefD.indexOf('device')>-1){
 	    		var device = hrefD.split('?')[1].split('=')[1];
 	    	}
-	//  	http://192.168.124.29:8080/#/?device=andriod
-//				alert(device);
 	    	if(device == 'android'){
 	    			window.android.productDetail(e); //调起andriod交互方法(由app发起。浏览器会报错正常)
 	    			return false;
 	    	}else if(device == 'ios'){
-//	    		alert(hrefD)
 	    			var message = {'url': e}
 						window.webkit.messageHandlers.webViewApp.postMessage(message);
 						return false;
@@ -150,26 +147,8 @@ export default {
 	    		this.$router.push(e);
 	    	}
 	 	},
-	 	andriod(e){   //商品详情与andriod和ios交互
-				var hrefD = window.location.href;
-				var delDevice = hrefD.split('?')[0];
-				var comHref =delDevice .substring(delDevice.length-1,0);  //android和ios公用链接头
-				if(hrefD.indexOf('device')>-1){
-	    		var device = hrefD.split('?')[1].split('=')[1];
-	    	}
-	//  	http://192.168.124.29:8080/#/?device=andriod
-//				alert(device);
-	    	if(device == 'android'){
-	    			window.android.productDetail(comHref + e); //调起andriod交互方法(由app发起。浏览器会报错正常)
-	    			return false;
-	    	}else if(device == 'ios'){
-//	    		alert(hrefD)
-	    			var message = {'url':comHref + e}
-						window.webkit.messageHandlers.webViewApp.postMessage(message);
-						return false;
-	    	}else{
-	    		this.$router.push(e);
-	    	}
+	 	andriod(e){   
+			this.$cookie.interactive(e);  //商品详情与andriod和ios交互
 	 	},
  		searchRoute(){
  			var hrefD = window.location.href;
