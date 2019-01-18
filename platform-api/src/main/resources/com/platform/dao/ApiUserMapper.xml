@@ -238,16 +238,8 @@
 			where shop_user_id = #{userId}  and tran_type != 3 order by create_time desc
     </select>
 
-    <!--<insert id="addUser" parameterType="SysRole" useGeneratedKeys="true" keyProperty="userId" keyColumn="id">-->
-	<!--insert into nideshop_user (-->
-		<!--name,status-->
-	<!--)-->
-	<!--values(-->
-	<!--        #{name,jdbcType=VARCHAR},-->
-		<!--#{status,jdbcType=VARCHAR},-->
-	<!--)-->
-<!--</insert>-->
 
+    <!--保存第三方用户并返回用户id-->
     <insert id="saveFromThrid"  parameterType="com.platform.entity.UserVo" useGeneratedKeys="true" keyProperty="userId" keyColumn="id">
 	insert into nideshop_user(
 			`username`,
