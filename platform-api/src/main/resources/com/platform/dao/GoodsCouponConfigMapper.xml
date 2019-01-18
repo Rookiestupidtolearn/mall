@@ -14,6 +14,8 @@
         <result property="update_time" column="update_time"/>
         <result property="create_user_dept_id" column="create_user_dept_id"/>
         <result property="del_flag" column="del_flag"/>
+         <result property="order_id" column="order_id"/>
+          <result property="coupon_price" column="coupon_price"/>
     </resultMap>
     <select id="getUserCoupons" resultMap="goodsCouponConfigMap">
 		select gcc.* from goods_coupon_config gcc where 1=1 
@@ -22,5 +24,14 @@
 	<select id = "getUserBuyNowCoupons" resultMap="goodsCouponConfigMap">
 		select * from goods_coupon_config  where 1=1 and goods_id = #{goods_id}
 	</select>
-    
+      <select id = "getCouponList" resultMap="goodsCouponConfigMap">
+		select * from goods_coupon_config  where 1=1 
+		<if test="order_id != null order_id != ''">
+			AND order_id = #{order_id}
+		</if>
+	    <if test="goods_id != null goods_id != ''">
+			and goods_id = #{goods_id}
+		</if>
+	
+	</select>
 </mapper>

@@ -42,6 +42,8 @@
         <result property="callback_status" column="callback_status"/>
         <result property="full_cut_price" column="full_cut_price"/>
          <result property="pid_num" column="pid_num"/>
+         <result property="retail_price" column="retail_price"/>
+         <result property="goods_total_num" column="goods_total_num"/>
     </resultMap>
 
     <select id="queryObject" resultMap="orderMap">
@@ -109,6 +111,7 @@
 			`integral_money`,
 			`order_price`,
 			`goods_price`,
+			`retail_price`,
 			`add_time`,
 			`confirm_time`,
 			`pay_time`,
@@ -120,7 +123,8 @@
 			`shipping_no`,
 			`full_cut_price`,
 			`order_type`,
-			`pid_num`
+			`pid_num`,
+			`goods_total_num`
 		)
 		values
 		(
@@ -148,6 +152,7 @@
 			#{integral_money},
 			#{order_price},
 			#{goods_price},
+			#{retail_price},
 			#{add_time},
 			#{confirm_time},
 			#{pay_time},
@@ -159,7 +164,8 @@
 			#{shipping_no},
 			#{full_cut_price},
 			#{order_type},
-			#{pid_num}
+			#{pid_num},
+			#{goods_total_num}
 		)
 	</insert>
 
