@@ -1,6 +1,5 @@
 package com.platform.task;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,9 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.platform.cache.J2CacheUtils;
 import com.platform.dao.JdOrderMapper;
 import com.platform.entity.JdOrderVo;
-import com.platform.entity.OrderVo;
-import com.platform.service.JdOrderService;
-import com.platform.utils.DateUtils;
 import com.platform.youle.entity.ReponseOrderDetailEntity;
 import com.platform.youle.service.AbsApiOrderService;
 

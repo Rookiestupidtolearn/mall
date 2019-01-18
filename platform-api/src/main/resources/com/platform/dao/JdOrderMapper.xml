@@ -153,7 +153,7 @@
         </if>
 	</select>
 	 
-	<insert id="save" parameterType="com.platform.entity.JdOrderEntity" useGeneratedKeys="true" keyProperty="id">
+	<insert id="save" parameterType="com.platform.entity.JdOrderVo" useGeneratedKeys="true" keyProperty="id">
 		insert into jd_order(
 			`shop_user_id`,
 			`order_status`,
@@ -208,7 +208,7 @@
 			#{isDeleted})
 	</insert>
 	 
-	<update id="update" parameterType="com.platform.entity.JdOrderEntity">
+	<update id="update" parameterType="com.platform.entity.JdOrderVo">
 		update jd_order 
 		<set>
 			<if test="shopUserId != null">`shop_user_id` = #{shopUserId}, </if>
