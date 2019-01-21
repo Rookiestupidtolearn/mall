@@ -26,10 +26,11 @@
 	          </div>
 	      	</div>
   			<div class="font">该款商品<span class="red">已售罄/下架</span>，这款商品太火爆了，您晚了一步哦；</div>
-  			<ul class="btngroup">
+  			<ul class="btngroup" v-if="isSell==0">
   				<li class="cancel" @click="cancel">取消</li>
   				<li class="confirm" @click="goOrder">继续结算</li>
   			</ul>
+  			<ul class="btngroupT" @click="cancelShop" v-if="isSell==1">知道了，去重新下单</ul>
   		</div>
   		<!--其它主体内容-->
   	<div class="no-cart" v-if="cartGoods.length <= 0">
@@ -98,6 +99,7 @@ export default {
 //  	headFont:'购物车',
 			showTn:false, //已售罄/下架弹窗显示
 			unsells:[],
+			isSell:'', //是否可售
     	cartGoods: [],
 	    cartTotal: {
 	      "goodsCount": 0,
@@ -120,6 +122,9 @@ export default {
   		cancel(){
   			this.showTn = false;
   		},
+  		cancelShop(){
+	   		window.location.reload();
+	   },
 	  	deleteCart(){
 	  			//获取已选择的商品
 			    let that = this;
@@ -193,6 +198,7 @@ export default {
 			     	}else{
 			     		that.showTn = true;
 			     		that.unsells = res.unsells;
+			     		that.isSell = res.isSell;
 			     	}
 		      });
 			      
@@ -833,4 +839,12 @@ export default {
     background: #b4282d;
     color: #fff;
 }
+.bgShow .btngroupT{
+		width:100%;
+		overflow: hidden;
+		font-size:.29rem;
+		padding:.2rem 0;
+		border-top:1px solid #CBCBCB;
+		color: #26A2FF;
+	}
 </style>

@@ -316,7 +316,7 @@ export default {
 .serach-keywords{
     background: #fff;
     width: 7.50rem;
-    height: .93rem;
+    height:auto;
     overflow: hidden;
     margin-bottom: .20rem;
 }

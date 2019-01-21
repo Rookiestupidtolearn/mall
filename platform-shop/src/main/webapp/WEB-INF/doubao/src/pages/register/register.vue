@@ -16,7 +16,7 @@
  		</div>
  		<p class="last">
  			<input type="checkbox" id="checkbox"  v-model="checked" />
- 			<span>已同意并阅读</span>
+ 			<span>已阅读并同意</span>
  			<i @click="klrule">《斗宝俱乐部“克拉”使用规则》</i>
  			<i @click="yhzcxy">《斗宝俱乐部用户注册协议》</i>
  			<i @click="ysqxy">《隐私权协议》</i>
