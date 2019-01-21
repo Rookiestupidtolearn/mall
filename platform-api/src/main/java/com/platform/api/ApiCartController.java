@@ -556,6 +556,10 @@ public class ApiCartController extends ApiBaseAction {
 	    		 resultObj.put("isSell", "0");//部分可售
 			 }else {
 				 resultObj.put("isSell", "1"); //全部不可售
+				 //清除购物车 
+				 for (GoodsVo deVo : unsells) {
+					 cartDao.deleteCartBy(loginUser.getUserId(), deVo.getId());
+				}
 			}
 			 
 			 return resultObj;
