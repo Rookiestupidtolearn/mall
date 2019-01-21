@@ -71,7 +71,7 @@ public class ThridUserController {
                 return R.ok(map);
 
             }
-        } catch (Exception e) {
+        } catch (Exception e ) {
             e.printStackTrace();
         }
 

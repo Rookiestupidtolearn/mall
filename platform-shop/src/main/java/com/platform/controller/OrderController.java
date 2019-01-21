@@ -57,6 +57,24 @@ public class OrderController {
 
         return R.ok().put("page", pageUtil);
     }
+
+    /**
+     * 售后订单管理
+     * @param params
+     * @return
+     */
+    @RequestMapping("/orderAfterSale")
+    public R orderAfterSale(@RequestParam Map<String, Object> params) {
+        // 查询列表数据
+        Query query = new Query(params);
+
+        List<OrderEntity> orderList = orderService.queryList(query);
+        int total = orderService.queryTotal(query);
+
+        PageUtils pageUtil = new PageUtils(orderList, total, query.getLimit(), query.getPage());
+
+        return R.ok().put("page", pageUtil);
+    }
     
 
     /**
