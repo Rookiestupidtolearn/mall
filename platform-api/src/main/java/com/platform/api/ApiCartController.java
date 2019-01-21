@@ -21,6 +21,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.platform.annotation.IgnoreAuth;
 import com.platform.annotation.LoginUser;
 import com.platform.cache.J2CacheUtils;
+import com.platform.dao.ApiCartMapper;
 import com.platform.dao.GoodsCouponConfigMapper;
 import com.platform.entity.AddressVo;
 import com.platform.entity.BuyGoodsVo;
@@ -79,6 +80,8 @@ public class ApiCartController extends ApiBaseAction {
 	private JdOrderService jdOrderService;
     @Autowired
     private ApiUserService userService;
+    @Autowired
+	private ApiCartMapper cartDao;
 	// 查询库存默认地址
 	private String DEFAULT_ADDRESS = "1_72_2799";
 	private Logger logger = LoggerFactory.getLogger(getClass());
@@ -548,15 +551,21 @@ public class ApiCartController extends ApiBaseAction {
 			 resultObj.put("errno", "1");
 			 resultObj.put("errmsg", "不可售");
 			 resultObj.put("count", unsells.size()); 
+		    	//判断是否全部不能下单
+	    	 if (unsells.size() < goodid.length ) {
+	    		 resultObj.put("isSell", "0");//部分可售
+			 }else {
+				 resultObj.put("isSell", "1"); //全部不可售
+				 //清除购物车 
+				 for (GoodsVo deVo : unsells) {
+					 cartDao.deleteCartBy(loginUser.getUserId(), deVo.getId());
+				}
+			}
+			 
 			 return resultObj;
     		 
 		}
-    	//判断是否全部不能下单
-    	 if (unsells.size() < goodid.length ) {
-    		 resultObj.put("isSell", "0");//部分可售
-		 }else {
-			 resultObj.put("isSell", "1"); //全部不可售
-		}
+
     	 
     	 return toResponsSuccess(resultObj);
     	
@@ -630,8 +639,7 @@ public class ApiCartController extends ApiBaseAction {
         				if (!stockMap.get("code").equals("200")) {
         					resultObj.put("errno", "100");
         					resultObj.put("errmsg", "不可出售");
-        					Integer[] arr1 = { cartEntity.getGoods_id() };
-        					goodsService.unSaleBatch(arr1, 3);
+        					cartDao.deleteCartBy(loginUser.getUserId(), cartEntity.getGoods_id());
         					continue;
         				}
         				// 上下架状态
@@ -639,8 +647,7 @@ public class ApiCartController extends ApiBaseAction {
         				if (!saleStatusMap.get("code").equals("200")) {
         					resultObj.put("errno", "100");
         					resultObj.put("errmsg", "不可出售");
-        					Integer[] arr1 = { cartEntity.getGoods_id() };
-        					goodsService.unSaleBatch(arr1, 3);
+        					cartDao.deleteCartBy(loginUser.getUserId(), cartEntity.getGoods_id());
         					continue;
         				}
         			    checkedGoodsList.add(cartEntity);
