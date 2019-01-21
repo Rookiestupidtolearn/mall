@@ -551,6 +551,12 @@ public class ApiCartController extends ApiBaseAction {
 			 return resultObj;
     		 
 		}
+    	//判断是否全部不能下单
+    	 if (unsells.size() < goodid.length ) {
+    		 resultObj.put("isSell", "0");//部分可售
+		 }else {
+			 resultObj.put("isSell", "1"); //全部不可售
+		}
     	 
     	 return toResponsSuccess(resultObj);
     	
