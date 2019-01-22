@@ -55,7 +55,7 @@
 	                  <div class="attr">{{ isEditCart ? '已选择:' : ''}}{{item.goods_specifition_name_value||''}}</div>
 	                  <span class="price">￥{{item.market_price}}</span>
 	                </router-link>
-	               	<div class="t">
+	               	<div class="tc" v-show="!isEditCart">
 	                  <span class="num">x{{item.number}}</span>
 	                </div>
 	                <div class="b">
@@ -610,6 +610,7 @@ export default {
     font-size: .25rem;
     color: #333;
     overflow: hidden;
+    float: left;
 }
 
 .cart-div .item .name{
@@ -618,7 +619,7 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: 4.5rem;
+    width: 4.2rem;
     text-align: left;
     display: inline-block;
 }
@@ -627,6 +628,7 @@ export default {
     height: .28rem;
     line-height: .28rem;
     float: right;
+    margin-right: .15rem;
 }
 
 .cart-div .item .attr{
@@ -648,6 +650,7 @@ export default {
 
 .cart-div .item .price{
     float: left;
+    margin-top: .25rem;
 }
 
 .cart-div .item .open{
@@ -661,7 +664,14 @@ export default {
     color: #333;
 }
 
-.cart-div .item.edit .t{
+.cart-div .item .tc{
+    margin: .08rem 0;
+    font-size: .25rem;
+    color: #333;
+    overflow: hidden;
+}
+
+.cart-div .item .attr.tc{
     display: none;
 }
 
@@ -669,7 +679,7 @@ export default {
     position:absolute;
     right:.20rem;
     background-size: .12rem .20rem;
-    margin-bottom: .24rem;
+    margin: .08rem 0;
     height: .39rem;
     line-height: .39rem;
     font-size: .24rem;
@@ -688,8 +698,12 @@ export default {
 .cart-div .item.edit .price{
     line-height: .52rem;
     height: .52rem;
-    flex:1;
-    margin-top:.78rem;
+    margin-top: .25rem;
+    clear: both;
+    position: absolute;
+    top: .65rem;
+    left: 50%;
+    margin-left: -1.9rem;
 }
 
 .cart-div .item .selnum{
