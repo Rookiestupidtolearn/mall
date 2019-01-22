@@ -25,8 +25,10 @@
         <result property="goods_total_price" column="goods_total_price"/>
         <result property="caller_price" column="caller_price"/>
         <result property="caller_total_price" column="caller_total_price"/>
+        <result property="caller_num" column="caller_num"/>
         <result property="logistics_no" column="logistics_no"/>
          <result property="shipment_name" column="shipment_name"/>
+         <result property="actual_caller_price" column="actual_caller_price"/>
         
     </resultMap>
 
@@ -72,6 +74,8 @@
 			`retail_price`, 
 			`caller_price`, 
 			`caller_total_price`, 
+			`caller_num`, 
+			`actual_caller_price`, 
 			`actual_price`, 
 			`goods_specifition_name_value`, 
 			`is_real`, 
@@ -95,6 +99,8 @@
 			#{retail_price},
 			#{caller_price},
 			#{caller_total_price},
+			#{caller_num},
+			#{actual_caller_price},
 			#{actual_price},
 			#{goods_specifition_name_value},
 			#{is_real},
