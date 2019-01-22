@@ -425,11 +425,13 @@ public class ApiOrderService {
 		for (CartVo goodsItem : orderGoodsList) {
 		    BigDecimal 	coupon_price  =  BigDecimal.ZERO;
 		     Map<String, Object> map = new HashMap<String, Object>();
+		     Integer couponNum = 0;
 		     map.put("order_id", orderInfo.getId());
 		     map.put("goods_id", goodsItem.getGoods_id());
 			 List<GoodsCouponConfigVo> configVos = goodsCouponConfigMapper.getCouponList(map);
             if (!CollectionUtils.isEmpty(configVos)) {
             	coupon_price = configVos.get(0).getCoupon_price();
+            	couponNum = configVos.size();
 			}
 			
 			OrderGoodsVo orderGoodsVo = new OrderGoodsVo();
@@ -445,12 +447,14 @@ public class ApiOrderService {
 			orderGoodsVo.setRetail_price(goodsItem.getRetail_price());
 			orderGoodsVo.setNumber(goodsItem.getNumber());
 			orderGoodsVo.setCaller_price(coupon_price);
-			orderGoodsVo.setCaller_total_price(coupon_price.multiply(new BigDecimal(goodsItem.getNumber())));
+			orderGoodsVo.setCaller_num(couponNum);
+			orderGoodsVo.setCaller_total_price(coupon_price.multiply(new BigDecimal(couponNum)));
 			orderGoodsVo.setGoods_specifition_name_value(goodsItem.getGoods_specifition_name_value());
 			orderGoodsVo.setGoods_specifition_ids(goodsItem.getGoods_specifition_ids());
 			orderGoodsVo.setChannel(soureMap.get(goodsItem.getGoods_id() + ""));
 			orderGoodsVo.setGoodStatus(0);
-			orderGoodsVo.setActual_price(goodsItem.getMarket_price().subtract(coupon_price));
+			orderGoodsVo.setActual_price(goodsItem.getMarket_price());//未发生克拉抵扣
+			orderGoodsVo.setActual_caller_price(goodsItem.getMarket_price().subtract(coupon_price));
 			orderGoodsData.add(orderGoodsVo);
 			apiOrderGoodsMapper.save(orderGoodsVo);
 			pidNums += orderGoodsVo.getGoods_sn().substring(2, orderGoodsVo.getGoods_sn().length()) + "_"

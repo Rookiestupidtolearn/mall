@@ -52,7 +52,9 @@ public class OrderGoodsVo implements Serializable {
     private BigDecimal caller_total_price;  // 使用的克拉总金额
     private String logistics_no  ;         //物流单号 
     private String shipment_name;  //快递公司
-    private BigDecimal actual_price;
+    private BigDecimal actual_price;//实际支付金额
+    private BigDecimal actual_caller_price;
+    private Integer  caller_num;
     
     public Integer getId() {
         return id;
@@ -228,6 +230,22 @@ public class OrderGoodsVo implements Serializable {
 
 	public void setActual_price(BigDecimal actual_price) {
 		this.actual_price = actual_price;
+	}
+
+	public BigDecimal getActual_caller_price() {
+		return actual_caller_price;
+	}
+
+	public void setActual_caller_price(BigDecimal actual_caller_price) {
+		this.actual_caller_price = actual_caller_price;
+	}
+
+	public Integer getCaller_num() {
+		return caller_num;
+	}
+
+	public void setCaller_num(Integer caller_num) {
+		this.caller_num = caller_num;
 	}
     
     
