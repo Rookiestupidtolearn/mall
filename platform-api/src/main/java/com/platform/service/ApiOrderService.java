@@ -453,7 +453,11 @@ public class ApiOrderService {
 			orderGoodsVo.setGoods_specifition_ids(goodsItem.getGoods_specifition_ids());
 			orderGoodsVo.setChannel(soureMap.get(goodsItem.getGoods_id() + ""));
 			orderGoodsVo.setGoodStatus(0);
-			orderGoodsVo.setActual_price(goodsItem.getMarket_price().multiply(new BigDecimal(goodsItem.getNumber()).subtract(new BigDecimal(couponNum))));//未发生克拉抵扣
+			if (goodsItem.getNumber()-couponNum ==0) {
+				orderGoodsVo.setActual_price(new BigDecimal("0"));//未发生克拉抵扣
+			}else {
+				orderGoodsVo.setActual_price(goodsItem.getMarket_price());//未发生克拉抵扣
+			}
 			orderGoodsVo.setActual_caller_price(goodsItem.getMarket_price().subtract(coupon_price));
 			orderGoodsData.add(orderGoodsVo);
 			apiOrderGoodsMapper.save(orderGoodsVo);
