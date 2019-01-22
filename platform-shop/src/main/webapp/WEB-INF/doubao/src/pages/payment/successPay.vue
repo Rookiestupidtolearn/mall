@@ -35,7 +35,7 @@ export default {
 	    			return false;
 	    	}else if(device == 'ios'){
 	    			var message = {'url':comHref +'/#/pages/ucenter/order'}
-						window.webkit.messageHandlers.webViewApp.postMessage(message);
+						window.webkit.messageHandlers.viewOrder.postMessage(message);
 						return false;
 	    	}else{
 	    		this.$router.push('/pages/ucenter/order');
