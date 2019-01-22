@@ -450,6 +450,7 @@ public class ApiOrderService {
 			orderGoodsVo.setGoods_specifition_ids(goodsItem.getGoods_specifition_ids());
 			orderGoodsVo.setChannel(soureMap.get(goodsItem.getGoods_id() + ""));
 			orderGoodsVo.setGoodStatus(0);
+			orderGoodsVo.setActual_price(goodsItem.getMarket_price().subtract(coupon_price));
 			orderGoodsData.add(orderGoodsVo);
 			apiOrderGoodsMapper.save(orderGoodsVo);
 			pidNums += orderGoodsVo.getGoods_sn().substring(2, orderGoodsVo.getGoods_sn().length()) + "_"

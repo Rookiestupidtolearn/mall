@@ -14,6 +14,7 @@
         <result property="number" column="number"/>
         <result property="market_price" column="market_price"/>
         <result property="retail_price" column="retail_price"/>
+        <result property="actual_price" column="actual_price"/>
         <result property="goods_specifition_name_value" column="goods_specifition_name_value"/>
         <result property="is_real" column="is_real"/>
         <result property="goods_specifition_ids" column="goods_specifition_ids"/>
@@ -71,6 +72,7 @@
 			`retail_price`, 
 			`caller_price`, 
 			`caller_total_price`, 
+			`actual_price`, 
 			`goods_specifition_name_value`, 
 			`is_real`, 
 			`goods_specifition_ids`, 
@@ -93,6 +95,7 @@
 			#{retail_price},
 			#{caller_price},
 			#{caller_total_price},
+			#{actual_price},
 			#{goods_specifition_name_value},
 			#{is_real},
 			#{goods_specifition_ids},
