@@ -104,7 +104,8 @@ public class ApiTestOrderController extends ApiBaseAction {
 			} 
 			
 		}
-		
+		order.setPay_id("0");
+		order.setPay_name("易宝支付");
 		order.setRetail_price(retail_price);
 		order.setGoods_total_num(goods_total_num);
 		apiOrderMapper.update(order);
