@@ -435,8 +435,8 @@ public class ApiOrderService {
             	if (configVos.size() ==1) {
 					//存了一个
             		coupon_price = configVos.get(0).getCoupon_price();
-            		if (couponAmount.compareTo(new BigDecimal("0")) !=0) {
-            			BigDecimal size  = couponAmount.divide(coupon_price);
+            		if (discountAmount.compareTo(new BigDecimal("0")) !=0) {
+            			BigDecimal size  = discountAmount.divide(coupon_price);
             			couponNum = Integer.parseInt(size.toString());
 					}
 				}else {
