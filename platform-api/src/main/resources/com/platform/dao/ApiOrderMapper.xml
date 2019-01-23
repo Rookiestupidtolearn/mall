@@ -198,6 +198,7 @@
             <if test="integral_money != null">`integral_money` = #{integral_money},</if>
             <if test="order_price != null">`order_price` = #{order_price},</if>
             <if test="goods_price != null">`goods_price` = #{goods_price},</if>
+              <if test="retail_price != null">`retail_price` = #{retail_price},</if>
             <if test="add_time != null">`add_time` = #{add_time},</if>
             <if test="confirm_time != null">`confirm_time` = #{confirm_time},</if>
             <if test="pay_time != null">`pay_time` = #{pay_time},</if>
@@ -229,6 +230,11 @@
     	select nio.*
     	from nideshop_order nio where user_id = #{userId}
     </select>
+    <select id="queryOrderByOrderSn">
+    	select nio.*
+    	from nideshop_order nio where order_sn = #{orderSn}
+    </select>
+    
 	<select id="checkOrderValid" resultMap="orderMap">
 		select * from nideshop_order where 1=1 and order_status = 0
 	</select>

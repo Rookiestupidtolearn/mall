@@ -19,6 +19,7 @@ public interface ApiOrderMapper extends BaseDao<OrderVo> {
 	 * @param userId
 	 */
 	OrderVo queryOrderInfo(Long userId);
+	OrderVo queryOrderByOrderSn(String orderSn);
 	/**
 	 * 根据请求参数查询订单列表
 	 * @param params
