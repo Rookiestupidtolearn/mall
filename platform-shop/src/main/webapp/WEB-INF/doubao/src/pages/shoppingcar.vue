@@ -9,8 +9,9 @@
   		<span class="item">免邮费</span>
   	</div>-->
   	<!--商品已下架的弹窗-->
-  		<div class="bg" v-show="showTn"></div>
-  		<div class="bgShow" v-show="showTn">
+  		<div class="bg" v-show="showTn" ></div>
+  		<div class="bgShow" v-show="showTn" >
+  			<div class="font">这位客官~你看中的以下宝贝实在太抢手，已经脱销啦。<br/>您在看看别的呗？斗宝俱乐部应有尽有哦~</div>
   			<div class="itemtotal">
 	  			<div class="item" v-for="(item,index) in unsells" >
 	            <div class="cart-goods">
@@ -25,10 +26,9 @@
 	            </div>
 	          </div>
 	      	</div>
-  			<div class="font">该款商品<span class="red">已售罄/下架</span>，这款商品太火爆了，您晚了一步哦；</div>
   			<ul class="btngroup" v-if="isSell==0">
-  				<li class="cancel" @click="cancel">取消</li>
-  				<li class="confirm" @click="goOrder">继续结算</li>
+  				<li class="cancel" @click="cancel">再看看</li>
+  				<li class="confirm" @click="goOrder"><i>继续结算</i><br/><span>(将去除列表商品)</span></li>
   			</ul>
   			<ul class="btngroupT" @click="cancelShop" v-if="isSell==1">知道了，去重新下单</ul>
   		</div>
@@ -406,17 +406,23 @@ export default {
 	.bgShow .btngroup li.cancel{
 		border-right:1px solid #CBCBCB;
 		-webkit-box-sizing: border-box;
+		line-height:.9rem;
 	}
 	.bgShow .btngroup li.confirm{
 		color: #26A2FF;
+		line-height:.3rem;
+	}
+	.bgShow .btngroup li.confirm i{
+		display: inline-block;
+		margin-top:.2rem;
+	}
+	.bgShow .btngroup li.confirm span{
+		font-size:.22rem;
 	}
 	.bgShow .btngroup li{
 		float:left;
 		width:50%;
-		padding:.25rem 0;
-	}
-	.bgShow .font .red{
-		color: red;
+		height:.9rem;
 	}
 	.bgShow .item{
 		overflow: hidden;
