@@ -230,7 +230,7 @@
     	select nio.*
     	from nideshop_order nio where user_id = #{userId}
     </select>
-    <select id="queryOrderByOrderSn">
+    <select id="queryOrderByOrderSn" resultMap="orderMap">
     	select nio.*
     	from nideshop_order nio where order_sn = #{orderSn}
     </select>

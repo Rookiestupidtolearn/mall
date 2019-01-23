@@ -75,8 +75,17 @@ public class ApiTestOrderController extends ApiBaseAction {
 			     map.put("goods_id", goodsItem.getGoods_id());
 				 List<GoodsCouponConfigVo> configVos = goodsCouponConfigMapper.getCouponList(map);
 	            if (!CollectionUtils.isEmpty(configVos)) {
-	            	coupon_price = configVos.get(0).getCoupon_price();
-	            	couponNum = configVos.size();
+	            	if (configVos.size() ==1) {
+						//存了一个
+	            		coupon_price = configVos.get(0).getCoupon_price();
+	            		if (order.getCoupon_price().compareTo(new BigDecimal("0")) !=0) {
+	            			BigDecimal size  = order.getCoupon_price().divide(coupon_price);
+	            			couponNum = Integer.parseInt(size.toString());
+						}
+					}else {
+						coupon_price = configVos.get(0).getCoupon_price();
+		            	couponNum = configVos.size();
+					}
 				}
 				
 				//结算总价
