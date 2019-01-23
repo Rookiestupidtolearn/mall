@@ -11,7 +11,7 @@
   	<!--商品已下架的弹窗-->
   		<div class="bg" v-show="showTn" ></div>
   		<div class="bgShow" v-show="showTn" >
-  			<div class="font">这位客官~你看中的以下宝贝实在太抢手，已经脱销啦。<br/>您在看看别的呗？斗宝俱乐部应有尽有哦~</div>
+  			<div class="font">这位客官~你看中的以下宝贝实在太抢手，已经脱销啦。<br/>您再看看别的呗？斗宝俱乐部应有尽有哦~</div>
   			<div class="itemtotal">
 	  			<div class="item" v-for="(item,index) in unsells" >
 	            <div class="cart-goods">
