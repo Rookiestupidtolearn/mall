@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
-import com.google.gson.JsonObject;
 import com.platform.annotation.IgnoreAuth;
 import com.platform.dao.ApiOrderGoodsMapper;
 import com.platform.dao.ApiOrderMapper;
@@ -29,11 +28,10 @@ import com.platform.util.ApiBaseAction;
 import com.platform.utils.R;
 
 import io.swagger.annotations.Api;
-import net.sf.json.JSONObject;
 
 @Api(tags = "测试接口")
 @RestController
-@RequestMapping("/test/order")
+@RequestMapping("/api/order_test")
 public class ApiTestOrderController extends ApiBaseAction {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -50,7 +48,7 @@ public class ApiTestOrderController extends ApiBaseAction {
     private GoodsCouponConfigMapper goodsCouponConfigMapper;
 	
 	@IgnoreAuth
-	@PostMapping("/recordingPrice")
+	@PostMapping("recordingPrice")
 	public Object recordingPrice(String third_order){
 		logger.info("补录订单价格开始。。");
 		
