@@ -91,10 +91,16 @@ public class AutoUpdateLogisticsStateTask {
 					}
 					if (status.equals("canceld")) {
 						logger.info("查询京东的订单详情状态为订单作废！，暂不做处理");
+						jdOrder.setJdStatus("canceld");
+						jdOrder.setOrderStatus(1);
+						 jdOrderMapper.update(jdOrder);
 						continue;
 					}
 					if (status.equals("cancled_before_pay")) {
 						logger.info("查询京东的订单详情状态为订单关闭！，暂不做处理");
+						jdOrder.setJdStatus("cancled_before_pay");
+						jdOrder.setOrderStatus(1);
+						 jdOrderMapper.update(jdOrder);
 						continue;
 					}
 					// 查询物流信息
