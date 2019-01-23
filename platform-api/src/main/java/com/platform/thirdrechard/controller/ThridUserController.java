@@ -55,7 +55,6 @@ public class ThridUserController {
             if (null==user||user.equals("")){
                 UserVo userVo=new UserVo();
                 userVo.setMobile(mobile);
-                userVo.setUsername("第三方用户");
                 userVo.setRegisterTime(new Date());
                 userVo =apiUserService.saveFromThrid(userVo);
                 map.put("code","success");
