@@ -25,6 +25,10 @@
 				</div>
 			</div>
 	</div>
+	<div class="icp">
+			<p>公司ICP备案号：蜀ICP备18036938号-1</p>
+			<p>增值电信业务许可证号：川B2-20190201</p>
+	</div>
 		<!--公用底部导航-->
   	<tabbar :selected="selected" :tabs='tabs' :style="{'display':[showAN ? 'none' : 'block']}"></tabbar>
   </div>
@@ -338,5 +342,13 @@ background-color: #fff;
 .wusearch::-webkit-input-placeholder {
 		font-size: .24rem;
 		color:#555;
+ }
+ .icp{
+ 	padding:.35rem 0 .5rem 0;
+ }
+ .icp p{
+ 	font-size:.25rem;
+ 	color:#959191;
+ 	margin-top: .15rem;
  }
 </style>
