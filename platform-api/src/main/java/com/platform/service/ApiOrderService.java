@@ -444,8 +444,12 @@ public class ApiOrderService {
             			couponNum = Integer.parseInt(size.toString());
 					}
 				}else {
+					if (configVos.size()>1) {
+						couponNum = configVos.size();
+					}else {
+						couponNum = configVos.get(0).getCoupon_number();
+					}
 					coupon_price = configVos.get(0).getCoupon_price();
-	            	couponNum = configVos.get(0).getCoupon_number();
 				
 				}
 			}
