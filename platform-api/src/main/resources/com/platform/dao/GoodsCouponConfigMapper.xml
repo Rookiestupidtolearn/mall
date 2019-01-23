@@ -16,6 +16,7 @@
         <result property="del_flag" column="del_flag"/>
          <result property="order_id" column="order_id"/>
           <result property="coupon_price" column="coupon_price"/>
+      <result property="coupon_number" column="coupon_number"/>
     </resultMap>
     <select id="getUserCoupons" resultMap="goodsCouponConfigMap">
 		select gcc.* from goods_coupon_config gcc where 1=1 

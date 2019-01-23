@@ -444,8 +444,13 @@ public class ApiOrderService {
             			couponNum = Integer.parseInt(size.toString());
 					}
 				}else {
+					if (configVos.size()>1) {
+						couponNum = configVos.size();
+					}else {
+						couponNum = configVos.get(0).getCoupon_number();
+					}
 					coupon_price = configVos.get(0).getCoupon_price();
-	            	couponNum = configVos.size();
+				
 				}
 			}
 			
@@ -627,7 +632,7 @@ public class ApiOrderService {
 						}
 						coupon.setCoupon_price(payMatching);
 						coupon.setOrder_id(order.getId());
-						coupon.setCoupon_number("1");
+						coupon.setCoupon_number(cart.getNumber().toString());
 						coupon.setCoupon_status(1);//未用
 						coupon.setAdd_time(new Date());
 						coupon.setGoods_id(Long.parseLong(cart.getGoods_id().toString()));
