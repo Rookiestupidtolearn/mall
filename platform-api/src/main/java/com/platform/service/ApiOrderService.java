@@ -353,6 +353,8 @@ public class ApiOrderService {
 
 		
 		OrderVo orderInfo = new OrderVo();
+		orderInfo.setPay_id("0");//易宝支付
+		orderInfo.setPay_name("易宝支付");
 		orderInfo.setShipping_no(GenerateCodeUtil.buildBizNo());
 		orderInfo.setOrder_sn(GenerateCodeUtil.buildJDBizNo());
 		orderInfo.setUser_id(loginUser.getUserId());
@@ -430,8 +432,17 @@ public class ApiOrderService {
 		     map.put("goods_id", goodsItem.getGoods_id());
 			 List<GoodsCouponConfigVo> configVos = goodsCouponConfigMapper.getCouponList(map);
             if (!CollectionUtils.isEmpty(configVos)) {
-            	coupon_price = configVos.get(0).getCoupon_price();
-            	couponNum = configVos.size();
+            	if (configVos.size() ==1) {
+					//存了一个
+            		coupon_price = configVos.get(0).getCoupon_price();
+            		if (discountAmount.compareTo(new BigDecimal("0")) !=0) {
+            			BigDecimal size  = discountAmount.divide(coupon_price);
+            			couponNum = Integer.parseInt(size.toString());
+					}
+				}else {
+					coupon_price = configVos.get(0).getCoupon_price();
+	            	couponNum = configVos.size();
+				}
 			}
 			
 			OrderGoodsVo orderGoodsVo = new OrderGoodsVo();
@@ -464,7 +475,7 @@ public class ApiOrderService {
 			pidNums += orderGoodsVo.getGoods_sn().substring(2, orderGoodsVo.getGoods_sn().length()) + "_"
 					+ orderGoodsVo.getNumber() + ",";
 			//结算总价
-			retail_price = goodsItem.getRetail_price().multiply(new BigDecimal("1")).add(retail_price);
+			retail_price = goodsItem.getRetail_price().multiply(new BigDecimal(goodsItem.getNumber())).add(retail_price);
 			//商品的总数量
 			goods_total_num += goodsItem.getNumber();
 			

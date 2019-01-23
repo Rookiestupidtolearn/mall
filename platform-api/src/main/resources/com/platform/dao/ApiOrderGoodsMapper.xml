@@ -121,8 +121,14 @@
             <if test="goods_sn != null">`goods_sn` = #{goods_sn},</if>
             <if test="product_id != null">`product_id` = #{product_id},</if>
             <if test="number != null">`number` = #{number},</if>
+             <if test="goods_total_price != null">`goods_total_price` = #{goods_total_price},</if>
             <if test="market_price != null">`market_price` = #{market_price},</if>
             <if test="retail_price != null">`retail_price` = #{retail_price},</if>
+             <if test="caller_price != null">`caller_price` = #{caller_price},</if>
+             <if test="caller_total_price != null">`caller_total_price` = #{caller_total_price},</if>
+             <if test="actual_price != null">`actual_price` = #{actual_price},</if>
+             <if test="actual_caller_price != null">`actual_caller_price` = #{actual_caller_price},</if>
+             <if test="caller_num != null">`caller_num` = #{caller_num},</if>
             <if test="goods_specifition_name_value != null">`goods_specifition_name_value` =
                 #{goods_specifition_name_value},
             </if>
