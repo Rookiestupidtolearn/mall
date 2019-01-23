@@ -119,7 +119,7 @@
 	  		}
 	  		
 	  		if(this.checked == false){
-	  			this.$toast({message:'请阅读平台服务协议',duration:1500});
+	  			this.$toast({message:'请阅读并同意平台相关协议',duration:1500});
 	  			return false;
 	  		}
 	  		this.$http({

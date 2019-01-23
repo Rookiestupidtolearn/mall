@@ -13,12 +13,12 @@
                 </div>
                  <div v-else-if="orderInfo.order_status == 201 || orderInfo.order_status == 200">
                  	<div class="btn" @click="hrefwul('/pages/ucenter/logistics?id='+orderInfo.id)">查看物流</div>
-                 	<a href="javascript:;"  class="zhiCustomBtn btn active" id="btn" @click="ccHref">取消订单</a>
+                 	<!--<a href="javascript:;"  class="zhiCustomBtn btn active" id="btn" @click="ccHref">取消订单</a>-->
                 	<div class="btn active" @click="confirmOrder(orderInfo.id)">确认收货</div>
                 </div>
                  <div v-else-if="orderInfo.order_status == 300">
                  	<div class="btn" @click="hrefwul('/pages/ucenter/logistics?id='+orderInfo.id)">查看物流</div>
-                 	<a href="javascript:;"  class="zhiCustomBtn btn active" id="btn" @click="ccHref">退货申请</a>
+                 	<!--<a href="javascript:;"  class="zhiCustomBtn btn active" id="btn" @click="ccHref">退货申请</a>-->
                 	<div class="btn active" @click="confirmOrder(orderInfo.id)">确认收货</div>
                 </div>
                 <div v-else-if="orderInfo.order_status == 0">   
