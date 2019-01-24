@@ -432,16 +432,25 @@ public class ApiOrderService {
 		     map.put("goods_id", goodsItem.getGoods_id());
 			 List<GoodsCouponConfigVo> configVos = goodsCouponConfigMapper.getCouponList(map);
             if (!CollectionUtils.isEmpty(configVos)) {
-            	if (configVos.size() ==1) {
+            	
+            	  Map<String, Object> map3 = new HashMap<String, Object>();
+            	  map3.put("order_id", orderInfo.getId());
+     			 List<GoodsCouponConfigVo> configVos3 = goodsCouponConfigMapper.getCouponList(map3);
+            	if (configVos3.size() ==1) {
 					//存了一个
             		coupon_price = configVos.get(0).getCoupon_price();
-            		if (discountAmount.compareTo(new BigDecimal("0")) !=0) {
+            		if (coupon_price.compareTo(new BigDecimal("0"))> 0) {
             			BigDecimal size  = discountAmount.divide(coupon_price);
             			couponNum = Integer.parseInt(size.toString());
 					}
 				}else {
+					if (configVos.size()>1) {
+						couponNum = configVos.size();
+					}else {
+						couponNum = configVos.get(0).getCoupon_number();
+					}
 					coupon_price = configVos.get(0).getCoupon_price();
-	            	couponNum = configVos.size();
+				
 				}
 			}
 			
@@ -623,7 +632,7 @@ public class ApiOrderService {
 						}
 						coupon.setCoupon_price(payMatching);
 						coupon.setOrder_id(order.getId());
-						coupon.setCoupon_number("1");
+						coupon.setCoupon_number(cart.getNumber().toString());
 						coupon.setCoupon_status(1);//未用
 						coupon.setAdd_time(new Date());
 						coupon.setGoods_id(Long.parseLong(cart.getGoods_id().toString()));
