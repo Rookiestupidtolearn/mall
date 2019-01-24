@@ -54,6 +54,7 @@ public class ThridUserController {
             UserVo user=apiUserService.thridQueryUserInfo(paramMap);
             if (null==user||user.equals("")){
                 UserVo userVo=new UserVo();
+                userVo.setUsername("");
                 userVo.setMobile(mobile);
                 userVo.setRegisterTime(new Date());
                 userVo =apiUserService.saveFromThrid(userVo);

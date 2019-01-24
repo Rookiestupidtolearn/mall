@@ -56,7 +56,7 @@ public class EncryptUtil {
 //    	//使用TreeMap
 		TreeMap<String, Object> treeMap	= new TreeMap<String, Object>();
 //		treeMap.put("amount", 			1);
-		treeMap.put("mobile", "15236177788");
+		treeMap.put("mobile", "15236177556");
 //		treeMap.put("thirdTradeNo", "123123123332sa");
 //		treeMap.put("platformType", "2");//充值类型
 //		treeMap.put("cardType", "2");//充值类型
