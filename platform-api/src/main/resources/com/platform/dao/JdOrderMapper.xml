@@ -7,6 +7,7 @@
        <result property="id" column="id"/>
         <result property="shopUserId" column="shop_user_id"/>
         <result property="orderStatus" column="order_status"/>
+       <result property="jdStatus" column="jd_status"/>
         <result property="thirdOrder" column="third_order"/>
         <result property="orderKey" column="order_key"/>
         <result property="pidNums" column="pid_nums"/>
@@ -32,10 +33,11 @@
     </resultMap>
 
 	<select id="queryObject" resultType="com.platform.entity.JdOrderVo">
-		select
+	select
 			`id`,
 			`shop_user_id`,
 			`order_status`,
+			`jd_status`,
 			`third_order`,
 			`order_key`,
 			`pid_nums`,
@@ -55,6 +57,7 @@
 			`order_shipment_fee`,
 			`order_total_price`,
 			`order_split`,
+			`result_data`,
 			`create_time`,
 			`is_deleted`
 		from jd_order
@@ -66,6 +69,7 @@
 			`id`,
 			`shop_user_id`,
 			`order_status`,
+			`jd_status`,
 			`third_order`,
 			`order_key`,
 			`pid_nums`,
@@ -93,35 +97,40 @@
 	
 
 	<select id="queryList" resultType="com.platform.entity.JdOrderVo">
-		select
+	select
     		`id`,
-			`shop_user_id`,
-			`order_status`,
-			`third_order`,
-			`order_key`,
-			`pid_nums`,
-			`receiver_name`,
-			`province`,
-			`city`,
-			`county`,
-			`town`,
-			`address`,
-			`mobile`,
-			`email`,
-			`remarke`,
-			`error_code`,
-			`error_message`,
-			`response_status`,
-			`order_product_price`,
-			`order_shipment_fee`,
-			`order_total_price`,
-			`order_split`,
-			`create_time`,
-			`is_deleted`
+    		`shop_user_id`,
+    		`order_status`,
+    		`jd_status`,
+    		`third_order`,
+    		`order_key`,
+    		`pid_nums`,
+    		`receiver_name`,
+    		`province`,
+    		`city`,
+    		`county`,
+    		`town`,
+    		`address`,
+    		`mobile`,
+    		`email`,
+    		`remarke`,
+    		`error_code`,
+    		`error_message`,
+    		`response_status`,
+    		`order_product_price`,
+    		`order_shipment_fee`,
+    		`order_total_price`,
+    		`order_split`,
+    		`result_data`,
+    		`create_time`,
+    		`is_deleted`
 		from jd_order
 		WHERE 1=1
 		<if test="name != null and name.trim() != ''">
 			AND name LIKE concat('%',#{name},'%')
+		</if>
+		<if test="jdStatus != null and jdStatus != ''">
+			AND jd_status = #{jdStatus}
 		</if>
         <choose>
             <when test="sidx != null and sidx.trim() != ''">
@@ -148,6 +157,7 @@
 		insert into jd_order(
 			`shop_user_id`,
 			`order_status`,
+			`jd_status`,
 			`third_order`,
 			`order_key`,
 			`pid_nums`,
@@ -173,6 +183,7 @@
 		values(
 			#{shopUserId},
 			#{orderStatus},
+			#{jdStatus},
 			#{thirdOrder},
 			#{orderKey},
 			#{pidNums},
@@ -202,6 +213,7 @@
 		<set>
 			<if test="shopUserId != null">`shop_user_id` = #{shopUserId}, </if>
 			<if test="orderStatus != null">`order_status` = #{orderStatus}, </if>
+			<if test="jdStatus != null">`jd_status` = #{jdStatus}, </if>
 			<if test="thirdOrder != null">`third_order` = #{thirdOrder}, </if>
 			<if test="orderKey != null">`order_key` = #{orderKey}, </if>
 			<if test="pidNums != null">`pid_nums` = #{pidNums}, </if>

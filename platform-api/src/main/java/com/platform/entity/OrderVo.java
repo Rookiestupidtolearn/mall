@@ -103,6 +103,10 @@ public class OrderVo implements Serializable {
     private String full_region;//区县
     private String order_type; // 订单状态
     private String  pid_num;  //
+    //新加的字段
+   private BigDecimal  retail_price ;  //结算总价
+   private Integer  goods_total_num; // 商品总数量
+    
     
     public String getFull_region() {
     //    return full_region;
@@ -539,6 +543,22 @@ public class OrderVo implements Serializable {
 
 	public void setPid_num(String pid_num) {
 		this.pid_num = pid_num;
+	}
+
+	public BigDecimal getRetail_price() {
+		return retail_price;
+	}
+
+	public void setRetail_price(BigDecimal retail_price) {
+		this.retail_price = retail_price;
+	}
+
+	public Integer getGoods_total_num() {
+		return goods_total_num;
+	}
+
+	public void setGoods_total_num(Integer goods_total_num) {
+		this.goods_total_num = goods_total_num;
 	}
 
 
