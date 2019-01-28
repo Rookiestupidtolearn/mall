@@ -123,7 +123,7 @@ public class ApiPayController extends ApiBaseAction {
     	   //判断订单的实效性
     	  int minitCha = DateUtils.getBetweenDateByType(new Date(), orderInfo.getAdd_time(), "second");
     	  if (minitCha >86400 ) { //秒
-    		  return toResponsObject(400, "该笔订单已经实效重新下单", "");
+    		  return toResponsObject(400, "该笔订单已经失效重新下单", "");
 		  }
     	  //校验上下架。校验库存
         AddressVo addressVo = apiAddressMapper.queryObject(orderInfo.getAddress_id());
@@ -141,7 +141,7 @@ public class ApiPayController extends ApiBaseAction {
 			}
 			// 判断是三方的还是自己的产品
 			String source = goods.getSource();
-			if (source.equals("JD")) {
+			if (source.equals("JD") || source.equals("jindong")) {
 				// 检验库存+上下架状态
 				String pid = goods.getGoods_sn().substring(2, goods.getGoods_sn().length());
 				// 库存

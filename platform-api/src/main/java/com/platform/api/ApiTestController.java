@@ -1,6 +1,7 @@
 package com.platform.api;
 
 import java.math.BigDecimal;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -8,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.poi.ss.formula.functions.T;
 import org.apache.shiro.util.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,11 +60,8 @@ import com.platform.youle.entity.RequestSkuDetailEntity;
 import com.platform.youle.entity.RequstSaleStatusEntity;
 import com.platform.youle.entity.ResponseBaseEntity;
 import com.platform.youle.entity.ResponseCancelEntity;
-import com.platform.youle.entity.ResponseChildsEntity;
 import com.platform.youle.entity.ResponseOrderSubmitEntity;
 import com.platform.youle.entity.ResponseOrderTrackEntity;
-import com.platform.youle.entity.ResponseProductEntity;
-import com.platform.youle.entity.ResponseRootCateEntity;
 import com.platform.youle.entity.ResponseSystemOrderTrackEntity;
 import com.platform.youle.service.AbsApiGoodsService;
 import com.platform.youle.service.AbsApiOrderService;
@@ -74,7 +71,6 @@ import com.platform.youle.service.ApiJDGoodsService;
 import com.platform.youle.util.HttpUtil;
 import com.platform.youle.util.MD5util;
 import com.platform.youle.util.PropertiesUtil;
-import com.platform.youle.util.TokenUtil;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -126,6 +122,8 @@ public class ApiTestController extends ApiBaseAction {
 	private ApiJDGoodsService apiJDGoodsService;
 	@Autowired
 	private AbsApiRootCateService absApiRootCateService;
+	@Autowired
+	private ApiSendSMSService apiSendSMSService;
 
 	// 查询库存默认地址
 	private String DEFAULT_ADDRESS = "1_72_2799";
@@ -963,6 +961,17 @@ public class ApiTestController extends ApiBaseAction {
         
     	level2.put(key, value,86400l);
 		return resultObj;
+	}
+	
+	@IgnoreAuth
+	@ApiOperation(value = "1.3")
+	@PostMapping("sendSms")
+	public Object sendSms(String mobile,String amount) {
+	    //订单支付成功短信
+		String  loginSmsTemplet = PropertiesUtil.getValue("doubao.properties","rechargeSmsTemplet");
+		String msgContent = MessageFormat.format(loginSmsTemplet, mobile,"2019年01月15日",amount);
+		
+		return apiSendSMSService.sendSms(mobile, msgContent);
 	}
 	
 	@IgnoreAuth
