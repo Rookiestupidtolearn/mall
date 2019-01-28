@@ -104,7 +104,7 @@ axios.interceptors.response.use(function (response) {
 							if(params == 'confirm'){
 								var hrefD = window.location.href;
 								if(hrefD.indexOf('device')>-1){
-									var device = hrefD.split('&')[1].split('=')[1];
+									var device = hrefD.substring(hrefD.indexOf('device')).split('=')[1].split('&')[0];
 								}
 								if(device == 'android'){
 					    			window.android.toLogin(); //调起andriod交互方法(由app发起。浏览器会报错正常)

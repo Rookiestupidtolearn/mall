@@ -89,7 +89,7 @@
         		共{{disCountAmount}}币，开通即可使用
         	</div>
         	<div class="tips" v-else>
-        		还可支付{{usableAmount}}克拉，余额不足，剩余{{residueAmount}}克拉可用
+        		此订单中您还可以支付{{usableAmount}}克拉，但您的克拉余额不足，剩余{{residueAmount}}克拉。
         	</div>
          </div>
     </div>
