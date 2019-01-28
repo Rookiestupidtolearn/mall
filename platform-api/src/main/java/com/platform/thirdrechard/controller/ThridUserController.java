@@ -57,7 +57,7 @@ public class ThridUserController {
                 userVo.setUsername("");
                 userVo.setMobile(mobile);
                 userVo.setRegisterTime(new Date());
-                userVo =apiUserService.saveFromThrid(userVo);
+                userVo =apiUserService.saveFromThird(userVo);
                 map.put("code","success");
                 map.put("msg","成功");
                 map.put("userId",userVo.getUserId());

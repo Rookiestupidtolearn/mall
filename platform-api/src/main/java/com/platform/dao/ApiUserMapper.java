@@ -63,5 +63,5 @@ public interface ApiUserMapper extends BaseDao<UserVo> {
      * 添加第三方用户
      * @return
      */
-	 void saveFromThrid(UserVo userVo);
+	 void saveFromThird(UserVo userVo);
 }
