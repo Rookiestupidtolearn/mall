@@ -5,7 +5,7 @@
 
     <!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="com.platform.entity.UserVo" id="userMap">
-        <result property="userId" column="id"  />
+        <result property="userId" column="id"/>
         <result property="username" column="username"/>
         <result property="password" column="password"/>
         <result property="gender" column="gender"/>
@@ -21,7 +21,7 @@
         <result property="weixinOpenid" column="weixin_openid"/>
         <result property="idcard" column="idcard"/>
     </resultMap>
-    
+
     <!-- 用户资金流水实体 -->
     <resultMap type="com.platform.entity.QzMoneyRecordEntity" id="qzMoneyRecordMap">
         <result property="id" column="id"/>
@@ -33,7 +33,7 @@
         <result property="createTime" column="create_time"/>
         <result property="tradeNo" column="trade_no"/>
     </resultMap>
-    
+
     <!-- 用户账户实体 -->
     <resultMap type="com.platform.entity.QzUserAccountEntity" id="qzUserAccountMap">
         <result property="id" column="id"/>
@@ -42,35 +42,35 @@
         <result property="lastUpdateTime" column="last_update_time"/>
         <result property="createTime" column="create_time"/>
     </resultMap>
-    
-      <select id="queryByMobile" parameterType="java.lang.String" resultMap="userMap">
+
+    <select id="queryByMobile" parameterType="java.lang.String" resultMap="userMap">
 		select * from nideshop_user where  mobile = #{mobile}
 	</select>
-    
+
 
     <select id="queryObject" resultMap="userMap">
 		select * from nideshop_user where id = #{value}
 	</select>
-	
-	
-	<select id="queryUserInfo" parameterType="java.util.Map" resultMap="userMap">
-		select * from nideshop_user where 1=1
-		<if test="userid != null"> and id = #{userid}</if>
-		<if test="username != null and username.trim() != ''"> and username = #{username}</if>
-		<if test="gender != null"> and gender = #{gender} </if>
-		<if test="nickname != null and nickname.trim() != ''"> and nickname = #{nickname}</if>
-		<if test="mobile != null and mobile.trim() != ''"> and mobile = #{mobile}</if>
-		<if test="weixinOpenid != null and weixinOpenid.trim() != ''"> and weixinOpenid = #{weixinOpenid}</if>
-	</select>
+
+
+    <select id="queryUserInfo" parameterType="java.util.Map" resultMap="userMap">
+        select * from nideshop_user where 1=1
+        <if test="userid != null">and id = #{userid}</if>
+        <if test="username != null and username.trim() != ''">and username = #{username}</if>
+        <if test="gender != null">and gender = #{gender}</if>
+        <if test="nickname != null and nickname.trim() != ''">and nickname = #{nickname}</if>
+        <if test="mobile != null and mobile.trim() != ''">and mobile = #{mobile}</if>
+        <if test="weixinOpenid != null and weixinOpenid.trim() != ''">and weixinOpenid = #{weixinOpenid}</if>
+    </select>
 
     <select id="thridQueryUserInfo" parameterType="java.util.Map" resultMap="userMap">
         select * from nideshop_user where 1=1
-        <if test="userid != null"> and id = #{userid}</if>
-        <if test="username != null and username.trim() != ''"> and username = #{username}</if>
-        <if test="gender != null"> and gender = #{gender} </if>
-        <if test="nickname != null and nickname.trim() != ''"> and nickname = #{nickname}</if>
-        <if test="mobile != null and mobile.trim() != ''"> and mobile = #{mobile}</if>
-        <if test="weixinOpenid != null and weixinOpenid.trim() != ''"> and weixinOpenid = #{weixinOpenid}</if>
+        <if test="userid != null">and id = #{userid}</if>
+        <if test="username != null and username.trim() != ''">and username = #{username}</if>
+        <if test="gender != null">and gender = #{gender}</if>
+        <if test="nickname != null and nickname.trim() != ''">and nickname = #{nickname}</if>
+        <if test="mobile != null and mobile.trim() != ''">and mobile = #{mobile}</if>
+        <if test="weixinOpenid != null and weixinOpenid.trim() != ''">and weixinOpenid = #{weixinOpenid}</if>
     </select>
 
     <select id="queryByOpenId" resultMap="userMap">
@@ -136,20 +136,20 @@
     <update id="update" parameterType="com.platform.entity.UserVo">
         update nideshop_user
         <set>
-           <if test="username != null">`username` = #{username}, </if>
-			<if test="password != null">`password` = #{password}, </if>
-			<if test="gender != null">`gender` = #{gender}, </if>
-			<if test="birthday != null">`birthday` = #{birthday}, </if>
-			<if test="registerTime != null">`register_time` = #{registerTime}, </if>
-			<if test="lastLoginTime != null">`last_login_time` = #{lastLoginTime}, </if>
-			<if test="lastLoginIp != null">`last_login_ip` = #{lastLoginIp}, </if>
-			<if test="userLevelId != null">`user_level_id` = #{userLevelId}, </if>
-			<if test="nickname != null">`nickname` = #{nickname}, </if>
-			<if test="mobile != null">`mobile` = #{mobile}, </if>
-			<if test="registerIp != null">`register_ip` = #{registerIp}, </if>
-			<if test="avatar != null">`avatar` = #{avatar}, </if>
-			<if test="weixinOpenid != null">`weixin_openid` = #{weixinOpenid}, </if>
-			<if test="idcard != null">`idcard` = #{idcard}</if>
+            <if test="username != null">`username` = #{username},</if>
+            <if test="password != null">`password` = #{password},</if>
+            <if test="gender != null">`gender` = #{gender},</if>
+            <if test="birthday != null">`birthday` = #{birthday},</if>
+            <if test="registerTime != null">`register_time` = #{registerTime},</if>
+            <if test="lastLoginTime != null">`last_login_time` = #{lastLoginTime},</if>
+            <if test="lastLoginIp != null">`last_login_ip` = #{lastLoginIp},</if>
+            <if test="userLevelId != null">`user_level_id` = #{userLevelId},</if>
+            <if test="nickname != null">`nickname` = #{nickname},</if>
+            <if test="mobile != null">`mobile` = #{mobile},</if>
+            <if test="registerIp != null">`register_ip` = #{registerIp},</if>
+            <if test="avatar != null">`avatar` = #{avatar},</if>
+            <if test="weixinOpenid != null">`weixin_openid` = #{weixinOpenid},</if>
+            <if test="idcard != null">`idcard` = #{idcard}</if>
         </set>
         where id = #{userId}
     </update>
@@ -178,13 +178,13 @@
         left join nideshop_sms_log b on a.user_id = b.user_id and b.log_date > a.log_date
         where a.user_id = #{user_id} and b.id is null
     </select>
-    
-        <select id="querySmsCodeByMobile" parameterType="java.lang.String" resultType="com.platform.entity.SmsLogVo">
+
+    <select id="querySmsCodeByMobile" parameterType="java.lang.String" resultType="com.platform.entity.SmsLogVo">
          SELECT * FROM `nideshop_sms_log` 
          WHERE phone = #{mobile}
          ORDER BY create_time DESC LIMIT 0,1
     </select>
-    
+
 
     <insert id="saveSmsCodeLog" parameterType="com.platform.entity.SmsLogVo">
         insert into nideshop_sms_log(
@@ -208,11 +208,10 @@
          #{createTime}
         )
     </insert>
-    
-    
-    
+
+
     <!-- 根据用户id查询用户账户 -->
-	<select id="queryUserAccount" resultMap="qzUserAccountMap">
+    <select id="queryUserAccount" resultMap="qzUserAccountMap">
 		select
 			`id`,
 			`shop_user_id`,
@@ -222,7 +221,7 @@
 		from qz_user_account
 		where shop_user_id = #{userId}
 	</select>
-	
+
     <!-- 查询用户资金流水 -->
     <select id="queryuserAccountDetail" resultType="com.platform.entity.QzMoneyRecordEntity">
 	    select
@@ -240,7 +239,8 @@
 
 
     <!--保存第三方用户并返回用户id-->
-    <insert id="saveFromThird"  parameterType="com.platform.entity.UserVo" useGeneratedKeys="true" keyProperty="userId" keyColumn="id">
+    <insert id="saveFromThird" parameterType="com.platform.entity.UserVo" useGeneratedKeys="true" keyProperty="userId"
+            keyColumn="id">
 	insert into nideshop_user(
 			`username`,
 			`password`,
