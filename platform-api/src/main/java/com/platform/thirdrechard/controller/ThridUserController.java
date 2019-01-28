@@ -42,11 +42,11 @@ public class ThridUserController {
         logger.info("充值解密后的密文是》》》》》》》》" + data);
         JSONObject jsonObject = JSONObject.parseObject(data);
         String mobile=jsonObject.getString("mobile");
-        logger.info("第三方传入的手机号=="+mobile);
+        logger.info("第三方传入的手机号》》》"+mobile);
         Map<String, Object> map =new HashMap<>();
 
             if(!checkMobile(mobile)){//校验手机格式
-                logger.info("第三方传入的手机号错误，手机号为=="+mobile);
+                logger.error("第三方传入的手机号错误，手机号为=="+mobile);
                 return R.error(1001,"手机号错误");
             };
             Map paramMap=new HashMap();

@@ -29,6 +29,12 @@ public class RechargeResponseEntity {
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}
-	
-	
+
+	@Override
+	public String toString() {
+		return "RechargeResponseEntity{" +
+				"code='" + code + '\'' +
+				", msg='" + msg + '\'' +
+				'}';
+	}
 }

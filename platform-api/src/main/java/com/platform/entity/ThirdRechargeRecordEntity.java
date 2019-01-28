@@ -191,6 +191,22 @@ public class ThirdRechargeRecordEntity implements Serializable {
 	public void setQueryCheckUrl(String queryCheckUrl) {
 		this.queryCheckUrl = queryCheckUrl;
 	}
-    
-    
+
+    @Override
+    public String toString() {
+        return "ThirdRechargeRecordEntity{" +
+                "id=" + id +
+                ", mobile='" + mobile + '\'' +
+                ", state='" + state + '\'' +
+                ", amount=" + amount +
+                ", thirdTradeNo='" + thirdTradeNo + '\'' +
+                ", tradeNo='" + tradeNo + '\'' +
+                ", cardType='" + cardType + '\'' +
+                ", platformType='" + platformType + '\'' +
+                ", version=" + version +
+                ", updateTime=" + updateTime +
+                ", createTime=" + createTime +
+                ", queryCheckUrl='" + queryCheckUrl + '\'' +
+                '}';
+    }
 }
