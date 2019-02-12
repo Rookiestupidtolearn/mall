@@ -355,37 +355,29 @@ public class ApiGoodsController extends ApiBaseAction {
     @ApiImplicitParams({@ApiImplicitParam(name = "id", value = "分类id", paramType = "path", required = true)})
     @IgnoreAuth
     @PostMapping(value = "category")
-    public Object category(Integer id) {
-        Map<String, Object> resultObj = new HashMap();
-        //
-        CategoryVo currentCategory = categoryService.queryObject(id);
-        //
-        CategoryVo parentCategory = categoryService.queryObject(currentCategory.getParent_id());
-        Map params = new HashMap();
-        params.put("parent_id", currentCategory.getParent_id());
-        List<CategoryVo> newBrotherCategory = new ArrayList<>();
-        List<CategoryVo> brotherCategory = categoryService.queryListOfGoodsNotNull(params);
-        if(!CollectionUtils.isEmpty(brotherCategory)){
-        	for(CategoryVo sub : brotherCategory){
-//        		List<GoodsVo> goods = apiGoodsMapper.querBrotherCategory(sub.getId().toString());
-        		if(sub.getWap_banner_url() != null){
-        			newBrotherCategory.add(sub);
-        		}
-//        		if(!CollectionUtils.isEmpty(goods)){
-//        			for(GoodsVo vo : goods){
-//        				if(vo.getIs_on_sale() == 1){
-//        					newBrotherCategory.add(sub);
-//        					break;
-//        				}
-//        			}
-//        		}
-        	}
-        }
-        //
-        resultObj.put("currentCategory", currentCategory);
-        resultObj.put("parentCategory", parentCategory);
-        resultObj.put("brotherCategory", newBrotherCategory);
-        return toResponsSuccess(resultObj);
+    public Object category(Integer id,String type) {  
+    	 Map<String, Object> resultObj = new HashMap();
+         //查询二级分类
+         CategoryVo parentCategory = categoryService.queryObject(id);
+         Map params = new HashMap();
+         if("parent".equals(type)){
+        	 params.put("parent_id", parentCategory.getId());
+         }else if("sub".equals(type)){
+        	 params.put("parent_id", parentCategory.getParent_id());
+         }
+         List<CategoryVo> newBrotherCategory = new ArrayList<>();
+         List<CategoryVo> brotherCategory = categoryService.queryListOfGoodsNotNull(params);
+         if(!CollectionUtils.isEmpty(brotherCategory)){
+         	for(CategoryVo sub : brotherCategory){
+         		if(sub.getWap_banner_url() != null){
+         			newBrotherCategory.add(sub);
+         		}
+         	}
+         }
+         resultObj.put("currentCategory", newBrotherCategory.size() == 0 ? null : newBrotherCategory.get(0));
+         resultObj.put("parentCategory", parentCategory);
+         resultObj.put("brotherCategory", newBrotherCategory);
+         return toResponsSuccess(resultObj);
     }
 
     /**
@@ -401,7 +393,7 @@ public class ApiGoodsController extends ApiBaseAction {
     public Object list(@LoginUser UserVo loginUser, Integer categoryId,
                        Integer brandId, String keyword, Integer isNew, Integer isHot,
                        @RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "size", defaultValue = "10") Integer size,
-                       String sort, String order) {
+                       String sort, String order,String type) {
         Map<String,Object> params = new HashMap<>();
         String REDIS_CATEGORY_LOCK = "cagetoryLock";
         params.put("is_delete", 0);
@@ -481,7 +473,7 @@ public class ApiGoodsController extends ApiBaseAction {
         }
         //加入分类条件
         if (null != categoryId && categoryId > 0) {
-        	//查询子分类
+        	//查询二级分类
             CategoryVo subCategorys = apiCategoryMapper.queryObject(categoryId);
             //查询父节点
             CategoryVo parentCategorys = apiCategoryMapper.queryObject(subCategorys.getParent_id());
@@ -491,13 +483,17 @@ public class ApiGoodsController extends ApiBaseAction {
             }else{
             	List<Integer> categoryIds = new ArrayList();
         		Map categoryParam = new HashMap();
-        		categoryParam.put("parent_id", categoryId);
+        		if("parent".equals(type)){
+        			categoryParam.put("parent_id", categoryId);
+        		}else if("sub".equals(type)){
+        			categoryParam.put("parent_id", subCategorys.getParent_id());
+        		}
         		categoryParam.put("fields", "id");
         		List<CategoryVo> childIds = categoryService.queryList(categoryParam);
         		for (CategoryVo categoryEntity : childIds) {
         			categoryIds.add(categoryEntity.getId());
         		}
-        		categoryIds.add(categoryId);
+//        		categoryIds.add(categoryId);
         		if(!CollectionUtils.isEmpty(categoryIds)){
         			params.put("categoryIds", categoryIds);
         		}
@@ -505,7 +501,6 @@ public class ApiGoodsController extends ApiBaseAction {
         }
         //查询列表数据
         params.put("fields", "nideshop_goods.id as id,nideshop_goods.name as name, nideshop_goods.list_pic_url as list_pic_url, nideshop_goods.market_price as market_price, nideshop_goods.retail_price, nideshop_goods.goods_brief,case when min(nideshop_product.market_price) != '' then min(nideshop_product.market_price) else 0 end product_market_price");
-        
         if (null != sort && sort.equals("price")) {
             params.put("sidx", "market_price");
             params.put("order", order);
@@ -535,10 +530,6 @@ public class ApiGoodsController extends ApiBaseAction {
         goodsData.setGoodsList(goodsList);
         return toResponsSuccess(goodsData);
     }
-
-    
-    
-    
     /**
      * 搜索商品
      * @param loginUser

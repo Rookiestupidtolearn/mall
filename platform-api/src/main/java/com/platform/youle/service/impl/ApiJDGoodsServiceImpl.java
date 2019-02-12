@@ -450,7 +450,6 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 				}
 				for (int i = 0; i < dateAttr.size(); i++) {
 					JSONObject obj = JSONObject.parseObject(dateAttr.get(i).toString());
-					System.out.println("子分类" + obj);
 					CategoryVo category = apiCategoryMapper.queryObject(Integer.parseInt(obj.get("code").toString()));
 					if (category != null) {
 						category.setName(obj.get("name").toString());
@@ -508,14 +507,14 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 				String result = HttpUtil.post(Urls.base_prod_url + Urls.childs, objectToMap(entity));
 				if (StringUtils.isEmpty(result)) {
 					resultObj.put("status", "false");
-					resultObj.put("msg", "查询二级分类三方返回数据为空");
+					resultObj.put("msg", "查询三级分类三方返回数据为空");
 					return resultObj;
 				}
 				JSONObject dateObj = JSONObject.parseObject(result);
 				String resultDate = dateObj.get("RESULT_DATA").toString();
 				if (StringUtils.isEmpty(resultDate)) {
 					resultObj.put("status", "false");
-					resultObj.put("msg", "查询二级分类三方返回数据为空");
+					resultObj.put("msg", "查询三级分类三方返回数据为空");
 					return resultObj;
 				}
 				JSONArray dateAttr = JSONArray.parseArray(resultDate);
