@@ -2,12 +2,15 @@
 	<div class="container">
 		<!--1个物流-->
 		<div class="logistics" >
-	 		<p class="top"><span class="left">{{description.shipment_name}}：{{description.shipment_order}}</span><span class="right">预计{{description.arrivalTime}}送达</span></p>
+	 		<p class="top">
+	 			<span class="left">{{description.shipment_name}}：{{description.shipment_order}}</span>
+	 			<span class="right" v-if="description.arrivalTime">预计{{description.arrivalTime}}送达</span>
+	 			<span class="right" v-else></span>
+	 		</p>
 	 		<div class="productInfo">
 	 			<img :src="description.goods[0].img" />
 	 			<p class="name">{{description.goods[0].goodsName}}</p>
 	 		</div>
-	 		<!--<div class="btn" >查看物流</div>-->
 		</div>
 		<div class="logisticsStatus">
 			<p class="top"><span >物流状态</span></p>
@@ -29,14 +32,19 @@
 				<div class="bottom" @click="close" v-else>收起<img src="../../../static/images/logistics/tjt.png"/></div>
 			</div>
 		</div>
+		<returnhome :scrollshow = "scrollshow"></returnhome>
 	</div>
 </template>
 
 <script>
+	import returnhome from '@/components/returnHome';
+	
 	export default {
 	  name: 'logistics',
+	   components:{returnhome},
 	  data () {
 	    return {
+	    	scrollshow:true,
 	    	openD:true,
 	    	description:''
 	    }

@@ -23,28 +23,32 @@
 	      <p class="text">收货地址在哪里</p>
 	    </div>
 	    <div class="add-address" @click="addressAddOrUpdate('0')" data-address-id="0">新建</div>
+	    <returnhome :scrollshow = "scrollshow"></returnhome>
 	</div>
 </template>
 
 <script>
 import { MessageBox } from 'mint-ui';
+import returnhome from '@/components/returnHome';
 //import headbar from '@/components/headbar.vue'
 		
 export default {
-	name: 'addressList',
+	name: 'addresscateList',
+	components:{returnhome},
 //	components:{headbar},
   data () {
     return {
 //  	headFont:'地址列表',
+		scrollshow:true,
     	addressList:[],
     	deleteList:[]
     }
   },
-  created(){
+  mounted(){
   	 this.showaddressList();
   },
   methods:{
-		showaddressList:function(){
+		showaddressList(){
 	  		var that = this;    
 	    	that.$http({
 		        method: 'post',
@@ -54,41 +58,16 @@ export default {
 	    			console.log(response.data.data)
 			  })
 	  	},
-		addressAddOrUpdate:function(setId){
-		     this.$router.push('/pages/category/addressList?id=' + setId);
-		},
 		selectAddress(setId){
+//			alert('购物车-地址列表');
 		    //选择该收货地址
 //		    var _day = 60 * 60 * 24 *1;
-  			this.$cookie.setCookie('addressId',setId); //缓存地址id
-		    this.$router.push('/pages/category/checkout');
+  			this.$cookie.setCookieTime('addressId',setId); //缓存地址id
+  			this.$router.push({ path: 'checkout'})
 		},
 		 addressAddOrUpdate (setId) {
-			this.$router.push('/pages/category/addressAdd?id=' + setId);
+			this.$router.push({ path: 'addresscateAdd', query: { id: setId }})
 		  },
-		deleteAddress:function(deleteId){
-			MessageBox({
-			  title: ' ',
-			  message: '确定要删除地址? ',
-			  showCancelButton: true
-			}).then(action => {
-				if(action == 'confirm'){
-					var that = this;
-					that.$http({
-				        method: 'post',
-				        url:that.$url+ 'address/delete',
-				        params:{id:deleteId}
-			    	}).then(function (res) {
-			    		res = {"errno":0,"data":"","errmsg":"执行成功"};
-			    		console.log(res.data);
-			    		if( res.errno = '0'){
-			    			that.showaddressList();
-			    			console.log('用户点击确定');
-			    		}
-			        });
-				}
-			})
-		}
 	}
 }
 </script>

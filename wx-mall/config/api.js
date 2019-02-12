@@ -7,7 +7,7 @@ const root = '/platform/api/';
 const API_BASE_URL = 'http://localhost:8080' + root;
   //const API_BASE_URL = 'http://192.168.124.50:6101' + root;
 //外网访问地址
-// const API_BASE_URL = 'http://117.50.60.55:6201' + root;
+const API_BASE_URL = 'http://192.168.124.144:8093' + root;
 //const API_BASE_URL = 'http://192.168.0.11:6061' + root;
 //const API_BASE_URL = 'http://localhost:8093' + root;
 // const API_BASE_URL = 'http://192.144.156.42:8080' + root;

@@ -4,8 +4,10 @@
   		<!--<headbar :headFont = "headFont"></headbar>-->
   		
 	 	<div class="searchTop" >
-	 		<form action="" target="frameFile">
-	  			<mt-search v-model="value"  @keyup.enter.native="showList" @input="inputFocus" cancel-text="取消"  placeholder="商品搜索" class="wusearch" ></mt-search>
+	 		<form action="" ref="formSubmit" >
+	  			<!--<mt-search v-model="value"  @keyup.13="showResult()" @input="inputFocus" cancel-text="取消"  placeholder="商品搜索" class="wusearch" ></mt-search>-->
+	  			<input type="search"  v-model="value"  @input="inputFocus" placeholder="商品搜索" class="wusearch"  @keyup.13="showResult()" @focus="onFocus"/>
+	  			<span @click="blur"  v-show="oncancel">取消</span>
 	  		</form>
 	  	</div>
 	  	<div class="no-search" :style="{display: [value || defaultKeyword || cookie? 'none' : 'block']}" >
@@ -28,7 +30,7 @@
 		      <div class="item" hover-class="navigator-hover" v-for="item in hotKeyword">{{item}}</div>
 		    </div>
 	  	</div>
- 		<div class="search-result"  :data-c="searchStatus"  :data-d="goodsList.length"  v-if="searchStatus && goodsList.length" >
+ 		<div class="search-result"  :data-c="searchStatus"  :data-d="goodsList.length"  v-if="searchStatus && goodsList.length" v-show="dishow">
 		    <div class="sort ">
 			    <div class="sort-box">
 				      <div  class="item" :class="[currentSortType == 'default' ? 'active' : '']" @click="openSortFilter('defaultSort')" >
@@ -48,11 +50,11 @@
 			    <!--商品渲染-->
 			    <div class="cate-item">
 				    <div class="b">
-				      <router-link class="item" :class=" [(iindex + 1) % 2 == 0 ? 'item-b' : '']" :to="'/pages/goods/goods?id='+iitem.id" v-for="(iitem,iindex) in goodsList" >
+				      <div class="item" :class=" [(iindex + 1) % 2 == 0 ? 'item-b' : '']" @click="andriod('/pages/goods/goods?id='+iitem.id)" v-for="(iitem,iindex) in goodsList" >
 				        <img class="img" :src="iitem.list_pic_url" background-size="cover"/>
 				        <p class="name">{{iitem.name}}</p>
 				        <p class="price">￥{{iitem.market_price}}</p>
-				      </router-link>
+				      </div>
 				    </div>
 				  </div>
 			</div>
@@ -61,16 +63,22 @@
 		    <img class="icon" src="http://yanxuan.nosdn.127.net/hxm/yanxuan-wap/p/20161201/style/img/icon-normal/noSearchResult-7572a94f32.png"/>
 		    <p class="text">您寻找的商品还未上架</p>
 		 </div>
+		 <returnhome :scrollshow = "scrollshow"></returnhome>
  	</div>
 </template>
 
 <script>
-//	import headbar from '@/components/headbar.vue'
+import { Indicator } from 'mint-ui';
+import returnhome from '@/components/returnHome';
+
 export default {
 	  name: 'search',
-//	  components:{headbar},
+	  components:{returnhome},
 	  data () {
 	    return {
+	    	dishow:false,
+	    	oncancel:false,
+	    	scrollshow:true,
 	    	cookie:true,
     		value:'',
     		searchStatus:false,
@@ -101,27 +109,50 @@ export default {
 			}else{
 				this.cookie=false;  
 			}
-			
+			/*表单提交阻止默认行为*/
+			var domSu = this.$refs.formSubmit;
+			domSu.addEventListener('submit',function(){
+				event.preventDefault();
+			})
 	  },
 	  beforeRouteLeave(to, from, next) { 
 			 let position = window.scrollY; //记录离开页面的位置 
 			 if (position == null) position = 0 ;
 			 if(this.$route.name == 'search'){
+			 			console.log(window.scrollY);
 				 		this.$cookie.setCookie('scrollSearch',window.scrollY);
 		 		}
 			 next();
 	 }, 
 	   watch:{
-		 		goodsList:function(){
-		 				this.$nextTick(function(){
-		 						if(this.$cookie.getCookie('scrollSearch') == '' || this.$cookie.getCookie('scrollSearch') == '0'  || this.$cookie  .getCookie('scrollSearch') == '-1'){
-		   					}else{
-		   						window.scrollTo(0,this.$cookie.getCookie('scrollSearch'));
-		   					}
-		 				})
-		 		}
-		 },
+	 		goodsList:function(){
+   				this.$nextTick(function(){
+   					console.log(this.$cookie.getCookie('scrollSearch'))
+   					if(this.$cookie.getCookie('scrollSearch') == '' || this.$cookie.getCookie('scrollSearch') == '0'  || this.$cookie  .getCookie('scrollSearch') == '-1'){
+   					}else{
+   						window.scrollTo(0,this.$cookie.getCookie('scrollSearch'));
+   					}
+   				})
+	 		}
+		},
 	  methods:{
+	  	blur(){
+	  		this.value =  '';
+	  		document.getElementsByClassName('wusearch')[0].blur();
+	  		this.oncancel = false; //取消按钮
+	  		this.dishow=false; //结果页面
+	  		this.$cookie.delCookie('search');
+	  		this.$cookie.delCookie('searchKey');
+	  	},
+	  	onFocus(){
+	  		this.oncancel = true;
+	  	},
+	  	showResult(){
+	  		this.showList();
+	  	},
+	  	andriod(e){   
+			this.$cookie.interactive(e);  //商品详情与andriod和ios交互
+	 	},
 	  	onKeywordTap(keyword){
 	  		this.getSearchResult(keyword);
 	  	},
@@ -152,6 +183,8 @@ export default {
 		      this.showList();
 	  	},
 	  	openSortFilter(currentId){
+	  		this.$cookie.delCookie('scrollSearch'); //每次点击重置为0
+	  		window.scrollTo(0,0);
 		    switch (currentId) {
 		      case 'categoryFilter':
 		          this.categoryFilter =  !this.categoryFilter;
@@ -204,33 +237,57 @@ export default {
 	  	inputFocus(){
 	  		var that = this;
       		that.searchStatus =  false,
-			   that.$http({
-			        method: 'post',
-			        url: that.$url+'search/helper',
-			        params:{keyword:that.value}
-		    	}).then(function (response) {
-		    			console.log(response.data);
-				})
+		   that.$http({
+		        method: 'post',
+		        url: that.$url+'search/helper',
+		        params:{keyword:that.value}
+	    	}).then(function (response) {
+	    			console.log(response.data);
+			})
 	  	},
-	  	showList(data){
+	  	showList(dataCookie){
 	  		let that = this;
-	  		
-	  		var data = {
-	  			keyword:that.value,
-	        	page:that.page,
-	        	size:that.size,
-	        	sort:that.currentSortType,
-	        	order:that.currentSortOrder,
-	        	categoryId:that.categoryId
+//	  		that.oncancel = false; //搜索框取消按钮隐藏
+			that.dishow=true; //显示结果页
+	  		if (that.$cookie.getCookie("searchKey") !== that.value){
+	  			that.$cookie.delCookie('scrollSearch');
 	  		}
-	  		that.$cookie.setCookie("search",data);
+	  		if(dataCookie == "" || dataCookie ==undefined){
+	  			var data = {
+		  			keyword:that.value,
+		        	page:that.page,
+		        	size:that.size,
+		        	sort:that.currentSortType,
+		        	order:that.currentSortOrder,
+		        	categoryId:that.categoryId
+		  		}
+  			}else if (dataCookie.isTrusted == true){
+  				that.currentSortType = 'id';
+  				that.currentSortOrder = 'desc';
+  				var data = {
+		  			keyword:that.value,
+		        	page:that.page,
+		        	size:that.size,
+		        	sort:that.currentSortType,
+		        	order:that.currentSortOrder,
+		        	categoryId:that.categoryId
+		  		}
+  			}else{
+  				var data = JSON.parse(dataCookie);
+  				that.currentSortType = data.sort;  
+  				that.currentSortOrder = data.order; 
+  				that.categoryId =  data.categoryId;
+  			}
+	  		that.$cookie.setCookie("search",JSON.stringify(data));
 	  		that.$cookie.setCookie("searchKey",that.value);
 //	  		获取商品列表
+			Indicator.open();
 	  		that.$http({
 		        method: 'post',
-		        url: that.$url+'goods/list',
+		        url: that.$url+'goods/searchGoodsList',
 		        params:data
 	    	}).then(function (response) {
+	    		Indicator.close();
 	    		var response = response.data;
 	    		 that.searchStatus = true;
 		          that.categoryFilter = false;
@@ -251,10 +308,6 @@ export default {
 .cate-item .b .item:last-child{
 	margin-bottom:.3rem !important;
 }
-.wusearch{
-	font-size:.28rem !important;
-	height:100%;
-}
 .no-search{
     height: auto;
     overflow: hidden;
@@ -263,7 +316,7 @@ export default {
 .serach-keywords{
     background: #fff;
     width: 7.50rem;
-    height: auto;
+    height:auto;
     overflow: hidden;
     margin-bottom: .20rem;
 }
@@ -370,12 +423,13 @@ export default {
     background-size: .15rem .21rem;
 }
 .sort-box-category{
-	position: absolute;
+	position: fixed;
     background: #fff;
     width: 100%;
     height: auto;
     overflow: hidden;
     padding: .40rem 0 0 0;
+    top:1.74rem;
     border-bottom: 1px solid #d9d9d9;
 }
 .sort-box-category .item{
@@ -494,9 +548,30 @@ export default {
     text-align: center;
     color: #999;
 }
-.searchTop{
-	position: fixed;
-    width: 100%;
-    top: 0;
+form{
+	position: relative;
 }
+form span{
+	position: absolute;
+	top:0;
+	right:0;
+	font-size: .28rem;
+	color:#26a2ff;
+	padding:.27rem;
+	background-color: #d9d9d9;
+}
+.wusearch{
+    width: 7.5rem;
+    padding: 0 0 0 .35rem;
+    font-size: .28rem;
+    height: .95rem;
+    border: .12rem solid #d9d9d9;
+    background: url(http://yanxuan.nosdn.127.net/hxm/yanxuan-wap/p/20161201/style/img/icon-normal/search2-2fb94833aa.png) no-repeat .1rem .25rem;
+    background-size: .2rem;
+    background-color: #fff;
+}
+.wusearch::-webkit-input-placeholder {
+	font-size:.24rem;
+	color:#555;
+ }
 </style>
