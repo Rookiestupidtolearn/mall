@@ -64,6 +64,15 @@
 	        				<Option  :value="3" :key="2">申请下架</Option>
 	        				<Option  :value="2" :key="3">申请上架</Option>
    	 					</Select>
+                一级分类：<Select  id="one-category" v-model="ww" style="width:100px">
+                <Option  value="" >请选择</Option>
+                <Option  :value="0" :key="0">已下架</Option>
+                <Option  :value="1" :key="1">已上架</Option>
+                <Option  :value="3" :key="2">申请下架</Option>
+                <Option  :value="2" :key="3">申请上架</Option>
+            </Select>
+
+
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i-button @click="query">查询</i-button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i-button @click="clean">重置</i-button>
                 <br><br><i-col span="2" class="special-class">结算价 :&nbsp;&nbsp;<i-input class="special-class" v-model="q.min_retail_price" size="small"  /></i-col>
 					<i-col span="2" class="special-class">至&nbsp;&nbsp;&nbsp;&nbsp;<i-input class="special-class" v-model="q.max_retail_price" size="small"  /></i-col>

@@ -22,6 +22,7 @@ $(function () {
             {label: '商品库存', name: 'goodsNumber', index: 'goods_number', width: 80},
             {label: '销售量', name: 'sellVolume', index: 'sell_volume', width: 80},
             {label: '指导价', name: 'marketPrice', index: 'market_price', width: 80},
+            {label: '商品毛利', name: 'grossMargin', index: 'grossMargin', width: 80},
             {
                 label: '热销', name: 'isHot', index: 'is_hot', width: 80, formatter: function (value) {
                     return transIsNot(value);
@@ -46,8 +47,24 @@ $(function () {
         imageUploadParams: {id: "edit"},
         imagesLoadURL: '../sys/oss/queryAll'
     })
-});
 
+});
+function queryCatagory() {
+    Ajax.request({
+        type: "POST",
+        url: url,
+        contentType: "application/json",
+        params: JSON.stringify(vm.goods),
+        successCallback: function (r) {
+            $('#goodsName').next('div').remove();
+            $('#goodsName').parent().parent().removeClass('ivu-form-item-error');
+            alert('操作成功', function (index) {
+                vm.reload();
+            });
+        }
+    });
+
+}
 //0 下架  1上架 2 申请上架  3申请下架  -1编辑状态
 function goodsTransIsNot(value) {
 

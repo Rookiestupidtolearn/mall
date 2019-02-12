@@ -975,8 +975,8 @@ public class ApiTestController extends ApiBaseAction {
 	public Object sendSms(String mobile,String amount) {
 	    //订单支付成功短信
 		String  loginSmsTemplet = PropertiesUtil.getValue("doubao.properties","rechargeSmsTemplet");
-		String msgContent = MessageFormat.format(loginSmsTemplet, mobile,"2019年01月15日",amount);
-		
+		String msgContent = MessageFormat.format(loginSmsTemplet, mobile,"2019年01月23日",amount);
+		System.out.println(mobile+"content>>>>>"+msgContent);
 		return apiSendSMSService.sendSms(mobile, msgContent);
 	}
 	
