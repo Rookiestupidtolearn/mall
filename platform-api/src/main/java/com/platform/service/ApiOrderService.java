@@ -353,6 +353,8 @@ public class ApiOrderService {
 
 		
 		OrderVo orderInfo = new OrderVo();
+		orderInfo.setPay_id("0");//易宝支付
+		orderInfo.setPay_name("易宝支付");
 		orderInfo.setShipping_no(GenerateCodeUtil.buildBizNo());
 		orderInfo.setOrder_sn(GenerateCodeUtil.buildJDBizNo());
 		orderInfo.setUser_id(loginUser.getUserId());
@@ -425,11 +427,31 @@ public class ApiOrderService {
 		for (CartVo goodsItem : orderGoodsList) {
 		    BigDecimal 	coupon_price  =  BigDecimal.ZERO;
 		     Map<String, Object> map = new HashMap<String, Object>();
+		     Integer couponNum = 0;
 		     map.put("order_id", orderInfo.getId());
 		     map.put("goods_id", goodsItem.getGoods_id());
 			 List<GoodsCouponConfigVo> configVos = goodsCouponConfigMapper.getCouponList(map);
             if (!CollectionUtils.isEmpty(configVos)) {
-            	coupon_price = configVos.get(0).getCoupon_price();
+            	
+            	  Map<String, Object> map3 = new HashMap<String, Object>();
+            	  map3.put("order_id", orderInfo.getId());
+     			 List<GoodsCouponConfigVo> configVos3 = goodsCouponConfigMapper.getCouponList(map3);
+            	if (configVos3.size() ==1) {
+					//存了一个
+            		coupon_price = configVos.get(0).getCoupon_price();
+            		if (coupon_price.compareTo(new BigDecimal("0"))> 0) {
+            			BigDecimal size  = discountAmount.divide(coupon_price);
+            			couponNum = Integer.parseInt(size.toString());
+					}
+				}else {
+					if (configVos.size()>1) {
+						couponNum = configVos.size();
+					}else {
+						couponNum = configVos.get(0).getCoupon_number();
+					}
+					coupon_price = configVos.get(0).getCoupon_price();
+				
+				}
 			}
 			
 			OrderGoodsVo orderGoodsVo = new OrderGoodsVo();
@@ -445,17 +467,24 @@ public class ApiOrderService {
 			orderGoodsVo.setRetail_price(goodsItem.getRetail_price());
 			orderGoodsVo.setNumber(goodsItem.getNumber());
 			orderGoodsVo.setCaller_price(coupon_price);
-			orderGoodsVo.setCaller_total_price(coupon_price.multiply(new BigDecimal(goodsItem.getNumber())));
+			orderGoodsVo.setCaller_num(couponNum);
+			orderGoodsVo.setCaller_total_price(coupon_price.multiply(new BigDecimal(couponNum)));
 			orderGoodsVo.setGoods_specifition_name_value(goodsItem.getGoods_specifition_name_value());
 			orderGoodsVo.setGoods_specifition_ids(goodsItem.getGoods_specifition_ids());
 			orderGoodsVo.setChannel(soureMap.get(goodsItem.getGoods_id() + ""));
 			orderGoodsVo.setGoodStatus(0);
+			if (goodsItem.getNumber()-couponNum ==0) {
+				orderGoodsVo.setActual_price(new BigDecimal("0"));//未发生克拉抵扣
+			}else {
+				orderGoodsVo.setActual_price(goodsItem.getMarket_price());//未发生克拉抵扣
+			}
+			orderGoodsVo.setActual_caller_price(goodsItem.getMarket_price().subtract(coupon_price));
 			orderGoodsData.add(orderGoodsVo);
 			apiOrderGoodsMapper.save(orderGoodsVo);
 			pidNums += orderGoodsVo.getGoods_sn().substring(2, orderGoodsVo.getGoods_sn().length()) + "_"
 					+ orderGoodsVo.getNumber() + ",";
 			//结算总价
-			retail_price = goodsItem.getRetail_price().multiply(new BigDecimal("1")).add(retail_price);
+			retail_price = goodsItem.getRetail_price().multiply(new BigDecimal(goodsItem.getNumber())).add(retail_price);
 			//商品的总数量
 			goods_total_num += goodsItem.getNumber();
 			
@@ -603,7 +632,7 @@ public class ApiOrderService {
 						}
 						coupon.setCoupon_price(payMatching);
 						coupon.setOrder_id(order.getId());
-						coupon.setCoupon_number("1");
+						coupon.setCoupon_number(cart.getNumber().toString());
 						coupon.setCoupon_status(1);//未用
 						coupon.setAdd_time(new Date());
 						coupon.setGoods_id(Long.parseLong(cart.getGoods_id().toString()));

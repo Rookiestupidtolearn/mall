@@ -122,7 +122,7 @@ public class ApiPayController extends ApiBaseAction {
     	   //判断订单的实效性
     	  int minitCha = DateUtils.getBetweenDateByType(new Date(), orderInfo.getAdd_time(), "second");
     	  if (minitCha >86400 ) { //秒
-    		  return toResponsObject(400, "该笔订单已经实效重新下单", "");
+    		  return toResponsObject(400, "该笔订单已经失效重新下单", "");
 		  }
     	  //校验上下架。校验库存
         AddressVo addressVo = apiAddressMapper.queryObject(orderInfo.getAddress_id());

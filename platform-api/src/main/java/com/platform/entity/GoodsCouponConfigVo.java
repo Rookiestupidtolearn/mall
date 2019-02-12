@@ -30,6 +30,7 @@ public class GoodsCouponConfigVo implements Serializable{
 	 private Double normal_matching;
 	 private Integer order_id;
      private BigDecimal coupon_price;
+     private Integer coupon_number;
      
 	public Integer getId() {
 		return id;
@@ -141,6 +142,14 @@ public class GoodsCouponConfigVo implements Serializable{
 
 	public void setCoupon_price(BigDecimal coupon_price) {
 		this.coupon_price = coupon_price;
+	}
+
+	public Integer getCoupon_number() {
+		return coupon_number;
+	}
+
+	public void setCoupon_number(Integer coupon_number) {
+		this.coupon_number = coupon_number;
 	}
 	 
 }

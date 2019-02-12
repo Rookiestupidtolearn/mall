@@ -22,6 +22,8 @@ public interface ApiCartMapper extends BaseDao<CartVo> {
 
     void deleteByCart(@Param("user_id") Long user_id, @Param("session_id") Integer session_id, @Param("checked") Integer checked);
     
+    void deleteCartBy(@Param("user_id") Long user_id, @Param("goods_id") Integer goods_id);
+    
     List<CartVo> getCarts(Map<String, Object> params);
     //根据用户id查询购物车
     List<CartVo> queryUserCarts(Long user_id);

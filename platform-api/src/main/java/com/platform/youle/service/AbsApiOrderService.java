@@ -12,6 +12,8 @@ import com.platform.youle.entity.ResponseCancelEntity;
 import com.platform.youle.entity.ResponseOrderSubmitEntity;
 import com.platform.youle.entity.ResponseOrderTrackEntity;
 import com.platform.youle.entity.ResponseSystemOrderTrackEntity;
+import com.platform.youle.util.MD5util;
+import com.platform.youle.util.PropertiesUtil;
 import com.platform.youle.util.TokenUtil;
 
 public abstract class AbsApiOrderService implements IApiFuncServicein{
@@ -23,11 +25,21 @@ public abstract class AbsApiOrderService implements IApiFuncServicein{
 	     */
 		@Override
 	    public void initRequestParam(RequestBaseEntity  entity){
-			entity.setWid(TokenUtil.wid);
-			entity.setToken(TokenUtil.token);
-			entity.setTimestamp(TokenUtil.currentTime.toString());
+			  Long currentTime = Calendar.getInstance().getTimeInMillis();
+		      entity.setWid(PropertiesUtil.getValue("youle.properties","wid"));
+		      entity.setTimestamp(currentTime.toString());
+		      String token =getToken(currentTime);
+		      entity.setToken(token);
 	    }
-	
+		private  String getToken(Long currentTime){
+			String token = ""; 
+	     StringBuffer  tokenStr = new StringBuffer("");
+	     tokenStr.append(PropertiesUtil.getValue("youle.properties","wid"));
+	     tokenStr.append(PropertiesUtil.getValue("youle.properties","accessToken"));
+	     tokenStr.append(currentTime);
+	     token = MD5util.encodeByMD5(tokenStr.toString()).toUpperCase();
+			return token;
+		}
 	    /**
 	     * 实体转map
 	     * @param entity
