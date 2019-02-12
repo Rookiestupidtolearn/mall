@@ -357,6 +357,7 @@ public class ApiGoodsController extends ApiBaseAction {
     @PostMapping(value = "category")
     public Object category(Integer id,String type) {  
     	 Map<String, Object> resultObj = new HashMap();
+    	 List<CategoryVo> newSubCategorys = new ArrayList<>();
          //查询二级分类
          CategoryVo parentCategory = categoryService.queryObject(id);
          Map params = new HashMap();
@@ -366,9 +367,17 @@ public class ApiGoodsController extends ApiBaseAction {
         	 params.put("parent_id", parentCategory.getParent_id());
          }
          List<CategoryVo> newBrotherCategory = new ArrayList<>();
-         List<CategoryVo> brotherCategory = categoryService.queryListOfGoodsNotNull(params);
-         if(!CollectionUtils.isEmpty(brotherCategory)){
-         	for(CategoryVo sub : brotherCategory){
+         List<Integer> subCategorys = categoryService.queryListOfGoodsNotNull(params);
+         if(!CollectionUtils.isEmpty(subCategorys)){
+         	for(Integer categoryId : subCategorys){
+         		CategoryVo vo = categoryService.queryObject(categoryId);
+         		if(vo != null){
+         			newSubCategorys.add(vo);
+         		}
+         	}
+         }
+         if(!CollectionUtils.isEmpty(newSubCategorys)){
+         	for(CategoryVo sub : newSubCategorys){
          		if(sub.getWap_banner_url() != null){
          			newBrotherCategory.add(sub);
          		}

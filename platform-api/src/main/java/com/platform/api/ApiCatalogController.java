@@ -59,6 +59,7 @@ public class ApiCatalogController extends ApiBaseAction {
         params.put("parent_id", 0);
         //查询列表数据
         List<CategoryVo> newData = new ArrayList<>();
+        List<CategoryVo> newSubCategorys = new ArrayList<>();
         List<CategoryVo> data = categoryService.queryList(params);
         List<CategoryVo> newCategorys = new ArrayList<>();
         if(!CollectionUtils.isEmpty(data)){
@@ -91,9 +92,17 @@ public class ApiCatalogController extends ApiBaseAction {
         //获取子分类数据
         if (null != currentCategory && null != currentCategory.getId()) {
             params.put("parent_id", currentCategory.getId());
-            List<CategoryVo> subCategorys = categoryService.queryListOfGoodsNotNull(params);
+            List<Integer> subCategorys = categoryService.queryListOfGoodsNotNull(params);
             if(!CollectionUtils.isEmpty(subCategorys)){
-            	for(CategoryVo vo : subCategorys){
+            	for(Integer categoryId : subCategorys){
+            		CategoryVo vo = categoryService.queryObject(categoryId);
+            		if(vo != null){
+            			newSubCategorys.add(vo);
+            		}
+            	}
+            }
+            if(!CollectionUtils.isEmpty(newSubCategorys)){
+            	for(CategoryVo vo : newSubCategorys){
             		if(vo.getWap_banner_url() != null){
             			newCategorys.add(vo);
             		}
@@ -118,6 +127,7 @@ public class ApiCatalogController extends ApiBaseAction {
         Map params = new HashMap();
         params.put("parent_id", 0);
         List<CategoryVo> newCategorys = new ArrayList<>();
+        List<CategoryVo> newSubCategorys = new ArrayList<>();
         CategoryVo currentCategory = null;
         if (null != id) {
             currentCategory = categoryService.queryObject(id);
@@ -125,10 +135,17 @@ public class ApiCatalogController extends ApiBaseAction {
         //获取子分类数据
         if (null != currentCategory && null != currentCategory.getId()) {
             params.put("parent_id", currentCategory.getId());
-//            List<CategoryVo> subCategorys = categoryService.queryList(params);
-            List<CategoryVo> subCategorys = categoryService.queryListOfGoodsNotNull(params);
+            List<Integer> subCategorys = categoryService.queryListOfGoodsNotNull(params);
             if(!CollectionUtils.isEmpty(subCategorys)){
-            	for(CategoryVo vo : subCategorys){
+            	for(Integer categoryId : subCategorys){
+            		CategoryVo vo = categoryService.queryObject(categoryId);
+            		if(vo != null){
+            			newSubCategorys.add(vo);
+            		}
+            	}
+            }
+            if(!CollectionUtils.isEmpty(newSubCategorys)){
+            	for(CategoryVo vo : newSubCategorys){
             		if("热销".equals(vo.getName()) && "其他".equals(currentCategory.getName())){
             			newCategorys.add(vo);
             		}else{
