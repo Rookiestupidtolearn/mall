@@ -490,10 +490,18 @@ public class ApiGoodsController extends ApiBaseAction {
         		}
         		categoryParam.put("fields", "id");
         		List<CategoryVo> childIds = categoryService.queryList(categoryParam);
-        		for (CategoryVo categoryEntity : childIds) {
-        			categoryIds.add(categoryEntity.getId());
+//        		for (CategoryVo categoryEntity : childIds) {
+//        			categoryIds.add(categoryEntity.getId());
+//        		}
+        		if("parent".equals(type)){
+        			if(!CollectionUtils.isEmpty(childIds)){
+        				categoryIds.add(childIds.get(0).getId());
+        			}else{
+        				categoryIds.add(categoryId);
+        			}
+        		}else if("sub".equals(type)){
+        			categoryIds.add(categoryId);
         		}
-//        		categoryIds.add(categoryId);
         		if(!CollectionUtils.isEmpty(categoryIds)){
         			params.put("categoryIds", categoryIds);
         		}
