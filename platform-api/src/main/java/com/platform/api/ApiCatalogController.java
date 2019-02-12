@@ -7,10 +7,7 @@ import java.util.Map;
 
 import org.apache.shiro.util.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.platform.annotation.IgnoreAuth;
 import com.platform.dao.ApiGoodsMapper;
@@ -163,8 +160,9 @@ public class ApiCatalogController extends ApiBaseAction {
      */
     @ApiOperation(value = "查询根分类或者子分类列表")
     @ApiImplicitParams({@ApiImplicitParam(name = "id", value = "id", paramType = "query", required = false)})
-    @PostMapping(value = "queryCategory")
-    public Object queryCategory(Integer id) {
+    @IgnoreAuth
+    @PostMapping("/queryCategory/{id}")
+    public Object queryCategory(@PathVariable("id") Integer id) {
         Map<String, Object> resultObj = new HashMap();
         if (null == id) {
             resultObj.put("data", "error");

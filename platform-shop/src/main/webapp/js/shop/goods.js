@@ -48,22 +48,47 @@ $(function () {
         imagesLoadURL: '../sys/oss/queryAll'
     })
 
+   queryCatagory(0,"one-category");
+
 });
-function queryCatagory() {
+function selectOnchang(obj,addr){
+//获取被选中的option标签选项
+//     alert(obj.selectedIndex);
+//     alert(obj.selectedIndex);
+    var value = obj.options[obj.selectedIndex].value;
+    // alert(value)
+    queryCatagory(value,addr);
+}
+
+// $("#two-category").on('shown.bs.select',function(e){
+//     alert("jinru");
+    // console.log('展开之后');
+    // $('#queryDevice').prev().find("input").keydown(function(){
+    //     $('#queryDevice').prev().find("input").attr('id',"deviceInput"); //为input增加id属性
+    //     console.log($('#deviceInput').val()); //获取输入框值输出到控制台
+    // })
+// })
+
+function queryCatagory(id,addr) {
     Ajax.request({
         type: "POST",
-        url: url,
+        url:"../api/catalog/queryCategory/" + id ,
         contentType: "application/json",
         params: JSON.stringify(vm.goods),
-        successCallback: function (r) {
-            $('#goodsName').next('div').remove();
-            $('#goodsName').parent().parent().removeClass('ivu-form-item-error');
-            alert('操作成功', function (index) {
-                vm.reload();
+        successCallback: function (data) {
+
+            $("#"+addr).html("");
+            var  html_1='';
+            var dataObj = data.data;
+            $.each(dataObj, function(index, item){
+
+                html_1+='<Option  value='+item.id+'>'+item.name+'</Option>';
             });
+
+            $("#"+addr).append(html_1);
+            $(".selectpicker" ).selectpicker('refresh');
         }
     });
-
 }
 //0 下架  1上架 2 申请上架  3申请下架  -1编辑状态
 function goodsTransIsNot(value) {
@@ -140,7 +165,8 @@ var vm = new Vue({
         	max_retail_price:'',
         	min_pure_interest_rate:'',
         	max_pure_interest_rate:'',
-        	status:''
+        	status:'',
+            category_id:''
         },
         brands: [],//品牌
         macros: [],//商品单位
@@ -544,7 +570,9 @@ var vm = new Vue({
          		   'min_retail_price':vm.q.min_retail_price,
         		   'max_retail_price':vm.q.max_retail_price,
         		   'min_pure_interest_rate':vm.q.min_pure_interest_rate,
-        		   'max_pure_interest_rate':vm.q.max_pure_interest_rate},
+        		   'max_pure_interest_rate':vm.q.max_pure_interest_rate,
+                    'category_id':vm.q.category_id},
+
                 page: page
             }).trigger("reloadGrid");
             vm.handleReset('formValidate');
@@ -645,6 +673,7 @@ var vm = new Vue({
         eyeImage: function (e) {
             eyeImage($(e.target).attr('src'));
         }
+
     },
     mounted() {
     	console.log(this.$refs);
