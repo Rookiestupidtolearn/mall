@@ -42,6 +42,7 @@
 	    	currentCategory:'',
 	    	idm:'',
 	    	indexId:'',
+	    	valueDiff:'parent'
 	    }
 	  },
 	  mounted(){
@@ -82,6 +83,7 @@
 	 	},
 	  	switchCate(idItem){
 	  		this.idm = idItem;
+	  		this.valueDiff = 'sub';
 	  		this.listShow();
 	  	},
 	  	listShow(){
@@ -89,7 +91,7 @@
 	  		that.$http({
 		        method: 'post',
 		        url:that.$url+ 'goods/list',
-		        params:{categoryId:that.idm,page:1,size:20},
+		        params:{categoryId:that.idm,page:1,size:20,type:that.valueDiff},
 	    	}).then(function (response) {
 				that.goodsList = response.data.data.goodsList;
 				if(that.goodsList.length < 1){
@@ -102,7 +104,7 @@
 	    	that.$http({
 		        method: 'post',
 		        url:that.$url+ 'goods/category',
-		        params:{id:that.idm}
+		        params:{id:that.idm,type:that.valueDiff}
 	    	}).then(function (response) {
 				that.brotherCategory = response.data.data.brotherCategory;
 				that.currentCategory = response.data.data.currentCategory;
