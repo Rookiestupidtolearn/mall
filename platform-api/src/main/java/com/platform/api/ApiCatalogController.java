@@ -7,10 +7,7 @@ import java.util.Map;
 
 import org.apache.shiro.util.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.platform.annotation.IgnoreAuth;
 import com.platform.dao.ApiGoodsMapper;
@@ -62,21 +59,21 @@ public class ApiCatalogController extends ApiBaseAction {
         List<CategoryVo> newSubCategorys = new ArrayList<>();
         List<CategoryVo> data = categoryService.queryList(params);
         List<CategoryVo> newCategorys = new ArrayList<>();
-        if(!CollectionUtils.isEmpty(data)){
-        	for(CategoryVo vo : data){
-        		List<CategoryVo> subData = categoryService.quertSubCategorys(vo.getId());
-        		if(!CollectionUtils.isEmpty(subData)){
-        			for(CategoryVo sub : subData){
-        				if(sub.getWap_banner_url() != null){
-                			newData.add(vo);
-                			break;
-                		}
-        				if("热销".equals(sub.getName()) && "其他".equals(sub.getName())){
-        					newData.add(vo);
-        				}
-        			}
-        		}
-        	}
+        if (!CollectionUtils.isEmpty(data)) {
+            for (CategoryVo vo : data) {
+                List<CategoryVo> subData = categoryService.quertSubCategorys(vo.getId());
+                if (!CollectionUtils.isEmpty(subData)) {
+                    for (CategoryVo sub : subData) {
+                        if (sub.getWap_banner_url() != null) {
+                            newData.add(vo);
+                            break;
+                        }
+                        if ("热销".equals(sub.getName()) && "其他".equals(sub.getName())) {
+                            newData.add(vo);
+                        }
+                    }
+                }
+            }
         }
         //
         CategoryVo currentCategory = null;
@@ -103,10 +100,10 @@ public class ApiCatalogController extends ApiBaseAction {
             }
             if(!CollectionUtils.isEmpty(newSubCategorys)){
             	for(CategoryVo vo : newSubCategorys){
-            		if(vo.getWap_banner_url() != null){
-            			newCategorys.add(vo);
-            		}
-            	}
+                    if (vo.getWap_banner_url() != null) {
+                        newCategorys.add(vo);
+                    }
+                }
             }
             currentCategory.setSubCategoryList(newCategorys);
         }
@@ -117,6 +114,7 @@ public class ApiCatalogController extends ApiBaseAction {
     }
 
     /**
+     *
      */
     @ApiOperation(value = "分类目录当前分类数据接口")
     @ApiImplicitParams({@ApiImplicitParam(name = "id", value = "id", paramType = "query", required = false)})
@@ -149,15 +147,37 @@ public class ApiCatalogController extends ApiBaseAction {
             		if("热销".equals(vo.getName()) && "其他".equals(currentCategory.getName())){
             			newCategorys.add(vo);
             		}else{
-            			if(vo.getWap_banner_url() != null){
-            				newCategorys.add(vo);
-            			}
-            		}
-            	}
+                        if (vo.getWap_banner_url() != null) {
+                            newCategorys.add(vo);
+                        }
+                    }
+                }
             }
             currentCategory.setSubCategoryList(newCategorys);
         }
         resultObj.put("currentCategory", currentCategory);
         return toResponsSuccess(resultObj);
     }
+
+    /**
+     * 查询根分类或者子分类列表
+     *
+     * @param id
+     * @return
+     */
+    @ApiOperation(value = "查询根分类或者子分类列表")
+    @ApiImplicitParams({@ApiImplicitParam(name = "id", value = "id", paramType = "query", required = false)})
+    @IgnoreAuth
+    @PostMapping("/queryCategory/{id}")
+    public Object queryCategory(@PathVariable("id") Integer id) {
+        Map<String, Object> resultObj = new HashMap();
+        if (null == id) {
+            resultObj.put("data", "error");
+            return resultObj;
+        }
+        List<CategoryVo> list = categoryService.quertSubCategorys(id);
+        resultObj.put("data", list);
+        return resultObj;
+    }
+
 }

@@ -30,44 +30,45 @@ public class ThridUserController {
     private ApiUserService apiUserService;
 
     @IgnoreAuth
-    @ApiOperation(value="通过手机号校验用户",response = Map.class)
+    @ApiOperation(value = "通过手机号校验用户", response = Map.class)
     @PostMapping("checkUser")
-    public R checkUser(String encrypt ){
+    public R checkUser(String encrypt) {
         try {
             logger.info("第三方传过来的数据是》》》》》》》》" + encrypt);
-        if (StringUtils.isEmpty(encrypt)) {
-            return R.error(1000,"解析密文失败");
-        }
-        String data = EncryptUtil.aesDecrypt(encrypt);
-        logger.info("充值解密后的密文是》》》》》》》》" + data);
-        JSONObject jsonObject = JSONObject.parseObject(data);
-        String mobile=jsonObject.getString("mobile");
-        logger.info("第三方传入的手机号=="+mobile);
-        Map<String, Object> map =new HashMap<>();
+            if (StringUtils.isEmpty(encrypt)) {
+                return R.error(1000, "解析密文失败");
+            }
+            String data = EncryptUtil.aesDecrypt(encrypt);
+            logger.info("充值解密后的密文是》》》》》》》》" + data);
+            JSONObject jsonObject = JSONObject.parseObject(data);
+            String mobile = jsonObject.getString("mobile");
 
-            if(!checkMobile(mobile)){//校验手机格式
-                logger.info("第三方传入的手机号错误，手机号为=="+mobile);
-                return R.error(1001,"手机号错误");
-            };
-            Map paramMap=new HashMap();
-            paramMap.put("mobile",mobile);
-            UserVo user=apiUserService.thridQueryUserInfo(paramMap);
-            if (null==user||user.equals("")){
-                UserVo userVo=new UserVo();
+            logger.info("第三方传入的手机号==" + mobile);
+            Map<String, Object> map = new HashMap<>();
+            if (!checkMobile(mobile)) {//校验手机格式
+                logger.info("第三方传入的手机号错误，手机号为==" + mobile);
+                return R.error(1001, "手机号错误");
+            }
+            ;
+            Map paramMap = new HashMap();
+            paramMap.put("mobile", mobile);
+            UserVo user = apiUserService.thridQueryUserInfo(paramMap);
+            if (null == user || user.equals("")) {
+                UserVo userVo = new UserVo();
+                userVo.setUsername("");
                 userVo.setMobile(mobile);
-                userVo.setUsername("第三方用户");
                 userVo.setRegisterTime(new Date());
-                userVo =apiUserService.saveFromThrid(userVo);
-                map.put("code","success");
-                map.put("msg","成功");
-                map.put("userId",userVo.getUserId());
-                logger.info("成功创建第三方用户，手机号为=="+mobile+"用户id为"+userVo.getUserId());
+                userVo = apiUserService.saveFromThird(userVo);
+                map.put("code", "success");
+                map.put("msg", "成功");
+                map.put("userId", userVo.getUserId());
+                logger.info("成功创建第三方用户，手机号为==" + mobile + "用户id为" + userVo.getUserId());
                 return R.ok(map);
-            }else {
-                map.put("code","success");
-                map.put("msg","成功");
-                map.put("userId",user.getUserId());
-                logger.info("用户已存在成功返回用户，手机号为=="+mobile+"用户id为"+user.getUserId());
+            } else {
+                map.put("code", "success");
+                map.put("msg", "成功");
+                map.put("userId", user.getUserId());
+                logger.info("用户已存在成功返回用户，手机号为==" + mobile + "用户id为" + user.getUserId());
                 return R.ok(map);
 
             }
@@ -75,15 +76,16 @@ public class ThridUserController {
             e.printStackTrace();
         }
 
-        return R.error(1002,"密文错误");
+        return R.error(1002, "密文错误");
     }
 
     /**
      * 校验手机号规则
+     *
      * @param mobile
      * @return
      */
-    public boolean checkMobile(String mobile){
+    public boolean checkMobile(String mobile) {
         if (StringUtils.isEmpty(mobile)) {
             return false;
         }

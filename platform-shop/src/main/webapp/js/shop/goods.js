@@ -22,6 +22,7 @@ $(function () {
             {label: '商品库存', name: 'goodsNumber', index: 'goods_number', width: 80},
             {label: '销售量', name: 'sellVolume', index: 'sell_volume', width: 80},
             {label: '指导价', name: 'marketPrice', index: 'market_price', width: 80},
+            {label: '商品毛利', name: 'grossMargin', index: 'grossMargin', width: 80},
             {
                 label: '热销', name: 'isHot', index: 'is_hot', width: 80, formatter: function (value) {
                     return transIsNot(value);
@@ -46,8 +47,38 @@ $(function () {
         imageUploadParams: {id: "edit"},
         imagesLoadURL: '../sys/oss/queryAll'
     })
-});
 
+   queryCatagory(0,"one-category");
+
+});
+function selectOnchang(obj,addr){ //onchange事件获取被选中的option标签选项
+
+//     alert(obj.selectedIndex);
+    var value = obj.options[obj.selectedIndex].value;
+    // alert(value)
+    queryCatagory(value,addr);
+}
+
+
+function queryCatagory(id,addr) { //查询分类
+    Ajax.request({
+        type: "POST",
+        url:"../api/catalog/queryCategory/" + id ,
+        contentType: "application/json",
+        params: JSON.stringify(vm.goods),
+        successCallback: function (data) {
+
+            $("#"+addr).html("");
+            var  html_1='';
+            var dataObj = data.data;
+            $.each(dataObj, function(index, item){
+                html_1+='<Option  value='+item.id+'>'+item.name+'</Option>';
+            });
+            $("#"+addr).append(html_1);
+            $(".selectpicker" ).selectpicker('refresh');
+        }
+    });
+}
 //0 下架  1上架 2 申请上架  3申请下架  -1编辑状态
 function goodsTransIsNot(value) {
 
@@ -123,7 +154,8 @@ var vm = new Vue({
         	max_retail_price:'',
         	min_pure_interest_rate:'',
         	max_pure_interest_rate:'',
-        	status:''
+        	status:'',
+            category_id:''
         },
         brands: [],//品牌
         macros: [],//商品单位
@@ -527,7 +559,9 @@ var vm = new Vue({
          		   'min_retail_price':vm.q.min_retail_price,
         		   'max_retail_price':vm.q.max_retail_price,
         		   'min_pure_interest_rate':vm.q.min_pure_interest_rate,
-        		   'max_pure_interest_rate':vm.q.max_pure_interest_rate},
+        		   'max_pure_interest_rate':vm.q.max_pure_interest_rate,
+                    'category_id':vm.q.category_id},
+
                 page: page
             }).trigger("reloadGrid");
             vm.handleReset('formValidate');
@@ -628,6 +662,7 @@ var vm = new Vue({
         eyeImage: function (e) {
             eyeImage($(e.target).attr('src'));
         }
+
     },
     mounted() {
     	console.log(this.$refs);

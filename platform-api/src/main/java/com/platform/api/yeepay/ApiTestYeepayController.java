@@ -1,7 +1,6 @@
 package com.platform.api.yeepay;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,10 +21,7 @@ import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.TypeReference;
 import com.github.pagehelper.util.StringUtil;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.platform.annotation.IgnoreAuth;
 import com.platform.annotation.LoginUser;
 import com.platform.cache.J2CacheUtils;
@@ -62,7 +58,6 @@ import com.platform.youle.entity.RequestChildsEntity;
 import com.platform.youle.entity.RequestOrderSubmitEntity;
 import com.platform.youle.entity.RequestProductStockEntity;
 import com.platform.youle.entity.RequestSkuDetailEntity;
-import com.platform.youle.entity.ResponseAllProductEntity;
 import com.platform.youle.entity.ResponseBaseEntity;
 import com.platform.youle.entity.ResponseCancelEntity;
 import com.platform.youle.entity.ResponseOrderSubmitEntity;
