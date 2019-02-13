@@ -110,7 +110,7 @@ public class GoodsEntity implements Serializable {
     private String attributeCategoryName;
     //品牌
     private String brandName;
-
+    //毛利
     private BigDecimal grossMargin;
 
     public void setGrossMargin(BigDecimal grossMargin) {
