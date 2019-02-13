@@ -535,12 +535,17 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 					}
 					CategoryVo vos = new CategoryVo();
 					List<GoodsVo> goods = apiGoodsMapper.quertGoodsByCategory(obj.get("code").toString());
-					if (!CollectionUtils.isEmpty(goods)) {
-						for (GoodsVo good : goods) {
-							if (good.getList_pic_url() != null) {
-								vos.setWap_banner_url(good.getList_pic_url());
+					if(obj.get("parentId") != null){
+						CategoryVo parentVo = apiCategoryMapper.queryObject(Integer.parseInt(obj.get("parentId").toString()));
+						if (!CollectionUtils.isEmpty(goods)) {
+							for (GoodsVo good : goods) {
+								if (good.getList_pic_url() != null) {
+									parentVo.setWap_banner_url(good.getList_pic_url());
+									vos.setWap_banner_url(good.getList_pic_url());
+									apiCategoryMapper.update(parentVo);
+								}
+								break;
 							}
-							break;
 						}
 					}
 					vos.setId(Integer.parseInt(obj.get("code").toString()));
