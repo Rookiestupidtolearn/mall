@@ -51,25 +51,16 @@ $(function () {
    queryCatagory(0,"one-category");
 
 });
-function selectOnchang(obj,addr){
-//获取被选中的option标签选项
-//     alert(obj.selectedIndex);
+function selectOnchang(obj,addr){ //onchange事件获取被选中的option标签选项
+
 //     alert(obj.selectedIndex);
     var value = obj.options[obj.selectedIndex].value;
     // alert(value)
     queryCatagory(value,addr);
 }
 
-// $("#two-category").on('shown.bs.select',function(e){
-//     alert("jinru");
-    // console.log('展开之后');
-    // $('#queryDevice').prev().find("input").keydown(function(){
-    //     $('#queryDevice').prev().find("input").attr('id',"deviceInput"); //为input增加id属性
-    //     console.log($('#deviceInput').val()); //获取输入框值输出到控制台
-    // })
-// })
 
-function queryCatagory(id,addr) {
+function queryCatagory(id,addr) { //查询分类
     Ajax.request({
         type: "POST",
         url:"../api/catalog/queryCategory/" + id ,
@@ -81,10 +72,8 @@ function queryCatagory(id,addr) {
             var  html_1='';
             var dataObj = data.data;
             $.each(dataObj, function(index, item){
-
                 html_1+='<Option  value='+item.id+'>'+item.name+'</Option>';
             });
-
             $("#"+addr).append(html_1);
             $(".selectpicker" ).selectpicker('refresh');
         }

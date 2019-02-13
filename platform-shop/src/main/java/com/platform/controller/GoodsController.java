@@ -105,7 +105,6 @@ public class GoodsController {
          String max_retail_price = (String)params.get("max_retail_price");
          String min_pure_interest_rate = (String) params.get("min_pure_interest_rate");
          String max_pure_interest_rate = (String) params.get("max_pure_interest_rate");
-//         String category_id=(String) params.get("category_id");
          List<GoodsEntity> goodsList = null;
          if(StringUtil.isNotEmpty(min_retail_price) || StringUtil.isNotEmpty(max_retail_price) || StringUtil.isNotEmpty(min_pure_interest_rate) || StringUtil.isNotEmpty(max_pure_interest_rate)){
          	Map<String,Object> paramMap = new HashMap<String,Object>();
@@ -113,7 +112,6 @@ public class GoodsController {
         	paramMap.put("max_retail_price", StringUtil.isEmpty(max_retail_price) ? "":max_retail_price);
         	paramMap.put("min_pure_interest_rate", StringUtil.isEmpty(min_pure_interest_rate) ? "":min_pure_interest_rate);
         	paramMap.put("max_pure_interest_rate", StringUtil.isEmpty(max_pure_interest_rate) ? "":max_pure_interest_rate);
-//        	paramMap.put("category_id", StringUtil.isEmpty(category_id) ? "":category_id);
         	//查询 商品
         	Integer[] goodsIds = goodsPureInterestRateService.queryGoodsIdsByPrice(paramMap);
         	if(goodsIds.length > 0){
