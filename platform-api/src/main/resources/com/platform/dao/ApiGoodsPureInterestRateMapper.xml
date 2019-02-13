@@ -35,7 +35,7 @@
     <select id="queryGoodsByPureInterestRate" resultType="com.platform.entity.GoodsPureInterestRateVo">
 	    select * from goods_pure_interest_rate gpir left join nideshop_goods ng 
 	    	on gpir.goods_id = ng.id
-	    	where ng.source = 'JD' 
+	    	where ng.source in ('system','provider','jindong','wangyi') 
 	    	<if test="pureInterestRate=='greaterThan'.toString()">
 	    		and pure_interest_rate &gt; 0
 	    	</if>
