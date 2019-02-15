@@ -368,13 +368,14 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 					JSONObject obj = JSONObject.parseObject(dateAttr.get(i).toString());
 					CategoryVo category = apiCategoryMapper.queryObject(obj.get("code").toString());
 					if (category != null) {
-						category.setName(obj.get("name") == null ? "" : obj.get("name").toString());
-						category.setIs_show(1);
-						category.setParent_id(
-								obj.get("parentId") == null ? 0 : Integer.parseInt(obj.get("parentId").toString()));
-						category.setLevel(obj.get("level").toString());
-						apiCategoryMapper.update(category);
-						continue;
+//						category.setName(obj.get("name") == null ? "" : obj.get("name").toString());
+//						category.setIs_show(1);
+//						category.setParent_id(
+//								obj.get("parentId") == null ? 0 : Integer.parseInt(obj.get("parentId").toString()));
+//						category.setLevel(obj.get("level").toString());
+//						apiCategoryMapper.update(category);
+//						continue;
+						apiCategoryMapper.delete(Integer.parseInt(obj.get("code").toString()));
 					}
 					CategoryVo vo = new CategoryVo();
 					vo.setId(Integer.parseInt(obj.get("code").toString()));
@@ -452,13 +453,14 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 					JSONObject obj = JSONObject.parseObject(dateAttr.get(i).toString());
 					CategoryVo category = apiCategoryMapper.queryObject(Integer.parseInt(obj.get("code").toString()));
 					if (category != null) {
-						category.setName(obj.get("name").toString());
-						category.setIs_show(1);
-						category.setParent_id(
-								obj.get("parentId") == null ? 0 : Integer.parseInt(obj.get("parentId").toString()));
-						category.setLevel(obj.get("level").toString());
-						apiCategoryMapper.update(category);
-						continue;
+//						category.setName(obj.get("name").toString());
+//						category.setIs_show(1);
+//						category.setParent_id(
+//								obj.get("parentId") == null ? 0 : Integer.parseInt(obj.get("parentId").toString()));
+//						category.setLevel(obj.get("level").toString());
+//						apiCategoryMapper.update(category);
+//						continue;
+						apiCategoryMapper.delete(Integer.parseInt(obj.get("code").toString()));
 					}
 
 					CategoryVo vos = new CategoryVo();
@@ -525,13 +527,14 @@ public class ApiJDGoodsServiceImpl implements ApiJDGoodsService {
 					JSONObject obj = JSONObject.parseObject(dateAttr.get(i).toString());
 					CategoryVo category = apiCategoryMapper.queryObject(Integer.parseInt(obj.get("code").toString()));
 					if (category != null) {
-						category.setName(obj.get("name").toString());
-						category.setIs_show(1);
-						category.setParent_id(
-								obj.get("parentId") == null ? 0 : Integer.parseInt(obj.get("parentId").toString()));
-						category.setLevel(obj.get("level").toString());
-						apiCategoryMapper.update(category);
-						continue;
+//						category.setName(obj.get("name").toString());
+//						category.setIs_show(1);
+//						category.setParent_id(
+//								obj.get("parentId") == null ? 0 : Integer.parseInt(obj.get("parentId").toString()));
+//						category.setLevel(obj.get("level").toString());
+//						apiCategoryMapper.update(category);
+//						continue;
+						apiCategoryMapper.delete(Integer.parseInt(obj.get("code").toString()));
 					}
 					CategoryVo vos = new CategoryVo();
 					List<GoodsVo> goods = apiGoodsMapper.quertGoodsByCategory(obj.get("code").toString());
