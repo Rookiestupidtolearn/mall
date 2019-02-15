@@ -110,6 +110,16 @@ public class GoodsEntity implements Serializable {
     private String attributeCategoryName;
     //品牌
     private String brandName;
+    //毛利
+    private BigDecimal grossMargin;
+
+    public void setGrossMargin(BigDecimal grossMargin) {
+        this.grossMargin = grossMargin;
+    }
+
+    public BigDecimal getGrossMargin() {
+        return marketPrice.subtract(retailPrice);
+    }
 
     public Long getCreateUserDeptId() {
         return createUserDeptId;

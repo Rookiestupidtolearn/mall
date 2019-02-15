@@ -18,10 +18,17 @@ public class ApiCategoryService {
 	public CategoryVo queryObject(Integer id){
 		return categoryDao.queryObject(id);
 	}
-	
-	
+
+
 	public List<CategoryVo> queryList(Map<String, Object> map){
 		return categoryDao.queryList(map);
+	}
+
+	public List<Integer> queryListOfGoodsNotNull(Map<String, Object> map){
+		return categoryDao.queryListOfGoodsNotNull(map);
+	}
+	public List<Integer> queryListOfGoodsNotNullAndSortByGoodsNum(Map<String, Object> map){
+		return categoryDao.queryListOfGoodsNotNullAndSortByGoodsNum(map);
 	}
 	
 	

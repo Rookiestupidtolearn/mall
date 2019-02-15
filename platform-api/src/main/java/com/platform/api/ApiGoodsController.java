@@ -257,14 +257,18 @@ public class ApiGoodsController extends ApiBaseAction {
         comment.put("count", commentCount);
         comment.put("data", commentInfo);
         //当前用户是否收藏
-        Map collectParam = new HashMap();
-        collectParam.put("user_id", getUserId());
-        collectParam.put("value_id", id);
-        collectParam.put("type_id", 0);
-        Integer userHasCollect = collectService.queryTotal(collectParam);
-        if (userHasCollect > 0) {
-            userHasCollect = 1;
+        Integer userHasCollect=0;
+        if(null!=userId && 0!=userId){//用户登录才查
+            Map collectParam = new HashMap();
+            collectParam.put("user_id", getUserId());
+            collectParam.put("value_id", id);
+            collectParam.put("type_id", 0);
+            userHasCollect = collectService.queryTotal(collectParam);
+            if (userHasCollect > 0) {
+                userHasCollect = 1;
+            }
         }
+
         
         if(null != userId){
         	//记录用户的足迹
@@ -351,37 +355,39 @@ public class ApiGoodsController extends ApiBaseAction {
     @ApiImplicitParams({@ApiImplicitParam(name = "id", value = "分类id", paramType = "path", required = true)})
     @IgnoreAuth
     @PostMapping(value = "category")
-    public Object category(Integer id) {
-        Map<String, Object> resultObj = new HashMap();
-        //
-        CategoryVo currentCategory = categoryService.queryObject(id);
-        //
-        CategoryVo parentCategory = categoryService.queryObject(currentCategory.getParent_id());
-        Map params = new HashMap();
-        params.put("parent_id", currentCategory.getParent_id());
-        List<CategoryVo> newBrotherCategory = new ArrayList<>();
-        List<CategoryVo> brotherCategory = categoryService.queryList(params);
-        if(!CollectionUtils.isEmpty(brotherCategory)){
-        	for(CategoryVo sub : brotherCategory){
-//        		List<GoodsVo> goods = apiGoodsMapper.querBrotherCategory(sub.getId().toString());
-        		if(sub.getWap_banner_url() != null){
-        			newBrotherCategory.add(sub);
-        		}
-//        		if(!CollectionUtils.isEmpty(goods)){
-//        			for(GoodsVo vo : goods){
-//        				if(vo.getIs_on_sale() == 1){
-//        					newBrotherCategory.add(sub);
-//        					break;
-//        				}
-//        			}
-//        		}
-        	}
-        }
-        //
-        resultObj.put("currentCategory", currentCategory);
-        resultObj.put("parentCategory", parentCategory);
-        resultObj.put("brotherCategory", newBrotherCategory);
-        return toResponsSuccess(resultObj);
+    public Object category(Integer id,String type) {  
+    	 Map<String, Object> resultObj = new HashMap();
+    	 List<CategoryVo> newSubCategorys = new ArrayList<>();
+         //查询二级分类
+         CategoryVo parentCategory = categoryService.queryObject(id);
+         Map params = new HashMap();
+         if("parent".equals(type)){
+        	 params.put("parent_id", parentCategory.getId());
+         }else if("sub".equals(type)){
+        	 params.put("parent_id", parentCategory.getParent_id());
+         }
+         List<CategoryVo> newBrotherCategory = new ArrayList<>();
+//         List<Integer> subCategorys = categoryService.queryListOfGoodsNotNull(params);
+        List<Integer> subCategorys = categoryService.queryListOfGoodsNotNullAndSortByGoodsNum(params);//按照分类下面的商品数排序
+         if(!CollectionUtils.isEmpty(subCategorys)){
+         	for(Integer categoryId : subCategorys){
+         		CategoryVo vo = categoryService.queryObject(categoryId);
+         		if(vo != null){
+         			newSubCategorys.add(vo);
+         		}
+         	}
+         }
+         if(!CollectionUtils.isEmpty(newSubCategorys)){
+         	for(CategoryVo sub : newSubCategorys){
+         		if(sub.getWap_banner_url() != null){
+         			newBrotherCategory.add(sub);
+         		}
+         	}
+         }
+         resultObj.put("currentCategory", newBrotherCategory.size() == 0 ? null : newBrotherCategory.get(0));
+         resultObj.put("parentCategory", parentCategory);
+         resultObj.put("brotherCategory", newBrotherCategory);
+         return toResponsSuccess(resultObj);
     }
 
     /**
@@ -397,7 +403,7 @@ public class ApiGoodsController extends ApiBaseAction {
     public Object list(@LoginUser UserVo loginUser, Integer categoryId,
                        Integer brandId, String keyword, Integer isNew, Integer isHot,
                        @RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "size", defaultValue = "10") Integer size,
-                       String sort, String order) {
+                       String sort, String order,String type) {
         Map<String,Object> params = new HashMap<>();
         String REDIS_CATEGORY_LOCK = "cagetoryLock";
         params.put("is_delete", 0);
@@ -477,7 +483,7 @@ public class ApiGoodsController extends ApiBaseAction {
         }
         //加入分类条件
         if (null != categoryId && categoryId > 0) {
-        	//查询子分类
+        	//查询二级分类
             CategoryVo subCategorys = apiCategoryMapper.queryObject(categoryId);
             //查询父节点
             CategoryVo parentCategorys = apiCategoryMapper.queryObject(subCategorys.getParent_id());
@@ -486,14 +492,25 @@ public class ApiGoodsController extends ApiBaseAction {
         		params.put("categoryIds", categoryIds);
             }else{
             	List<Integer> categoryIds = new ArrayList();
+            	
         		Map categoryParam = new HashMap();
-        		categoryParam.put("parent_id", categoryId);
-        		categoryParam.put("fields", "id");
-        		List<CategoryVo> childIds = categoryService.queryList(categoryParam);
-        		for (CategoryVo categoryEntity : childIds) {
-        			categoryIds.add(categoryEntity.getId());
+        		if("parent".equals(type)){
+        			categoryParam.put("parent_id", categoryId);
+        		}else if("sub".equals(type)){
+        			categoryParam.put("parent_id", subCategorys.getParent_id());
         		}
-        		categoryIds.add(categoryId);
+        		categoryParam.put("fields", "id");
+//        		List<CategoryVo> childIds = categoryService.queryList(categoryParam);
+        		List<CategoryVo> childIds = getBrotherCategorys(categoryId, type);
+        		if("parent".equals(type)){
+        			if(!CollectionUtils.isEmpty(childIds)){
+        				categoryIds.add(childIds.get(0).getId());
+        			}else{
+        				categoryIds.add(categoryId);
+        			}
+        		}else if("sub".equals(type)){
+        			categoryIds.add(categoryId);
+        		}
         		if(!CollectionUtils.isEmpty(categoryIds)){
         			params.put("categoryIds", categoryIds);
         		}
@@ -501,7 +518,6 @@ public class ApiGoodsController extends ApiBaseAction {
         }
         //查询列表数据
         params.put("fields", "nideshop_goods.id as id,nideshop_goods.name as name, nideshop_goods.list_pic_url as list_pic_url, nideshop_goods.market_price as market_price, nideshop_goods.retail_price, nideshop_goods.goods_brief,case when min(nideshop_product.market_price) != '' then min(nideshop_product.market_price) else 0 end product_market_price");
-        
         if (null != sort && sort.equals("price")) {
             params.put("sidx", "market_price");
             params.put("order", order);
@@ -531,7 +547,42 @@ public class ApiGoodsController extends ApiBaseAction {
         goodsData.setGoodsList(goodsList);
         return toResponsSuccess(goodsData);
     }
-
+    
+    /**
+     * 查询三级分类
+     * @param id
+     * @param type
+     * @return
+     */
+    public List<CategoryVo> getBrotherCategorys(Integer id,String type){
+    	List<CategoryVo> newBrotherCategory = new ArrayList<>();
+    	 Map<String, Object> resultObj = new HashMap();
+    	 List<CategoryVo> newSubCategorys = new ArrayList<>();
+    	 CategoryVo parentCategory = categoryService.queryObject(id);
+         Map params = new HashMap();
+         if("parent".equals(type)){
+        	 params.put("parent_id", parentCategory.getId());
+         }else if("sub".equals(type)){
+        	 params.put("parent_id", parentCategory.getParent_id());
+         }
+        List<Integer> subCategorys = categoryService.queryListOfGoodsNotNullAndSortByGoodsNum(params);//查找三级分类不为空并且按分类下的商品总数排序
+        if(!CollectionUtils.isEmpty(subCategorys)){
+        	for(Integer categoryId : subCategorys){
+        		CategoryVo vo = categoryService.queryObject(categoryId);
+        		if(vo != null){
+        			newSubCategorys.add(vo);
+        		}
+        	}
+        }
+        if(!CollectionUtils.isEmpty(newSubCategorys)){
+        	for(CategoryVo sub : newSubCategorys){
+        		if(sub.getWap_banner_url() != null){
+        			newBrotherCategory.add(sub);
+        		}
+        	}
+        }
+        return newBrotherCategory;
+    }
     
     
     
