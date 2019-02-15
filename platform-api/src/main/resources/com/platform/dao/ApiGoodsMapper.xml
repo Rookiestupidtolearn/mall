@@ -309,7 +309,7 @@
 	</select>
 	<select id = "quertGoodsByCategory" resultMap="goodsMap"> 
 		select * from
-	    nideshop_goods where category_id = #{categoryId}
+	    nideshop_goods where category_id = #{categoryId} and is_on_sale = 1
 	</select>
 	
 	<select id = "querBrotherCategory" resultMap="goodsMap"> 
