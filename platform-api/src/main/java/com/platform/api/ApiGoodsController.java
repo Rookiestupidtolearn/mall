@@ -269,7 +269,7 @@ public class ApiGoodsController extends ApiBaseAction {
             }
         }
 
-
+        
         if(null != userId){
         	//记录用户的足迹
             FootprintVo footprintEntity = new FootprintVo();
@@ -355,7 +355,7 @@ public class ApiGoodsController extends ApiBaseAction {
     @ApiImplicitParams({@ApiImplicitParam(name = "id", value = "分类id", paramType = "path", required = true)})
     @IgnoreAuth
     @PostMapping(value = "category")
-    public Object category(Integer id,String type) {
+    public Object category(Integer id,String type) {  
     	 Map<String, Object> resultObj = new HashMap();
     	 List<CategoryVo> newSubCategorys = new ArrayList<>();
          //查询二级分类
@@ -367,7 +367,8 @@ public class ApiGoodsController extends ApiBaseAction {
         	 params.put("parent_id", parentCategory.getParent_id());
          }
          List<CategoryVo> newBrotherCategory = new ArrayList<>();
-         List<Integer> subCategorys = categoryService.queryListOfGoodsNotNull(params);
+//         List<Integer> subCategorys = categoryService.queryListOfGoodsNotNull(params);
+        List<Integer> subCategorys = categoryService.queryListOfGoodsNotNullAndSortByGoodsNum(params);//按照分类下面的商品数排序
          if(!CollectionUtils.isEmpty(subCategorys)){
          	for(Integer categoryId : subCategorys){
          		CategoryVo vo = categoryService.queryObject(categoryId);
@@ -482,7 +483,7 @@ public class ApiGoodsController extends ApiBaseAction {
         }
         //加入分类条件
         if (null != categoryId && categoryId > 0) {
-        	//查询子分类
+        	//查询二级分类
             CategoryVo subCategorys = apiCategoryMapper.queryObject(categoryId);
             //查询父节点
             CategoryVo parentCategorys = apiCategoryMapper.queryObject(subCategorys.getParent_id());
@@ -491,7 +492,7 @@ public class ApiGoodsController extends ApiBaseAction {
         		params.put("categoryIds", categoryIds);
             }else{
             	List<Integer> categoryIds = new ArrayList();
-
+            	
         		Map categoryParam = new HashMap();
         		if("parent".equals(type)){
         			categoryParam.put("parent_id", categoryId);
@@ -546,7 +547,7 @@ public class ApiGoodsController extends ApiBaseAction {
         goodsData.setGoodsList(goodsList);
         return toResponsSuccess(goodsData);
     }
-
+    
     /**
      * 查询三级分类
      * @param id
@@ -564,7 +565,7 @@ public class ApiGoodsController extends ApiBaseAction {
          }else if("sub".equals(type)){
         	 params.put("parent_id", parentCategory.getParent_id());
          }
-        List<Integer> subCategorys = categoryService.queryListOfGoodsNotNull(params);
+        List<Integer> subCategorys = categoryService.queryListOfGoodsNotNullAndSortByGoodsNum(params);//查找三级分类不为空并且按分类下的商品总数排序
         if(!CollectionUtils.isEmpty(subCategorys)){
         	for(Integer categoryId : subCategorys){
         		CategoryVo vo = categoryService.queryObject(categoryId);

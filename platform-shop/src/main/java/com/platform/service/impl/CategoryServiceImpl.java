@@ -64,4 +64,8 @@ public class CategoryServiceImpl implements CategoryService {
         categoryDao.deleteByParentBatch(ids);
         return categoryDao.deleteBatch(ids);
     }
+
+    public Integer[] queryCategoryListByParentId(Integer[] ids){
+        return categoryDao.queryCategoryListByParentId(ids);
+    }
 }

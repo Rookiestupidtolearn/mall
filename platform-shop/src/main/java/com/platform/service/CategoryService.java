@@ -69,4 +69,6 @@ public interface CategoryService {
      * @return 删除条数
      */
     int deleteBatch(Integer[] ids);
+
+   Integer[] queryCategoryListByParentId(Integer[] ids);
 }

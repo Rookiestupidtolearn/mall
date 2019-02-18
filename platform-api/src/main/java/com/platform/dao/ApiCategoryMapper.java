@@ -42,7 +42,7 @@ public interface ApiCategoryMapper extends BaseDao<CategoryVo> {
 	 * @param level
 	 * @return
 	 */
-	List<CategoryVo> queryChildCategory(String name,String level);
+	List<CategoryVo> queryChildCategory(String name, String level);
 	/**
 	 * 根据id查询时候有子分类
 	 * @param id
@@ -70,4 +70,9 @@ public interface ApiCategoryMapper extends BaseDao<CategoryVo> {
 	 * @param map
 	 */
 	List<Integer> queryListOfGoodsNotNull(Map<String, Object> map);
+	/**
+	 * 获取商品不为空的分类集合并按分类下的商品数量排序
+	 * @param map
+	 */
+	List<Integer> queryListOfGoodsNotNullAndSortByGoodsNum(Map<String, Object> map);
 }

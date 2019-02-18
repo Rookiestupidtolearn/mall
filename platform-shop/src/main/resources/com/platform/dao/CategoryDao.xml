@@ -163,4 +163,12 @@
 			#{id}
 		</foreach>
 	</delete>
+
+	<select id="queryCategoryListByParentId" resultType="java.lang.Integer">
+		select * from nideshop_category where is_show = 1 and parent_id in
+		<foreach collection="array" open="(" separator="," close=")"
+				 item="ids">
+			#{ids}
+		</foreach>
+	</select>
 </mapper>
