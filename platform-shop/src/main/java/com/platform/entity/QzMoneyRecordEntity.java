@@ -40,6 +40,8 @@ public class QzMoneyRecordEntity implements Serializable {
     private String remark;
     //冻结金额
     private BigDecimal lockAmount;
+    //交易類型
+    private String rechargeType;
 
     /**
      * 设置：主键
@@ -180,6 +182,16 @@ public class QzMoneyRecordEntity implements Serializable {
 	public void setLockAmount(BigDecimal lockAmount) {
 		this.lockAmount = lockAmount;
 	}
-    
+
+	public String getRechargeType() {
+		return rechargeType;
+	}
+
+	public void setRechargeType(String rechargeType) {
+		this.rechargeType = rechargeType;
+	}
+
+
+
     
 }

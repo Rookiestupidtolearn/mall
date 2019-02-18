@@ -37,6 +37,15 @@ $(function () {
 					return "收入";
 				}
 			}},
+			{label: '交易类型', name: 'rechargeType', index: 'recharge_type', width: 80,formatter: function (value){
+				if(value == '1'){
+					return "后台充值";
+				}else if(value == '2'){
+					return "速有钱充值";
+				}else{
+					return "其他充值";
+				}
+			}},
 			{label: '变动金额', name: 'tarnAmount', index: 'tarn_amount', width: 80},
 			{label: '冻结金额', name: 'lockAmount', index: 'lock_amount', width: 80},
 			{label: '当前余额', name: 'currentAmount', index: 'current_amount', width: 80},
@@ -61,7 +70,8 @@ let vm = new Vue({
 		q: {
 		    name: '',
 		    start_time:'',
-		    end_time:''
+		    end_time:'',
+		    recharge_type:''
 		}
 	},
 	methods: {
@@ -130,7 +140,12 @@ let vm = new Vue({
 			vm.showList = true;
             let page = $("#jqGrid").jqGrid('getGridParam', 'page');
 			$("#jqGrid").jqGrid('setGridParam', {
-                postData: {'name': vm.q.name,'start_time': vm.q.start_time,'end_time': vm.q.end_time},
+                postData: {
+                	'name': vm.q.name,
+                	'start_time': vm.q.start_time,
+                	'end_time': vm.q.end_time,
+                	'recharge_type':vm.q.recharge_type
+                	},
                 page: page
             }).trigger("reloadGrid");
             vm.handleReset('formValidate');
@@ -139,7 +154,8 @@ let vm = new Vue({
             vm.q = {
             		name: '',
          		    start_time:'',
-         		    end_time:''
+         		    end_time:'',
+         		   recharge_type:''
             }
             vm.reload();
         },
@@ -155,7 +171,8 @@ let vm = new Vue({
 			exportFile('#rrapp', '../qzmoneyrecord/export', {
 				'name': vm.q.name,
 				'start_time': vm.q.start_time,
-				'end_time': vm.q.end_time
+				'end_time': vm.q.end_time,
+				'recharge_type':vm.q.recharge_type
 			});
 		}
 	}

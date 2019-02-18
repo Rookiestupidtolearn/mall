@@ -89,7 +89,7 @@
         		共{{disCountAmount}}币，开通即可使用
         	</div>
         	<div class="tips" v-else>
-        		还可支付{{usableAmount}}币，余额不足，剩余{{residueAmount}}币可用
+        		此订单中您还可以支付{{usableAmount}}克拉，但您的克拉余额不足，剩余{{residueAmount}}克拉。
         	</div>
          </div>
     </div>
@@ -208,17 +208,17 @@
 //	 		}
 //	 	},
 		showTb(){
-			MessageBox( '克拉','内容待提供');
-			document.getElementsByClassName('mint-msgbox-confirm')[0].innerText = '知道了';
+			MessageBox( '克拉','斗宝俱乐部"克拉"可在斗宝俱乐部平台消费时抵用现金，1克拉抵1元现金使用。');
+			document.getElementsByClassName('mint-msgbox-confirm')[0].innerText = '我知道了';
 		},
 	 	tapCoupon(){
 	 		this.$router.push('/pages/category/selCoupon?buyType=' + this.buyType+'&isBuy='+this.isBuy);
 	 	},
 	 	selectAddress(){
-	 		this.$router.push( '/pages/category/addressList'); //购物车选择地址
+	 		this.$router.push({path:'addresscateList'}); //购物车选择地址
 	 	},
 	 	addAddress(){
-	 		this.$router.push( '/pages/category/addressAdd');
+	 		this.$router.push({path:'addresscateAdd'});
 	 	},
 	 	submitOrder(){
 	 			let that = this;

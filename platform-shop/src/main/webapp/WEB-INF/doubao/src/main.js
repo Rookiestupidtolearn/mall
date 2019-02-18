@@ -26,8 +26,13 @@ Vue.config.productionTip = false
 
 //接口配置
 //Vue.prototype.$url= '/platform/api/'; //本地代理
-Vue.prototype.$url= 'http://192.168.124.29:8084/platform/api/'; //本地代理
-//Vue.prototype.$url= 'http://117.50.60.55:6201/platform/api/'; //外网涛哥1206
+//Vue.prototype.$url= 'http://192.168.124.29:8084/platform/api/'; //本地环境
+//Vue.prototype.$url= 'http://app.doubaoclub.com:6101/platform/api/'; //正式环境
+//Vue.prototype.$url= 'http://192.168.124.50:6101/platform/api/'; //测试环境
+//Vue.prototype.$url= 'http://192.168.124.28:8080/platform/api/'; //冯蓉基本地
+//Vue.prototype.$url= 'http://192.168.124.144:8093/platform/api/'; //吴明龙本地
+Vue.prototype.$url= 'http://simuwap.doubaoclub.com:6201/platform/api/'; //预发布环境
+
 
 //切换页面时滚动条自动滚动到顶部的方法
 router.afterEach((to,from,next) => {
@@ -52,7 +57,6 @@ var appHref = window.location.href;
 	if(tokenDevice == 'android'  || tokenDetail == 'android' ){
 		config.headers['X-Nideshop-Token'] = tokenApp;
 	}else if(tokenDevice == 'ios'  || tokenDetail == 'ios' ){
-		alert(window.location.href)
 		config.headers['X-Nideshop-Token'] = tokenApp;
 	}else{
 		 // 在发送请求之前做些什么
@@ -77,6 +81,13 @@ axios.interceptors.response.use(function (response) {
    				cookie.delCookie('userId');
     			cookie.delCookie('userInfo');
     			cookie.delCookie('token');
+    		/*android4.4.4单独处理*/
+    		var userG = window.navigator.userAgent;
+ 			if(userG.indexOf('Android 4.4.4')>-1 && userG.indexOf('/537.36')>-1){
+ 				router.push('/pages/register/register');
+ 				return false;
+ 			}
+ 			/*android4.4.4单独处理结束*/
 				function yzUserMessage(userMessage){
 					if(cookie.getCookie(userMessage) == undefined || cookie.getCookie(userMessage) == null || cookie.getCookie(userMessage) == ''){
 						return true;
@@ -93,7 +104,7 @@ axios.interceptors.response.use(function (response) {
 							if(params == 'confirm'){
 								var hrefD = window.location.href;
 								if(hrefD.indexOf('device')>-1){
-									var device = hrefD.split('&')[1].split('=')[1];
+									var device = hrefD.substring(hrefD.indexOf('device')).split('=')[1].split('&')[0];
 								}
 								if(device == 'android'){
 					    			window.android.toLogin(); //调起andriod交互方法(由app发起。浏览器会报错正常)

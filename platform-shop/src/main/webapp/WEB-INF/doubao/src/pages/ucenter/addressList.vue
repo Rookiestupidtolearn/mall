@@ -3,8 +3,8 @@
  		<!--公用头部-->
   		<!--<headbar :headFont = "headFont"></headbar>-->
   		
-	    <div class="address-list "  v-if="addressList.length > 0" >
-	        <div class="item" v-for="item in addressList" @click="addressAddOrUpdate(item.id)" >
+	    <div class="address-list "  v-if="addressListC.length > 0" >
+	        <div class="item" v-for="item in addressListC" @click="addressAddOr(item.id)" >
 	            <div class="l">
 	                <div class="name">{{item.userName}}</div>
 	                <div class="default" v-if="item.isDefault">默认</div>
@@ -18,33 +18,36 @@
 	            </div>
 	        </div>
 	    </div>
-	    <div class="empty-view " v-if="addressList.length <= 0">
+	    <div class="empty-view " v-if="addressListC.length <= 0">
 	      <img class="icon" src="http://yanxuan.nosdn.127.net/hxm/yanxuan-wap/p/20161201/style/img/icon-normal/noAddress-26d570cefa.png"/>
 	      <p class="text">收货地址在哪里</p>
 	    </div>
-	    <div class="add-address" @click="addressAddOrUpdate('1')" data-address-id="0">新建</div>
+	    <div class="add-address" @click="addressAddOr('1')" data-address-id="0">新建</div>
+	    <returnhome :scrollshow = "scrollshow"></returnhome>
 	</div>
 </template>
 
 <script>
 import { MessageBox } from 'mint-ui';
+import returnhome from '@/components/returnHome'
 //import headbar from '@/components/headbar.vue';
 		
 export default {
-	name: 'addressList',
-//	 components:{headbar},
+	name: 'addressList2',
+	 components:{returnhome},
   data () {
     return {
 //  	headFont:'地址管理',
-    	addressList:[],
+		scrollshow:true,
+    	addressListC:[],
     	deleteList:[]
     }
   },
   mounted(){
-  	this.showaddressList();
+  	this.showaddressListC();
   },
   methods:{
-  		showaddressList(){
+  		showaddressListC(){
   			var that = this;    
 			that.$http({
 		        method: 'post',
@@ -52,12 +55,13 @@ export default {
 			}).then(function (response) {
 				var response=response.data;
 				if(response.errno != 401){
-					that.addressList = response.data;
+					that.addressListC = response.data;
 				}
 			  })
   	},
-		addressAddOrUpdate(setId){
-		    this.$router.push({ path: '/pages/ucenter/addressAdd', query: { id: setId }})
+		addressAddOr(setId){
+//			alert('个人中心-地址列表');
+			this.$router.push({ path: 'addressAdd', query: { id: setId }})
 		},
 		deleteAddress(deleteId){
 			MessageBox({
@@ -67,13 +71,14 @@ export default {
 			}).then(action => {
 				if(action == 'confirm'){
 					var that = this;
+					that.$cookie.delCookie('addressId');
 					that.$http({
 				        method: 'post',
 				        url:that.$url+ 'address/delete.options',
 				        data:{id:deleteId}
 			    	}).then(function (res) {
 			    		if( res.errno = '0'){
-			    			that.showaddressList();
+			    			that.showaddressListC();
 			    		}
 			        });
 				}

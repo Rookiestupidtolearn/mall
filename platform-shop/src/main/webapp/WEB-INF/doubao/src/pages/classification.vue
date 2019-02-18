@@ -1,11 +1,8 @@
 <template>
   <div class="classification">
-  	<!--头部返回-->
-  	<!--<headbar :headFont = "headFont"></headbar>-->
-  	
   	<!--主体内容-->
   	<div class="searchTop" @click="searchRoute">
-  				<mt-search v-model="value"  cancel-text="取消"  placeholder="商品搜索" class="wusearch"></mt-search>
+  				<input type="text" placeholder="商品搜索" class="wusearch"  disabled="disabled"/>
   	</div>
   	<div class="content">
 	  	<div class="catalog" >
@@ -254,8 +251,22 @@ width:auto;
 		overflow: hidden;
 	}
 		.wusearch{
-			font-size:.3rem !important;
-			height:100%;
+    width: 7.5rem;
+    padding: 0 0 0 .35rem;
+    font-size: .28rem;
+    height: .95rem;
+    border: .12rem solid #d9d9d9;
+    background: url(http://yanxuan.nosdn.127.net/hxm/yanxuan-wap/p/20161201/style/img/icon-normal/search2-2fb94833aa.png) no-repeat .1rem .25rem;
+    background-size: .2rem;
+    background-color: #fff;
+    box-sizing: border-box;
+	}
+	.wusearch::-webkit-input-placeholder {
+			font-size: .24rem;
+			color:#555;
+	 }
+		.search{
+			vertical-align: top;
 		}
 		.content{
 			overflow: hidden;

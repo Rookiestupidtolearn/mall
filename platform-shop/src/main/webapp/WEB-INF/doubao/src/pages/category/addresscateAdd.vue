@@ -41,20 +41,25 @@
 		      </div>
 		    </div>
 		</div>
+		<returnhome :scrollshow = "scrollshow"></returnhome>
  	</div>
 </template>
 
 <script>
 	import { Toast } from 'mint-ui';
 	import { MessageBox } from 'mint-ui';
+	import { Indicator } from 'mint-ui';
+	import returnhome from '@/components/returnHome';
 //	import headbar from '@/components/headbar.vue'
 		
 	export default {
-	  name: 'addressAdd',
+	  name: 'addresscateAdd',
 //	  components:{headbar},
+		components:{returnhome},
 	  data () {
 	    return {
 //	    	headFont:'商品详情',
+			scrollshow:true,
 	    	address: {
 		      id:0,
 		      province_id: 0,
@@ -305,7 +310,7 @@
 		    });
 		},
 	 	cancelAddress(){
-	 		 this.$router.push('/pages/category/addressList');
+	 		 this.$router.push('/pages/category/addresscateList');
 	 	},
 	 	getAddressDetail() {
 		    let that = this;
@@ -349,6 +354,8 @@
 		    }
 		
 		    let that = this;
+		    that.$cookie.delCookie('addressId');
+		    Indicator.open();
 		    that.$http({
 		    	method:'post',
 		    	url:that.$url + 'address/save.options',
@@ -374,9 +381,10 @@
 				      detailInfo: address.detailInfo
 		    	}
 		    }).then(function (res) {
+		    	Indicator.close();
 		    	var res=res.data;
 		      if (res.errno === 0) {
-		        that.$router.push('/pages/category/addressList');
+		        that.$router.push({ path: 'addresscateList'});
 		      }
 		    });
 
@@ -414,6 +422,7 @@
     height: .44rem;
     line-height: .44rem;
     overflow: hidden;
+    font-size: .26rem;
 }
 
 .add-address .form-default{

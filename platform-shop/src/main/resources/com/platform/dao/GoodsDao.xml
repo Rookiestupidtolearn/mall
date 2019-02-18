@@ -109,6 +109,9 @@
         <if test="status != null and status != ''">
             AND nideshop_goods.is_on_sale = #{status}
         </if>
+        <if test="category_id != null and category_id != ''">
+            AND nideshop_goods.category_id=#{category_id}
+        </if>
        	<if test="goodss != null">
     	 	and nideshop_goods.id in 
     		<foreach collection="goodss" item="ids"  open="(" separator="," close=")">
@@ -136,8 +139,9 @@
         <if test="name != null and name != ''">
             AND name LIKE concat('%',#{name},'%')
         </if>
-        <if test="status != null and status != ''">
-            AND nideshop_goods.is_on_sale = #{status}
+
+        <if test="category_id != null and category_id != ''">
+            AND nideshop_goods.category_id=#{category_id}
         </if>
         <if test="goodss != null">
     	 	and nideshop_goods.id in 

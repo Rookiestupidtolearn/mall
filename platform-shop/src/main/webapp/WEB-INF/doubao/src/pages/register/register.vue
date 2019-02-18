@@ -2,13 +2,13 @@
  	<div class="container">
  		<div class="icon">
  			<img :src="logo"/>
- 			<h3>斗宝商城</h3>
+ 			<h3>斗宝俱乐部</h3>
  		</div>
  		<div class="form">
  			<p>快速登录</p>
  			<mt-field label="手机号码"  placeholder="请输入手机号码" type="tel" v-model="phone"  :attr="{ maxlength: 11 }" ></mt-field>
  			<mt-field placeholder="请输入图形验证码" v-model="imgcaptcha"  :attr="{ maxlength: 4}"  :style="{display:[ showImg ? 'block' : 'none']}">
-				<img :src="imgyzm" class="imgYzm"/>
+				<img :src="imgyzm" class="imgYzm" @click="refreshCode"/>
 			</mt-field>
  			<mt-field label="验证码" placeholder="请输入验证码" v-model="captcha"  :attr="{ maxlength: 4}" >
 				<mt-button type="primary" size="small" :disabled="disabled" @click="yzm" >{{count}}</mt-button>
@@ -16,18 +16,25 @@
  		</div>
  		<p class="last">
  			<input type="checkbox" id="checkbox"  v-model="checked" />
- 			<span>已同意并阅读</span>
- 			<i @click="fwxieyi">《平台服务协议》</i>
+ 			<span>已阅读并同意</span>
+ 			<i @click="klrule">《斗宝俱乐部“克拉”使用规则》</i>
+ 			<i @click="yhzcxy">《斗宝俱乐部用户注册协议》</i>
+ 			<i @click="ysqxy">《隐私权协议》</i>
  		</p>
  		<mt-button type="primary" size="large" class="mtButton" @click="submit">登录</mt-button>
+ 		<returnhome :scrollshow = "scrollshow"></returnhome>
   </div>
 </template>
 
 <script>
+	import returnhome from '@/components/returnHome';
+	
 	export default {
 	  name: 'coupon',
+	  components:{returnhome},
 	  data () {
 	    return {
+	    	scrollshow:true,
 	    	phone:'',
 	    	captcha:'',
 	    	imgcaptcha:'',
@@ -44,7 +51,6 @@
 	  		var phone =  that.$cookie.getCookie('phone');
 	  		var captcha =  that.$cookie.getCookie('captcha');
 	  		var checked =  that.$cookie.getCookie('checked');
-//	  		var showImg =  that.$cookie.getCookie('showImg');
 	  		if(phone !=="" ){
 	  			that.phone = phone;
 	  		}
@@ -54,18 +60,34 @@
 	  		if(checked !==""){
 	  			that.checked = JSON.parse(checked);
 	  		} 
-//	  		if(showImg !==""){
-//	  			that.showImg = JSON.parse(showImg);
-//	  		} 
 	  },
 	  methods:{
-	  	fwxieyi(){
+	  	refreshCode(){
+	  		var randomData = new Date();
+//  	    this.imgyzm="http://app.doubaoclub.com:6101/platform/api/image.jpg?date"+randomData.getMilliseconds(); //正式
+//	  	    this.imgyzm="http://192.168.124.28:8080/platform/api/image.jpg?date"+randomData.getMilliseconds();//冯蓉基本地
+	  		this.imgyzm="http://simuwap.doubaoclub.com:6201/platform/api/image.jpg?date"+randomData.getMilliseconds();  //预发布
+	  	},
+	  	klrule(){
 	  		let that = this;
 	  		that.$cookie.setCookie('phone',this.phone);
 	  		that.$cookie.setCookie('captcha',this.captcha);
 	  		that.$cookie.setCookie('checked',this.checked);
-//	  		that.$cookie.setCookie('imgcaptcha',this.imgcaptcha);
-	  		that.$router.push('/pages/xieyi/ptfwxy');
+	  		that.$router.push('/pages/xieyi/klrule');
+	  	},
+	  	yhzcxy(){
+	  		let that = this;
+	  		that.$cookie.setCookie('phone',this.phone);
+	  		that.$cookie.setCookie('captcha',this.captcha);
+	  		that.$cookie.setCookie('checked',this.checked);
+	  		that.$router.push('/pages/xieyi/yhzcxy');
+	  	},
+	  	ysqxy(){
+	  		let that = this;
+	  		that.$cookie.setCookie('phone',this.phone);
+	  		that.$cookie.setCookie('captcha',this.captcha);
+	  		that.$cookie.setCookie('checked',this.checked);
+	  		that.$router.push('/pages/xieyi/ysqxy');
 	  	},
 	  	submit(){
 	  		let that = this;
@@ -95,7 +117,7 @@
 	  		}
 	  		
 	  		if(this.checked == false){
-	  			this.$toast({message:'请阅读平台服务协议',duration:1500});
+	  			this.$toast({message:'请阅读并同意平台相关协议',duration:1500});
 	  			return false;
 	  		}
 	  		this.$http({
@@ -136,22 +158,20 @@
 	  			this.$toast('手机号码格式不正确');
                 return false;
 	  		}
+	  		this.$http.defaults.withCredentials = true;
+	  		//that.refreshCode();
 			this.$http({
 		        method: 'post',
 		        url:that.$url+ 'sendSms',
 		        params:{
 		        	mobile:this.phone,
-		        	code:this.imgcaptcha
+		        	imageCode:this.imgcaptcha
 		        }
 	    	}).then(function (res) {
-//	    		var res ={"data":{"msg": "请传入图形验证码","code": 0,"count": 5}};
-	    		if(res.data.code == 0){
+	    	
+//	    		var res ={"data":{"msg": "请传入图形验证码","errno": 0,"count": 5}};
+	    		if(res.data.errno == 0){
 	    			/*图形验证码是否显示*/
-			  		if (res.data.count >=5){
-			  			that.showImg = true;
-			    		that.imgyzm = 'http://192.168.0.11:6101/platform/captcha.jpg'; //后台的图片
-//			    		that.$cookie.setCookie('showImg',that.showImg);
-			  		}else{
 	                    that.disabled = true;
 				  		let i = 60;
 				  		let countDown = setInterval(function(){
@@ -167,9 +187,12 @@
 				  				that.disabled = false;
 				  			}
 				  		}, 1000);
-			  		}
 		    	}else{
 		    		that.$toast({message:res.data.msg,duration:3000});
+		    		if (res.data.count >=5){
+			  			that.showImg = true;
+						that.refreshCode();
+			  		}
 		    	}
 			})
 	  	}

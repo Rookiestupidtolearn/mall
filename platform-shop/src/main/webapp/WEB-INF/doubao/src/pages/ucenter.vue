@@ -5,7 +5,7 @@
   	
    <div class="viewTop ">
    		<img class="userinfo-avatar" :src="avatarImg" @click="gologin"/>
-   		<p class="userinfo-nickname">{{userName}}</p>
+   		<p class="userinfo-nickname" >{{userName}}</p>
    		<router-link class="userinfo-availMoney" :to="availUrl" :style="{display:[availResult?'block':'none']}" tag="div">
 	      <p class="userinfo-title">克拉可用余额</p>
 	      <p class="money">{{ availMoney }}</p>
@@ -113,9 +113,10 @@ export default {
     	number2:'',
     	number3:'',
     	number4:'',
-    	avatarImg:'https://platform-wxmall.oss-cn-beijing.aliyuncs.com/upload/20180727/150547696d798c.png',
+    	avatarImg:require("../../static/images/avatar.png"),
       category:[],
       userName:'Hi,游客',
+      mobile:'',
       availResult:false,
       availUrl:'/pages/ucenter/amountMoney',
       availMoney:'',
@@ -134,11 +135,11 @@ export default {
 	  		if(userInfo !== null){
 				this.availResult = true;
 				if(userInfo.avatar == null || userInfo.avatar == ""){
-					this.avatarImg = 'https://platform-wxmall.oss-cn-beijing.aliyuncs.com/upload/20180727/150547696d798c.png'
+					this.avatarImg = require("../../static/images/avatar.png");
 				}else{
 					this.avatarImg = userInfo.avatar;
 				}
-		    this.userName = userInfo.nickname;
+				this.mobile = this.validateMobile(userInfo.mobile,userInfo.nickname);
 		    this.availMoney = userInfo.availMoney;
 		    that.$http({
 			        method: 'post',
@@ -155,6 +156,17 @@ export default {
   	}
   },
   methods:{
+		validateMobile(mobile,username){
+			if(mobile == ""){
+		    	this.userName = username;
+		   }else{
+		   	/*手机号加密处理*/
+			    var first = mobile.substr(0, 3);
+			    var last = mobile.substr(mobile.length - 4, 4);
+			    var finalPhone = first + '****' + last;
+			    this.userName = finalPhone;
+		   }
+		},
   	gologin(){
   		let that = this;
   		that.$http({

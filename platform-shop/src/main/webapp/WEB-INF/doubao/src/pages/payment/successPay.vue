@@ -1,22 +1,23 @@
 <template>
   <div class="failPay">
   	<h4>支付成功</h4>
-  	<p>订单编号  {{paycard}}</p>
-  	<p>支付金额  {{paymoney}}</p>
   	<div class="buttongroup">
   		<span @click="look">查看订单</span>
   		<span @click="success">完成</span>
   	</div>
+  	<returnhome :scrollshow = "scrollshow"></returnhome>
   </div>
 </template>
 
 <script>
+	import returnhome from '@/components/returnHome';
+	
 export default {
   name: 'successPay',
+  components:{returnhome},
   data () {
     return {
-    	paymoney:'12345678910',
-    	paycard:'111.11元'
+    	scrollshow:true
     }
   },
   mounted(){
@@ -24,12 +25,39 @@ export default {
 	 },
 	 methods:{
 	 	look(){
-	 		
+	 		var appHref = window.location.href;
+			var comHref = window.location.origin;
+			if(appHref.indexOf('device')>-1){
+				var device = appHref.substring(appHref.indexOf('device')).split('=')[1].split('&')[0];
+			}
+	    	if(device == 'android'){
+	    			window.android.viewOrder(comHref +'/#/pages/ucenter/order'); //调起andriod交互方法(由app发起。浏览器会报错正常)
+	    			return false;
+	    	}else if(device == 'ios'){
+	    			var message = {'url':comHref +'/#/pages/ucenter/order'}
+						window.webkit.messageHandlers.viewOrder.postMessage(message);
+						return false;
+	    	}else{
+	    		this.$router.push('/pages/ucenter/order');
+	    	}
 	 	},
 	 	success(){
-	 		this.$router.push('/pages/shoppingcar')
+	 		var appHref = window.location.href;
+			var comHref = window.location.origin;
+			if(appHref.indexOf('device')>-1){
+				var device = appHref.substring(appHref.indexOf('device')).split('=')[1].split('&')[0];
+			}
+	    	if(device == 'android'){
+	    			window.android.payFinish(); //调起andriod交互方法(由app发起。浏览器会报错正常)
+	    			return false;
+	    	}else if(device == 'ios'){
+	    			var message = {'url':'payFinish'}
+						window.webkit.messageHandlers.webViewApp.postMessage(message);
+						return false;
+	    	}else{
+	    		this.$router.push('/pages/shoppingcar');
+	    	}
 	 	}
-	 	
  	}
 }
 </script>
