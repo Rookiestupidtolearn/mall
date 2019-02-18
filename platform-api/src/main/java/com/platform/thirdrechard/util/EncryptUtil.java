@@ -1,17 +1,13 @@
 package com.platform.thirdrechard.util;
-import java.util.TreeMap;
+
+import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.codec.binary.Base64;
+import sun.misc.BASE64Decoder;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.spec.SecretKeySpec;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang.StringUtils;
-
-import com.alibaba.fastjson.JSONObject;
-import com.platform.thirdrechard.entity.QueryMemberCardRequest;
-
-import sun.misc.BASE64Decoder;
+import java.util.TreeMap;
 
 public class EncryptUtil {
     private static final String KEY = "qzcdefgabovpfgdf";  
@@ -59,12 +55,12 @@ public class EncryptUtil {
     public static void main(String[] args) throws Exception {
 //    	//使用TreeMap
 		TreeMap<String, Object> treeMap	= new TreeMap<String, Object>();
-		treeMap.put("amount", 			1);
-		treeMap.put("mobile", "17732087738");
-		treeMap.put("thirdTradeNo", "123123123332sa");
-		treeMap.put("platformType", "2");//充值类型
-		treeMap.put("cardType", "2");//充值类型
-		treeMap.put("queryCheckUrl", "http://sulaiqian.huaqianyueshang.com/qsdMallOrder/queryCardOrder");//充值类型
+//		treeMap.put("amount", 			1);
+		treeMap.put("mobile", "15236177556");
+//		treeMap.put("thirdTradeNo", "123123123332sa");
+//		treeMap.put("platformType", "2");//充值类型
+//		treeMap.put("cardType", "2");//充值类型
+//		treeMap.put("queryCheckUrl", "http://sulaiqian.huaqianyueshang.com/qsdMallOrder/queryCardOrder");//充值类型
 		JSONObject json =new JSONObject(treeMap);
 		String content = json.toString();
         System.out.println("加密前：" + content);  

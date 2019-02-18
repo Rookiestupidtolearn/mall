@@ -4,7 +4,7 @@
   		<!--<headbar :headFont = "headFont"></headbar>-->
   		
  		<div class="cate-over ">
-	 		<div class="cate-nav">
+	 		<div class="cate-nav" ref="box">
 	            <div v-for="item in brotherCategory"  :class="idm == item.id ? 'active' : ''" class="item" @click="switchCate(item.id)">
 	                <div class="name">{{item.name}}</div>
 	            </div>
@@ -41,12 +41,23 @@
 	    	goodsList:[],
 	    	currentCategory:'',
 	    	idm:'',
+	    	indexId:'',
+	    	valueDiff:'parent'
 	    }
 	  },
 	  mounted(){
 	  		this.idm = this.$route.query.id;
 		  	this.categoryShow();
 	    	this.listShow();
+	  },
+	  watch:{
+	  	brotherCategory:function(){
+	  		this.$nextTick(function(){
+	  			var activeIndex = document.getElementsByClassName('active')[0];
+	  			var activeIndexLeft = activeIndex.offsetLeft;
+	  			this.$refs.box.scrollLeft = activeIndexLeft;
+	  		})
+	  	}
 	  },
 	  methods:{
 	  	andriod(e){   //与andriod和ios交互
@@ -72,7 +83,7 @@
 	 	},
 	  	switchCate(idItem){
 	  		this.idm = idItem;
-	  		this.categoryShow();
+	  		this.valueDiff = 'sub';
 	  		this.listShow();
 	  	},
 	  	listShow(){
@@ -80,7 +91,7 @@
 	  		that.$http({
 		        method: 'post',
 		        url:that.$url+ 'goods/list',
-		        params:{categoryId:that.idm,page:1,size:20},
+		        params:{categoryId:that.idm,page:1,size:20,type:that.valueDiff},
 	    	}).then(function (response) {
 				that.goodsList = response.data.data.goodsList;
 				if(that.goodsList.length < 1){
@@ -93,7 +104,7 @@
 	    	that.$http({
 		        method: 'post',
 		        url:that.$url+ 'goods/category',
-		        params:{id:that.idm}
+		        params:{id:that.idm,type:that.valueDiff}
 	    	}).then(function (response) {
 				that.brotherCategory = response.data.data.brotherCategory;
 				that.currentCategory = response.data.data.currentCategory;

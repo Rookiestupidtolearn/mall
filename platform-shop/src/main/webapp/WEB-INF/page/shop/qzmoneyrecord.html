@@ -12,10 +12,15 @@
                 <i-col span="4">
                     <i-input v-model="q.name" @on-enter="query" placeholder="手机号"/>
                 </i-col>
-               	<i-col span="2">查询日期 :</i-col>
+               	<i-col span="2">交易时间 :</i-col>
 				<i-col span="4"><i-input v-model="q.start_time" type = "date"/></i-col>
 				<i-col span="1">至</i-col>
 				<i-col span="4"><i-input v-model="q.end_time" type = "date"/></i-col>
+				交易类型:<Select v-model="q.recharge_type" style="width:100px">
+	        				<Option  value="" >请选择</Option>
+	        				<Option  :value="1" :key="1">后台充值</Option>
+	        				<Option  :value="2" :key="2">速有钱充值</Option>
+   	 			</Select>
                 <i-button @click="query">查询</i-button>
                 <i-button @click="reloadSearch">重置</i-button>
                 <i-button type="info" @click="exportUser">&nbsp;导出</i-button>

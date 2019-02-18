@@ -2,21 +2,30 @@
 	<div class="container">
 		<!--多个物流-->
 	 	<div class="logistics" v-for="(item,index) in description">
-	 		<p class="top"><span class="left">{{item.shipmentName}}：20181115555</span><span class="right">预计{{item.arrivalTime}}送达</span></p>
+	 		<p class="top">
+	 			<span class="left">{{item.shipmentName}}：{{item.shipmentOrder}}</span>
+	 			<span class="right" v-if="item.arrivalTime">预计{{item.arrivalTime}}送达</span>
+	 			<span class="right" v-else></span>
+	 		</p>
 	 		<div class="productInfo">
 	 			<img :src="item.goodUrl" />
 	 			<p class="name">{{item.goodName}}</p>
 	 		</div>
-	 		<div class="btn" @click="looklog(item.orderId)">查看物流</div>
+	 		<div class="btn" @click="looklog('/pages/ucenter/lookLogistics?id='+item.orderId)">查看物流</div>
 		</div>
+		<returnhome :scrollshow = "scrollshow"></returnhome>
 	</div>
 </template>
 
 <script>
+	import returnhome from '@/components/returnHome';
+	
 	export default {
 	  name: 'logistics',
+	  components:{returnhome},
 	  data () {
 	    return {
+	    	scrollshow:true,
 	    	description:'',
 	    	openD:true
 	    }
@@ -47,7 +56,7 @@
 	  		this.openD = !this.openD;
 	  	},
 	  	looklog(e){
-	  		this.$router.push('/pages/ucenter/lookLogistics?id='+e)
+	  		this.$cookie.interactive(e);  //与android和ios交互
 	  	}
        }
 	}

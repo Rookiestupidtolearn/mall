@@ -2,8 +2,8 @@
   <div class="hello">
   	<!--公用头部-->
   		<!--<headbar :headFont = "headFont"></headbar>-->
-  		
-		<div class="showList">
+  		<showTan :showTn="showTn" :unsells="unsells"></showTan>
+		<div class="showList mt9" v-show="appShow">
 	  		<ul class="nav_list">
 	  				<router-link v-for="(item,index) in items" @click="selectStyle (item, index)"  tag="li" :to="item.to">
 	  					<span :class="activeClass == index ? 'list_choice' : '' ">{{item.value}}</span>
@@ -11,14 +11,9 @@
 	  			</ul>
 			</div>
   		<div class="showList" v-if="orderList.length>0" >
-  			<ul class="nav_list">
-  				<router-link v-for="(item,index) in items" @click="selectStyle (item, index)"  tag="li" :to="item.to">
-  					<span :class="activeClass == index ? 'list_choice' : '' ">{{item.value}}</span>
-  				</router-link>
-  			</ul>
 	  		<ul class="" v-infinite-scroll="loadMore" infinite-scroll-disabled="isMoreLoading" infinite-scroll-distance="10" class="loadm">
 	 			 <li v-for="(item,index) in orderList" >
-					<router-link  :to = "'/pages/ucenter/orderDetail?id='+item.id" class="order" >
+					<div class="order" @click="orderDetail('/pages/ucenter/orderDetail?id='+item.id)">
 		            <div class="h">
 		                <div class="l">订单编号：{{item.order_sn}}</div>
 		                <div class="r">{{item.order_status_text}}</div>
@@ -26,16 +21,17 @@
 		            <div class="b">
 		                <div class="l">实付：￥{{item.actual_price}}</div>
 		                <div class="r">
-		                	<mt-button type="danger"  class="resetbtn" size="small" @click.prevent="payOrder(item.id)" >去付款</mt-button>
+		                	<mt-button type="danger"  class="resetbtn" size="small" @click.stop="payOrder(item.id)" >去付款</mt-button>
 		                </div>
 		            </div>
-		        </router-link>
+		        </div>
 		        </li>
 	        </ul>
 	        <p class="loading" v-if="isLoading"><img src="../../../static/images/timg.gif" class="timg"/><span class="lon">加载中...</span></p>
 	         <p class="loading" v-else><span class="lon">没有更多数据了</span></p>
         </div>
         <div  class="noData" v-show="show">没有更多数据了</div>
+        <returnHome :scrollshow = "scrollshow"></returnHome>
   </div>
 </template>
 
@@ -43,14 +39,21 @@
 import { InfiniteScroll } from 'mint-ui';
 import { MessageBox } from 'mint-ui';
 import { Indicator } from 'mint-ui';
+import showTan from '@/components/showTan.vue';
+import returnHome from '@/components/returnHome.vue';
 //import headbar from '@/components/headbar.vue';
 		
 export default {
   name: 'order',
+  components:{showTan,returnHome},
 //components:{headbar},
   data () {
     return {
 //  	headFont:'订单列表',
+			scrollshow:true,
+			showTn: false, //是否显示弹窗
+			unsells:[],
+			appShow:"",
     	orderList:[],
     	activeClass:1,
     	totalPages:'',
@@ -73,8 +76,41 @@ export default {
   },
   mounted(){
 			this.getProjectInfo();
+			var hrefD = window.location.href;
+				var delDevice = hrefD.split('?')[0];
+				var comHref =delDevice .substring(delDevice.length-1,0);  //android和ios公用链接头
+				if(hrefD.indexOf('device')>-1){
+	    		var device = appHref.split('?')[1].split('=')[1].split('&')[0];
+	    	}
+	    	if(device == 'android'){
+	    			this.appShow = false;
+	    			return false;
+	    	}else if(device == 'ios'){
+	    			this.appShow = false;
+						return false;
+	    	}else{
+	    		this.appShow = true;
+	    	}
   },
   methods:{
+  	orderDetail(e){
+				var appHref = window.location.href;
+				var device = '';
+				var comHref = window.location.origin;
+				if(appHref.indexOf('device')>-1){
+					device = appHref.split('?')[1].split('=')[1].split('&')[0];
+				}
+		    	if(device == 'android'){
+		    			window.android.productDetail(comHref +'/#'+e); //调起andriod交互方法(由app发起。浏览器会报错正常)
+		    			return false;
+		    	}else if(device == 'ios'){
+		    			var message = {'url':comHref +'/#'+ e}
+							window.webkit.messageHandlers.webViewApp.postMessage(message);
+							return false;
+		    	}else{
+		    		this.$router.push(e);
+		    	}
+			},
   	selectStyle (item, index) {
   			this.activeClass = index;
 　},
@@ -88,11 +124,15 @@ export default {
 	        }
 	    	}).then(function (res) {
 	    		var res = res.data;
+	    		console.log(res)
 	    		if(res.errno == 0){
-	    			
-	    		}else{
-	    			that.$toast(res.errmsg);
-	    		}
+	    			window.location.href= res.payurl;
+	    		}else if(res.errno == 1) {
+						that.showTn = true;
+						that.unsells = res.unsells;
+					}else{
+						that.$toast(res.errmsg);
+					}
 			})
   	},
   	loadMore() {
@@ -177,9 +217,6 @@ export default {
 		position: relative;
     top: -.12rem;
 	}
-	.loadm{
-		margin-top:.9rem;
-	}
 	.resetbtn{
 		display:inline-block !important;
 		height:auto !important;
@@ -256,5 +293,8 @@ font-size:.26rem;
 .noData{
 	font-size:.29rem;
 	margin-top:1.4rem;
+}
+.mt9{
+	margin-bottom:.9rem;
 }
 </style>

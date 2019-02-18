@@ -309,7 +309,7 @@
 	</select>
 	<select id = "quertGoodsByCategory" resultMap="goodsMap"> 
 		select * from
-	    nideshop_goods where category_id = #{categoryId}
+	    nideshop_goods where category_id = #{categoryId} and is_on_sale = 1
 	</select>
 	
 	<select id = "querBrotherCategory" resultMap="goodsMap"> 
@@ -364,9 +364,15 @@
         where id = #{id}
     </update>
     <select id="queryAllJDGoods" resultMap="goodsMap">
-    	select * from nideshop_goods where source = 'JD'
+    	select * from nideshop_goods where source in ('system','provider','jindong','wangyi')
     </select>
+
+
+    <select id="queryAllJDGoodsID" resultMap="goodsMap">
+    	select id,goods_sn from nideshop_goods where source in ('system','provider','jindong','wangyi')
+    </select>
+
     <select id="queryGoods" resultMap="goodsMap">
-    	select * from nideshop_goods where is_on_sale in (0,2) and source = 'JD'
+    	select * from nideshop_goods where is_on_sale in (0,2) and source in ('system','provider','jindong','wangyi')
     </select>
 </mapper>

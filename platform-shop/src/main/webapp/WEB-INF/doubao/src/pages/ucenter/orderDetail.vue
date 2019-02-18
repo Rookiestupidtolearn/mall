@@ -1,6 +1,6 @@
 <template>
-	<div class="container">
-		
+	<div class="container" ref="input1">
+		<showTan :showTn="showTn" :unsells="unsells" :data-c="showTn"></showTan>
 		 <div class="order-info">
         <div class="item-a">下单时间：{{orderInfo.add_time}}</div>
         <div class="item-b">订单编号：{{orderInfo.order_sn}}</div>
@@ -9,10 +9,16 @@
             <div class="r">
             	<!--9 已完成   0 待付款   300,201待收货   101,103已取消-->
                 <div v-if="orderInfo.order_status == 9" >
-            	 	<div class="btn active" @click="tipsShow">退货申请</div>
+                	<a href="javascript:;"  class="zhiCustomBtn btn active" id="btn" @click="ccHref">退货申请</a>
                 </div>
-                 <div v-else-if="orderInfo.order_status == 300 || orderInfo.order_status == 201">
-                 	<div class="btn" @click="hrefwul(orderInfo.id)">查看物流</div>
+                 <div v-else-if="orderInfo.order_status == 201 || orderInfo.order_status == 200">
+                 	<div class="btn" @click="hrefwul('/pages/ucenter/logistics?id='+orderInfo.id)">查看物流</div>
+                 	<a href="javascript:;"  class="zhiCustomBtn btn active" id="btn" @click="ccHref">取消订单</a>
+                	<div class="btn active" @click="confirmOrder(orderInfo.id)">确认收货</div>
+                </div>
+                 <div v-else-if="orderInfo.order_status == 300">
+                 	<div class="btn" @click="hrefwul('/pages/ucenter/logistics?id='+orderInfo.id)">查看物流</div>
+                 	<a href="javascript:;"  class="zhiCustomBtn btn active" id="btn" @click="ccHref">退货申请</a>
                 	<div class="btn active" @click="confirmOrder(orderInfo.id)">确认收货</div>
                 </div>
                 <div v-else-if="orderInfo.order_status == 0">   
@@ -60,11 +66,15 @@
             </div>
             <div class="t">
                 <span class="label">优惠券：</span>
-                <span class="txt">-{{orderInfo.coupon_price}}</span>
+                <span class="txt">-￥0</span>
+            </div>
+            <div class="t">
+                <span class="label">克拉：</span>
+                <span class="txt">-￥{{orderInfo.coupon_price}}</span>
             </div>
             <div class="t">
                 <span class="label">运费：</span>
-                <span class="txt">￥{{orderInfo.freight_price}}</span>
+                <span class="txt">￥{{orderInfo.shipping_fee}}</span>
             </div>
         </div>
         <div class="pay-fee">
@@ -72,17 +82,23 @@
             <span class="txt">￥{{orderInfo.actual_price}}</span>
         </div>
     </div>
-    
+    <returnHome :scrollshow = "scrollshow"></returnHome>
 	</div>
 </template>
 
 <script>
 import { MessageBox } from 'mint-ui';
-		
+import showTan from '@/components/showTan.vue';
+import returnHome from '@/components/returnHome.vue';
+
 export default {
   name: 'orderDetail',
+  components:{showTan,returnHome},
   data () {
     return {
+    	showTn: false, //是否显示弹窗
+    	unsells:[],
+    	scrollshow:true,
     	orderInfo:{},
     	cancelBtnShow:false,
     	orderGoods:[],
@@ -92,6 +108,7 @@ export default {
   mounted(){
   	let that = this;   
   	let id = this.$route.query.id;
+  	
     	that.$http({
 	        method: 'post',
 	        url:that.$url+ 'order/detail',
@@ -104,6 +121,19 @@ export default {
 		})
   },
   methods:{
+  	ccHref(){
+  		let that = this;
+  		var orderMobile = '';
+  		that.$http({
+	        method: 'post',
+	        url:that.$url+ 'user/userInfo',
+	    	}).then(function (res) {
+				orderMobile = res.data.data.mobile;
+				var orderNumber = that.orderInfo.order_sn;
+				var orderHref = window.location.href;
+				window.location.href = 'https://www.sobot.com/chat/pc/index.html?sysNum=e5ef8967b4114644a4c290bf0729f959&&title_info=订单编号:'+orderNumber+'&&url_info='+escape(orderHref)+'&&abstract_info=联系方式:'+orderMobile;
+		  })
+  	},
   	confirmOrder(id){
   		var that = this;    
 	    	that.$http({
@@ -115,18 +145,23 @@ export default {
 	    	}).then(function (res) {
 	    		var res = res.data;
 	    		if(res.errno == 0){
-	    			window.location.reload();
+	    			MessageBox({
+						  title: ' ',
+						  message: '已确认收到商品 ',
+						  showCancelButton: true
+					},function(params){
+							if(params == 'confirm'){
+								window.location.reload();
+							}
+					});
 	    		}else{
 	    			that.$toast(res.errmsg);
 	    		}
 	    		
 			  })
   	},
-  	tipsShow(){
-  		MessageBox( '退货申请','您好，请联系客服400-114-8066');
-  	},
   	hrefwul(e){
-  		this.$router.push('/pages/ucenter/logistics?id='+e);
+  		this.$cookie.interactive(e);  //与android和ios交互
   	},
 	payOrder(orderIndex){
 	      var that = this;    
@@ -138,11 +173,15 @@ export default {
 	        }
 	    	}).then(function (res) {
 	    		var res = res.data;
+	    		console.log(res);
 	    		if(res.errno == 0){
-	    			
-	    		}else{
-	    			that.$toast(res.errmsg);
-	    		}
+	    			window.location.href= res.payurl;
+	    		}else if(res.errno == 1) {
+						that.showTn = true;
+						that.unsells = res.unsells;
+					}else{
+						that.$toast(res.errmsg);
+					}
 			})
   	},
 
@@ -198,25 +237,43 @@ export default {
 	    }
 	    
 	    MessageBox({
-					  title: ' ',
-					  message: '确定要取消此订单？ ',
-					  showCancelButton: true
-					},function(action){
-							if(action == 'confirm'){
-							  that.$http({
-							        method: 'post',
-							        url:that.$url+ 'order/cancelOrder.options',
-							        data:{orderId:id}
-						    	}).then(function (res) {
-							    		MessageBox({
-											  title: ' ',
-											  message: res.data.data
-											},function(action){
-													that.$router.push('/pages/ucenter/order');
-											});
-								  })
-							}
-					});
+		  title: ' ',
+		  message: '确定要取消此订单？ ',
+		  showCancelButton: true
+		},function(action){
+				if(action == 'confirm'){
+				  that.$http({
+				        method: 'post',
+				        url:that.$url+ 'order/cancelOrder.options',
+				        data:{orderId:id}
+			    	}).then(function (res) {
+				    	if(res.data.errno == 0){
+			    			var hrefD = window.location.href;
+							if(hrefD.indexOf('device')>-1){
+					    		var device = hrefD.split('&')[1].split('=')[1];
+					    	}
+					    	if(device == 'android'){
+					    			window.android.goOrderList(); //调起andriod交互方法(由app发起。浏览器会报错正常)
+					    			return false;
+					    	}else if(device == 'ios'){
+					    			var message = {'url': 'goOrderList'}
+									window.webkit.messageHandlers.webViewApp.postMessage(message);
+									return false;
+					    	}else{
+					    		that.$router.push('/pages/ucenter/order');
+					    	}
+			    		}else{
+			    			MessageBox({
+							  	title: ' ',
+							  	message: res.data.errmsg
+							},function(action){
+									that.$router.push('/pages/ucenter/order');
+							});
+			    		}
+					})
+				}
+		});
+		document.getElementsByClassName('mint-msgbox-confirm')[0].innerText = '确定';
   	}
   }
 }
@@ -442,7 +499,6 @@ export default {
 }
 
 .order-bottom .total{
-    height: 1.5rem;
     padding-top: .30rem;
     border-bottom: 1px solid #f4f4f4;
     font-size: .29rem;

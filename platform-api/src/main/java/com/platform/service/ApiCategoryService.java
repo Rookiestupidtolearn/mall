@@ -27,10 +27,7 @@ public class ApiCategoryService {
 	public List<Integer> queryListOfGoodsNotNull(Map<String, Object> map){
 		return categoryDao.queryListOfGoodsNotNull(map);
 	}
-	public List<Integer> queryListOfGoodsNotNullAndSortByGoodsNum(Map<String, Object> map){
-		return categoryDao.queryListOfGoodsNotNullAndSortByGoodsNum(map);
-	}
-	
+
 	
 	public int queryTotal(Map<String, Object> map){
 		return categoryDao.queryTotal(map);

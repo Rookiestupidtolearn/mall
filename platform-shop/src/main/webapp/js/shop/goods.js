@@ -47,18 +47,13 @@ $(function () {
         imageUploadParams: {id: "edit"},
         imagesLoadURL: '../sys/oss/queryAll'
     })
-
-   queryCatagory(0,"one-category");
-
 });
 function selectOnchang(obj,addr){ //onchange事件获取被选中的option标签选项
-    $("#"+addr).html("  <Option  value=\"\" >请选择</Option>");
+
 //     alert(obj.selectedIndex);
     var value = obj.options[obj.selectedIndex].value;
     // alert(value)
-    if(value!=null && value!==""){
     queryCatagory(value,addr);
-    }
 }
 
 
@@ -70,7 +65,7 @@ function queryCatagory(id,addr) { //查询分类
         params: JSON.stringify(vm.goods),
         successCallback: function (data) {
 
-            // $("#"+addr).html("");
+            $("#"+addr).html("");
             var  html_1='';
             var dataObj = data.data;
             $.each(dataObj, function(index, item){
@@ -562,10 +557,7 @@ var vm = new Vue({
         		   'max_retail_price':vm.q.max_retail_price,
         		   'min_pure_interest_rate':vm.q.min_pure_interest_rate,
         		   'max_pure_interest_rate':vm.q.max_pure_interest_rate,
-                    'one_category_id':vm.q.one_category_id,
-                    'two_category_id':vm.q.two_category_id,
-                    'three_category_id':vm.q.three_category_id
-                    },
+                    'category_id':vm.q.category_id},
 
                 page: page
             }).trigger("reloadGrid");
@@ -667,6 +659,7 @@ var vm = new Vue({
         eyeImage: function (e) {
             eyeImage($(e.target).attr('src'));
         }
+
     },
     mounted() {
     	console.log(this.$refs);

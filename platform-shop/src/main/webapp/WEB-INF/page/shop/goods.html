@@ -65,14 +65,14 @@
 	        				<Option  :value="2" :key="3">申请上架</Option>
    	 					</Select>
 
-                一级分类：<Select  id="one-category" v-model="q.one_category_id" onchange="selectOnchang(this,'two-category')" style="width:100px">
+                一级分类：<Select  id="one-category" onchange="selectOnchang(this,'two-category')" style="width:100px">
                 <Option  value="" >请选择</Option>
             </Select>
-                二级分类：<Select  id="two-category" v-model="q.two_category_id" onchange="selectOnchang(this,'three-category')" style="width:100px">
+                二级分类：<Select  id="two-category" v-model="q.category_id" onchange="selectOnchang(this,'three-category')" style="width:100px">
                 <Option  value="" >请选择</Option>
 
             </Select>
-                三级分类：<Select  id="three-category"  v-model="q.three_category_id" style="width:100px">
+                三级分类：<Select  id="three-category"  style="width:100px">
                 <Option  value="" >请选择</Option>
             </Select>
 

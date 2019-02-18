@@ -14,37 +14,28 @@
 	    </div>
 	  </div>
 	  </div>
+	  <returnhome :scrollshow = "scrollshow"></returnhome>
 	</div> 
 </template>
 
 <script>
 	import { MessageBox } from 'mint-ui';
+	import returnhome from '@/components/returnHome';
 //	import headbar from '@/components/headbar.vue';	
 		
 export default {
   name: 'helpCenter',
-//components:{headbar},
+	components:{returnhome},
   data () {
     return {
 //  	headFont:'帮助中心',
+		scrollshow:true,
     	helpImg:'../../static/images/go.png',
 	    listArray: [
 	      {
 	        show: false,
 	        question: "如何注册会员?",
 	        answer: "登录微信小程序，点击登录授权使用读取微信信息，即可完成初步注册，用户完成手机绑定操作后方才完成注册;"
-	      },{
-	        show: false,
-	        question: "如何注册会员?",
-	        answer: "1111登录微信小程序，点击登录授权使用读取微信信息，即可完成初步注册，用户完成手机绑定操作后方才完成注册;"
-	      },{
-	        show: false,
-	        question: "如何注册会员?",
-	        answer: "2222登录微信小程序，点击登录授权使用读取微信信息，即可完成初步注册，用户完成手机绑定操作后方才完成注册;"
-	      },{
-	        show: false,
-	        question: "如何注册会员?",
-	        answer: "3333登录微信小程序，点击登录授权使用读取微信信息，即可完成初步注册，用户完成手机绑定操作后方才完成注册;"
 	      }
 	    ]
     }

@@ -34,7 +34,7 @@
 
 	<select id="queryList" resultType="com.platform.entity.QzMoneyRecordEntity">
 		select
-    		mr.`id`,
+    		DISTINCT mr.`id`,
     		mr.`shop_user_id`,
     		mr.`tran_type`,
     		mr.`tran_flag`,
@@ -46,10 +46,12 @@
     		mr.`lock_amount`,
     		b.`username` as shopUserName,
     		b.`mobile` as UserPhone,
-    		b.`idcard` as cardId
+    		b.`idcard` as cardId,
+    		rr.recharge_type as rechargeType
 		from qz_money_record mr
 		LEFT JOIN `nideshop_user` b  ON mr.`shop_user_id` = b.`id`
-		WHERE 1=1 and tran_type != 3
+		LEFT JOIN qz_recharge_record rr ON mr.shop_user_id = rr.shop_user_id
+		WHERE 1=1 and mr.tran_type != 3 AND rr.state = 1
 		<if test="name != null and name.trim() != ''">
 			AND b.mobile LIKE concat('%',#{name},'%')
 		</if>
@@ -58,6 +60,9 @@
 		</if>
 		<if test="end_time != null and end_time.trim() != ''">
 			AND mr.create_time &lt;  #{end_time}
+		</if>
+		<if test="recharge_type != null and recharge_type.trim() != ''">
+			AND rr.recharge_type =  #{recharge_type}
 		</if>
         <choose>
             <when test="sidx != null and sidx.trim() != ''">
@@ -73,14 +78,39 @@
 	</select>
 	
  	<select id="queryTotal" resultType="int">
-		select
-    		count(*)
+ 	
+ 		SELECT count(*) aa  FROM 
+		(select
+    		DISTINCT mr.`id`,
+    		mr.`shop_user_id`,
+    		mr.`tran_type`,
+    		mr.`tran_flag`,
+    		mr.`tarn_amount`,
+    		mr.`current_amount`,
+    		mr.`create_time`,
+    		mr.`trade_no`,
+    		mr.`remark`,
+    		mr.`lock_amount`,
+    		b.`username` as shopUserName,
+    		b.`mobile` as UserPhone,
+    		b.`idcard` as cardId,
+    		rr.recharge_type as rechargeType
 		from qz_money_record mr
 		LEFT JOIN `nideshop_user` b  ON mr.`shop_user_id` = b.`id`
-		WHERE 1=1
+		LEFT JOIN qz_recharge_record rr ON mr.shop_user_id = rr.shop_user_id
+		WHERE 1=1 and mr.tran_type != 3 AND rr.state = 1
 		<if test="name != null and name.trim() != ''">
-			AND b.username LIKE concat('%',#{name},'%')
+			AND b.mobile LIKE concat('%',#{name},'%')
 		</if>
+		<if test="start_time != null and start_time.trim() != ''">
+			AND mr.create_time &gt; #{start_time}
+		</if>
+		<if test="end_time != null and end_time.trim() != ''">
+			AND mr.create_time &lt;  #{end_time}
+		</if>
+		<if test="recharge_type != null and recharge_type.trim() != ''">
+			AND rr.recharge_type =  #{recharge_type}
+		</if>) aa WHERE 1=1;
 	</select>
 	 
 	<insert id="save" parameterType="com.platform.entity.QzMoneyRecordEntity" useGeneratedKeys="true" keyProperty="id">
@@ -133,7 +163,7 @@
 	</delete>
 	<select id="queryMoneyRecords" resultType="com.platform.entity.QzMoneyRecordEntity">
 		select
-    		mr.`id`,
+    		DISTINCT mr.`id`,
     		mr.`shop_user_id`,
     		mr.`tran_type`,
     		mr.`tran_flag`,
@@ -148,15 +178,19 @@
     		b.`idcard` as cardId
 		from qz_money_record mr
 		LEFT JOIN `nideshop_user` b  ON mr.`shop_user_id` = b.`id`
-		WHERE 1=1 and tran_type != 3
+		LEFT JOIN qz_recharge_record rr ON mr.shop_user_id = rr.shop_user_id
+		WHERE 1=1 and tran_type != 3 and rr.state = 1
 		<if test="name != null and name.trim() != ''">
-			AND b.username LIKE concat('%',#{name},'%')
+			AND b.mobile LIKE concat('%',#{name},'%')
 		</if>
 		<if test="start_time != null and start_time.trim() != ''">
 			AND mr.create_time &gt; #{start_time}
 		</if>
 		<if test="end_time != null and end_time.trim() != ''">
 			AND mr.create_time &lt;  #{end_time}
+		</if>
+		<if test="recharge_type != null and recharge_type.trim() != ''">
+			AND rr.recharge_type =  #{recharge_type}
 		</if>
 	</select>
 </mapper>

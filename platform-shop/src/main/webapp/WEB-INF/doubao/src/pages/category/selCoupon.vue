@@ -2,7 +2,7 @@
  	<div class="container">
  		<!--公用头部-->
   		<!--<headbar :headFont = "headFont"></headbar>-->
-  		
+  		<returnhome :scrollshow = "scrollshow"></returnhome>
  	<div class="no-course " v-if="couponList.length <= 0" >
  		<img src="../../../static/images/my_course_empty.png"/>
  		<p class="desc">您还没有优惠券~</p>
@@ -33,12 +33,15 @@
 
 <script>
 //import headbar from '@/components/headbar.vue'
+import returnhome from '@/components/returnHome';
 
 export default {
 	  name: 'selCoupon',
+	  components:{returnhome},
 //	  components:{headbar},
 	  data () {
 	    return {
+	    	scrollshow:true,
 	    	couponList: '',
     		buyType: '',
     		isBuy:'',

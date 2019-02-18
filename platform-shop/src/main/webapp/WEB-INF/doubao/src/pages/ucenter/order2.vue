@@ -3,7 +3,7 @@
   	<!--公用头部-->
   		<!--<headbar :headFont = "headFont"></headbar>-->
   		
-		<div class="showList">
+		<div class="showList mt9" v-show="appShow">
 	  		<ul class="nav_list">
 	  				<router-link v-for="(item,index) in items" @click="selectStyle (item, index)"  tag="li" :to="item.to">
 	  					<span :class="activeClass == index ? 'list_choice' : '' ">{{item.value}}</span>
@@ -11,14 +11,9 @@
 	  			</ul>
 			</div>
   		<div class="showList" v-if="orderList.length>0" >
-  			<ul class="nav_list">
-  				<router-link v-for="(item,index) in items" @click="selectStyle (item, index)"  tag="li" :to="item.to">
-  					<span :class="activeClass == index ? 'list_choice' : '' ">{{item.value}}</span>
-  				</router-link>
-  			</ul>
 	  		<ul class="" v-infinite-scroll="loadMore" infinite-scroll-disabled="isMoreLoading" infinite-scroll-distance="10" class="loadm">
 	 			 <li v-for="(item,index) in orderList" >
-					<router-link :to = "'/pages/ucenter/orderDetail?id='+item.id" class="order" >
+					<div class="order" @click="orderDetail('/pages/ucenter/orderDetail?id='+item.id)">
 		            <div class="h">
 		                <div class="l">订单编号：{{item.order_sn}}</div>
 		                <div class="r">{{item.order_status_text}}</div>
@@ -26,17 +21,18 @@
 		            <div class="b">
 		                <div class="l">实付：￥{{item.actual_price}}</div>
 		                <div class="r">
-		                	<div class="btn active" @click.prevent="confirmOrder(item.id)">确认收货</div>
-		                	<router-link class="btn" :to="'/pages/ucenter/logistics?id='+item.id">查看物流</router-link>
+		                	<div class="btn active" @click.stop="confirmOrder(item.id)">确认收货</div>
+		                	<div class="btn" @click.stop="hrefwul('/pages/ucenter/logistics?id='+item.id)">查看物流</div>
 		                </div>
 		            </div>
-		        </router-link>
+		        </div>
 		        </li>
 	        </ul>
 	        <p class="loading" v-if="isLoading"><img src="../../../static/images/timg.gif" class="timg"/><span class="lon">加载中...</span></p>
 	         <p class="loading" v-else><span class="lon">没有更多数据了</span></p>
         </div>
         <div class="noData" v-show="show">没有更多数据了</div>
+        <returnHome :scrollshow = "scrollshow"></returnHome>
   </div>
 </template>
 
@@ -44,14 +40,18 @@
 import { InfiniteScroll } from 'mint-ui';
 import { MessageBox } from 'mint-ui';
 import { Indicator } from 'mint-ui';
+import returnHome from '@/components/returnHome.vue';
 //import headbar from '@/components/headbar.vue';
 		
 export default {
   name: 'order',
+  components:{returnHome},
 //components:{headbar},
   data () {
     return {
 //  	headFont:'订单列表',
+			scrollshow:true,
+			appShow:"",
     	orderList:[],
     	activeClass:2,
     	totalPages:'',
@@ -74,8 +74,29 @@ export default {
   },
   mounted(){
 			this.getProjectInfo();
+			var hrefD = window.location.href;
+				var delDevice = hrefD.split('?')[0];
+				var comHref =delDevice .substring(delDevice.length-1,0);  //android和ios公用链接头
+				if(hrefD.indexOf('device')>-1){
+	    		var device = appHref.split('?')[1].split('=')[1].split('&')[0];
+	    	}
+	    	if(device == 'android'){
+	    			this.appShow = false;
+	    			return false;
+	    	}else if(device == 'ios'){
+	    			this.appShow = false;
+						return false;
+	    	}else{
+	    		this.appShow = true;
+	    	}
   },
   methods:{
+  	hrefwul(e){
+  		this.$cookie.interactive(e);  //与android和ios交互
+  	},
+  	orderDetail(e){
+				this.$cookie.interactive(e);  //与android和ios交互
+			},
   	confirmOrder(id){
   		var that = this;    
 	    	that.$http({
@@ -87,7 +108,15 @@ export default {
 	    	}).then(function (res) {
 	    		var res = res.data;
 	    		if(res.errno == 0){
-	    			
+	    			MessageBox({
+						  title: ' ',
+						  message: '已确认收到商品 ',
+						  showCancelButton: true
+					},function(params){
+							if(params == 'confirm'){
+								window.location.reload();
+							}
+					});
 	    		}else{
 	    			that.$toast(res.errmsg);
 	    		}
@@ -97,10 +126,6 @@ export default {
   	selectStyle (item, index) {
   			this.activeClass = index;
 　},
-  	payOrder(orderIndex){
-	      let order = this.orderList[orderIndex];
-	    	this.$router.push( '/pages/pay/pay?orderId=' + order.id + '&actualPrice=' + order.actual_price);
-  	},
   	loadMore() {
 			var that = this;    
 			this.page = that.page+1; // 增加分页
@@ -183,9 +208,6 @@ export default {
 		position: relative;
     top: -.12rem;
 	}
-	.loadm{
-		margin-top:.9rem;
-	}
 	.resetbtn{
 		display:inline-block !important;
 		height:auto !important;
@@ -262,5 +284,8 @@ font-size:.26rem;
 .noData{
 	font-size:.29rem;
 	margin-top:1.4rem;
+}
+.mt9{
+	margin-bottom:.9rem;
 }
 </style>

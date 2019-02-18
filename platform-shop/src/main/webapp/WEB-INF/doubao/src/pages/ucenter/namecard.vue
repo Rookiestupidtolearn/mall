@@ -13,19 +13,22 @@
 		   		 <input type='idcard' placeholder="请输入用户身份证号" maxlength="18" v-model="idcard" ></input>
 		  </div>
 		  <div class="confirm" @click="confirm">确认</div>
+		  <returnhome :scrollshow = "scrollshow"></returnhome>
 	</div>
 </template>
 
 <script>
 	import { MessageBox } from 'mint-ui';
+	import returnhome from '@/components/returnHome';
 //	import headbar from '@/components/headbar.vue';	
 		
 export default {
   name: 'accountSecurity',
-//  components:{headbar},
+    components:{returnhome},
   data () {
     return {
 //		headFont:'账户安全',
+scrollshow:true,
 		 name:'',
    		 idcard:''
     }

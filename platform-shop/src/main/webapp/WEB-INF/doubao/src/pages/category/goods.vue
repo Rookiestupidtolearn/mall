@@ -68,7 +68,7 @@
 		        <span class="title">大家都在看</span>
 		      </div>
 		      <div class="b">
-		        <div class="item" v-for="item in relatedGoods" @click="detailHref('/pages/goods/goods?id='+item.id)">
+		        <div class="item" v-for="item in relatedGoods" @click="detailHref('/pages/category/bodylook?id='+item.id)">
 		            <img class="img" :src="item.list_pic_url" background-size="cover"/>
 		            <p class="name">{{item.name}}</p>
 		            <p class="price">￥{{item.market_price}}</p>
@@ -119,20 +119,24 @@
 			  <button :class="undercarriage ? 'disabled' : 'r'" v-if="undercarriage">{{undercarriName}}</button>
 			  <button :class="undercarriage ? 'disabled' : 'r'" v-else @click="addToCart">{{undercarriName}}</button>
 			</div>
+			<returnhome :scrollshow = "scrollshow"></returnhome>
   </div>
 </template>
 
 <script>
 	import { Toast } from 'mint-ui';
 	import { Indicator } from 'mint-ui';
+	import returnhome from '@/components/returnHome';
 //	import headbar from '@/components/headbar.vue'
 		
 	export default {
 	  name: 'goods',
 //	  components:{headbar},
+		components:{returnhome},
 	  data () {
 	    return {
 //	    	headFont:'商品详情',
+			scrollshow:true,
 	    	market_price:'',
 	    	idm:'',
 	    	banner:[],
@@ -179,24 +183,15 @@
 	  		this.relaed();
 	    	//商品详情
 	  		this.Detail();
-	    	
+	  		
 	  },
 	destroyed(){
- 		document.getElementById('zhichiBtnBox').style.display= 'none'; //默认隐藏智齿
-	},
-	watch:{
-		$route(to,from){
-			this.relateds();
-		}
+		//删除上次智齿遗留DOM
+ 		document.body.removeChild(document.getElementById('zhichiBtnBox'));
+ 		document.body.removeChild(document.getElementById('ZCPanel'));
+ 		document.body.removeChild(document.getElementById('bubbleMsg'));
 	},
 	methods:{
-		relateds(){
-			if(parseInt(this.$route.query.id) && this.$route.query.id !== this.idm){
-				this.idm=this.$route.query.id;
-			    this.Detail();
-			    this.relaed();
-			}
-		},
 		relaed(){
 			let that = this;
 			Indicator.open();
@@ -303,7 +298,7 @@
 					zhiManager.set('abstract_info',that.goods.name);  //商品信息的简述内容（选传） 无描述用的标题
 					zhiManager.set('label_info',that.market_price);	  //商品标签例：价格（选传）
 					zhiManager.set('thumbnail_info',that.banner[0].img_url);  //商品的缩略图（选传）
-					
+					zhiManager.set('invite', 0); //关闭开启自动邀请
 	
 				}
 			}else{
@@ -312,7 +307,7 @@
 			
 		},
 		detailHref(e){
-			this.$router.push(e)
+			this.$cookie.interactive(e);  //与android和ios交互
 		},
 	  	cutNumber(){
       		this.number = (this.number - 1 > 1) ? this.number - 1 : 1
@@ -801,7 +796,7 @@ div{
 	font-size:.29rem;
 	background-color:#fff
 }
-.detail >>> p img{
+.detail >>>  img{
 	vertical-align: top;
     margin-top: -.001rem;
     height: auto !important;
@@ -1152,7 +1147,9 @@ overflow: hidden;
     line-height: .36rem;
     color: #999;
 }
-
+.container{
+	padding-bottom: .6rem;
+}
 
 .goods-info .price{
     height: .35rem;

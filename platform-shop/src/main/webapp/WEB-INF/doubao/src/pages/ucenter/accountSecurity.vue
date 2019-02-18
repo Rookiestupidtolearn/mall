@@ -30,19 +30,22 @@
 		  </div>
 		  <div class="logout" @click="exitLogin">退出登录</div>
 	  </div>
+	  <returnhome :scrollshow = "scrollshow"></returnhome>
  	</div>
 </template>
 
 <script>
 	import { MessageBox } from 'mint-ui';
+	import returnhome from '@/components/returnHome';
 //	import headbar from '@/components/headbar.vue';	
 		
 export default {
   name: 'accountSecurity',
-//  components:{headbar},
+components:{returnhome},
   data () {
     return {
 //		headFont:'账户安全',
+		scrollshow:true,
 		name:'',
 		idCard:'',
     	accountSecurity:[],

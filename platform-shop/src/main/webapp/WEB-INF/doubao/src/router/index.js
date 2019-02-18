@@ -14,32 +14,34 @@ import order4 from '@/pages/ucenter/order4'  //个人中心-我的订单-已取�
 import coupon from '@/pages/ucenter/coupon'  //个人中心-我的优惠券
 import collect from '@/pages/ucenter/collect'  //个人中心-我的收藏
 import footprint from '@/pages/ucenter/footprint'  //个人中心-我的足迹
-import addressList from '@/pages/ucenter/addressList'  //个人中心-地址管理
 import accountSecurity from '@/pages/ucenter/accountSecurity'  //个人中心-账户安全
 import helpCenter from '@/pages/ucenter/helpCenter'  //个人中心-帮助中心
 import feedback from '@/pages/ucenter/feedback'  //个人中心-问题反馈
-import mobile from '@/pages/ucenter/mobile'  //个人中心-问题反馈
+import mobile from '@/pages/ucenter/mobile'  //账户安全-绑定手机号
 import categoryPages from '@/pages/category/category'  //首页-渠道分类
 import goods from '@/pages/category/goods'  //商品详情
-import brandDetail from '@/pages/category/brandDetail'  //制造商详情
 import orderDetail from '@/pages/ucenter/orderDetail'  //订单详情
 import checkout from '@/pages/category/checkout'  //下单页面
-import addressAdd from '@/pages/category/addressAdd'  //选择地址页面
-import payResult from '@/pages/category/payResult'  //去付款页面
 import selCoupon from '@/pages/category/selCoupon'  //选择优惠券页面
-import addressList2 from '@/pages/category/addressList'  //购物车选择地址页面
-import addressAdd2 from '@/pages/ucenter/addressAdd'  //个人中心选择地址页面
 import amountMoney from '@/pages/ucenter/amountMoney'  //资金明细
-import pay from '@/pages/category/pay'  //支付订单
 import register from '@/pages/register/register'  //注册页面
-import ptfwxy from '@/pages/xieyi/ptfwxy'  //平台服务协议
-import namecard from '@/pages/ucenter/namecard'  //认证
+import klrule from '@/pages/xieyi/klrule'  //斗宝俱乐部“克拉”使用规则
+import yhzcxy from '@/pages/xieyi/yhzcxy'  //斗宝俱乐部用户注册协议
+import ysqxy from '@/pages/xieyi/ysqxy'  //隐私权协议
+import namecard from '@/pages/ucenter/namecard'  //账户安全-姓名,身份认证
 import account from '@/pages/ucenter/account'  //账户中心
 import userservice from '@/pages/ucenter/userservice'  //客户服务
 import successPay from '@/pages/payment/successPay'  //支付成功
 import failPay from '@/pages/payment/failPay'  //支付失败
-import logistics from '@/pages/ucenter/logistics'  //物流页面
-import lookLogistics from '@/pages/ucenter/lookLogistics'  //物流页面
+import logistics from '@/pages/ucenter/logistics'  //物流列表
+import lookLogistics from '@/pages/ucenter/lookLogistics'  //物流详情
+import addressList from '@/pages/ucenter/addressList'  //个人中心-地址管理
+import addressAdd from '@/pages/ucenter/addressAdd'  //个人中心-添加地址
+import addresscateList from '@/pages/category/addresscateList'  //购物车-地址管理
+import addresscateAdd from '@/pages/category/addresscateAdd'  //购物车-添加地址
+import bodylook from '@/pages/category/bodylook'  //商品详情-大家都在看
+/*活动*/
+import kelarule from '@/pages/activity/kelarule'  //克拉使用规则
 
 Vue.use(Router)
 
@@ -51,6 +53,26 @@ export default new Router({
       path: '/',
       name: 'home',
       component: home,
+    },{
+      path: '/pages/xieyi/klrule',
+      name: 'klrule',
+      component: klrule,
+    },{
+      path: '/pages/xieyi/yhzcxy',
+      name: 'yhzcxy',
+      component: yhzcxy,
+    },{
+      path: '/pages/xieyi/ysqxy',
+      name: 'ysqxy',
+      component: ysqxy,
+    },{
+      path: '/pages/category/bodylook',
+      name: 'bodylook',
+      component: bodylook
+    },{
+      path: '/pages/activity/kelarule',
+      name: 'kelarule',
+      component: kelarule
     },{
       path: '/pages/classification',
       name: 'classification',
@@ -102,7 +124,7 @@ export default new Router({
     },{
       path: '/pages/ucenter/search',
       name: 'search',
-      component: search,
+      component: search
     },{
       path: '/pages/category/category',
       name: 'categoryPages',
@@ -112,10 +134,6 @@ export default new Router({
       name: 'goods',
       component: goods
     },{
-      path: '/pages/category/brandDetail',
-      name: 'brandDetail',
-      component: brandDetail
-    },{
       path: '/pages/ucenter/orderDetail',
       name: 'orderDetail',
       component: orderDetail
@@ -124,41 +142,29 @@ export default new Router({
       name: 'checkout',
       component: checkout
     },{
-      path: '/pages/category/addressAdd',
-      name: 'addressAdd',
-      component: addressAdd
-    },{
-      path: '/pages/category/payResult',
-      name: 'payResult',
-      component: payResult
+      path: '/pages/category/addresscateAdd',
+      name: 'addresscateAdd',
+      component: addresscateAdd
     },{
       path: '/pages/category/selCoupon',
       name: 'selCoupon',
       component: selCoupon
     },{
-      path: '/pages/category/addressList',
-      name: 'addressList2',
-      component: addressList2
+      path: '/pages/category/addresscateList',
+      name: 'addresscateList',
+      component: addresscateList
     },{
       path: '/pages/ucenter/addressAdd',
-      name: 'addressAdd2',
-      component: addressAdd2
+      name: 'addressAdd',
+      component: addressAdd
     },{
       path: '/pages/ucenter/amountMoney',
       name: 'amountMoney',
       component: amountMoney
     },{
-      path: '/pages/category/pay',
-      name: 'pay',
-      component: pay
-    },{
       path: '/pages/register/register',
       name: 'register',
       component: register
-    },{
-      path: '/pages/xieyi/ptfwxy',
-      name: 'ptfwxy',
-      component: ptfwxy
     },{
       path: '/pages/ucenter/namecard',
       name: 'namecard',
