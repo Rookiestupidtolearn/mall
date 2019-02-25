@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.platform.dao.ApiMemberDao">
+
+    <resultMap type="com.platform.entity.MemberEntity" id="memberMap">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="memberGrade" column="member_grade"/>
+        <result property="isVip" column="is_vip"/>
+        <result property="isVplus" column="is_vplus"/>
+        <result property="vplusBeginDate" column="vplus_begin_date"/>
+        <result property="vplusEndDate" column="vplus_end_date"/>
+        <result property="membersGrowthValue" column="members_growth_value"/>
+        <result property="version" column="version"/>
+        <result property="isDelete" column="is_delete"/>
+		<result property="mobile" column="mobile"/>
+    </resultMap>
+
+	<select id="queryObject" resultType="com.platform.entity.MemberEntity">
+		select
+			`id`,
+			`user_id`,
+			`member_grade`,
+			`is_vip`,
+			`is_vplus`,
+			`vplus_begin_date`,
+			`vplus_end_date`,
+			`members_growth_value`,
+			`version`,
+			`is_delete`
+				`mobile`
+		from nideshop_member
+		where id = #{id}
+	</select>
+
+	<select id="queryObjectByUserIdOrMobile" resultType="com.platform.entity.MemberEntity">
+		select
+			`id`,
+			`user_id`,
+			`member_grade`,
+			`is_vip`,
+			`is_vplus`,
+			`vplus_begin_date`,
+			`vplus_end_date`,
+			`members_growth_value`,
+			`version`,
+			`is_delete`
+			`mobile`
+		from nideshop_member
+		where 1=1
+		<if test="userId != null ">
+			 and user_id = #{userId}
+		</if>
+		<if test="mobile != null ">
+			and mobile = #{mobile}
+		</if>
+
+	</select>
+
+	<select id="queryList" resultType="com.platform.entity.MemberEntity">
+		select
+    		`id`,
+    		`user_id`,
+    		`member_grade`,
+    		`is_vip`,
+    		`is_vplus`,
+    		`vplus_begin_date`,
+    		`vplus_end_date`,
+    		`members_growth_value`,
+    		`version`,
+    		`is_delete`
+		`mobile`
+		from nideshop_member
+		WHERE 1=1
+		<if test="name != null and name.trim() != ''">
+			AND name LIKE concat('%',#{name},'%')
+		</if>
+		<if test="isVplus != null and isVplus.trim() != ''">
+			AND is_vplus=#{isVplus})
+		</if>
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from nideshop_member
+		WHERE 1=1
+        <if test="name != null and name.trim() != ''">
+            AND name LIKE concat('%',#{name},'%')
+        </if>
+	</select>
+	 
+	<insert id="save" parameterType="com.platform.entity.MemberEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into nideshop_member(
+			`user_id`,
+			`member_grade`,
+			`is_vip`,
+			`is_vplus`,
+			`vplus_begin_date`,
+			`vplus_end_date`,
+			`members_growth_value`,
+			`version`,
+			`is_delete`,
+				`mobile`)
+		values(
+			#{userId},
+			#{memberGrade},
+			#{isVip},
+			#{isVplus},
+			#{vplusBeginDate},
+			#{vplusEndDate},
+			#{membersGrowthValue},
+			#{version},
+			#{isDelete},
+				#{mobile})
+	</insert>
+	 
+	<update id="update" parameterType="com.platform.entity.MemberEntity">
+		update nideshop_member 
+		<set>
+			<if test="userId != null">`user_id` = #{userId}, </if>
+			<if test="memberGrade != null">`member_grade` = #{memberGrade}, </if>
+			<if test="isVip != null">`is_vip` = #{isVip}, </if>
+			<if test="isVplus != null">`is_vplus` = #{isVplus}, </if>
+			<if test="vplusBeginDate != null">`vplus_begin_date` = #{vplusBeginDate}, </if>
+			<if test="vplusEndDate != null">`vplus_end_date` = #{vplusEndDate}, </if>
+			<if test="membersGrowthValue != null">`members_growth_value` = #{membersGrowthValue}, </if>
+			<if test="version != null">`version` = #{version}, </if>
+			<if test="isDelete != null">`is_delete` = #{isDelete}</if>
+			<if test="mobile != null">`mobile` = #{mobile}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from nideshop_member where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from nideshop_member where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+	<update id="updateBatch"  parameterType="java.util.List">
+		<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+			update nideshop_member
+			<set>
+				isVplus=${item.isVplus}
+			</set>
+			where id = ${item.id}
+		</foreach>
+	</update>
+
+</mapper>

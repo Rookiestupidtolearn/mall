@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.platform.constant.MemberGradeInit;
+import com.platform.entity.*;
+import com.platform.service.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,25 +26,6 @@ import com.platform.annotation.LoginUser;
 import com.platform.cache.J2CacheUtils;
 import com.platform.dao.ApiCartMapper;
 import com.platform.dao.GoodsCouponConfigMapper;
-import com.platform.entity.AddressVo;
-import com.platform.entity.BuyGoodsVo;
-import com.platform.entity.CartVo;
-import com.platform.entity.CouponInfoVo;
-import com.platform.entity.CouponVo;
-import com.platform.entity.GoodsCouponConfigVo;
-import com.platform.entity.GoodsSpecificationVo;
-import com.platform.entity.GoodsVo;
-import com.platform.entity.ProductVo;
-import com.platform.entity.UserVo;
-import com.platform.service.ApiAddressService;
-import com.platform.service.ApiCartService;
-import com.platform.service.ApiCouponService;
-import com.platform.service.ApiGoodsService;
-import com.platform.service.ApiGoodsSpecificationService;
-import com.platform.service.ApiOrderService;
-import com.platform.service.ApiProductService;
-import com.platform.service.ApiUserService;
-import com.platform.service.JdOrderService;
 import com.platform.util.ApiBaseAction;
 import com.platform.util.PayMatchingUtil;
 import com.qiniu.util.StringUtils;
@@ -82,6 +66,8 @@ public class ApiCartController extends ApiBaseAction {
     private ApiUserService userService;
     @Autowired
 	private ApiCartMapper cartDao;
+    @Autowired
+    private ApiMemberService apiMemberService;
 	// 查询库存默认地址
 	private String DEFAULT_ADDRESS = "1_72_2799";
 	private Logger logger = LoggerFactory.getLogger(getClass());
@@ -713,7 +699,7 @@ public class ApiCartController extends ApiBaseAction {
         		couponAmount = disCountAmount;
         	}
         	if(userAmount.compareTo(disCountAmount) < 0){
-        		BigDecimal amount = goodsMaxDiscount(checkedGoodsList, userAmount);
+        		BigDecimal amount = goodsMaxDiscount(checkedGoodsList, userAmount);// 最大克拉抵扣
         		BigDecimal usableAmount = disCountAmount.subtract(amount);//还可支付平台币金额
         		BigDecimal residueAmount = userAmount.subtract(amount);//剩余平台币金额
         		resultObj.put("usableAmount", usableAmount);
@@ -792,6 +778,18 @@ public class ApiCartController extends ApiBaseAction {
 	public BigDecimal goodsMaxDiscount(List<CartVo> carts,BigDecimal userAccount){
 		BigDecimal maxDiscount = BigDecimal.ZERO;
 		List<BigDecimal> amounts = new ArrayList<>();
+        BigDecimal kelaPayRatio=BigDecimal.ONE;
+        MemberEntity memberEntity=apiMemberService.queryObjectByUserIdOrMobile(carts.get(0).getUser_id().intValue(),null);//查询会员权益
+        if(memberEntity==null){//如果第一次购买不是会员 新建到会员表
+            memberEntity=new MemberEntity();
+            memberEntity.setUserId(carts.get(0).getUser_id().intValue());
+            apiMemberService.save(memberEntity);
+        }else {
+            if(memberEntity.getIsVplus()!=null && memberEntity.getMemberGrade().equals("")){//初建的会员有消费的情况下
+                kelaPayRatio=  MemberGradeInit.getGradeMap().get(memberEntity.getMemberGrade()).getKelaPayRatio();
+            }
+        }
+
 		if(CollectionUtils.isEmpty(carts)){
 			return maxDiscount;
 		}
@@ -804,12 +802,14 @@ public class ApiCartController extends ApiBaseAction {
     			if(payMatchingUtils.getPayMatching(cart.getProduct_id())!= null){
     				Object value = payMatchingUtils.getPayMatching(cart.getProduct_id()).get(cart.getGoods_id());
     				if(value != null){
-    					payMatching = new BigDecimal(value.toString());
+    			        //会员权益享有支付克拉折扣
+                        payMatching =kelaPayRatio.multiply(new BigDecimal(value.toString()));
     				}
     			}
-    			for(int j = 0;j<cart.getNumber();j++){
-    				amounts.add(payMatching);
-    			}
+    			amounts.add(payMatching.multiply(new BigDecimal(cart.getNumber())));
+//    			for(int j = 0;j<cart.getNumber();j++){
+//    				amounts.add(payMatching);
+//    			}
 			}
 			
 		}

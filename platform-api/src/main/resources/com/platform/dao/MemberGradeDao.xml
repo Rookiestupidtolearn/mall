@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.platform.dao.MemberGradeDao">
+
+    <resultMap type="com.platform.entity.MemberGradeEntity" id="memberGradeMap">
+        <result property="id" column="id"/>
+        <result property="grade" column="grade"/>
+        <result property="claim" column="claim"/>
+        <result property="growthValueRatio" column="growth_value_ratio"/>
+        <result property="kelaPayRatio" column="kela_pay_ratio"/>
+        <result property="giveDeadlineRatio" column="give_deadline_ratio"/>
+        <result property="createTime" column="create_time"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="memo" column="memo"/>
+    </resultMap>
+
+	<select id="queryObject" resultType="com.platform.entity.MemberGradeEntity">
+		select
+			`id`,
+			`grade`,
+			`claim`,
+			`growth_value_ratio`,
+			`kela_pay_ratio`,
+			`give_deadline_ratio`,
+			`create_time`,
+			`is_delete`,
+			`memo`
+		from nideshop_member_grade
+		where id = #{id}
+	</select>
+
+	<select id="queryList" resultType="com.platform.entity.MemberGradeEntity">
+		select
+    		`id`,
+    		`grade`,
+    		`claim`,
+    		`growth_value_ratio`,
+    		`kela_pay_ratio`,
+    		`give_deadline_ratio`,
+    		`create_time`,
+    		`is_delete`,
+    		`memo`
+		from nideshop_member_grade
+		WHERE 1=1
+		<if test="name != null and name.trim() != ''">
+			AND name LIKE concat('%',#{name},'%')
+		</if>
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from nideshop_member_grade
+		WHERE 1=1
+        <if test="name != null and name.trim() != ''">
+            AND name LIKE concat('%',#{name},'%')
+        </if>
+	</select>
+	 
+	<insert id="save" parameterType="com.platform.entity.MemberGradeEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into nideshop_member_grade(
+			`grade`,
+			`claim`,
+			`growth_value_ratio`,
+			`kela_pay_ratio`,
+			`give_deadline_ratio`,
+			`create_time`,
+			`is_delete`,
+			`memo`)
+		values(
+			#{grade},
+			#{claim},
+			#{growthValueRatio},
+			#{kelaPayRatio},
+			#{giveDeadlineRatio},
+			#{createTime},
+			#{isDelete},
+			#{memo})
+	</insert>
+	 
+	<update id="update" parameterType="com.platform.entity.MemberGradeEntity">
+		update nideshop_member_grade 
+		<set>
+			<if test="grade != null">`grade` = #{grade}, </if>
+			<if test="claim != null">`claim` = #{claim}, </if>
+			<if test="growthValueRatio != null">`growth_value_ratio` = #{growthValueRatio}, </if>
+			<if test="kelaPayRatio != null">`kela_pay_ratio` = #{kelaPayRatio}, </if>
+			<if test="giveDeadlineRatio != null">`give_deadline_ratio` = #{giveDeadlineRatio}, </if>
+			<if test="createTime != null">`create_time` = #{createTime}, </if>
+			<if test="isDelete != null">`is_delete` = #{isDelete}, </if>
+			<if test="memo != null">`memo` = #{memo}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from nideshop_member_grade where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from nideshop_member_grade where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

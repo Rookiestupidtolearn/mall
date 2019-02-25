@@ -19,7 +19,11 @@
         <result property="registerIp" column="register_ip"/>
         <result property="avatar" column="avatar"/>
         <result property="weixinOpenid" column="weixin_openid"/>
-        <result property="idcard" column="idcard"/>
+        <result property="integral" column="integral"/>
+        <result property="isVplus" column="is_vplus"/>
+        <result property="membersGrowthValue" column="members_growth_value"/>
+        <result property="vplusEndDate" column="vplus_end_date"/>
+
     </resultMap>
 
     <!-- 用户资金流水实体 -->
@@ -49,12 +53,17 @@
 
 
     <select id="queryObject" resultMap="userMap">
-		select * from nideshop_user where id = #{value}
+		select * from nideshop_user
+		left join nideshop_integral on  nideshop_integral.user_id=nideshop_user.id
+        left join nideshop_member on nideshop_user.id=nideshop_member.user_id
+		 where id = #{value}
 	</select>
 
 
     <select id="queryUserInfo" parameterType="java.util.Map" resultMap="userMap">
-        select * from nideshop_user where 1=1
+        select * from nideshop_user
+
+        where 1=1
         <if test="userid != null">and id = #{userid}</if>
         <if test="username != null and username.trim() != ''">and username = #{username}</if>
         <if test="gender != null">and gender = #{gender}</if>

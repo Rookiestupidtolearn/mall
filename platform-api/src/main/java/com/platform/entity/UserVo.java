@@ -43,7 +43,67 @@ public class UserVo implements Serializable {
     //身份证号
     private String idcard;
 
-    
+	//vip等级
+	private String vipGrade;
+	//vplus等级
+	private String vplusGrade;
+	//是否是vplus
+	private Integer isVplus;
+	//会员成长值
+	private Long membersGrowthValue;
+	//vplus到期时间
+	private Date vplusEndDate;
+	//会员积分值
+	private Integer integral;
+
+	public String getVipGrade() {
+		return vipGrade;
+	}
+
+	public void setVipGrade(String vipGrade) {
+		this.vipGrade = vipGrade;
+	}
+
+	public String getVplusGrade() {
+		return vplusGrade;
+	}
+
+	public void setVplusGrade(String vplusGrade) {
+		this.vplusGrade = vplusGrade;
+	}
+
+	public Integer getIsVplus() {
+		return isVplus;
+	}
+
+	public void setIsVplus(Integer isVplus) {
+		this.isVplus = isVplus;
+	}
+
+	public Long getMembersGrowthValue() {
+		return membersGrowthValue;
+	}
+
+	public void setMembersGrowthValue(Long membersGrowthValue) {
+		this.membersGrowthValue = membersGrowthValue;
+	}
+
+	public Date getVplusEndDate() {
+		return vplusEndDate;
+	}
+
+	public void setVplusEndDate(Date vplusEndDate) {
+		this.vplusEndDate = vplusEndDate;
+	}
+
+	public Integer getIntegral() {
+		return integral;
+	}
+
+	public void setIntegral(Integer integral) {
+		this.integral = integral;
+	}
+
 	public Long getUserId() {
 		return userId;
 	}

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.platform.dao.ApiVplusRecordInfoDao">
+
+    <resultMap type="com.platform.entity.VplusRecordInfoEntity" id="vplusRecordInfoMap">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="type" column="type"/>
+        <result property="createDate" column="create_date"/>
+        <result property="openDate" column="open_date"/>
+        <result property="endDate" column="end_date"/>
+        <result property="vplusId" column="vplus_id"/>
+        <result property="money" column="money"/>
+        <result property="memo" column="memo"/>
+        <result property="state" column="state"/>
+        <result property="yeepayTradeno" column="yeepay_tradeno"/>
+        <result property="isDelete" column="is_delete"/>
+		<result property="platformType" column="platform_type"/>
+    </resultMap>
+
+	<select id="queryObject" resultType="com.platform.entity.VplusRecordInfoEntity">
+		select
+			`id`,
+			`user_id`,
+			`type`,
+			`create_date`,
+			`open_date`,
+			`end_date`,
+			`vplus_id`,
+			`money`,
+			`memo`,
+			`state`,
+			`yeepay_tradeno`,
+			`is_delete`
+			`platform_type`
+
+		from vplus_record_info
+		where id = #{id}
+	</select>
+
+	<select id="queryVplusRecordInfoByYeepayTradeNo" resultType="com.platform.entity.VplusRecordInfoEntity">
+		select
+			`id`,
+			`user_id`,
+			`type`,
+			`create_date`,
+			`open_date`,
+			`end_date`,
+			`vplus_id`,
+			`money`,
+			`memo`,
+			`state`,
+			`yeepay_tradeno`,
+			`is_delete`
+			`platform_type`
+		from vplus_record_info
+		where yeepay_tradeno = #{tradeno}
+	</select>
+
+	<select id="queryList" resultType="com.platform.entity.VplusRecordInfoEntity">
+		select
+    		`id`,
+    		`user_id`,
+    		`type`,
+    		`create_date`,
+    		`open_date`,
+    		`end_date`,
+    		`vplus_id`,
+    		`money`,
+    		`memo`,
+    		`state`,
+    		`yeepay_tradeno`,
+    		`is_delete`
+		   `platform_type`
+		from vplus_record_info
+		WHERE 1=1
+		<if test="name != null and name.trim() != ''">
+			AND name LIKE concat('%',#{name},'%')
+		</if>
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from vplus_record_info
+		WHERE 1=1
+        <if test="name != null and name.trim() != ''">
+            AND name LIKE concat('%',#{name},'%')
+        </if>
+	</select>
+	 
+	<insert id="save" parameterType="com.platform.entity.VplusRecordInfoEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into vplus_record_info(
+			`user_id`,
+			`type`,
+			`create_date`,
+			`open_date`,
+			`end_date`,
+			`vplus_id`,
+			`money`,
+			`memo`,
+			`state`,
+			`yeepay_tradeno`,
+			`is_delete`
+			`platform_type`)
+		values(
+			#{userId},
+			#{type},
+			#{createDate},
+			#{openDate},
+			#{endDate},
+			#{vplusId},
+			#{money},
+			#{memo},
+			#{state},
+			#{yeepayTradeno},
+			#{isDelete}
+			#{platformType})
+	</insert>
+	 
+	<update id="update" parameterType="com.platform.entity.VplusRecordInfoEntity">
+		update vplus_record_info 
+		<set>
+			<if test="userId != null">`user_id` = #{userId}, </if>
+			<if test="type != null">`type` = #{type}, </if>
+			<if test="createDate != null">`create_date` = #{createDate}, </if>
+			<if test="openDate != null">`open_date` = #{openDate}, </if>
+			<if test="endDate != null">`end_date` = #{endDate}, </if>
+			<if test="vplusId != null">`vplus_id` = #{vplusId}, </if>
+			<if test="money != null">`money` = #{money}, </if>
+			<if test="memo != null">`memo` = #{memo}, </if>
+			<if test="state != null">`state` = #{state}, </if>
+			<if test="yeepayTradeno != null">`yeepay_tradeno` = #{yeepayTradeno}, </if>
+			<if test="isDelete != null">`is_delete` = #{isDelete}</if>
+			<if test="platformType != null">`platform_type` = #{isDelete}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from vplus_record_info where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from vplus_record_info where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

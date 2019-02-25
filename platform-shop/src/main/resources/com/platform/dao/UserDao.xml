@@ -60,8 +60,13 @@
         nideshop_user.weixin_openid,
         nideshop_user.idcard,
         nideshop_user_level.name levelName,
+        nideshop_integral.integral integral,
+        nideshop_member.is_vplus isVplus,
+        nideshop_member.members_growth_value membersGrowthValue,
+        nideshop_member.vplus_end_date vplusEndDate,
         case when qz_user_account.amount != '' then qz_user_account.amount else 0.00 end 'amount'
         from nideshop_user left join qz_user_account on nideshop_user.id = qz_user_account.shop_user_id left join  nideshop_user_level on  nideshop_user.user_level_id=nideshop_user_level.id  
+        left join nideshop_integral on  nideshop_integral.user_id=nideshop_user.id left join nideshop_member on nideshop_user.id=nideshop_member.user_id
         WHERE 1=1
         <if test="username != null and username.trim() != ''">
             and username like concat('%',#{username},'%')

@@ -100,6 +100,21 @@ public class ApiUserController extends ApiBaseAction {
         return toResponsSuccess(userLevel);
     }
 
+	/**
+	 * 获取当前会员信息
+	 *
+	 * @param loginUser
+	 * @return
+	 */
+	@ApiOperation(value = "获取当前会员信息")
+	@PostMapping("getUserMemberInfo")
+	public Object getUserMemberInfo(@LoginUser UserVo loginUser) {
+		Map paramMap = new HashMap();
+		paramMap.put("userId", loginUser.getUserId());
+		List<UserVo> userList  = userService.queryUserInfo(paramMap);;
+		return toResponsSuccess(userList.get(0));
+	}
+
     /**
      * 绑定手机
      */

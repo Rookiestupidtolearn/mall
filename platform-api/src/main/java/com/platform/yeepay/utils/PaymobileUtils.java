@@ -33,6 +33,8 @@ public class PaymobileUtils {
 	public static final String UNBINDCARDAPI_NAME	= "UnbindCardApi";
 	public static final String ORDERCALLBACKAPI_NAME = "OrderCallbackApi";
 	public static final String ORDER_FCALL_BACKAPI_NAME = "OrderFcallbackurlApi";
+
+	public static final String MEMBERRECHARGE_CALLBACKAPI_NAME = "MemberRechargeCallbackApi";
 	
 	public static final String AppIdRechargeCallbackApi_NAME = "AppIdRechargeCallbackApi";
 	

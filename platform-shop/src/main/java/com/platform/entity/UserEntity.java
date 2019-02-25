@@ -1,5 +1,9 @@
 package com.platform.entity;
 
+import com.platform.constant.GradeEnum;
+import com.platform.constant.MemberConstants;
+import com.platform.util.JudgeMembershipLevelUtil;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -54,15 +58,85 @@ public class UserEntity implements Serializable {
     //用户账户金额
     private BigDecimal amount;
 
+
+    //vip等级
+    private String vipGrade;
+    //vplus等级
+    private String vplusGrade;
+    //是否是vplus
+    private Integer isVplus;
+    //会员成长值
+    private Long membersGrowthValue;
+    //vplus到期时间
+    private Date vplusEndDate;
+    //会员积分值
+    private Integer integral;
+
+    public Date getVplusEndDate() {
+        if (isVplus == MemberConstants.FlagType.YES) {
+            return vplusEndDate;
+        }
+        return null;
+    }
+
+    public void setVplusEndDate(Date vplusEndDate) {
+        this.vplusEndDate = vplusEndDate;
+    }
+
+    public String getVipGrade() {
+
+        return JudgeMembershipLevelUtil.judgeLevel(membersGrowthValue, GradeEnum.VIP);
+    }
+
+    public void setVipGrade(String vipGrade) {
+        this.vipGrade = vipGrade;
+    }
+
+    public String getVplusGrade() {
+        if (isVplus == MemberConstants.FlagType.YES) {
+            return JudgeMembershipLevelUtil.judgeLevel(membersGrowthValue, GradeEnum.VPLUS);
+        }
+        return null;
+    }
+
+    public void setVplusGrade(String vplusGrade) {
+        this.vplusGrade = vplusGrade;
+    }
+
+
+    public Integer getIsVplus() {
+        return isVplus;
+    }
+
+    public void setIsVplus(Integer isVplus) {
+        this.isVplus = isVplus;
+    }
+
+    public Long getMembersGrowthValue() {
+        return membersGrowthValue;
+    }
+
+    public void setMembersGrowthValue(Long membersGrowthValue) {
+        this.membersGrowthValue = membersGrowthValue;
+    }
+
+    public Integer getIntegral() {
+        return integral;
+    }
+
+    public void setIntegral(Integer integral) {
+        this.integral = integral;
+    }
+
     public BigDecimal getAmount() {
-		return amount;
-	}
+        return amount;
+    }
 
-	public void setAmount(BigDecimal amount) {
-		this.amount = amount;
-	}
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
 
-	/**
+    /**
      * 设置：主键
      */
     public void setId(Integer id) {
@@ -266,12 +340,12 @@ public class UserEntity implements Serializable {
         this.levelName = levelName;
     }
 
-	public String getIdCard() {
-		return idCard;
-	}
+    public String getIdCard() {
+        return idCard;
+    }
 
-	public void setIdCard(String idCard) {
-		this.idCard = idCard;
-	}
-    
+    public void setIdCard(String idCard) {
+        this.idCard = idCard;
+    }
+
 }

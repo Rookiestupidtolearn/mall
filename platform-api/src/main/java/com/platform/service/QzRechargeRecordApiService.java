@@ -17,4 +17,14 @@ public class QzRechargeRecordApiService {
 
         return save == 0 ? false : true ;
     }
+
+    public  QzRechargeRecordEntity queryObjectByTradeNo(String tradeNo){
+        return  qzRechargeRecordMapper.queryByThirdTradeNo(tradeNo);
+
+    }
+
+    public  int update(QzRechargeRecordEntity qzRechargeRecordEntity){
+        return  qzRechargeRecordMapper.update(qzRechargeRecordEntity);
+
+    }
 }
